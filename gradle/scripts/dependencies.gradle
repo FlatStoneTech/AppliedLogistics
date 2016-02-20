@@ -1,0 +1,53 @@
+repositories {
+    mavenLocal()
+    maven {
+        name "ChickenBones"
+        url "http://chickenbones.net/maven/"
+    }
+
+    maven {
+        name "Mobius"
+        url "http://mobiusstrip.eu/maven"
+    }
+
+    maven {
+        name "FireBall API Depot"
+        url "http://dl.tsr.me/artifactory/libs-release-local"
+    }
+
+    maven {
+        name = "Player"
+        url = "http://maven.ic2.player.to/"
+    }
+
+    maven {
+        name = "Tterrag"
+        url = "http://maven.tterrag.com/"
+    }
+
+    maven  {
+        name = "RX14 Proxy"
+        url = "http://mvn.rx14.co.uk/repo/"
+    }
+
+    maven {
+        name "OpenComputers Repo"
+        url = "http://maven.cil.li/"
+    }
+
+    ivy {
+        name "BuildCraft"
+        artifactPattern "http://www.mod-buildcraft.com/releases/BuildCraft/[revision]/[module]-[revision]-[classifier].[ext]"
+    }
+}
+
+configurations {
+    mods
+    shade
+    compile.extendsFrom shade
+}
+
+dependencies {
+    //mods(group: 'journeymap', name: 'journeymap', version: '1.8.8-5.1.3')
+    //compile(group: 'journeymap-api', name: 'journeymap-api', version: '1.8.9-0.9')
+}

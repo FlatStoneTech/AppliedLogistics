@@ -1,0 +1,16 @@
+task wrapper(type: Wrapper) {
+    gradleVersion = "2.4"
+}
+
+task installMods(type: Copy, dependsOn: "deinstallMods") {
+    from { configurations.mods }
+    include "**/*.jar"
+    into file(minecraft.runDir + "/mods")
+}
+
+task deinstallMods(type: Delete) {
+    delete fileTree(dir: minecraft.runDir + "/mods", include: "*.jar")
+}
+
+tasks.setupDecompWorkspace.dependsOn installMods
+tasks.setupDevWorkspace.dependsOn installMods
