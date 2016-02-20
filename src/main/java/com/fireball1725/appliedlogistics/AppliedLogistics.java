@@ -1,5 +1,6 @@
 package com.fireball1725.appliedlogistics;
 
+import com.fireball1725.appliedlogistics.integrations.IntegrationsManager;
 import com.fireball1725.appliedlogistics.proxy.IProxy;
 import com.fireball1725.appliedlogistics.reference.ModInfo;
 import com.google.common.base.Stopwatch;
@@ -21,6 +22,8 @@ public class AppliedLogistics {
     public void preInit(FMLPreInitializationEvent event) {
         final Stopwatch stopwatch = Stopwatch.createStarted();
 
+
+        IntegrationsManager.instance().index();
     }
 
     @Mod.EventHandler
