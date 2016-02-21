@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import tech.flatstone.appliedlogisticsapi.AppliedLogisticsApi;
 
 @Mod(modid = ModInfo.MOD_ID, name = ModInfo.MOD_NAME, certificateFingerprint = ModInfo.FINGERPRINT, dependencies = ModInfo.DEPENDENCIES, version = ModInfo.VERSION_BUILD)
 public class AppliedLogistics {
@@ -24,15 +25,19 @@ public class AppliedLogistics {
 
 
         IntegrationsManager.instance().index();
+
+
+
+        IntegrationsManager.instance().preInit();
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-
+        IntegrationsManager.instance().init();
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-
+        IntegrationsManager.instance().postInit();
     }
 }
