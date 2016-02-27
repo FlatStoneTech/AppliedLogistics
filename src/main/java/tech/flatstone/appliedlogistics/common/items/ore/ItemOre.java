@@ -21,7 +21,7 @@ public class ItemOre extends ItemBlock {
     @Override
     public String getUnlocalizedName(ItemStack stack) {
         String name = super.getUnlocalizedName();
-        String oreName = EnumOres.byMeta(stack.getItemDamage()).getName();
+        String oreName = EnumOres.byMeta(stack.getItemDamage()).getUnlocalisedName();
         return name + "." + oreName;
     }
 }

@@ -1,9 +1,9 @@
 package tech.flatstone.appliedlogistics.common.integrations;
 
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
-import tech.flatstone.appliedlogistics.common.integrations.rftools.RFTools;
-import tech.flatstone.appliedlogistics.IntegrationModIDs;
 import net.minecraftforge.fml.common.Loader;
+import tech.flatstone.appliedlogistics.IntegrationModIDs;
+import tech.flatstone.appliedlogistics.common.integrations.rftools.RFTools;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ public class IntegrationsManager {
     }
 
     public void index() {
-        Map<String, Class<? extends IIntegration>> integrationClasses = new HashMap<String, Class<?extends IIntegration>>();
+        Map<String, Class<? extends IIntegration>> integrationClasses = new HashMap<String, Class<? extends IIntegration>>();
 
         try {
             integrationClasses.put(IntegrationModIDs.RFTOOLS, RFTools.class);
@@ -45,7 +45,7 @@ public class IntegrationsManager {
     }
 
     public void preInit() {
-        for(IIntegration integration : integrationMods) {
+        for (IIntegration integration : integrationMods) {
             try {
                 integration.preInit();
             } catch (Throwable ex) {
@@ -56,7 +56,7 @@ public class IntegrationsManager {
     }
 
     public void init() {
-        for(IIntegration integration : integrationMods) {
+        for (IIntegration integration : integrationMods) {
             try {
                 integration.init();
             } catch (Throwable ex) {
@@ -67,7 +67,7 @@ public class IntegrationsManager {
     }
 
     public void postInit() {
-        for(IIntegration integration : integrationMods) {
+        for (IIntegration integration : integrationMods) {
             try {
                 integration.postInit();
             } catch (Throwable ex) {

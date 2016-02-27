@@ -2,5 +2,5 @@
 package tech.flatstone.appliedlogistics.api;
 
 import net.minecraftforge.fml.common.API;
-import tech.flatstone.appliedlogistics.api.reference.ApiInfo;
 import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.api.reference.ApiInfo;

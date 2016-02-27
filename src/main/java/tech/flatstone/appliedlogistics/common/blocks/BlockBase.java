@@ -1,8 +1,5 @@
 package tech.flatstone.appliedlogistics.common.blocks;
 
-import tech.flatstone.appliedlogistics.ModInfo;
-import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
-import tech.flatstone.appliedlogistics.common.util.TileTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -17,6 +14,9 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
+import tech.flatstone.appliedlogistics.common.util.TileTools;
 
 import java.util.Random;
 
@@ -133,5 +133,9 @@ public class BlockBase extends BlockContainer {
     @Override
     public int getRenderType() {
         return 3;
+    }
+
+    public void preInit() {
+
     }
 }

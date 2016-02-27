@@ -5,6 +5,6 @@ import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 public abstract class CommonProxy implements IProxy {
     @Override
     public void registerBlocks() {
-        Blocks.registerAll();
+        Blocks.registerBlocks();
     }
 }

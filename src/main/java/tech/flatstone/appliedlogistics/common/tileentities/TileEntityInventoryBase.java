@@ -1,14 +1,14 @@
 package tech.flatstone.appliedlogistics.common.tileentities;
 
-import tech.flatstone.appliedlogistics.common.tileentities.inventory.IInventoryCustom;
-import tech.flatstone.appliedlogistics.common.tileentities.inventory.IInventoryHandler;
-import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import tech.flatstone.appliedlogistics.common.tileentities.inventory.IInventoryCustom;
+import tech.flatstone.appliedlogistics.common.tileentities.inventory.IInventoryHandler;
+import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
 
 public abstract class TileEntityInventoryBase extends TileEntityBase implements ISidedInventory, IInventoryHandler {
     public abstract IInventory getInternalInventory();
@@ -18,7 +18,7 @@ public abstract class TileEntityInventoryBase extends TileEntityBase implements 
         super.readFromNBT(nbtTagCompound);
 
         if (getInternalInventory() instanceof IInventoryCustom) {
-            IInventoryCustom inventoryCustom = (IInventoryCustom)getInternalInventory();
+            IInventoryCustom inventoryCustom = (IInventoryCustom) getInternalInventory();
             inventoryCustom.readFromNBT(nbtTagCompound);
         } else {
             IInventory inventory = this.getInternalInventory();
@@ -35,7 +35,7 @@ public abstract class TileEntityInventoryBase extends TileEntityBase implements 
         super.writeToNBT(nbtTagCompound);
 
         if (getInternalInventory() instanceof IInventoryCustom) {
-            IInventoryCustom inventoryCustom = (IInventoryCustom)getInternalInventory();
+            IInventoryCustom inventoryCustom = (IInventoryCustom) getInternalInventory();
             inventoryCustom.writeToNBT(nbtTagCompound);
         } else {
             IInventory inventory = this.getInternalInventory();

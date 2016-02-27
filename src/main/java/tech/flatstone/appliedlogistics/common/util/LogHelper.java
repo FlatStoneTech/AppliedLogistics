@@ -1,9 +1,9 @@
 package tech.flatstone.appliedlogistics.common.util;
 
-import tech.flatstone.appliedlogistics.ModInfo;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import tech.flatstone.appliedlogistics.ModInfo;
 
 public class LogHelper {
     private static Logger logger = LogManager.getLogger(ModInfo.MOD_NAME);

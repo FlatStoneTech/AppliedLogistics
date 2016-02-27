@@ -1,11 +1,11 @@
 package tech.flatstone.appliedlogistics.common.tileentities.inventory;
 
-import tech.flatstone.appliedlogistics.common.util.Platform;
-import tech.flatstone.appliedlogistics.common.util.iterators.InventoryIterator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IChatComponent;
+import tech.flatstone.appliedlogistics.common.util.Platform;
+import tech.flatstone.appliedlogistics.common.util.iterators.InventoryIterator;
 
 import java.util.Iterator;
 

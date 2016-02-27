@@ -1,6 +1,5 @@
 package tech.flatstone.appliedlogistics.common.tileentities;
 
-import tech.flatstone.appliedlogistics.common.util.ItemStackSrc;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.inventory.IInventory;
@@ -13,6 +12,7 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import tech.flatstone.appliedlogistics.common.util.ItemStackSrc;
 
 import java.util.ArrayList;
 import java.util.HashMap;
