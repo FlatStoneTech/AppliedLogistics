@@ -1,0 +1,25 @@
+{
+  "variants": {
+    "name=iron": {
+      "model": "iron_ore"
+    },
+    "name=gold": {
+      "model": "gold_ore"
+    },
+    "name=copper": {
+      "model": "appliedlogistics:ore_copper"
+    },
+    "name=tin": {
+      "model": "appliedlogistics:ore_tin"
+    },
+    "name=silver": {
+      "model": "appliedlogistics:ore_silver"
+    },
+    "name=lead": {
+      "model": "appliedlogistics:ore_lead"
+    },
+    "name=bauxite": {
+      "model": "appliedlogistics:ore_bauxite"
+    }
+  }
+}
