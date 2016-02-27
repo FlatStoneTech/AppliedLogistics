@@ -1,0 +1,25 @@
+{
+  "variants": {
+    "name=iron": {
+      "model": "iron_block"
+    },
+    "name=gold": {
+      "model": "gold_block"
+    },
+    "name=copper": {
+      "model": "appliedlogistics:block_copper"
+    },
+    "name=tin": {
+      "model": "appliedlogistics:block_tin"
+    },
+    "name=silver": {
+      "model": "appliedlogistics:block_silver"
+    },
+    "name=lead": {
+      "model": "appliedlogistics:block_lead"
+    },
+    "name=bauxite": {
+      "model": "appliedlogistics:block_bauxite"
+    }
+  }
+}

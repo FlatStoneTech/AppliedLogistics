@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "appliedlogistics:blocks/ore_copper"
+    "all": "appliedlogistics:blocks/block_lead"
   }
 }

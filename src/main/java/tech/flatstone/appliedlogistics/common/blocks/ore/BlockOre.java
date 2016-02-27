@@ -10,7 +10,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.oredict.OreDictionary;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
@@ -33,7 +32,7 @@ public class BlockOre extends BlockBase implements IBlockRenderer {
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        return ((EnumOres) state.getValue(ORES)).getMeta();
+        return (state.getValue(ORES)).getMeta();
     }
 
     @Override
@@ -63,14 +62,6 @@ public class BlockOre extends BlockBase implements IBlockRenderer {
             } else {
                 ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), i, new ModelResourceLocation(EnumOres.byMeta(i).getUnlocalisedName() + "_ore", "inventory"));
             }
-        }
-    }
-
-    @Override
-    public void preInit() {
-        for (int i = 0; i < EnumOres.values().length; i++) {
-            String oreName = EnumOres.byMeta(i).getName();
-            OreDictionary.registerOre("ore" + oreName, new ItemStack(this, 1, i));
         }
     }
 }

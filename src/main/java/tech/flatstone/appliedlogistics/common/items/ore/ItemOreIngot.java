@@ -12,15 +12,17 @@ import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 
 import java.util.List;
 
-public class ItemOreDust extends ItemBase implements IItemRenderer {
-    public ItemOreDust() {
+public class ItemOreIngot extends ItemBase implements IItemRenderer {
+    public ItemOreIngot() {
         this.setHasSubtypes(true);
     }
 
     @Override
     public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
         for (int i = 0; i < EnumOres.values().length; i++) {
-            subItems.add(new ItemStack(this, 1, i));
+            if (!EnumOres.byMeta(i).isVanillaGen()) {
+                subItems.add(new ItemStack(this, 1, i));
+            }
         }
     }
 
@@ -39,7 +41,11 @@ public class ItemOreDust extends ItemBase implements IItemRenderer {
     @Override
     public void registerItemRenderer() {
         for (int i = 0; i < EnumOres.values().length; i++) {
-            ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(ModInfo.MOD_ID + ":" + "dust_" + EnumOres.byMeta(i).getUnlocalisedName(), "inventory"));
+            if (!EnumOres.byMeta(i).isVanillaGen()) {
+                ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(ModInfo.MOD_ID + ":" + "ingot_" + EnumOres.byMeta(i).getUnlocalisedName(), "inventory"));
+            } else {
+                ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(EnumOres.byMeta(i).getUnlocalisedName() + "_ingot", "inventory"));
+            }
         }
     }
 }

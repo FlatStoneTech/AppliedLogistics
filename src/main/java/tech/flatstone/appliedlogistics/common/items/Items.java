@@ -6,11 +6,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.common.AppliedLogisticsCreativeTabs;
+import tech.flatstone.appliedlogistics.common.items.ore.ItemOreDust;
+import tech.flatstone.appliedlogistics.common.items.ore.ItemOreIngot;
+import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 
 public enum Items {
-    ;
+    ITEM_ORE_INGOT("oreIngot", new ItemOreIngot(), AppliedLogisticsCreativeTabs.tabGeneral),
+    ITEM_ORE_DUST("oreDust", new ItemOreDust(), AppliedLogisticsCreativeTabs.tabGeneral),;
 
-    private static boolean registered = false;
     public final Item item;
     private final String internalName;
 
@@ -25,18 +29,18 @@ public enum Items {
         item.setCreativeTab(creativeTabs);
     }
 
-    public static void registerAll() {
-        if (registered)
-            return;
-
-        for (Items i : Items.values())
+    public static void registerItems() {
+        for (Items i : Items.values()) {
             i.register();
-
-        registered = true;
+        }
     }
 
     public void register() {
         GameRegistry.registerItem(item, internalName);
+
+        if (item instanceof IItemRenderer) {
+            ((IItemRenderer) item).registerItemRenderer();
+        }
     }
 
     public String getStatName() {

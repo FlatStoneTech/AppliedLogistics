@@ -32,8 +32,12 @@ public class AppliedLogistics {
         final Stopwatch stopwatch = Stopwatch.createStarted();
         // Register Blocks
         proxy.registerBlocks();
+        proxy.registerItems();
 
-        Blocks.preInit();
+        proxy.registerFurnaceRecipes();
+        proxy.registerRecipes();
+
+        proxy.registerOreDict();
 
         IntegrationsManager.instance().index();
 

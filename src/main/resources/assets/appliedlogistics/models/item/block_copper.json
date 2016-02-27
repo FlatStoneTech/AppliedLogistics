@@ -1,5 +1,5 @@
 {
-  "parent": "appliedlogistics:block/ore_tin",
+  "parent": "appliedlogistics:block/block_copper",
   "display": {
     "thirdperson": {
       "rotation": [

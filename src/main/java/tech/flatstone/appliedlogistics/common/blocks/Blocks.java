@@ -7,16 +7,16 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import tech.flatstone.appliedlogistics.common.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.common.blocks.ore.BlockOre;
+import tech.flatstone.appliedlogistics.common.blocks.ore.BlockOreBlock;
 import tech.flatstone.appliedlogistics.common.items.ore.ItemOre;
+import tech.flatstone.appliedlogistics.common.items.ore.ItemOreBlock;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 public enum Blocks {
     // Ore
     BLOCK_ORE("ore", new BlockOre(), ItemOre.class, AppliedLogisticsCreativeTabs.tabGeneral),
-    //BLOCK_ORE_BLOCK("OreBlock", new BlockOreBlock(), AppliedLogisticsCreativeTabs.tabGeneral),
-
-    ;
+    BLOCK_ORE_BLOCK("oreBlock", new BlockOreBlock(), ItemOreBlock.class, AppliedLogisticsCreativeTabs.tabGeneral),;
 
     public final Block block;
     private final String internalName;
@@ -48,12 +48,6 @@ public enum Blocks {
         this.defaultRenderer = useDefaultRenderer;
     }
 
-    public static void preInit() {
-        for (Blocks b : Blocks.values()) {
-            ((BlockBase) b.block).preInit();
-        }
-    }
-
     public static void registerBlocks() {
         for (Blocks b : Blocks.values()) {
             b.registerBlock();
@@ -70,8 +64,10 @@ public enum Blocks {
     }
 
     private void registerBlock() {
+        // Register Block in Game Registry
         GameRegistry.registerBlock(block.setCreativeTab(creativeTabs).setUnlocalizedName(internalName), itemBlockClass, internalName);
 
+        // If bock has Render Info, Register Renderer
         if (block instanceof IBlockRenderer) {
             ((IBlockRenderer) block).registerBlockRenderer();
         }

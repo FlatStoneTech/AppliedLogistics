@@ -113,7 +113,7 @@ public class BlockBase extends BlockContainer {
         String blockName = getUnwrappedUnlocalizedName(super.getUnlocalizedName());
 
         String test = String.format("tile.%s", blockName);
-        return test.toLowerCase();
+        return test;
     }
 
     protected String getUnwrappedUnlocalizedName(String unlocalizedName) {
@@ -133,9 +133,5 @@ public class BlockBase extends BlockContainer {
     @Override
     public int getRenderType() {
         return 3;
-    }
-
-    public void preInit() {
-
     }
 }

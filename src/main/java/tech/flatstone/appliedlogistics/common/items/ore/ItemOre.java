@@ -8,7 +8,6 @@ import tech.flatstone.appliedlogistics.common.util.EnumOres;
 public class ItemOre extends ItemBlock {
     public ItemOre(Block block) {
         super(block);
-        setHasSubtypes(true);
         this.setHasSubtypes(true);
         this.setMaxDamage(0);
     }
