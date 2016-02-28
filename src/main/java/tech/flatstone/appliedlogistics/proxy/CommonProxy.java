@@ -3,6 +3,7 @@ package tech.flatstone.appliedlogistics.proxy;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
@@ -39,6 +40,10 @@ public abstract class CommonProxy implements IProxy {
             // Register Dusts
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.DUST))
                 OreDictionary.registerOre("dust" + oreName, new ItemStack(Items.ITEM_ORE_DUST.item, 1, i));
+
+            // Register Nuggets
+            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.NUGGET))
+                OreDictionary.registerOre("nugget" + oreName, new ItemStack(Items.ITEM_ORE_NUGGET.item, 1, i));
         }
     }
 
@@ -60,15 +65,41 @@ public abstract class CommonProxy implements IProxy {
         for (int i = 0; i < EnumOres.values().length; i++) {
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT) && EnumOres.byMeta(i).isTypeSet(EnumOreType.BLOCK)) {
                 // Register 9x Ingot -> Block
-                GameRegistry.addRecipe(new ItemStack(Blocks.BLOCK_ORE_BLOCK.block, 1, i),
+                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Blocks.BLOCK_ORE_BLOCK.block, 1, i),
                         "xxx",
                         "xxx",
                         "xxx",
-                        'x', new ItemStack(Items.ITEM_ORE_INGOT.item, 1, i)
+                        'x', "ingot" + EnumOres.byMeta(i).getName())
                 );
 
                 // Register Block -> 9x Ingot
                 GameRegistry.addShapelessRecipe(new ItemStack(Items.ITEM_ORE_INGOT.item, 9, i), new ItemStack(Blocks.BLOCK_ORE_BLOCK.block, 1, i));
+            }
+
+            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.NUGGET) && EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT)) {
+                // Register 9x Nugget -> Ingot
+                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Items.ITEM_ORE_INGOT.item, 1, i),
+                        "xxx",
+                        "xxx",
+                        "xxx",
+                        'x', "nugget" + EnumOres.byMeta(i).getName())
+                );
+
+                // Register Ingot -> 9x Nugget
+                GameRegistry.addShapelessRecipe(new ItemStack(Items.ITEM_ORE_NUGGET.item, 9, i), new ItemStack(Items.ITEM_ORE_INGOT.item, 1, i));
+            }
+
+            if (EnumOres.byMeta(i).getName().equalsIgnoreCase("iron")) {
+                // Register 9x Nugget -> Ingot
+                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(net.minecraft.init.Items.iron_ingot, 1, i),
+                        "xxx",
+                        "xxx",
+                        "xxx",
+                        'x', "nugget" + EnumOres.byMeta(i).getName())
+                );
+
+                // Register Ingot -> 9x Nugget
+                GameRegistry.addShapelessRecipe(new ItemStack(Items.ITEM_ORE_NUGGET.item, 9, i), new ItemStack(net.minecraft.init.Items.iron_ingot, 1, i));
             }
         }
     }
