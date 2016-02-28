@@ -9,11 +9,14 @@ import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.common.items.ore.ItemOreDust;
 import tech.flatstone.appliedlogistics.common.items.ore.ItemOreIngot;
+import tech.flatstone.appliedlogistics.common.items.ore.ItemOreNugget;
 import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 
 public enum Items {
     ITEM_ORE_INGOT("oreIngot", new ItemOreIngot(), AppliedLogisticsCreativeTabs.tabGeneral),
-    ITEM_ORE_DUST("oreDust", new ItemOreDust(), AppliedLogisticsCreativeTabs.tabGeneral),;
+    ITEM_ORE_DUST("oreDust", new ItemOreDust(), AppliedLogisticsCreativeTabs.tabGeneral),
+    ITEM_ORE_NUGGET("oreNugget", new ItemOreNugget(), AppliedLogisticsCreativeTabs.tabGeneral),
+    ;
 
     public final Item item;
     private final String internalName;

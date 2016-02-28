@@ -11,7 +11,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.integrations.IntegrationsManager;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
+import tech.flatstone.appliedlogistics.api.features.EnumOreType;
+import tech.flatstone.appliedlogistics.api.features.EnumOres;
 import tech.flatstone.appliedlogistics.common.world.WorldGen;
 import tech.flatstone.appliedlogistics.proxy.IProxy;
 
@@ -42,8 +43,8 @@ public class AppliedLogistics {
         IntegrationsManager.instance().index();
 
         for (int i = 0; i < EnumOres.values().length; i++) {
-            if (!EnumOres.byMeta(i).isVanillaGen()) {
-                addConfiguredWorldGen(Blocks.BLOCK_ORE.block.getStateFromMeta(i), EnumOres.byMeta(i).getUnlocalisedName());
+            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE)) {
+                addConfiguredWorldGen(Blocks.BLOCK_ORE.block.getStateFromMeta(i), EnumOres.byMeta(i).getUnlocalizedName());
             }
         }
 

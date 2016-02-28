@@ -12,7 +12,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
+import tech.flatstone.appliedlogistics.api.features.EnumOreType;
+import tech.flatstone.appliedlogistics.api.features.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 
 import java.util.List;
@@ -48,7 +49,7 @@ public class BlockOre extends BlockBase implements IBlockRenderer {
     @Override
     public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
         for (int i = 0; i < EnumOres.values().length; i++) {
-            if (!EnumOres.byMeta(i).isVanillaGen()) {
+            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE)) {
                 list.add(new ItemStack(itemIn, 1, i));
             }
         }
@@ -57,10 +58,8 @@ public class BlockOre extends BlockBase implements IBlockRenderer {
     @Override
     public void registerBlockRenderer() {
         for (int i = 0; i < EnumOres.values().length; i++) {
-            if (!EnumOres.byMeta(i).isVanillaGen()) {
-                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), i, new ModelResourceLocation(ModInfo.MOD_ID + ":" + "ore_" + EnumOres.byMeta(i).getUnlocalisedName(), "inventory"));
-            } else {
-                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), i, new ModelResourceLocation(EnumOres.byMeta(i).getUnlocalisedName() + "_ore", "inventory"));
+            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE)) {
+                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), i, new ModelResourceLocation(ModInfo.MOD_ID + ":" + "ore_" + EnumOres.byMeta(i).getUnlocalizedName(), "inventory"));
             }
         }
     }
