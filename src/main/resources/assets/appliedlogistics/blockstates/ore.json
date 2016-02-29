@@ -7,19 +7,22 @@
       "model": "gold_ore"
     },
     "name=copper": {
-      "model": "appliedlogistics:ore_copper"
+      "model": "appliedlogistics:materials/ore/copper"
     },
     "name=tin": {
-      "model": "appliedlogistics:ore_tin"
+      "model": "appliedlogistics:materials/ore/tin"
     },
     "name=silver": {
-      "model": "appliedlogistics:ore_silver"
+      "model": "appliedlogistics:materials/ore/silver"
     },
     "name=lead": {
-      "model": "appliedlogistics:ore_lead"
+      "model": "appliedlogistics:materials/ore/lead"
     },
-    "name=bauxite": {
-      "model": "appliedlogistics:ore_bauxite"
+    "name=nickel": {
+      "model": "appliedlogistics:materials/ore/nickel"
+    },
+    "name=rutile": {
+      "model": "appliedlogistics:materials/ore/rutile"
     }
   }
 }

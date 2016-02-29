@@ -7,19 +7,34 @@
       "model": "gold_block"
     },
     "name=copper": {
-      "model": "appliedlogistics:block_copper"
+      "model": "appliedlogistics:materials/block/copper"
     },
     "name=tin": {
-      "model": "appliedlogistics:block_tin"
+      "model": "appliedlogistics:materials/block/tin"
     },
     "name=silver": {
-      "model": "appliedlogistics:block_silver"
+      "model": "appliedlogistics:materials/block/silver"
     },
     "name=lead": {
-      "model": "appliedlogistics:block_lead"
+      "model": "appliedlogistics:materials/block/lead"
     },
-    "name=bauxite": {
-      "model": "appliedlogistics:block_bauxite"
+    "name=nickel": {
+      "model": "appliedlogistics:materials/block/nickel"
+    },
+    "name=rutile": {
+      "model": "appliedlogistics:materials/block/rutile"
+    },
+    "name=titanium": {
+      "model": "appliedlogistics:materials/block/titanium"
+    },
+    "name=bronze": {
+      "model": "appliedlogistics:materials/block/bronze"
+    },
+    "name=electrum": {
+      "model": "appliedlogistics:materials/block/electrum"
+    },
+    "name=steel": {
+      "model": "appliedlogistics:materials/block/steel"
     }
   }
 }

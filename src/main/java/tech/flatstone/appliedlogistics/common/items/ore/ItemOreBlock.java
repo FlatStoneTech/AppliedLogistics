@@ -3,7 +3,7 @@ package tech.flatstone.appliedlogistics.common.items.ore;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import tech.flatstone.appliedlogistics.api.features.EnumOres;
+import tech.flatstone.appliedlogistics.common.util.EnumOres;
 
 public class ItemOreBlock extends ItemBlock {
     public ItemOreBlock(Block block) {

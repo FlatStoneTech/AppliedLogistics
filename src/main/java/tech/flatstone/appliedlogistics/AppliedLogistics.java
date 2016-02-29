@@ -9,10 +9,10 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.integrations.IntegrationsManager;
-import tech.flatstone.appliedlogistics.api.features.EnumOreType;
-import tech.flatstone.appliedlogistics.api.features.EnumOres;
+import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.world.WorldGen;
 import tech.flatstone.appliedlogistics.proxy.IProxy;
 

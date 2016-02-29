@@ -6,9 +6,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
 import tech.flatstone.appliedlogistics.ModInfo;
-import tech.flatstone.appliedlogistics.common.items.ItemBase;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
-import tech.flatstone.appliedlogistics.api.features.EnumOres;
+import tech.flatstone.appliedlogistics.common.items.ItemBase;
+import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 
 import java.util.List;
@@ -43,7 +43,7 @@ public class ItemOreIngot extends ItemBase implements IItemRenderer {
     public void registerItemRenderer() {
         for (int i = 0; i < EnumOres.values().length; i++) {
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT)) {
-                ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(ModInfo.MOD_ID + ":" + "ingot_" + EnumOres.byMeta(i).getUnlocalizedName(), "inventory"));
+                ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(ModInfo.MOD_ID + ":materials/ingot/" + EnumOres.byMeta(i).getUnlocalizedName(), "inventory"));
             }
         }
     }

@@ -11,9 +11,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
 import tech.flatstone.appliedlogistics.ModInfo;
-import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
-import tech.flatstone.appliedlogistics.api.features.EnumOres;
+import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
+import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 
 import java.util.List;
@@ -59,7 +59,7 @@ public class BlockOreBlock extends BlockBase implements IBlockRenderer {
     public void registerBlockRenderer() {
         for (int i = 0; i < EnumOres.values().length; i++) {
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.BLOCK)) {
-                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), i, new ModelResourceLocation(ModInfo.MOD_ID + ":" + "block_" + EnumOres.byMeta(i).getUnlocalizedName(), "inventory"));
+                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), i, new ModelResourceLocation(ModInfo.MOD_ID + ":materials/block/" + EnumOres.byMeta(i).getUnlocalizedName(), "inventory"));
             }
         }
     }
