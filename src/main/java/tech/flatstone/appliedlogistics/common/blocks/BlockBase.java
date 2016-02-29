@@ -112,7 +112,7 @@ public class BlockBase extends BlockContainer {
     public String getUnlocalizedName() {
         String blockName = getUnwrappedUnlocalizedName(super.getUnlocalizedName());
 
-        String test = String.format("tile.%s", blockName);
+        String test = String.format("tile.%s.%s", ModInfo.MOD_ID, blockName);
         return test;
     }
 

@@ -19,7 +19,7 @@ import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import java.util.List;
 
 public class BlockOre extends BlockBase implements IBlockRenderer {
-    public static final PropertyEnum<EnumOres> ORES = PropertyEnum.<EnumOres>create("name", EnumOres.class);
+    public static final PropertyEnum ORES = PropertyEnum.create("type", EnumOres.class);
 
     public BlockOre() {
         super(Material.rock);
@@ -33,7 +33,8 @@ public class BlockOre extends BlockBase implements IBlockRenderer {
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        return (state.getValue(ORES)).getMeta();
+        EnumOres ores = (EnumOres) state.getValue(ORES);
+        return (ores.getMeta());
     }
 
     @Override

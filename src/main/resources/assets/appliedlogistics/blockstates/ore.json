@@ -1,27 +1,27 @@
 {
   "variants": {
-    "name=iron": {
+    "type=iron": {
       "model": "iron_ore"
     },
-    "name=gold": {
+    "type=gold": {
       "model": "gold_ore"
     },
-    "name=copper": {
+    "type=copper": {
       "model": "appliedlogistics:materials/ore/copper"
     },
-    "name=tin": {
+    "type=tin": {
       "model": "appliedlogistics:materials/ore/tin"
     },
-    "name=silver": {
+    "type=silver": {
       "model": "appliedlogistics:materials/ore/silver"
     },
-    "name=lead": {
+    "type=lead": {
       "model": "appliedlogistics:materials/ore/lead"
     },
-    "name=nickel": {
+    "type=nickel": {
       "model": "appliedlogistics:materials/ore/nickel"
     },
-    "name=rutile": {
+    "type=rutile": {
       "model": "appliedlogistics:materials/ore/rutile"
     }
   }
