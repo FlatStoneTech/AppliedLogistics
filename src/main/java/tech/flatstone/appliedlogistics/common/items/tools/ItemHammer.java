@@ -2,20 +2,22 @@ package tech.flatstone.appliedlogistics.common.items.tools;
 
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
+import tech.flatstone.appliedlogistics.common.items.ItemBaseTool;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.util.List;
 import java.util.Set;
 
-public class ItemHammer extends ItemTool {
+public class ItemHammer extends ItemBaseTool {
     public static Set effectiveAgainst = Sets.newHashSet(new Block[]{});
 
     public ItemHammer() {
@@ -50,7 +52,9 @@ public class ItemHammer extends ItemTool {
             }
 
         }
-        return true;
+        return false;
         //return super.onBlockStartBreak(itemstack, pos, player);
     }
+
+
 }

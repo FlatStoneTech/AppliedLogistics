@@ -1,5 +1,6 @@
 package tech.flatstone.appliedlogistics.proxy;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
@@ -44,6 +45,10 @@ public abstract class CommonProxy implements IProxy {
             // Register Nuggets
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.NUGGET))
                 OreDictionary.registerOre("nugget" + oreName, new ItemStack(Items.ITEM_ORE_NUGGET.item, 1, i));
+
+            // Register Gears
+            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.GEAR))
+                OreDictionary.registerOre("gear" + oreName, new ItemStack(Items.ITEM_MATERIAL_GEAR.item, 1, i));
         }
     }
 
@@ -100,6 +105,42 @@ public abstract class CommonProxy implements IProxy {
 
                 // Register Ingot -> 9x Nugget
                 GameRegistry.addShapelessRecipe(new ItemStack(Items.ITEM_ORE_NUGGET.item, 9, i), new ItemStack(net.minecraft.init.Items.iron_ingot, 1, i));
+            }
+
+            // Register Gears that use ingots
+            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.GEAR) && EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT)) {
+                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Items.ITEM_MATERIAL_GEAR.item, 1, i),
+                        " x ",
+                        "xyx",
+                        " x ",
+                        'x', "ingot" + EnumOres.byMeta(i).getName(),
+                        'y', "ingotIron")
+                );
+            }
+
+            // Register Vanilla Material Gears
+            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.GEAR) && EnumOres.byMeta(i).isTypeSet(EnumOreType.VANILLA)) {
+                String outerMaterial = "";
+                String innerMaterial = "";
+
+                switch (EnumOres.byMeta(i)) {
+                    case WOOD:
+                        outerMaterial = "stickWood";
+                        innerMaterial = "plankWood";
+                        break;
+                    case COBBLESTONE:
+                        outerMaterial = "cobblestone";
+                        innerMaterial = "plankWood";
+                        break;
+                }
+
+                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Items.ITEM_MATERIAL_GEAR.item, 1, i),
+                        " x ",
+                        "xyx",
+                        " x ",
+                        'x', outerMaterial,
+                        'y', innerMaterial)
+                );
             }
         }
     }

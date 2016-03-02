@@ -1,7 +1,7 @@
 task devJar(type: Jar) {
 
     from(sourceSets.main.output) {
-        include "com/**"
+        include "tech/**"
         include "assets/**"
         include 'mcmod.info'
     }

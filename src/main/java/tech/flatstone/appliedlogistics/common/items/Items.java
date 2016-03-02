@@ -5,8 +5,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.AppliedLogisticsCreativeTabs;
+import tech.flatstone.appliedlogistics.common.items.material.ItemGear;
 import tech.flatstone.appliedlogistics.common.items.ore.ItemOreDust;
 import tech.flatstone.appliedlogistics.common.items.ore.ItemOreIngot;
 import tech.flatstone.appliedlogistics.common.items.ore.ItemOreNugget;
@@ -17,6 +19,8 @@ public enum Items {
     ITEM_ORE_INGOT("oreIngot", new ItemOreIngot(), AppliedLogisticsCreativeTabs.tabGeneral),
     ITEM_ORE_DUST("oreDust", new ItemOreDust(), AppliedLogisticsCreativeTabs.tabGeneral),
     ITEM_ORE_NUGGET("oreNugget", new ItemOreNugget(), AppliedLogisticsCreativeTabs.tabGeneral),
+
+    ITEM_MATERIAL_GEAR("matGear", new ItemGear(), AppliedLogisticsCreativeTabs.tabGeneral),
 
     ITEM_TOOL_HAMMER("toolHammer", new ItemHammer(), AppliedLogisticsCreativeTabs.tabGeneral);
 
