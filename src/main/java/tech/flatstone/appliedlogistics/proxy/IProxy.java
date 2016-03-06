@@ -25,4 +25,9 @@ public interface IProxy {
      * Register Recipes
      */
     void registerRecipes();
+
+    /**
+     * Register Events
+     */
+    void registerEvents();
 }

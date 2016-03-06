@@ -4,11 +4,11 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -19,21 +19,21 @@ import java.util.Set;
 
 public abstract class ItemBaseTool extends ItemBase {
     private Set<Block> effectiveBlocks;
-    private Item.ToolMaterial toolMaterial;
-    private float efficiencyOnProperMaterial = 4.0F;
+    protected float efficiencyOnProperMaterial = 4.0F;
+    /** Damage versus entities. */
     private float damageVsEntity;
-    private String toolClass;
+    /** The material this tool is made from. */
+    protected Item.ToolMaterial toolMaterial;
 
-    public ItemBaseTool(float attackDamage, Item.ToolMaterial material, Set<Block> effectiveBlocks) {
+    protected ItemBaseTool(float attackDamage, Item.ToolMaterial material, Set<Block> effectiveBlocks)
+    {
         this.toolMaterial = material;
         this.effectiveBlocks = effectiveBlocks;
         this.maxStackSize = 1;
         this.setMaxDamage(material.getMaxUses());
         this.efficiencyOnProperMaterial = material.getEfficiencyOnProperMaterial();
         this.damageVsEntity = attackDamage + material.getDamageVsEntity();
-
-        //TODO: Change this once we make base tool classes
-        toolClass = "pickaxe";
+        this.setCreativeTab(CreativeTabs.tabTools);
     }
 
     @Override
@@ -41,48 +41,70 @@ public abstract class ItemBaseTool extends ItemBase {
         return this.effectiveBlocks.contains(block) ? this.efficiencyOnProperMaterial : 1.0F;
     }
 
-    @Override
-    public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
+    /**
+     * Current implementations of this method in child classes do not use the entry argument beside ev. They just raise
+     * the damage on the stack.
+     */
+    public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+    {
         stack.damageItem(2, attacker);
         return true;
     }
 
-    @Override
-    public boolean onBlockDestroyed(ItemStack stack, World worldIn, Block blockIn, BlockPos pos, EntityLivingBase playerIn) {
-        if ((double)blockIn.getBlockHardness(worldIn, pos) != 0.0D) {
+
+    /**
+     * Called when a Block is destroyed using this Item. Return true to trigger the "Use Item" statistic.
+     */
+    public boolean onBlockDestroyed(ItemStack stack, World worldIn, Block blockIn, BlockPos pos, EntityLivingBase playerIn)
+    {
+        if ((double)blockIn.getBlockHardness(worldIn, pos) != 0.0D)
+        {
             stack.damageItem(1, playerIn);
         }
 
         return true;
     }
 
+    /**
+     * Returns True is the item is renderer in full 3D when hold.
+     */
     @SideOnly(Side.CLIENT)
-    @Override
-    public boolean isFull3D() {
+    public boolean isFull3D()
+    {
         return true;
     }
 
-    public Item.ToolMaterial getToolMaterial() {
+    public Item.ToolMaterial getToolMaterial()
+    {
         return this.toolMaterial;
     }
 
-    @Override
-    public int getItemEnchantability() {
+    /**
+     * Return the enchantability factor of the item, most of the time is based on material.
+     */
+    public int getItemEnchantability()
+    {
         return this.toolMaterial.getEnchantability();
     }
 
-    public String getToolMaterialName() {
+    /**
+     * Return the name for this tool's material.
+     */
+    public String getToolMaterialName()
+    {
         return this.toolMaterial.toString();
     }
 
-    @Override
-    public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
-        ItemStack material = this.toolMaterial.getRepairItemStack();
-        if (material != null && OreDictionary.itemMatches(material, repair, false)) return true;
+    /**
+     * Return whether this item is repairable in an anvil.
+     */
+    public boolean getIsRepairable(ItemStack toRepair, ItemStack repair)
+    {
+        ItemStack mat = this.toolMaterial.getRepairItemStack();
+        if (mat != null && net.minecraftforge.oredict.OreDictionary.itemMatches(mat, repair, false)) return true;
         return super.getIsRepairable(toRepair, repair);
     }
 
-    @Override
     public Multimap<String, AttributeModifier> getItemAttributeModifiers()
     {
         Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers();
@@ -90,28 +112,37 @@ public abstract class ItemBaseTool extends ItemBase {
         return multimap;
     }
 
+    /*===================================== FORGE START =================================*/
+    private String toolClass;
     @Override
-    public int getHarvestLevel(ItemStack stack, String toolClass) {
+    public int getHarvestLevel(ItemStack stack, String toolClass)
+    {
         int level = super.getHarvestLevel(stack, toolClass);
-
-        if (level == -1 && toolClass != null && toolClass.equals(this.toolClass)) {
+        if (level == -1 && toolClass != null && toolClass.equals(this.toolClass))
+        {
             return this.toolMaterial.getHarvestLevel();
-        } else {
+        }
+        else
+        {
             return level;
         }
     }
 
     @Override
-    public Set<String> getToolClasses(ItemStack stack) {
-        return toolClass != null ? ImmutableSet.of(toolClass) : super.getToolClasses(stack);
+    public Set<String> getToolClasses(ItemStack stack)
+    {
+        return toolClass != null ? com.google.common.collect.ImmutableSet.of(toolClass) : super.getToolClasses(stack);
     }
 
     @Override
-    public float getDigSpeed(ItemStack itemstack, IBlockState state) {
-        for (String type : getToolClasses(itemstack)) {
+    public float getDigSpeed(ItemStack stack, net.minecraft.block.state.IBlockState state)
+    {
+        for (String type : getToolClasses(stack))
+        {
             if (state.getBlock().isToolEffective(type, state))
                 return efficiencyOnProperMaterial;
         }
-        return super.getDigSpeed(itemstack, state);
+        return super.getDigSpeed(stack, state);
     }
+    /*===================================== FORGE END =================================*/
 }

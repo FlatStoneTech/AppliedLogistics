@@ -43,6 +43,8 @@ public class AppliedLogistics {
 
         proxy.registerOreDict();
 
+        proxy.registerEvents();
+
         IntegrationsManager.instance().index();
 
         for (int i = 0; i < EnumOres.values().length; i++) {
