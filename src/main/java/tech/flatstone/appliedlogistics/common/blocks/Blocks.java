@@ -6,8 +6,10 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import tech.flatstone.appliedlogistics.common.AppliedLogisticsCreativeTabs;
+import tech.flatstone.appliedlogistics.common.blocks.builder.BlockBuilder;
 import tech.flatstone.appliedlogistics.common.blocks.ore.BlockOre;
 import tech.flatstone.appliedlogistics.common.blocks.ore.BlockOreBlock;
+import tech.flatstone.appliedlogistics.common.items.builder.ItemBuilder;
 import tech.flatstone.appliedlogistics.common.items.ore.ItemOre;
 import tech.flatstone.appliedlogistics.common.items.ore.ItemOreBlock;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
@@ -15,8 +17,11 @@ import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 public enum Blocks {
     // Ore
-    BLOCK_ORE("ore", new BlockOre(), ItemOre.class, AppliedLogisticsCreativeTabs.tabGeneral),
-    BLOCK_ORE_BLOCK("oreBlock", new BlockOreBlock(), ItemOreBlock.class, AppliedLogisticsCreativeTabs.tabGeneral),;
+    BLOCK_ORE("ore", new BlockOre(), ItemOre.class, AppliedLogisticsCreativeTabs.tabOres),
+    BLOCK_ORE_BLOCK("oreBlock", new BlockOreBlock(), ItemOreBlock.class, AppliedLogisticsCreativeTabs.tabOres),
+
+    BLOCK_BUILDER("builder", new BlockBuilder(), ItemBuilder.class, AppliedLogisticsCreativeTabs.tabGeneral),
+    ;
 
     public final Block block;
     private final String internalName;
@@ -73,5 +78,9 @@ public enum Blocks {
         }
 
         LogHelper.info("Registered Block: " + internalName);
+    }
+
+    public Block getBlock() {
+        return this.block;
     }
 }

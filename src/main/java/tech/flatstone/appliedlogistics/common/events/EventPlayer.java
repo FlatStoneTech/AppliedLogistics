@@ -5,10 +5,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.oredict.OreDictionary;
+import tech.flatstone.appliedlogistics.api.registries.HammerRegistry;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.items.tools.ItemHammer;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 public class EventPlayer {
 
@@ -27,24 +26,7 @@ public class EventPlayer {
             IBlockState blockState = event.world.getBlockState(event.pos);
             ItemStack blockToCheck = new ItemStack(blockState.getBlock(), 1, blockState.getBlock().getMetaFromState(blockState));
 
-            int[] idList = OreDictionary.getOreIDs(blockToCheck);
-
-            if (idList.length == 0)
-                return;
-
-            String oreDictName = OreDictionary.getOreName(idList[0]);
-
-            if (!oreDictName.startsWith("ore"))
-                return;
-
-            // OreName
-            oreDictName = oreDictName.substring(3);
-
-            if (!OreDictionary.doesOreNameExist("dust" + oreDictName))
-                return;
-
-            itemHammer.canHarvest = true;
-            LogHelper.info(">>> Added to effective list...");
+            itemHammer.canHarvest = HammerRegistry.containsBlock(blockToCheck);
         }
     }
 }

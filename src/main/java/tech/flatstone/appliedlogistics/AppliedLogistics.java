@@ -55,11 +55,13 @@ public class AppliedLogistics {
 
         IntegrationsManager.instance().preInit();
 
-        HammerRegistry.register(Blocks.BLOCK_ORE.block.getStateFromMeta(EnumOres.COPPER.getMeta()), new ItemStack(Items.ITEM_ORE_DUST.item, 1, EnumOres.COPPER.getMeta()), 30, 30);
+
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
+
+        proxy.registerHammerRecipes();
 
         WorldGen worldGen = new WorldGen();
         GameRegistry.registerWorldGenerator(worldGen, 0);

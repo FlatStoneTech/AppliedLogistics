@@ -2,25 +2,29 @@ package tech.flatstone.appliedlogistics.common.util;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+import tech.flatstone.appliedlogistics.api.registries.HammerRegistry;
+
+import java.util.List;
 
 public class OreDictHelper {
-    public static boolean checkIfDustExists(ItemStack itemStack) {
+    public static boolean checkForDust(ItemStack itemStack) {
         int[] idList = OreDictionary.getOreIDs(itemStack);
-
         if (idList.length == 0)
             return false;
 
-        String oreDictName = OreDictionary.getOreName(idList[0]);
+        for (int i = 0; i < idList.length; i++) {
+            String oreDictName = OreDictionary.getOreName(idList[i]);
 
-        if (!oreDictName.startsWith("ore"))
-            return false;
+            if (oreDictName.startsWith("ore")) {
+                oreDictName = oreDictName.substring(3);
 
-        // OreName
-        oreDictName = oreDictName.substring(3);
+                List<ItemStack> oreDusts = OreDictionary.getOres("dust" + oreDictName);
+                if (oreDusts.size() > 0 && HammerRegistry.containsBlock(itemStack)) {
+                    return true;
+                }
+            }
+        }
 
-        if (!OreDictionary.doesOreNameExist("dust" + oreDictName))
-            return false;
-
-        return true;
+        return false;
     }
 }

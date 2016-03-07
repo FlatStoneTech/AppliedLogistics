@@ -16,9 +16,9 @@ import tech.flatstone.appliedlogistics.common.items.tools.ItemHammer;
 import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 
 public enum Items {
-    ITEM_ORE_INGOT("oreIngot", new ItemOreIngot(), AppliedLogisticsCreativeTabs.tabGeneral),
-    ITEM_ORE_DUST("oreDust", new ItemOreDust(), AppliedLogisticsCreativeTabs.tabGeneral),
-    ITEM_ORE_NUGGET("oreNugget", new ItemOreNugget(), AppliedLogisticsCreativeTabs.tabGeneral),
+    ITEM_ORE_INGOT("oreIngot", new ItemOreIngot(), AppliedLogisticsCreativeTabs.tabOres),
+    ITEM_ORE_DUST("oreDust", new ItemOreDust(), AppliedLogisticsCreativeTabs.tabOres),
+    ITEM_ORE_NUGGET("oreNugget", new ItemOreNugget(), AppliedLogisticsCreativeTabs.tabOres),
 
     ITEM_MATERIAL_GEAR("matGear", new ItemGear(), AppliedLogisticsCreativeTabs.tabGeneral),
 
@@ -58,5 +58,13 @@ public enum Items {
 
     public ItemStack getStack(int damage, int size) {
         return new ItemStack(item, size, damage);
+    }
+
+    public String getInternalName() {
+        return this.internalName;
+    }
+
+    public Item getItem() {
+        return this.item;
     }
 }

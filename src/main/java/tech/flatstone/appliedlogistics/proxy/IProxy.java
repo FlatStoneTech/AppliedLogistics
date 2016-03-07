@@ -22,6 +22,11 @@ public interface IProxy {
     void registerFurnaceRecipes();
 
     /**
+     * Register Hammer Recipes
+     */
+    void registerHammerRecipes();
+
+    /**
      * Register Recipes
      */
     void registerRecipes();
