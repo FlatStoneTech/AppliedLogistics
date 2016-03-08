@@ -13,13 +13,18 @@ import net.minecraft.item.ItemTool;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.registries.HammerRegistry;
 import tech.flatstone.appliedlogistics.api.registries.helpers.Hammerable;
+import tech.flatstone.appliedlogistics.common.events.EventPlayer;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
+import tech.flatstone.appliedlogistics.common.util.IProvideEvent;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 
 import java.util.ArrayList;
@@ -27,7 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class ItemHammer extends ItemTool implements IItemRenderer, IProvideRecipe {
+public class ItemHammer extends ItemTool implements IItemRenderer, IProvideRecipe, IProvideEvent {
     public static Set blocksEffectiveAgainst = Sets.newHashSet(new Block[]{});
     public static boolean canHarvest = false;
     private static IBlockState blockHarvest = null;
@@ -129,5 +134,28 @@ public class ItemHammer extends ItemTool implements IItemRenderer, IProvideRecip
         ));
 
         return recipesList;
+    }
+
+    @SubscribeEvent
+    public void playerInteractEvent(PlayerInteractEvent event) {
+        EntityPlayer player = event.entityPlayer;
+        ItemStack itemStack = player.getHeldItem();
+
+        if (itemStack == null || !itemStack.getItem().equals(this))
+            return;
+
+        canHarvest = false;
+
+        if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
+            IBlockState blockState = event.world.getBlockState(event.pos);
+            ItemStack blockToCheck = new ItemStack(blockState.getBlock(), 1, blockState.getBlock().getMetaFromState(blockState));
+
+            canHarvest = HammerRegistry.containsBlock(blockToCheck);
+        }
+    }
+
+    @Override
+    public void RegisterEvent() {
+        MinecraftForge.EVENT_BUS.register(this);
     }
 }

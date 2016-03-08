@@ -13,6 +13,7 @@ import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.events.EventPlayer;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
+import tech.flatstone.appliedlogistics.common.util.IProvideEvent;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
@@ -102,7 +103,20 @@ public abstract class CommonProxy implements IProxy {
 
     @Override
     public void registerEvents() {
-        MinecraftForge.EVENT_BUS.register(new EventPlayer());
+        for (int i = 0; i < Items.values().length; i++) {
+            Item item = Items.values()[i].getItem();
+            if (item instanceof IProvideEvent) {
+                ((IProvideEvent) item).RegisterEvent();
+            }
+        }
+
+        for (int i = 0; i < Blocks.values().length; i++) {
+            Block block = Blocks.values()[i].getBlock();
+            if (block instanceof IProvideEvent) {
+                ((IProvideEvent) block).RegisterEvent();
+            }
+        }
+
     }
 
     @Override
