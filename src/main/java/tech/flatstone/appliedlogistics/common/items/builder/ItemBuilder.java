@@ -5,10 +5,10 @@ import net.minecraft.client.renderer.texture.ITickable;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
-import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 
 import java.util.ArrayList;
@@ -39,10 +39,8 @@ public class ItemBuilder extends ItemBlock implements ITickable, IProvideRecipe 
     }
 
     @Override
-    public List<ShapedOreRecipe> RecipesList() {
-        List<ShapedOreRecipe> recipesList = new ArrayList();
-
-        recipesList.add(new ShapedOreRecipe(new ItemStack(this, 1, 0),
+    public void RegisterRecipes() {
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(this, 1, 0),
                 "cwc",
                 "wgw",
                 "cxc",
@@ -51,7 +49,5 @@ public class ItemBuilder extends ItemBlock implements ITickable, IProvideRecipe 
                 'g', "gearStone",
                 'x', "chest"
         ));
-
-        return recipesList;
     }
 }

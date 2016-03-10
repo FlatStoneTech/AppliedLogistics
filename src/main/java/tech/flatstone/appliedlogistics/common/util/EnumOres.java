@@ -27,8 +27,7 @@ public enum EnumOres implements IStringSerializable {
 
     // Misc Gears
     WOOD("Wood", 13, EnumOreType.GEAR, EnumOreType.VANILLA),
-    COBBLESTONE("Stone", 14, EnumOreType.GEAR, EnumOreType.VANILLA),
-    ;
+    COBBLESTONE("Stone", 14, EnumOreType.GEAR, EnumOreType.VANILLA),;
 
     private static final EnumOres[] META_LOOKUP = new EnumOres[values().length];
 

@@ -1,6 +1,5 @@
 package tech.flatstone.appliedlogistics.api.registries.helpers;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 
 public class Hammerable {

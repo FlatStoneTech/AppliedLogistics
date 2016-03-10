@@ -7,9 +7,9 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
@@ -17,11 +17,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.registries.HammerRegistry;
 import tech.flatstone.appliedlogistics.api.registries.helpers.Hammerable;
-import tech.flatstone.appliedlogistics.common.events.EventPlayer;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 import tech.flatstone.appliedlogistics.common.util.IProvideEvent;
@@ -35,8 +35,8 @@ import java.util.Set;
 public class ItemHammer extends ItemTool implements IItemRenderer, IProvideRecipe, IProvideEvent {
     public static Set blocksEffectiveAgainst = Sets.newHashSet(new Block[]{});
     public static boolean canHarvest = false;
-    private static IBlockState blockHarvest = null;
     public static ToolMaterial toolMaterialHammer = EnumHelper.addToolMaterial("APPLIEDLOGISTICSHAMMER", 3, 100, 15.0F, 4.0F, 30);
+    private static IBlockState blockHarvest = null;
 
     public ItemHammer() {
         super(3.0F, toolMaterialHammer, blocksEffectiveAgainst);
@@ -75,7 +75,7 @@ public class ItemHammer extends ItemTool implements IItemRenderer, IProvideRecip
                 Hammerable drop = it.next();
 
                 if (!world.isRemote && world.rand.nextFloat() <= drop.chance + (drop.luckMultiplier * fortune)) {
-                    EntityItem entityItem = new EntityItem(world, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, drop.outItemStack.copy());
+                    EntityItem entityItem = new EntityItem(world, (double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, drop.outItemStack.copy());
 
                     double f3 = 0.05f;
                     entityItem.motionX = world.rand.nextGaussian() * f3;
@@ -112,10 +112,8 @@ public class ItemHammer extends ItemTool implements IItemRenderer, IProvideRecip
     }
 
     @Override
-    public List<ShapedOreRecipe> RecipesList() {
-        List<ShapedOreRecipe> recipesList = new ArrayList();
-
-        recipesList.add(new ShapedOreRecipe(new ItemStack(Items.ITEM_TOOL_HAMMER.item),
+    public void RegisterRecipes() {
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Items.ITEM_TOOL_HAMMER.item),
                 " yz",
                 " xy",
                 "x  ",
@@ -124,7 +122,7 @@ public class ItemHammer extends ItemTool implements IItemRenderer, IProvideRecip
                 'z', "nuggetIron"
         ));
 
-        recipesList.add(new ShapedOreRecipe(new ItemStack(Items.ITEM_TOOL_HAMMER.item),
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Items.ITEM_TOOL_HAMMER.item),
                 "zy ",
                 "yx ",
                 "  x",
@@ -132,8 +130,6 @@ public class ItemHammer extends ItemTool implements IItemRenderer, IProvideRecip
                 'y', "ingotIron",
                 'z', "nuggetIron"
         ));
-
-        return recipesList;
     }
 
     @SubscribeEvent

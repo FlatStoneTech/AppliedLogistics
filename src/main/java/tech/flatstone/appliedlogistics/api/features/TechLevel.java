@@ -7,8 +7,7 @@ public enum TechLevel implements IStringSerializable {
     BRONZE_AGE("bronze"),
     STEEL_AGE("steel"),
     INDUSTRIAL_AGE("industrial"),
-    DIGITAL_AGE("digital"),
-    ;
+    DIGITAL_AGE("digital"),;
 
     private static final TechLevel[] META_LOOKUP = new TechLevel[values().length];
 
@@ -24,16 +23,16 @@ public enum TechLevel implements IStringSerializable {
         this.name = name;
     }
 
-    public int getMeta() {
-        return ordinal();
-    }
-
     public static TechLevel byMeta(int meta) {
         if (meta < 0 || meta >= META_LOOKUP.length) {
             meta = 0;
         }
 
         return META_LOOKUP[meta];
+    }
+
+    public int getMeta() {
+        return ordinal();
     }
 
     public String getName() {
