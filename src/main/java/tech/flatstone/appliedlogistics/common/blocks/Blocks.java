@@ -14,6 +14,7 @@ import tech.flatstone.appliedlogistics.common.items.ore.ItemOre;
 import tech.flatstone.appliedlogistics.common.items.ore.ItemOreBlock;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
+import tech.flatstone.appliedlogistics.common.util.Platform;
 
 public enum Blocks {
     // Ore
@@ -72,7 +73,7 @@ public enum Blocks {
         GameRegistry.registerBlock(block.setCreativeTab(creativeTabs).setUnlocalizedName(internalName), itemBlockClass, internalName);
 
         // If bock has Render Info, Register Renderer
-        if (block instanceof IBlockRenderer) {
+        if (block instanceof IBlockRenderer && Platform.isClient()) {
             ((IBlockRenderer) block).registerBlockRenderer();
         }
 

@@ -8,13 +8,16 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityBuilder;
+import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 
 import java.util.List;
 
-public class BlockBuilder extends BlockBase {
+public class BlockBuilder extends BlockBase implements IProvideRecipe {
     public static final PropertyEnum TECHLEVEL = PropertyEnum.create("tech", TechLevel.class);
 
     public BlockBuilder() {
@@ -49,5 +52,18 @@ public class BlockBuilder extends BlockBase {
         for (int i = 0; i < TechLevel.values().length; i++) {
             list.add(new ItemStack(itemIn, 1, i));
         }
+    }
+
+    @Override
+    public void RegisterRecipes() {
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(this, 1, 0),
+                "cwc",
+                "wgw",
+                "cxc",
+                'c', "craftingTableWood",
+                'w', "logWood",
+                'g', "gearStone",
+                'x', "chestWood"
+        ));
     }
 }

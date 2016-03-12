@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
@@ -108,14 +109,14 @@ public abstract class CommonProxy implements IProxy {
         for (int i = 0; i < Items.values().length; i++) {
             Item item = Items.values()[i].getItem();
             if (item instanceof IProvideEvent) {
-                ((IProvideEvent) item).RegisterEvent();
+                MinecraftForge.EVENT_BUS.register(item);
             }
         }
 
         for (int i = 0; i < Blocks.values().length; i++) {
             Block block = Blocks.values()[i].getBlock();
             if (block instanceof IProvideEvent) {
-                ((IProvideEvent) block).RegisterEvent();
+                MinecraftForge.EVENT_BUS.register(block);
             }
         }
 

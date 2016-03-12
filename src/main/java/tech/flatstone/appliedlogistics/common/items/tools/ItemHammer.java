@@ -26,6 +26,7 @@ import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 import tech.flatstone.appliedlogistics.common.util.IProvideEvent;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -148,10 +149,5 @@ public class ItemHammer extends ItemTool implements IItemRenderer, IProvideRecip
 
             canHarvest = HammerRegistry.containsBlock(blockToCheck);
         }
-    }
-
-    @Override
-    public void RegisterEvent() {
-        MinecraftForge.EVENT_BUS.register(this);
     }
 }

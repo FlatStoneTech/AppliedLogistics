@@ -13,6 +13,7 @@ import tech.flatstone.appliedlogistics.common.items.ore.ItemOreIngot;
 import tech.flatstone.appliedlogistics.common.items.ore.ItemOreNugget;
 import tech.flatstone.appliedlogistics.common.items.tools.ItemHammer;
 import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
+import tech.flatstone.appliedlogistics.common.util.Platform;
 
 public enum Items {
     ITEM_ORE_INGOT("oreIngot", new ItemOreIngot(), AppliedLogisticsCreativeTabs.tabOres),
@@ -46,7 +47,7 @@ public enum Items {
     public void register() {
         GameRegistry.registerItem(item, internalName);
 
-        if (item instanceof IItemRenderer) {
+        if (item instanceof IItemRenderer && Platform.isClient()) {
             ((IItemRenderer) item).registerItemRenderer();
         }
     }
