@@ -59,7 +59,7 @@ public class BlockBase extends BlockContainer {
     }
 
     private void setTileProvider(boolean b) {
-        ReflectionHelper.setPrivateValue(Block.class, this, Boolean.valueOf(b), new String[]{"isTileProvider"});
+        ReflectionHelper.setPrivateValue(Block.class, this, b, "isTileProvider");
     }
 
     public Class<? extends TileEntity> getTileEntityClass() {

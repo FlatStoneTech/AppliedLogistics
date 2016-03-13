@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Random;
 
 public class WorldGen implements IWorldGenerator {
-    public static ArrayList<OreGen> oreSpawnList = new ArrayList();
-    public static ArrayList<Integer> oreDimBlackList = new ArrayList();
-    public static ArrayListMultimap<Integer, ChunkCoordIntPair> retrogenChunks = ArrayListMultimap.create();
+    protected static ArrayList<OreGen> oreSpawnList = new ArrayList();
+    protected static ArrayList<Integer> oreDimBlackList = new ArrayList();
+    protected static ArrayListMultimap<Integer, ChunkCoordIntPair> retrogenChunks = ArrayListMultimap.create();
 
     public static OreGen addOreGen(String name, IBlockState block, int maxVeinSize, int minY, int maxY, int chunkOccurrence, int weight) {
         OreGen oreGen = new OreGen(name, block, maxVeinSize, Blocks.stone, minY, maxY, chunkOccurrence, weight);
@@ -88,15 +88,16 @@ public class WorldGen implements IWorldGenerator {
 
         List<ChunkCoordIntPair> chunks = retrogenChunks.get(dimID);
 
-        if ((chunks != null) && (chunks.size() > 0)) {
-            for (int i = 0; i < 2; i++) {
+        if ((chunks != null) && (!chunks.isEmpty())) {
+            //todo: regen more chunks per tick if tick-rate is good
+            for (int i = 1; i <= 2; i++) {
                 int index = chunks.size() - i;
                 if (index < 0)
                     return;
 
                 counter++;
 
-                ChunkCoordIntPair chunkCoordIntPair = (ChunkCoordIntPair) chunks.get(index);
+                ChunkCoordIntPair chunkCoordIntPair = chunks.get(index);
                 long worldSeed = event.world.getSeed();
                 Random fmlRandom = new Random(worldSeed);
                 long xSeed = fmlRandom.nextLong() >> 3;
