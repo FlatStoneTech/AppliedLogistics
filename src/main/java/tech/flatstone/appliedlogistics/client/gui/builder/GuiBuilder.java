@@ -28,9 +28,13 @@ import tech.flatstone.appliedlogistics.client.gui.GuiBase;
 import tech.flatstone.appliedlogistics.common.container.builder.ContainerBuilder;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityBuilder;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
+import tech.flatstone.appliedlogistics.common.util.OverlayHelper;
+
+import java.awt.*;
 
 public class GuiBuilder extends GuiBase {
     TileEntityBuilder tileEntity;
+    OverlayHelper overlayHelper = new OverlayHelper();
 
     public GuiBuilder(InventoryPlayer inventoryPlayer, TileEntityBuilder tileEntity) {
         super(new ContainerBuilder(inventoryPlayer, tileEntity));
@@ -58,8 +62,18 @@ public class GuiBuilder extends GuiBase {
             this.fontRendererObj.drawString(EnumChatFormatting.RED + LanguageHelper.getTranslatedMessage(ModMessages.MESSAGE_PLAN_INVALID), 36, 26, 4210752);
         } else {
             this.fontRendererObj.drawString(LanguageHelper.getTranslated(itemPlan.getUnlocalizedName() + ".name"), 29, 45, 4210752);
-
-
         }
+
+        int colorBackground = new Color(56, 55, 69, 224).hashCode();
+        int colorBorder = new Color(48, 41, 69).hashCode();
+        int colorFont = new Color(255, 255, 255).hashCode();
+        int colorErrorFont = new Color(255, 64, 64).hashCode();
+        int colorProgressBackground = new Color(64, 64, 255, 128).hashCode();
+        int colorProgressBackgroundGood = new Color(0, 170, 0).hashCode();
+        int colorProgressBackgroundWarn = new Color(255, 170, 0).hashCode();
+        int colorProgressBackgroundBad = new Color(255, 85, 85).hashCode();
+
+        overlayHelper.drawHorzProgressBar(40, 32, 124, 6, 50, colorBackground, colorBorder, colorProgressBackground);
+        overlayHelper.drawCenteredString(40, 32, 124, "50% (0:14:42 Left)", colorFont);
     }
 }

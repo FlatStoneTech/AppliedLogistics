@@ -59,7 +59,7 @@ public class BlockBuilder extends BlockBase implements IProvideRecipe {
             return true;
 
         TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
-        ItemPlanBase plan = tileEntity.getPlan();
+        tileEntity.updatePlan();
 
         playerIn.openGui(AppliedLogistics.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;

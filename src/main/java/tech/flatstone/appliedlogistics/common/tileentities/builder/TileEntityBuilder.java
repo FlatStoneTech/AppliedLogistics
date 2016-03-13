@@ -24,6 +24,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.util.ITickable;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
@@ -36,10 +37,10 @@ import tech.flatstone.appliedlogistics.common.util.PlanTechLevel;
 
 import java.util.HashMap;
 
-public class TileEntityBuilder extends TileEntityInventoryBase {
+public class TileEntityBuilder extends TileEntityInventoryBase implements ITickable {
     public static final String TAG_PLANTYPE = "PlanType";
     private InternalInventory inventory = new InternalInventory(this, 100);
-    private ItemPlanBase plan;
+    private TechLevel planTechLevel;
 
     @Override
     public IInventory getInternalInventory() {
@@ -51,48 +52,43 @@ public class TileEntityBuilder extends TileEntityInventoryBase {
 
     }
 
-    public ItemPlanBase getPlan() {
-        if (plan != null)
-            return plan;
+    public void updatePlan() {
+        planTechLevel = null;
 
-        if (inventory.getStackInSlot(0) == null)
-            return null;
+        if (worldObj == null)
+            return;
 
-        ItemStack planBase = inventory.getStackInSlot(0);
-        String planName = planBase.getTagCompound().getString(TAG_PLANTYPE);
-        plan = (ItemPlanBase) PlanRegistry.getPlanAsItem(planName);
+        ItemStack planItemStack = inventory.getStackInSlot(0);
 
-        return plan;
-    }
+        if (planItemStack == null || !planItemStack.hasTagCompound())
+            return;
 
-    public void todo() {
-        if (plan != null) {
-            HashMap<TechLevel, PlanTechLevel> techLevels = ((IMachinePlan) plan).getTechLevels();
+        String planName = planItemStack.getTagCompound().getString(TAG_PLANTYPE);
+        ItemPlanBase planBase = (ItemPlanBase) PlanRegistry.getPlanAsItem(planName);
 
-            TechLevel planTechLevel = null;
+        if (planBase == null) { //todo: invalidation...
+            LogHelper.info(">>> TODO: Invalidation...");
+            return;
+        }
 
-            for (int i = getMetaFromState(state); i >= 0; i--) {
-                if (techLevels.containsKey(TechLevel.byMeta(i))) {
-                    planTechLevel = TechLevel.byMeta(i);
-                    break;
-                }
+        HashMap<TechLevel, PlanTechLevel> techLevels = ((IMachinePlan) planBase).getTechLevels();
+
+        for (int i = getBlockMetadata(); i >= 0; i--) {
+            if (techLevels.containsKey(TechLevel.byMeta(i))) {
+                planTechLevel = TechLevel.byMeta(i);
+                break;
             }
+        }
 
-            if (planTechLevel != null) {
-                LogHelper.info(">>> Tech Level: " + planTechLevel.getName());
-            }
+        if (planTechLevel != null) {
+            LogHelper.info(">>> Tech Level: " + planTechLevel.getName());
         }
     }
 
     @Override
     public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
         if (slot == 0) {
-            if (added != null) {
-                String planName = added.getTagCompound().getString(TAG_PLANTYPE);
-                plan = (ItemPlanBase) PlanRegistry.getPlanAsItem(planName);
-            } else {
-                plan = null;
-            }
+            updatePlan();
         }
     }
 
@@ -129,5 +125,13 @@ public class TileEntityBuilder extends TileEntityInventoryBase {
     @Override
     public IChatComponent getDisplayName() {
         return null;
+    }
+
+    @Override
+    public void update() {
+        if (inventory.getStackInSlot(0) != null && planTechLevel == null)
+            updatePlan();
+
+        // todo: process items if there are things to process...
     }
 }
