@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "appliedlogistics:items/blueprints/base"
+    "layer0": "appliedlogistics:items/plans/base"
   },
   "display": {
     "thirdperson": {

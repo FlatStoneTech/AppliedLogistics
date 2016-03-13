@@ -8,7 +8,7 @@ tile.appliedlogistics.builder.stone.name=Stone Builder
 tile.appliedlogistics.builder.bronze.name=Bronze Builder
 tile.appliedlogistics.builder.steel.name=Steel Builder
 tile.appliedlogistics.builder.industrial.name=Industrial Builder
-tile.appliedlogistics.builder.digital.name=Digial Builder
+tile.appliedlogistics.builder.digital.name=Digital Builder
 
 # Items
 ## Plans

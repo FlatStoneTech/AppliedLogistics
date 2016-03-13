@@ -18,66 +18,53 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.tileentities.machines;
+package tech.flatstone.appliedlogistics.common.util;
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
-import tech.flatstone.appliedlogistics.common.tileentities.TileEntityInventoryBase;
-import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
-import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
 
-public class TileEntityPulverizer extends TileEntityInventoryBase {
-    InternalInventory inventory = new InternalInventory(this, 4);
+import java.util.List;
 
-    @Override
-    public IInventory getInternalInventory() {
-        return inventory;
+public class PlanRequiredMaterials {
+    private List<ItemStack> requiredMaterials;
+
+    private int minCount;
+    private int maxCount;
+
+    private int itemWeight;
+
+    private float addTime;
+    private float removeTime;
+
+    public PlanRequiredMaterials(List<ItemStack> requiredMaterials, int minCount, int maxCount, int itemWeight, float addTime, float removeTime) {
+        this.requiredMaterials = requiredMaterials;
+        this.maxCount = maxCount;
+        this.minCount = minCount;
+        this.itemWeight = itemWeight;
+        this.addTime = addTime;
+        this.removeTime = removeTime;
     }
 
-    @Override
-    public void saveChanges() {
-
+    public List<ItemStack> getRequiredMaterials() {
+        return this.requiredMaterials;
     }
 
-    @Override
-    public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
-
+    public int getMinCount() {
+        return this.minCount;
     }
 
-    @Override
-    public int[] getAccessibleSlotsBySide(EnumFacing side) {
-        return new int[0];
+    public int getMaxCount() {
+        return this.maxCount;
     }
 
-    @Override
-    public ItemStack removeStackFromSlot(int index) {
-        return null;
+    public int getItemWeight() {
+        return this.itemWeight;
     }
 
-    @Override
-    public int getField(int id) {
-        return 0;
+    public float getAddTime() {
+        return this.addTime;
     }
 
-    @Override
-    public void setField(int id, int value) {
-
-    }
-
-    @Override
-    public int getFieldCount() {
-        return 0;
-    }
-
-    @Override
-    public void clear() {
-
-    }
-
-    @Override
-    public IChatComponent getDisplayName() {
-        return null;
+    public float getRemoveTime() {
+        return this.removeTime;
     }
 }
