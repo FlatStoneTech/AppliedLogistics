@@ -41,7 +41,7 @@ public class WorldGen implements IWorldGenerator {
     }
 
     public void generateOres(Random random, int chunkX, int chunkZ, World world, boolean newGeneration) {
-        if (!oreDimBlackList.contains(Integer.valueOf(world.provider.getDimensionId()))) {
+        if (!oreDimBlackList.contains(world.provider.getDimensionId())) {
             for (OreGen gen : oreSpawnList) {
                 if ((newGeneration) || (retroGenEnabled(gen.name))) {
                     gen.generate(world, random, chunkX * 16, chunkZ * 16);
@@ -51,9 +51,9 @@ public class WorldGen implements IWorldGenerator {
     }
 
     private boolean retrogenEnabled() {
-        for (OreGen gen : oreSpawnList) {
+        /*for (OreGen gen : oreSpawnList) {
 
-        }
+        }*/
 
         return true;
     }
@@ -74,7 +74,7 @@ public class WorldGen implements IWorldGenerator {
         int dimID = event.world.provider.getDimensionId();
         if ((!event.getData().getCompoundTag("AppliedLogistics").hasKey("DEFAULT")) && retrogenEnabled()) {
             LogHelper.info("Chunk " + event.getChunk().getChunkCoordIntPair() + " has been flagged for Ore RetroGen by Applied Logistics");
-            retrogenChunks.put(Integer.valueOf(dimID), event.getChunk().getChunkCoordIntPair());
+            retrogenChunks.put(dimID, event.getChunk().getChunkCoordIntPair());
         }
     }
 
@@ -86,24 +86,24 @@ public class WorldGen implements IWorldGenerator {
         int dimID = event.world.provider.getDimensionId();
         int counter = 0;
 
-        List<ChunkCoordIntPair> chunks = retrogenChunks.get(Integer.valueOf(dimID));
+        List<ChunkCoordIntPair> chunks = retrogenChunks.get(dimID);
 
         if ((chunks != null) && (chunks.size() > 0)) {
             for (int i = 0; i < 2; i++) {
-                chunks = retrogenChunks.get(Integer.valueOf(dimID));
-                if ((chunks == null) || (chunks.size() <= 0))
-                    break;
+                int index = chunks.size() - i;
+                if (index < 0)
+                    return;
 
                 counter++;
 
-                ChunkCoordIntPair chunkCoordIntPair = (ChunkCoordIntPair) chunks.get(0);
+                ChunkCoordIntPair chunkCoordIntPair = (ChunkCoordIntPair) chunks.get(index);
                 long worldSeed = event.world.getSeed();
                 Random fmlRandom = new Random(worldSeed);
                 long xSeed = fmlRandom.nextLong() >> 3;
                 long zSeed = fmlRandom.nextLong() >> 3;
                 fmlRandom.setSeed(xSeed * chunkCoordIntPair.chunkXPos + zSeed * chunkCoordIntPair.chunkZPos ^ worldSeed);
                 generateOres(fmlRandom, chunkCoordIntPair.chunkXPos, chunkCoordIntPair.chunkZPos, event.world, false);
-                chunks.remove(0);
+                chunks.remove(index);
             }
         }
 
