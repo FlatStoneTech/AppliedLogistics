@@ -6,9 +6,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
+import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
 import tech.flatstone.appliedlogistics.api.registries.HammerRegistry;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.items.Items;
+import tech.flatstone.appliedlogistics.common.items.plans.PlanPulverizer;
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.IProvideEvent;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
@@ -134,5 +136,10 @@ public abstract class CommonProxy implements IProxy {
                 ((IProvideRecipe) block).RegisterRecipes();
             }
         }
+    }
+
+    @Override
+    public void registerBlueprints() {
+        PlanRegistry.registerPlan(new PlanPulverizer());
     }
 }

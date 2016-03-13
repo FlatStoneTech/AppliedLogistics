@@ -35,4 +35,9 @@ public interface IProxy {
      * Register Events
      */
     void registerEvents();
+
+    /**
+     * Register Blueprints
+     */
+    void registerBlueprints();
 }

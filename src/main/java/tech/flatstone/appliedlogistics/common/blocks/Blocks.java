@@ -1,12 +1,15 @@
 package tech.flatstone.appliedlogistics.common.blocks;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockPumpkin;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.common.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.common.blocks.builder.BlockBuilder;
+import tech.flatstone.appliedlogistics.common.blocks.machines.BlockPuliverizer;
 import tech.flatstone.appliedlogistics.common.blocks.ore.BlockOre;
 import tech.flatstone.appliedlogistics.common.blocks.ore.BlockOreBlock;
 import tech.flatstone.appliedlogistics.common.items.builder.ItemBuilder;
@@ -16,12 +19,16 @@ import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 import tech.flatstone.appliedlogistics.common.util.Platform;
 
+import java.util.Locale;
+
 public enum Blocks {
     // Ore
     BLOCK_ORE("ore", new BlockOre(), ItemOre.class, AppliedLogisticsCreativeTabs.tabOres),
-    BLOCK_ORE_BLOCK("oreBlock", new BlockOreBlock(), ItemOreBlock.class, AppliedLogisticsCreativeTabs.tabOres),
+    BLOCK_ORE_BLOCK("ore_block", new BlockOreBlock(), ItemOreBlock.class, AppliedLogisticsCreativeTabs.tabOres),
 
-    BLOCK_BUILDER("builder", new BlockBuilder(), ItemBuilder.class, AppliedLogisticsCreativeTabs.tabGeneral),;
+    BLOCK_BUILDER("builder", new BlockBuilder(), ItemBuilder.class, AppliedLogisticsCreativeTabs.tabGeneral),
+
+    BLOCK_MACHINE_PULIVERIZER("machine_puliverizer", new BlockPuliverizer(), AppliedLogisticsCreativeTabs.tabMachines);
 
     public final Block block;
     private final String internalName;
@@ -69,6 +76,10 @@ public enum Blocks {
     }
 
     private void registerBlock() {
+        if(!internalName.equals(internalName.toLowerCase(Locale.US))) {
+            throw new IllegalArgumentException(String.format("Unlocalized names need to be all lowercase! Item: %s", internalName));
+        }
+
         // Register Block in Game Registry
         GameRegistry.registerBlock(block.setCreativeTab(creativeTabs).setUnlocalizedName(internalName), itemBlockClass, internalName);
 

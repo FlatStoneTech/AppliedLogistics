@@ -25,15 +25,17 @@ public class AppliedLogistics {
     public static IProxy proxy;
 
     public static void addConfiguredWorldGen(IBlockState state, String config) {
-        WorldGen.addOreGen(config, state, 20, 0, 256, 100, 100);
+        //todo: need to get config in here like asap...
+        WorldGen.addOreGen(config, state, 4, 20, 85, 8, 100);
     }
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        final Stopwatch stopwatch = Stopwatch.createStarted();
         // Register Blocks
         proxy.registerBlocks();
         proxy.registerItems();
+
+        proxy.registerBlueprints();
 
         proxy.registerFurnaceRecipes();
         proxy.registerRecipes();

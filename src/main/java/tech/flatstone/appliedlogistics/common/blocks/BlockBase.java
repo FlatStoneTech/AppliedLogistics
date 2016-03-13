@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
-import tech.flatstone.appliedlogistics.common.util.TileTools;
+import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 import java.util.Random;
 
@@ -125,7 +125,7 @@ public class BlockBase extends BlockContainer {
         super.onBlockPlacedBy(world, blockPos, state, placer, itemStack);
 
         if (itemStack.hasDisplayName()) {
-            TileEntityBase tileEntityBase = TileTools.getTileEntity(world, blockPos, TileEntityBase.class);
+            TileEntityBase tileEntityBase = TileHelper.getTileEntity(world, blockPos, TileEntityBase.class);
             tileEntityBase.setCustomName(itemStack.getDisplayName());
         }
     }

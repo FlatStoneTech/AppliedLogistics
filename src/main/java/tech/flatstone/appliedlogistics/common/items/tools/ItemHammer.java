@@ -20,6 +20,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.registries.HammerRegistry;
 import tech.flatstone.appliedlogistics.api.registries.helpers.Hammerable;
+import tech.flatstone.appliedlogistics.common.items.ItemBaseTool;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 import tech.flatstone.appliedlogistics.common.util.IProvideEvent;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
-public class ItemHammer extends ItemTool implements IItemRenderer, IProvideRecipe, IProvideEvent {
+public class ItemHammer extends ItemBaseTool implements IItemRenderer, IProvideRecipe, IProvideEvent {
     public static Set blocksEffectiveAgainst = Sets.newHashSet(new Block[]{});
     public static boolean canHarvest = false;
     public static ToolMaterial toolMaterialHammer = EnumHelper.addToolMaterial("APPLIEDLOGISTICSHAMMER", 3, 100, 15.0F, 4.0F, 30);
@@ -37,6 +38,7 @@ public class ItemHammer extends ItemTool implements IItemRenderer, IProvideRecip
 
     public ItemHammer() {
         super(3.0F, toolMaterialHammer, blocksEffectiveAgainst);
+        this.setUnlocalizedName("tool_hammer");
     }
 
     @Override
@@ -105,7 +107,7 @@ public class ItemHammer extends ItemTool implements IItemRenderer, IProvideRecip
 
     @Override
     public void registerItemRenderer() {
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":tools/" + Items.ITEM_TOOL_HAMMER.getInternalName(), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":tools/toolHammer", "inventory"));
     }
 
     @Override
