@@ -1,15 +1,13 @@
 package tech.flatstone.appliedlogistics.common.blocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockPumpkin;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.common.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.common.blocks.builder.BlockBuilder;
-import tech.flatstone.appliedlogistics.common.blocks.machines.BlockPuliverizer;
+import tech.flatstone.appliedlogistics.common.blocks.machines.BlockPulverizer;
 import tech.flatstone.appliedlogistics.common.blocks.ore.BlockOre;
 import tech.flatstone.appliedlogistics.common.blocks.ore.BlockOreBlock;
 import tech.flatstone.appliedlogistics.common.items.builder.ItemBuilder;
@@ -28,7 +26,7 @@ public enum Blocks {
 
     BLOCK_BUILDER("builder", new BlockBuilder(), ItemBuilder.class, AppliedLogisticsCreativeTabs.tabGeneral),
 
-    BLOCK_MACHINE_PULIVERIZER("machine_puliverizer", new BlockPuliverizer(), AppliedLogisticsCreativeTabs.tabMachines);
+    BLOCK_MACHINE_PULVERIZER("machine_pulverizer", new BlockPulverizer(), AppliedLogisticsCreativeTabs.tabMachines);
 
     public final Block block;
     private final String internalName;

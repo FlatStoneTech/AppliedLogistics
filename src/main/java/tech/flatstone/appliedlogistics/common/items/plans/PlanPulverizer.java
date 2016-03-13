@@ -2,6 +2,7 @@ package tech.flatstone.appliedlogistics.common.items.plans;
 
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.oredict.OreDictionary;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
@@ -11,18 +12,19 @@ import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
 import tech.flatstone.appliedlogistics.common.util.EnumMachineParts;
 import tech.flatstone.appliedlogistics.common.util.IMachineTechLevel;
 import tech.flatstone.appliedlogistics.common.util.IMachineParts;
+import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 
 import java.util.HashMap;
 import java.util.List;
 
 public class PlanPulverizer extends ItemPlanBase implements IMachinePlan {
     public PlanPulverizer() {
-        this.setUnlocalizedName(String.format("%s:%s", ModInfo.MOD_ID, "Plan.Pulverizer"));
+        this.setUnlocalizedName(String.format("%s:%s", ModInfo.MOD_ID, "plan.pulverizer"));
     }
 
     @Override
     public String getUnlocalizedPlanDescription() {
-        return String.format("%s.description.plan.pulverizer", ModInfo.MOD_ID);
+        return EnumChatFormatting.YELLOW + "" + EnumChatFormatting.ITALIC + LanguageHelper.getTranslated(String.format("description.%s.plan.pulverizer", ModInfo.MOD_ID));
     }
 
     @Override
@@ -186,6 +188,6 @@ public class PlanPulverizer extends ItemPlanBase implements IMachinePlan {
 
     @Override
     public ItemStack getMachineItemStack() {
-        return new ItemStack(Blocks.BLOCK_MACHINE_PULIVERIZER.block);
+        return new ItemStack(Blocks.BLOCK_MACHINE_PULVERIZER.block);
     }
 }

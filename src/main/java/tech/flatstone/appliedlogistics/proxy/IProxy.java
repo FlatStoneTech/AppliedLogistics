@@ -40,4 +40,10 @@ public interface IProxy {
      * Register Blueprints
      */
     void registerBlueprints();
+
+    /**
+     * Register GUIs
+     */
+    void registerGUIs();
 }
+

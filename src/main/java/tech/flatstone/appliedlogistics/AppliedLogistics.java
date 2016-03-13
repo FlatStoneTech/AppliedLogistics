@@ -35,6 +35,8 @@ public class AppliedLogistics {
         proxy.registerBlocks();
         proxy.registerItems();
 
+        proxy.registerGUIs();
+
         proxy.registerBlueprints();
 
         proxy.registerFurnaceRecipes();
