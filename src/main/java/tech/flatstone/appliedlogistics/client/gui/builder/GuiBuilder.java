@@ -38,8 +38,8 @@ public class GuiBuilder extends GuiBase {
 
     public GuiBuilder(InventoryPlayer inventoryPlayer, TileEntityBuilder tileEntity) {
         super(new ContainerBuilder(inventoryPlayer, tileEntity));
-        this.xSize = 176;
-        this.ySize = 222;
+        this.xSize = 256; //176;
+        this.ySize = 222; //222;
         this.tileEntity = tileEntity;
     }
 
@@ -51,6 +51,19 @@ public class GuiBuilder extends GuiBase {
 
     @Override
     public void drawFG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
+        int colorBackground = new Color(56, 55, 69, 224).hashCode();
+        int colorBorder = new Color(48, 41, 69).hashCode();
+        int colorFont = new Color(255, 255, 255).hashCode();
+        int colorErrorFont = new Color(255, 64, 64).hashCode();
+        int colorProgressBackground = new Color(64, 64, 255, 128).hashCode();
+        int colorProgressBackgroundGood = new Color(0, 170, 0).hashCode();
+        int colorProgressBackgroundWarn = new Color(255, 170, 0).hashCode();
+        int colorProgressBackgroundBad = new Color(255, 85, 85).hashCode();
+
+
+        /**
+         * Titles
+         */
         this.fontRendererObj.drawString(LanguageHelper.getTranslated(tileEntity.getUnlocalizedName()), 8, 6, 4210752);
         this.fontRendererObj.drawString(LanguageHelper.getTranslated("container.inventory"), 8, 129, 4210752);
 
@@ -61,19 +74,21 @@ public class GuiBuilder extends GuiBase {
         } else if (!itemPlan.hasTagCompound()) {
             this.fontRendererObj.drawString(EnumChatFormatting.RED + LanguageHelper.getTranslatedMessage(ModMessages.MESSAGE_PLAN_INVALID), 36, 26, 4210752);
         } else {
-            this.fontRendererObj.drawString(LanguageHelper.getTranslated(itemPlan.getUnlocalizedName() + ".name"), 29, 45, 4210752);
+            this.fontRendererObj.drawString(LanguageHelper.getTranslated(itemPlan.getUnlocalizedName() + ".name"), 8, 48, 4210752);
         }
 
-        int colorBackground = new Color(56, 55, 69, 224).hashCode();
-        int colorBorder = new Color(48, 41, 69).hashCode();
-        int colorFont = new Color(255, 255, 255).hashCode();
-        int colorErrorFont = new Color(255, 64, 64).hashCode();
-        int colorProgressBackground = new Color(64, 64, 255, 128).hashCode();
-        int colorProgressBackgroundGood = new Color(0, 170, 0).hashCode();
-        int colorProgressBackgroundWarn = new Color(255, 170, 0).hashCode();
-        int colorProgressBackgroundBad = new Color(255, 85, 85).hashCode();
 
-        overlayHelper.drawHorzProgressBar(40, 32, 124, 6, 50, colorBackground, colorBorder, colorProgressBackground);
-        overlayHelper.drawCenteredString(40, 32, 124, "50% (0:14:42 Left)", colorFont);
+        /**
+         * Progress Bars
+         */
+        this.fontRendererObj.drawString(LanguageHelper.getTranslatedMessage(ModMessages.MESSAGE_BUILDER_WEIGHT), 184, 129, 4210752);
+        overlayHelper.drawHorzProgressBar(186, 142, 62, 6, 0, colorBackground, colorBorder, colorProgressBackgroundGood);
+        overlayHelper.drawCenteredString(186, 141, 62, "1000kg", colorFont);
+
+        this.fontRendererObj.drawString(LanguageHelper.getTranslatedMessage(ModMessages.MESSAGE_BUILDER_TIME), 184, 155, 4210752);
+        overlayHelper.drawHorzProgressBar(186, 168, 62, 6, 0, colorBackground, colorBorder, colorProgressBackground);
+        overlayHelper.drawCenteredString(186, 167, 62, "0% (0:00)", colorFont);
+
+//
     }
 }

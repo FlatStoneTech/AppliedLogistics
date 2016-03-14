@@ -49,6 +49,14 @@ public class OverlayHelper extends Gui {
         drawRect(x + w + 3, y - 3, x + w + 4, y + h + 3, bgColor);
     }
 
+    public void drawGradientWindow(int x, int y, int w, int h, int bgColor, int bgColor2) {
+        drawGradientRect(x - 3, y - 4, x + w + 3, y - 3, bgColor, bgColor2);
+        drawGradientRect(x - 3, y + h + 3, x + w + 3, y + h + 4, bgColor, bgColor2);
+        drawGradientRect(x - 3, y - 3, x + w + 3, y + h + 3, bgColor, bgColor2);
+        drawGradientRect(x - 4, y - 3, x - 3, y + h + 3, bgColor, bgColor2);
+        drawGradientRect(x + w + 3, y - 3, x + w + 4, y + h + 3, bgColor, bgColor2);
+    }
+
     public void drawWindowWithBorder(int x, int y, int w, int h, int bgColor, int frameColor) {
         drawWindow(x, y, w, h, bgColor);
         int frameFade;
@@ -61,24 +69,38 @@ public class OverlayHelper extends Gui {
     }
 
     public void drawVertProgressBar(int x, int y, int w, int h, int p, int bgColor, int frameColor, int progressColor) {
-        drawProgressBar(x, y, w, h, p, bgColor, frameColor, progressColor, 1);
+        drawProgressBar(x, y, w, h, p, bgColor, frameColor, progressColor, progressColor, 1);
     }
 
     public void drawHorzProgressBar(int x, int y, int w, int h, int p, int bgColor, int frameColor, int progressColor) {
-        drawProgressBar(x, y, w, h, p, bgColor, frameColor, progressColor, 0);
+        drawProgressBar(x, y, w, h, p, bgColor, frameColor, progressColor, progressColor, 0);
     }
 
-    protected void drawProgressBar(int x, int y, int w, int h, int p, int bgColor, int frameColor, int progressColor, int hv) {
+    public void drawGraidentVertProgressBar(int x, int y, int w, int h, int p, int bgColor, int frameColor, int progressColor, int progressColor2) {
+        drawProgressBar(x, y, w, h, p, bgColor, frameColor, progressColor, progressColor2, 1);
+    }
+
+    public void drawGraidentHorzProgressBar(int x, int y, int w, int h, int p, int bgColor, int frameColor, int progressColor, int progressColor2) {
+        drawProgressBar(x, y, w, h, p, bgColor, frameColor, progressColor, progressColor2, 0);
+    }
+
+    protected void drawProgressBar(int x, int y, int w, int h, int p, int bgColor, int frameColor, int progressColor, int progressColor2, int hv) {
         drawWindowWithBorder(x, y, w, h, bgColor, frameColor);
 
         if (hv == 0) {
             float pWf = ((float) w / 100) * p;
             int pW = Math.round(pWf);
-            drawWindow(x + 2, y + 2, pW - 4, h - 4, progressColor);
+            if (progressColor == progressColor2)
+                drawWindow(x + 2, y + 2, pW - 4, h - 4, progressColor);
+            else
+                drawGradientWindow(x + 2, y + 2, pW - 4, h - 4, progressColor, progressColor2);
         } else {
             float pHf = ((float) h / 100) * p;
             int pH = Math.round(pHf);
-            drawWindow(x + 2, y + h - pH + 2, w - 4, pH - 4, progressColor);
+            if (progressColor == progressColor2)
+                drawWindow(x + 2, y + h - pH + 2, w - 4, pH - 4, progressColor);
+            else
+                drawGradientWindow(x + 2, y + h - pH + 2, w - 4, pH - 4, progressColor, progressColor2);
         }
 
     }

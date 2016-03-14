@@ -23,4 +23,6 @@ package tech.flatstone.appliedlogistics;
 public class ModMessages {
     public static final String MESSAGE_PLAN_INVALID = "plan.invalid";
     public static final String MESSAGE_PLAN_INSERT = "plan.insert";
+    public static final String MESSAGE_BUILDER_WEIGHT = "plan.builder.weight";
+    public static final String MESSAGE_BUILDER_TIME = "plan.builder.time";
 }
