@@ -21,20 +21,33 @@
 package tech.flatstone.appliedlogistics.common.container.builder;
 
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.common.container.ContainerBase;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotDisabled;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotNormal;
 import tech.flatstone.appliedlogistics.common.container.slot.SlotRestrictedInput;
 import tech.flatstone.appliedlogistics.common.items.Items;
+import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityBuilder;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
+import tech.flatstone.appliedlogistics.common.util.PlanDetails;
+import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ContainerBuilder extends ContainerBase {
+    PlanDetails planDetails = null;
     IInventory inventory;
+    TileEntityBuilder tileEntity;
 
     public ContainerBuilder(InventoryPlayer inventoryPlayer, TileEntity tileEntity) {
         super(inventoryPlayer, tileEntity);
+        this.tileEntity = (TileEntityBuilder) tileEntity;
         this.inventory = (IInventory) tileEntity;
 
         addSlotToContainer(new SlotRestrictedInput(inventory, 0, 12, 22, new ArrayList<ItemStack>() {{
@@ -42,5 +55,49 @@ public class ContainerBuilder extends ContainerBase {
         }}, new ItemStack(Items.ITEM_PLAN.item)));
 
         bindPlayerInventory(inventoryPlayer, 0, 140);
+
+        // Upper Left = 8, 60
+
+        addSlotToContainer(new SlotNormal(inventory, 1, 8, 60));
+        addSlotToContainer(new SlotRestrictedInput(inventory, 2, 26, 60, new ArrayList<ItemStack>() {{
+            add(new ItemStack(Items.ITEM_MATERIAL_GEAR.item));
+        }}, new ItemStack(Items.ITEM_MATERIAL_GEAR.item)));
+    }
+
+
+    @Override
+    public void detectAndSendChanges() {
+        super.detectAndSendChanges();
+
+        if (planDetails != tileEntity.getPlanDetails()) {
+            planDetails = tileEntity.getPlanDetails();
+
+            LogHelper.info(">>> Update the Container...");
+
+            for (int i = 36; i < this.inventorySlots.size(); i++) {
+                this.inventorySlots.remove(i);
+            }
+
+
+            addSlotToContainer(new SlotDisabled(inventory, 1, 8, 60));
+            addSlotToContainer(new SlotRestrictedInput(inventory, 2, 26, 60, new ArrayList<ItemStack>() {{
+                add(new ItemStack(Items.ITEM_ORE_NUGGET.item));
+            }}, new ItemStack(Items.ITEM_ORE_NUGGET.item)));
+
+            for (int i = 0; i < this.crafters.size(); i++) {
+                ICrafting crafting = (ICrafting) this.crafters.get(i);
+                crafting.sendProgressBarUpdate(this, 0, 0);
+            }
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void updateProgressBar(int id, int data) {
+        super.updateProgressBar(id, data);
+
+        for (int i = 0; i < this.inventorySlots.size(); i++) {
+            //LogHelper.info(">>> " + this.inventorySlots.get(i).toString());
+        }
     }
 }

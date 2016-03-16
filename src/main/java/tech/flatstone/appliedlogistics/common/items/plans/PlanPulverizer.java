@@ -29,11 +29,10 @@ import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
-import tech.flatstone.appliedlogistics.common.util.EnumMachineParts;
-import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
-import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
-import tech.flatstone.appliedlogistics.common.util.PlanTechLevel;
+import tech.flatstone.appliedlogistics.common.items.Items;
+import tech.flatstone.appliedlogistics.common.util.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -48,44 +47,31 @@ public class PlanPulverizer extends ItemPlanBase implements IMachinePlan {
     }
 
     @Override
-    public HashMap<TechLevel, PlanTechLevel> getTechLevels() {
-        HashMap<TechLevel, PlanTechLevel> techLevels = new HashMap<TechLevel, PlanTechLevel>();
+    public PlanDetails getTechLevels(TechLevel techLevel) {
+        PlanDetails planDetails = null;
+        List<PlanRequiredMaterials> requiredMaterialsList = new ArrayList<PlanRequiredMaterials>();
 
-        HashMap<EnumMachineParts, List<PlanRequiredMaterials>> machineParts = new HashMap<EnumMachineParts, List<PlanRequiredMaterials>>();
-        List<PlanRequiredMaterials> MachineFrame = Lists.newArrayList();
-        List<PlanRequiredMaterials> MachineInternal = Lists.newArrayList();
+        switch(techLevel) {
+            case STONE_AGE:
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("cobblestone"), 12, 12, 2, 120, 200));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("plankWood"), 4, 4, 1, 40, 80));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearWood"), 0, 1, 3, 60, 60));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearStone"), 1, 2, 5, 80, 80));
 
-        //// STONE_AGE ////
-        // Machine Frame
-        MachineFrame.clear();
-        MachineFrame.add(new PlanRequiredMaterials(OreDictionary.getOres("cobblestone"), 12, 12, 2, 120, 200));
-        MachineFrame.add(new PlanRequiredMaterials(OreDictionary.getOres("plankWood"), 4, 4, 1, 40, 80));
-        machineParts.put(EnumMachineParts.MACHINE_FRAME, MachineFrame);
-        // Machine Internal
-        MachineInternal.clear();
-        MachineInternal.add(new PlanRequiredMaterials(OreDictionary.getOres("gearWood"), 0, 1, 3, 60, 60));
-        MachineInternal.add(new PlanRequiredMaterials(OreDictionary.getOres("gearStone"), 1, 2, 5, 80, 80));
-        machineParts.put(EnumMachineParts.MACHINE_INTERNAL, MachineInternal);
+                planDetails = new PlanDetails(38, requiredMaterialsList, new ItemStack(Blocks.BLOCK_MACHINE_PULVERIZER.block, 1));
+                break;
 
-        techLevels.put(TechLevel.STONE_AGE, new PlanTechLevel(38, machineParts));
-        machineParts.clear();
+            case BRONZE_AGE:
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("cobblestone"), 12, 12, 2, 120, 200));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("plankWood"), 4, 4, 1, 40, 80));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearWood"), 0, 1, 3, 60, 60));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearStone"), 1, 2, 5, 80, 80));
 
-        //// BRONZE_AGE ////
-        // Machine Frame
-        MachineFrame.clear();
-        MachineFrame.add(new PlanRequiredMaterials(OreDictionary.getOres("cobblestone"), 12, 12, 2, 120, 200));
-        MachineFrame.add(new PlanRequiredMaterials(OreDictionary.getOres("plankWood"), 4, 4, 1, 40, 80));
-        machineParts.put(EnumMachineParts.MACHINE_FRAME, MachineFrame);
-        // Machine Internal
-        MachineInternal.clear();
-        MachineInternal.add(new PlanRequiredMaterials(OreDictionary.getOres("gearWood"), 0, 1, 3, 60, 60));
-        MachineInternal.add(new PlanRequiredMaterials(OreDictionary.getOres("gearStone"), 1, 2, 5, 80, 80));
-        machineParts.put(EnumMachineParts.MACHINE_INTERNAL, MachineInternal);
+                planDetails = new PlanDetails(38, requiredMaterialsList, new ItemStack(Blocks.BLOCK_MACHINE_PULVERIZER.block, 1));
+                break;
+        }
 
-        techLevels.put(TechLevel.BRONZE_AGE, new PlanTechLevel(45, machineParts));
-        machineParts.clear();
-
-        return techLevels;
+        return planDetails;
     }
 
     @Override

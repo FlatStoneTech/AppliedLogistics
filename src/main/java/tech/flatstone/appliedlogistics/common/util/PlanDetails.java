@@ -18,153 +18,32 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.tileentities.builder;
+package tech.flatstone.appliedlogistics.common.util;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.ITickable;
-import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
-import tech.flatstone.appliedlogistics.api.features.TechLevel;
-import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
-import tech.flatstone.appliedlogistics.client.gui.GuiHandler;
-import tech.flatstone.appliedlogistics.client.gui.builder.GuiBuilder;
-import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
-import tech.flatstone.appliedlogistics.common.container.builder.ContainerBuilder;
-import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
-import tech.flatstone.appliedlogistics.common.tileentities.TileEntityInventoryBase;
-import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
-import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
-import tech.flatstone.appliedlogistics.common.util.*;
 
-import java.util.HashMap;
 import java.util.List;
 
-public class TileEntityBuilder extends TileEntityInventoryBase implements ITickable {
-    public static final String TAG_PLANTYPE = "PlanType";
-    private InternalInventory inventory = new InternalInventory(this, 100);
-    private TechLevel planTechLevel = null;
-    private ItemPlanBase planBase = null;
-    private PlanDetails planDetails = null;
+public class PlanDetails {
+    private int totalWeight;
+    private List<PlanRequiredMaterials> requiredMaterialsList;
+    private ItemStack itemOutput;
 
-    @Override
-    public IInventory getInternalInventory() {
-        return inventory;
+    public PlanDetails(int totalWeight, List<PlanRequiredMaterials> requiredMaterialsList, ItemStack itemOutput) {
+        this.totalWeight = totalWeight;
+        this.requiredMaterialsList = requiredMaterialsList;
+        this.itemOutput = itemOutput;
     }
 
-    @Override
-    public void saveChanges() {
-
+    public int getTotalWeight() {
+        return totalWeight;
     }
 
-    public TechLevel getPlanTechLevel() {
-        if (worldObj == null)
-            return null;
-
-        ItemStack planItemStack = inventory.getStackInSlot(0);
-
-        if (planItemStack == null || !planItemStack.hasTagCompound())
-            return null;
-
-        String planName = planItemStack.getTagCompound().getString(TAG_PLANTYPE);
-        planBase = (ItemPlanBase) PlanRegistry.getPlanAsItem(planName);
-
-        if (planBase == null) { //todo: invalidation...
-            LogHelper.info(">>> TODO: Invalidation...");
-            return null;
-        }
-
-        for (int i = getBlockMetadata(); i >= 0; i--) {
-            if (((IMachinePlan) planBase).getTechLevels(TechLevel.byMeta(i)) != null)
-                return TechLevel.byMeta(i);
-        }
-
-        return null;
+    public List<PlanRequiredMaterials> getRequiredMaterialsList() {
+        return requiredMaterialsList;
     }
 
-    public PlanDetails getPlanDetails() {
-        return planDetails;
-    }
-
-    public void updatePlan() {
-        TechLevel temp = getPlanTechLevel();
-        if (temp != planTechLevel && temp == null) {
-            TileHelper.DropItems(this);
-            this.markForUpdate();
-            this.markDirty();
-        }
-
-        if (temp != planTechLevel) {
-            LogHelper.info(">>> Plan Change (" + temp + ")");
-            planTechLevel = temp;
-
-            // todo: clear slot list
-            planDetails = null;
-
-
-
-            if (planTechLevel == null)
-                return;
-
-
-            planDetails = ((IMachinePlan) planBase).getTechLevels(planTechLevel);
-            LogHelper.info(">>> Updating the Plan Details...");
-            this.markForUpdate();
-            this.markDirty();
-
-            // todo: lets look at the plan to get the slots setup...
-        }
-    }
-
-    @Override
-    public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
-        if (slot == 0) {
-            updatePlan();
-        }
-    }
-
-    @Override
-    public int[] getAccessibleSlotsBySide(EnumFacing side) {
-        return new int[0];
-    }
-
-    @Override
-    public ItemStack removeStackFromSlot(int index) {
-        return null;
-    }
-
-    @Override
-    public int getField(int id) {
-        return 0;
-    }
-
-    @Override
-    public void setField(int id, int value) {
-
-    }
-
-    @Override
-    public int getFieldCount() {
-        return 0;
-    }
-
-    @Override
-    public void clear() {
-
-    }
-
-    @Override
-    public IChatComponent getDisplayName() {
-        return null;
-    }
-
-    @Override
-    public void update() {
-        if (inventory.getStackInSlot(0) != null && planTechLevel == null)
-            updatePlan();
-
-        // todo: process items if there are things to process...
+    public ItemStack getItemOutput() {
+        return itemOutput;
     }
 }
