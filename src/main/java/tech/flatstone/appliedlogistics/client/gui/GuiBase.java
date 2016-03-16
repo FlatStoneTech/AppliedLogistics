@@ -29,6 +29,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.container.slot.SlotBase;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotDisabled;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 import tech.flatstone.appliedlogistics.common.util.OverlayHelper;
 
@@ -137,6 +138,20 @@ public abstract class GuiBase extends GuiContainer {
         this.zLevel = 0.0F;
     }
 
+    protected void drawDisabledSlot(int x, int y) {
+        this.zLevel = 100.0F;
+        itemRender.zLevel = 100.0F;
+
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+        overlayHelper.drawDisabledSlot(x, y);
+
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+        itemRender.zLevel = 0.0F;
+        this.zLevel = 0.0F;
+    }
+
     protected final void drawGuiContainerBackgroundLayer(float f, int x, int y) {
         int ox = this.guiLeft;
         int oy = this.guiTop;
@@ -169,6 +184,11 @@ public abstract class GuiBase extends GuiContainer {
                 SlotBase aes = (SlotBase) s;
                 drawItem(aes.defX, aes.defY, aes.overlayIcon);
             }
+            if (s instanceof SlotBase && s instanceof SlotDisabled) {
+                SlotBase aes = (SlotBase) s;
+                drawDisabledSlot(aes.defX, aes.defY);
+            }
+
             if ((s instanceof SlotBase)) {
                 ((SlotBase) s).isDisplay = true;
                 safeDrawSlot(s);

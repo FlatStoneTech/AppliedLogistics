@@ -24,14 +24,26 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.Attributes;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import java.awt.*;
+import java.text.AttributedCharacterIterator;
+import java.util.*;
 
 public class OverlayHelper extends Gui {
     protected Minecraft mc = Minecraft.getMinecraft();
@@ -141,11 +153,23 @@ public class OverlayHelper extends Gui {
     }
 
     public void drawTransparentItemStack(ItemStack itemStack, int x, int y, RenderItem renderItem) {
+        int colorOverlay = new Color(139, 139, 139, 200).hashCode();
         GlStateManager.disableLighting();
         GlStateManager.disableDepth();
         GlStateManager.colorMask(true, true, true, false);
         renderItem.renderItemAndEffectIntoGUI(itemStack, x, y);
-        this.drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
+        this.drawGradientRect(x, y, x + 16, y + 16, colorOverlay, colorOverlay);
+        GlStateManager.colorMask(true, true, true, true);
+        GlStateManager.enableLighting();
+        GlStateManager.enableDepth();
+    }
+
+    public void drawDisabledSlot(int x, int y) {
+        int colorDisabled = new Color(255, 85, 85, 128).hashCode();
+        GlStateManager.disableLighting();
+        GlStateManager.disableDepth();
+        GlStateManager.colorMask(true, true, true, false);
+        this.drawGradientRect(x, y, x + 16, y + 16, colorDisabled, colorDisabled);
         GlStateManager.colorMask(true, true, true, true);
         GlStateManager.enableLighting();
         GlStateManager.enableDepth();
