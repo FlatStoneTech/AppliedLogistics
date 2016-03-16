@@ -18,59 +18,91 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven {
-        name "ChickenBones"
-        url "http://chickenbones.net/maven/"
+package tech.flatstone.appliedlogistics.common.grid;
+
+import tech.flatstone.appliedlogistics.api.features.ITransport;
+
+import java.util.UUID;
+
+public class transportGrid implements ITransport {
+
+    /**
+     * Creates routing node
+     *
+     * @return
+     */
+    @Override
+    public UUID createTransportNode() {
+        return null;
     }
 
-    maven {
-        name "Mobius"
-        url "http://mobiusstrip.eu/maven"
+    /**
+     * Creates a node that accepts input into the routing network
+     *
+     * @return
+     */
+    @Override
+    public UUID createEntryNode() {
+        return null;
     }
 
-    maven {
-        name "FireBall API Depot"
-        url "http://dl.tsr.me/artifactory/libs-release-local"
+    /**
+     * Creates a node that receives routed objects from the network
+     *
+     * @return
+     */
+    @Override
+    public UUID createExitNode() {
+        return null;
     }
 
-    maven {
-        name = "Player"
-        url = "http://maven.ic2.player.to/"
+    /**
+     * Connects two nodes allowing objects to flow in one direction
+     *
+     * @param startNode
+     * @param destNode
+     * @return
+     */
+    @Override
+    public boolean createDirectionalNodeConnection(UUID startNode, UUID destNode) {
+        return false;
     }
 
-    maven {
-        name = "Tterrag"
-        url = "http://maven.tterrag.com/"
+    /**
+     * Connects two nodes allowing objects to flow in both directions
+     *
+     * @param node1
+     * @param node2
+     * @return
+     */
+    @Override
+    public boolean createNodeConnection(UUID node1, UUID node2) {
+        return false;
     }
 
-    maven  {
-        name = "RX14 Proxy"
-        url = "http://mvn.rx14.co.uk/repo/"
+    /**
+     * List of objects that the exit node will accept
+     * overwrites an existing whitelist or blacklist
+     * empty whitelist or null will cause node to accept no objects
+     *
+     * @param exitNode
+     * @return
+     */
+    @Override
+    public boolean applyWhitelistToNode(UUID exitNode) {
+        return false;
     }
 
-    maven {
-        name "OpenComputers Repo"
-        url = "http://maven.cil.li/"
+    /**
+     * List of objects that the exit node will reject
+     * overwrites an existing whitelist or blacklist
+     * empty blacklist or null will cause node to accept all objects
+     *
+     * @param exitNode
+     * @return
+     */
+    @Override
+    public boolean applyBlacklistToNode(UUID exitNode) {
+        return false;
     }
-
-    ivy {
-        name "BuildCraft"
-        artifactPattern "http://www.mod-buildcraft.com/releases/BuildCraft/[revision]/[module]-[revision]-[classifier].[ext]"
-    }
-
-}
-
-configurations {
-    mods
-    shade
-    compile.extendsFrom shade
-}
-
-dependencies {
-    //mods(group: 'journeymap', name: 'journeymap', version: '1.8.8-5.1.3')
-    //compile(group: 'journeymap-api', name: 'journeymap-api', version: '1.8.9-0.9')
-    compile 'org.jgrapht:jgrapht-core:0.9.1'
 }
