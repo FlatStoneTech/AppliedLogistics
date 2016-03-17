@@ -104,7 +104,6 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
             planDetails = null;
 
 
-
             if (planTechLevel == null)
                 return;
 

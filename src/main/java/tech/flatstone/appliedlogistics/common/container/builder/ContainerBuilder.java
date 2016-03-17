@@ -94,7 +94,6 @@ public class ContainerBuilder extends ContainerBase {
             }}, new ItemStack(Items.ITEM_ORE_NUGGET.item)));
 
 
-
             for (int i = 0; i < this.crafters.size(); i++) {
                 ICrafting crafting = (ICrafting) this.crafters.get(i);
                 crafting.sendProgressBarUpdate(this, 0, 0);
@@ -115,7 +114,7 @@ public class ContainerBuilder extends ContainerBase {
     @Override
     public ItemStack slotClick(int slotId, int clickedButton, int mode, EntityPlayer playerIn) {
         if ((slotId >= 0 && (slotId < this.inventorySlots.size()))) {
-            Slot slotInput = (Slot)this.inventorySlots.get(slotId);
+            Slot slotInput = (Slot) this.inventorySlots.get(slotId);
             if (slotInput instanceof SlotMachineInput) {
                 LogHelper.info(">>> Slot was clicked...");
 

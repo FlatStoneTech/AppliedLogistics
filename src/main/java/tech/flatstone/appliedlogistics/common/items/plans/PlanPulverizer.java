@@ -51,7 +51,7 @@ public class PlanPulverizer extends ItemPlanBase implements IMachinePlan {
         PlanDetails planDetails = null;
         List<PlanRequiredMaterials> requiredMaterialsList = new ArrayList<PlanRequiredMaterials>();
 
-        switch(techLevel) {
+        switch (techLevel) {
             case STONE_AGE:
                 requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("cobblestone"), 12, 12, 2, 120, 200));
                 requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("plankWood"), 4, 4, 1, 40, 80));
