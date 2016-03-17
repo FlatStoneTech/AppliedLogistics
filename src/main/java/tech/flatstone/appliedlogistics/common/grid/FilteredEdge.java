@@ -28,12 +28,12 @@ import java.util.UUID;
 public class FilteredEdge<V> extends DefaultEdge {
     private V start;
     private V end;
-    private UUID tag;
+    private UUID uuid;
 
-    public FilteredEdge(V start, V end, UUID tag) {
+    public FilteredEdge(V start, V end, UUID uuid) {
         this.end = end;
         this.start = start;
-        this.tag = tag;
+        this.uuid = uuid;
     }
 
     public V getStart() {
@@ -44,8 +44,8 @@ public class FilteredEdge<V> extends DefaultEdge {
         return end;
     }
 
-    public UUID getTag() {
-        return tag;
+    public UUID getUUID() {
+        return uuid;
     }
 
 

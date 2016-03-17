@@ -1,10 +1,12 @@
 package tech.flatstone.appliedlogistics.api.features;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public interface ITransport {
     /**
      * Creates routing node
+     * no limit on how may nodes this node can connect to
      *
      * @return
      */
@@ -12,23 +14,24 @@ public interface ITransport {
 
     /**
      * Creates a node that accepts input into the routing network
-     * no limit on how may nodes this node can connect to
+     * can only connect to one other node
      *
+     * @param parentNode
      * @return
      */
-    UUID createEntryNode();
+    UUID createEntryNode(UUID parentNode);
 
     /**
      * Creates a node that receives routed objects from the network
      * can only connect to one other node
      *
+     * @param parentNode
      * @return
      */
-    UUID createExitNode();
+    UUID createExitNode(UUID parentNode);
 
     /**
      * Connects two nodes allowing objects to flow in one direction
-     * can only connect to one other node
      *
      * @param startNode
      * @param destNode
@@ -51,9 +54,10 @@ public interface ITransport {
      * empty whitelist or null will cause node to accept no objects
      *
      * @param exitNode
+     * @param unlocalizedNameList
      * @return
      */
-    boolean applyWhitelistToNode(UUID exitNode);
+    boolean applyWhitelistToNode(UUID exitNode, ArrayList<String> unlocalizedNameList);
 
     /**
      * List of objects that the exit node will reject
@@ -61,7 +65,8 @@ public interface ITransport {
      * empty blacklist or null will cause node to accept all objects
      *
      * @param exitNode
+     * @param unlocalizedNameList
      * @return
      */
-    boolean applyBlacklistToNode(UUID exitNode);
+    boolean applyBlacklistToNode(UUID exitNode, ArrayList<String> unlocalizedNameList);
 }

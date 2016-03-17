@@ -20,40 +20,63 @@
 
 package tech.flatstone.appliedlogistics.common.grid;
 
+import org.jgrapht.experimental.dag.DirectedAcyclicGraph;
+import org.jgrapht.graph.ClassBasedEdgeFactory;
 import tech.flatstone.appliedlogistics.api.features.ITransport;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class transportGrid implements ITransport {
+    DirectedAcyclicGraph<UUID, FilteredEdge> graph;
+
+    public transportGrid() {
+        graph = new DirectedAcyclicGraph<UUID, FilteredEdge>(
+                new ClassBasedEdgeFactory<UUID, FilteredEdge>(FilteredEdge.class)
+        );
+    }
 
     /**
      * Creates routing node
+     * no limit on how may nodes this node can connect to
      *
      * @return
      */
     @Override
     public UUID createTransportNode() {
-        return null;
+        UUID uuid = UUID.randomUUID();
+        graph.addVertex(uuid);
+        return uuid;
     }
 
     /**
      * Creates a node that accepts input into the routing network
+     * can only connect to one other node
      *
+     * @param parentNode
      * @return
      */
     @Override
-    public UUID createEntryNode() {
-        return null;
+    public UUID createEntryNode(UUID parentNode) {
+        UUID uuid = UUID.randomUUID();
+        graph.addVertex(uuid);
+        graph.addEdge(uuid, parentNode);
+        return uuid;
     }
 
     /**
      * Creates a node that receives routed objects from the network
+     * can only connect to one other node
      *
+     * @param parentNode
      * @return
      */
     @Override
-    public UUID createExitNode() {
-        return null;
+    public UUID createExitNode(UUID parentNode) {
+        UUID uuid = UUID.randomUUID();
+        graph.addVertex(uuid);
+        graph.addEdge(parentNode, uuid);
+        return uuid;
     }
 
     /**
@@ -65,7 +88,8 @@ public class transportGrid implements ITransport {
      */
     @Override
     public boolean createDirectionalNodeConnection(UUID startNode, UUID destNode) {
-        return false;
+        graph.addEdge(startNode, destNode);
+        return true;
     }
 
     /**
@@ -77,7 +101,9 @@ public class transportGrid implements ITransport {
      */
     @Override
     public boolean createNodeConnection(UUID node1, UUID node2) {
-        return false;
+        graph.addEdge(node1, node2);
+        graph.addEdge(node2, node1);
+        return true;
     }
 
     /**
@@ -86,10 +112,11 @@ public class transportGrid implements ITransport {
      * empty whitelist or null will cause node to accept no objects
      *
      * @param exitNode
+     * @param unlocalizedNameList
      * @return
      */
     @Override
-    public boolean applyWhitelistToNode(UUID exitNode) {
+    public boolean applyWhitelistToNode(UUID exitNode, ArrayList<String> unlocalizedNameList) {
         return false;
     }
 
@@ -99,10 +126,12 @@ public class transportGrid implements ITransport {
      * empty blacklist or null will cause node to accept all objects
      *
      * @param exitNode
+     * @param unlocalizedNameList
      * @return
      */
     @Override
-    public boolean applyBlacklistToNode(UUID exitNode) {
+    public boolean applyBlacklistToNode(UUID exitNode, ArrayList<String> unlocalizedNameList) {
         return false;
     }
+
 }
