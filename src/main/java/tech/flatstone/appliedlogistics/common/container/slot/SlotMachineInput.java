@@ -18,27 +18,12 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.util;
+package tech.flatstone.appliedlogistics.common.container.slot;
 
-import java.util.HashMap;
-import java.util.List;
+import net.minecraft.inventory.IInventory;
 
-public class PlanTechLevel {
-    private int maxWeight;
-    private HashMap<EnumMachineParts, List<PlanRequiredMaterials>> getSlotGroups;
-
-    public PlanTechLevel(int maxWeight, HashMap<EnumMachineParts, List<PlanRequiredMaterials>> getSlotGroups) {
-        this.maxWeight = maxWeight;
-        this.getSlotGroups = getSlotGroups;
+public class SlotMachineInput extends SlotBase {
+    public SlotMachineInput(IInventory inventory, int idx, int x, int y) {
+        super(inventory, idx, x, y);
     }
-
-    public int getMaxWeight() {
-        return maxWeight;
-    }
-
-    public HashMap<EnumMachineParts, List<PlanRequiredMaterials>> getGetSlotGroups() {
-        return getSlotGroups;
-    }
-
-
 }

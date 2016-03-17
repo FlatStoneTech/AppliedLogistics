@@ -22,9 +22,6 @@ package tech.flatstone.appliedlogistics.api.features;
 
 import net.minecraft.item.ItemStack;
 import tech.flatstone.appliedlogistics.common.util.PlanDetails;
-import tech.flatstone.appliedlogistics.common.util.PlanTechLevel;
-
-import java.util.HashMap;
 
 public interface IMachinePlan {
     /**

@@ -121,7 +121,7 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
     @Override
     public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
         if (slot == 0) {
-            updatePlan();
+            //updatePlan();
         }
     }
 

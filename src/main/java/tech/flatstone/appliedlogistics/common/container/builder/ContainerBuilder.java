@@ -20,15 +20,22 @@
 
 package tech.flatstone.appliedlogistics.common.container.builder;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import scala.collection.parallel.ParIterableLike;
+import tech.flatstone.appliedlogistics.AppliedLogistics;
+import tech.flatstone.appliedlogistics.client.gui.GuiHandler;
 import tech.flatstone.appliedlogistics.common.container.ContainerBase;
 import tech.flatstone.appliedlogistics.common.container.slot.SlotDisabled;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotMachineInput;
 import tech.flatstone.appliedlogistics.common.container.slot.SlotNormal;
 import tech.flatstone.appliedlogistics.common.container.slot.SlotRestrictedInput;
 import tech.flatstone.appliedlogistics.common.items.Items;
@@ -50,15 +57,17 @@ public class ContainerBuilder extends ContainerBase {
         this.tileEntity = (TileEntityBuilder) tileEntity;
         this.inventory = (IInventory) tileEntity;
 
-        addSlotToContainer(new SlotRestrictedInput(inventory, 0, 12, 22, new ArrayList<ItemStack>() {{
-            add(new ItemStack(Items.ITEM_PLAN.item));
-        }}, new ItemStack(Items.ITEM_PLAN.item)));
+        addSlotToContainer(new SlotMachineInput(inventory, 0, 12, 22));
+        //addSlotToContainer(new SlotRestrictedInput(inventory, 0, 12, 22, new ArrayList<ItemStack>() {{
+        //    add(new ItemStack(Items.ITEM_PLAN.item));
+        //}}, new ItemStack(Items.ITEM_PLAN.item)));
 
         bindPlayerInventory(inventoryPlayer, 0, 140);
 
         // Upper Left = 8, 60
-
         addSlotToContainer(new SlotNormal(inventory, 1, 8, 60));
+
+
         addSlotToContainer(new SlotRestrictedInput(inventory, 2, 26, 60, new ArrayList<ItemStack>() {{
             add(new ItemStack(Items.ITEM_MATERIAL_GEAR.item));
         }}, new ItemStack(Items.ITEM_MATERIAL_GEAR.item)));
@@ -84,6 +93,8 @@ public class ContainerBuilder extends ContainerBase {
                 add(new ItemStack(Items.ITEM_ORE_NUGGET.item));
             }}, new ItemStack(Items.ITEM_ORE_NUGGET.item)));
 
+
+
             for (int i = 0; i < this.crafters.size(); i++) {
                 ICrafting crafting = (ICrafting) this.crafters.get(i);
                 crafting.sendProgressBarUpdate(this, 0, 0);
@@ -99,5 +110,20 @@ public class ContainerBuilder extends ContainerBase {
         for (int i = 0; i < this.inventorySlots.size(); i++) {
             //LogHelper.info(">>> " + this.inventorySlots.get(i).toString());
         }
+    }
+
+    @Override
+    public ItemStack slotClick(int slotId, int clickedButton, int mode, EntityPlayer playerIn) {
+        if ((slotId >= 0 && (slotId < this.inventorySlots.size()))) {
+            Slot slotInput = (Slot)this.inventorySlots.get(slotId);
+            if (slotInput instanceof SlotMachineInput) {
+                LogHelper.info(">>> Slot was clicked...");
+
+                tileEntity.updatePlan();
+                this.detectAndSendChanges();
+            }
+        }
+
+        return super.slotClick(slotId, clickedButton, mode, playerIn);
     }
 }
