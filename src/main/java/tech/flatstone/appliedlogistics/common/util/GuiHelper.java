@@ -123,11 +123,11 @@ public class GuiHelper extends Gui {
      * @param renderItem Item Render
      */
     public void drawItemStack(ItemStack itemStack, int x, int y, RenderItem renderItem) {
-        this.zLevel = 100.0f;
-        renderItem.zLevel = 100.0f;
+        this.zLevel = 0.0f;
+        renderItem.zLevel = 0.0f;
 
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        int colorOverlay = new Color(139, 139, 139, 200).hashCode();
+        int colorOverlay = new Color(139, 139, 139, 160).hashCode();
         GlStateManager.disableLighting();
         GlStateManager.disableDepth();
         GlStateManager.colorMask(true, true, true, false);

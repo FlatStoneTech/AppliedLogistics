@@ -96,7 +96,7 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
 
     public void updatePlan() {
         TechLevel temp = getPlanTechLevel();
-        if (temp != planTechLevel && temp == null) {
+        if (temp != planTechLevel && temp == null && Platform.isServer()) {
             TileHelper.DropItems(this);
             this.markForUpdate();
             this.markDirty();
@@ -132,6 +132,7 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
     @Override
     public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
         if (slot == 0) {
+            LogHelper.info(">>> Need to update the plan...");
             updatePlan();
         }
     }

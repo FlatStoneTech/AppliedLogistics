@@ -85,13 +85,4 @@ public abstract class ContainerBase extends Container {
 
         return null;
     }
-
-    private void updateSlot(Slot clickSlot) {
-        detectAndSendChanges();
-    }
-
-    @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
-    }
 }

@@ -45,8 +45,6 @@ public class ContainerBuilder extends ContainerBase {
     private IInventory inventory;
     private TileEntityBuilder tileEntity;
     private InventoryPlayer inventoryPlayer;
-    private List<PlanRequiredMaterials> requiredMaterialsList = new ArrayList<PlanRequiredMaterials>();
-    private static ContainerBuilder INSTANCE = null;
 
     public ContainerBuilder(InventoryPlayer inventoryPlayer, TileEntity tileEntity) {
         super(inventoryPlayer, tileEntity);
@@ -54,64 +52,20 @@ public class ContainerBuilder extends ContainerBase {
         this.inventory = (IInventory) tileEntity;
         this.inventoryPlayer = inventoryPlayer;
 
-        INSTANCE = this;
-
-        ((TileEntityBuilder)tileEntity).updatePlan();
         drawSlots();
     }
     private void drawSlots() {
-        inventorySlots.clear();
-        drawMaterialSlots();
-
-        addSlotToContainer(new SlotMachineInput(inventory, 0, 12, 22, new ItemStack(Items.ITEM_PLAN.item)));
-        bindPlayerInventory(inventoryPlayer, 0, 140);
-    }
-
-    private void drawMaterialSlots() {
-        requiredMaterialsList = tileEntity.getPlanRequiredMaterialsList();
-
         int offsetX = 8;
         int offsetY = 60;
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                if (requiredMaterialsList.size() <= (j + (i * 9))) {
-                    addSlotToContainer(new SlotDisabled(inventory, j + (i * 9) + 1, j * 18 + offsetX, offsetY + i * 18));
-                } else {
-                    // todo: restricted input...
-                    addSlotToContainer(new SlotNormal(inventory, j + (i * 9) + 1, j * 18 + offsetX, offsetY + i * 18));
-                }
-            }
-        }
-    }
-
-    @Override
-    public ItemStack slotClick(int slotId, int clickedButton, int mode, EntityPlayer playerIn) {
-        if ((slotId >= 0 && (slotId < this.inventorySlots.size()))) {
-            Slot slotInput = (Slot) this.inventorySlots.get(slotId);
-            if (slotInput instanceof SlotMachineInput) {
-                tileEntity.updatePlan();
-                drawSlots();
-                this.detectAndSendChanges();
+                addSlotToContainer(new SlotBuilderInventory(inventory, j + (i * 9) + 1, j * 18 + offsetX, offsetY + i * 18, tileEntity));
             }
         }
 
-        return super.slotClick(slotId, clickedButton, mode, playerIn);
-    }
+        addSlotToContainer(new SlotMachineInput(inventory, 0, 12, 22, new ItemStack(Items.ITEM_PLAN.item)));
 
-    public static void test() {
-        if (INSTANCE != null) {
-            INSTANCE.drawSlots();
-        }
-    }
-
-    public boolean equalLists(List<PlanRequiredMaterials> a, List<PlanRequiredMaterials> b) {
-        if ((a.size() != b.size()) || (a == null && b != null) || (a != null && b == null))
-            return false;
-
-        if (a == null && b == null)
-            return true;
-
-        return a.equals(b);
+        bindPlayerInventory(inventoryPlayer, 0, 140);
     }
 }

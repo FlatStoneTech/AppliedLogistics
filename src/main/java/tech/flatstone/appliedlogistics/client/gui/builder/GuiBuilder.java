@@ -21,27 +21,36 @@
 package tech.flatstone.appliedlogistics.client.gui.builder;
 
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import tech.flatstone.appliedlogistics.ModMessages;
 import tech.flatstone.appliedlogistics.client.gui.GuiBase;
+import tech.flatstone.appliedlogistics.client.gui.GuiHandler;
 import tech.flatstone.appliedlogistics.common.container.builder.ContainerBuilder;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotBuilderInventory;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotNormal;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityBuilder;
 import tech.flatstone.appliedlogistics.common.util.GuiHelper;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
+import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GuiBuilder extends GuiBase {
     TileEntityBuilder tileEntity;
     GuiHelper guiHelper = new GuiHelper();
+    List<PlanRequiredMaterials> requiredMaterialsList = new ArrayList<PlanRequiredMaterials>();
 
     public GuiBuilder(InventoryPlayer inventoryPlayer, TileEntityBuilder tileEntity) {
         super(new ContainerBuilder(inventoryPlayer, tileEntity));
-        this.xSize = 256; //176;
-        this.ySize = 222; //222;
+        this.xSize = 256;
+        this.ySize = 222;
         this.tileEntity = tileEntity;
     }
 
@@ -97,15 +106,43 @@ public class GuiBuilder extends GuiBase {
     @Override
     public void updateScreen() {
         super.updateScreen();
+        tileEntity.updatePlan();
 
-        ContainerBuilder.test();
+        if (!equalLists(requiredMaterialsList, tileEntity.getPlanRequiredMaterialsList())) {
+            requiredMaterialsList = tileEntity.getPlanRequiredMaterialsList();
+        }
     }
 
     @Override
     public void drawSlot(Slot slot) {
         super.drawSlot(slot);
-        LogHelper.info(">>> Drawing Slot: " + slot.getSlotIndex());
+
+        if (slot instanceof SlotBuilderInventory && slot.getSlotIndex() > 0 && slot.getSlotIndex() <= requiredMaterialsList.size() && !slot.getHasStack()) {
+            ItemStack displayStack = requiredMaterialsList.get(slot.getSlotIndex() - 1).getRequiredMaterials().get(0);
+            guiHelper.drawItemStack(displayStack, slot.xDisplayPosition, slot.yDisplayPosition, this.mc.getRenderItem());
+            //LogHelper.info(">>> Draw slot " + slot.getSlotIndex());
+        } else if (slot instanceof SlotBuilderInventory && slot.getSlotIndex() > 0 && slot.getSlotIndex() > requiredMaterialsList.size()) {
+            guiHelper.drawItemStack(new ItemStack(Blocks.barrier), slot.xDisplayPosition, slot.yDisplayPosition, this.mc.getRenderItem());
+
+        }
     }
 
+    /**
+     * > Icon that goes into the slot (disabled icon / itemstack from the materials list)
+     * > Disable the slot if it is disabled...
+     *
+     * > Actually disable the hover on the slot...
+     *
+     */
 
+    //todo: put this into a helper...
+    public boolean equalLists(List<PlanRequiredMaterials> a, List<PlanRequiredMaterials> b) {
+        if ((a.size() != b.size()) || (a == null && b != null) || (a != null && b == null))
+            return false;
+
+        if (a == null && b == null)
+            return true;
+
+        return a.equals(b);
+    }
 }
