@@ -21,9 +21,11 @@
 package tech.flatstone.appliedlogistics.common.container.slot;
 
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 
 public class SlotMachineInput extends SlotBase {
-    public SlotMachineInput(IInventory inventory, int idx, int x, int y) {
+    public SlotMachineInput(IInventory inventory, int idx, int x, int y, ItemStack overlayIcon) {
         super(inventory, idx, x, y);
+        this.overlayIcon = overlayIcon;
     }
 }

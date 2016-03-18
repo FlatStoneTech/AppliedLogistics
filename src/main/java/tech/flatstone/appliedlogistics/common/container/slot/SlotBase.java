@@ -26,13 +26,12 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class SlotBase extends Slot {
-    public ItemStack overlayIcon = null;
-    public int defX;
-    public int defY;
-    public boolean isDraggable = true;
-    public boolean isPlayerSide = false;
-    public boolean isDisplay = false;
-    public boolean isEnabled = true;
+    protected ItemStack overlayIcon = null;
+    private int defX;
+    private int defY;
+    protected boolean isPlayerSide = false;
+    protected boolean isDisplay = false;
+    protected boolean isEnabled = true;
 
     public SlotBase(IInventory inventory, int idx, int x, int y) {
         super(inventory, idx, x, y);
@@ -40,23 +39,25 @@ public class SlotBase extends Slot {
         this.defY = y;
     }
 
-    public Slot setNotDraggable() {
-        this.isDraggable = false;
-        return this;
+    public int getDefX() {
+        return defX;
     }
 
-    public Slot setPlayerSide() {
-        this.isPlayerSide = true;
-        return this;
+    public int getDefY() {
+        return defY;
+    }
+
+    public ItemStack getOverlayIcon() {
+        return overlayIcon;
+    }
+
+    public void setDisplay(boolean display) {
+        isDisplay = display;
     }
 
     @Override
     public boolean canBeHovered() {
         return isEnabled;
-    }
-
-    public String getToolTip() {
-        return null;
     }
 
     @Override
@@ -105,18 +106,6 @@ public class SlotBase extends Slot {
 
     public ItemStack getDisplayStack() {
         return super.getStack();
-    }
-
-    public float getOpacityOfIcon() {
-        return 0.4f;
-    }
-
-    public ItemStack getIcon() {
-        return this.overlayIcon;
-    }
-
-    public boolean isPlayerSide() {
-        return this.isPlayerSide;
     }
 
     public boolean renderIconWithItem() {

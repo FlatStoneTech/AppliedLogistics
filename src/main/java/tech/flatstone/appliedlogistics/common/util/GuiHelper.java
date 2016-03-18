@@ -34,6 +34,8 @@ import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -45,12 +47,12 @@ import java.awt.*;
 import java.text.AttributedCharacterIterator;
 import java.util.*;
 
-public class OverlayHelper extends Gui {
+public class GuiHelper extends Gui {
     protected Minecraft mc = Minecraft.getMinecraft();
     protected TextureManager textureManager = mc.renderEngine;
     protected FontRenderer fontRenderer = mc.fontRendererObj;
 
-    public OverlayHelper() {
+    public GuiHelper() {
     }
 
     public void drawWindow(int x, int y, int w, int h, int bgColor) {
@@ -59,14 +61,6 @@ public class OverlayHelper extends Gui {
         drawRect(x - 3, y - 3, x + w + 3, y + h + 3, bgColor);
         drawRect(x - 4, y - 3, x - 3, y + h + 3, bgColor);
         drawRect(x + w + 3, y - 3, x + w + 4, y + h + 3, bgColor);
-    }
-
-    public void drawGradientWindow(int x, int y, int w, int h, int bgColor, int bgColor2) {
-        drawGradientRect(x - 3, y - 4, x + w + 3, y - 3, bgColor, bgColor2);
-        drawGradientRect(x - 3, y + h + 3, x + w + 3, y + h + 4, bgColor, bgColor2);
-        drawGradientRect(x - 3, y - 3, x + w + 3, y + h + 3, bgColor, bgColor2);
-        drawGradientRect(x - 4, y - 3, x - 3, y + h + 3, bgColor, bgColor2);
-        drawGradientRect(x + w + 3, y - 3, x + w + 4, y + h + 3, bgColor, bgColor2);
     }
 
     public void drawWindowWithBorder(int x, int y, int w, int h, int bgColor, int frameColor) {
@@ -88,31 +82,17 @@ public class OverlayHelper extends Gui {
         drawProgressBar(x, y, w, h, p, bgColor, frameColor, progressColor, progressColor, 0);
     }
 
-    public void drawGraidentVertProgressBar(int x, int y, int w, int h, int p, int bgColor, int frameColor, int progressColor, int progressColor2) {
-        drawProgressBar(x, y, w, h, p, bgColor, frameColor, progressColor, progressColor2, 1);
-    }
-
-    public void drawGraidentHorzProgressBar(int x, int y, int w, int h, int p, int bgColor, int frameColor, int progressColor, int progressColor2) {
-        drawProgressBar(x, y, w, h, p, bgColor, frameColor, progressColor, progressColor2, 0);
-    }
-
     protected void drawProgressBar(int x, int y, int w, int h, int p, int bgColor, int frameColor, int progressColor, int progressColor2, int hv) {
         drawWindowWithBorder(x, y, w, h, bgColor, frameColor);
 
         if (hv == 0) {
             float pWf = ((float) w / 100) * p;
             int pW = Math.round(pWf);
-            if (progressColor == progressColor2)
-                drawWindow(x + 2, y + 2, pW - 4, h - 4, progressColor);
-            else
-                drawGradientWindow(x + 2, y + 2, pW - 4, h - 4, progressColor, progressColor2);
+            drawWindow(x + 2, y + 2, pW - 4, h - 4, progressColor);
         } else {
             float pHf = ((float) h / 100) * p;
             int pH = Math.round(pHf);
-            if (progressColor == progressColor2)
-                drawWindow(x + 2, y + h - pH + 2, w - 4, pH - 4, progressColor);
-            else
-                drawGradientWindow(x + 2, y + h - pH + 2, w - 4, pH - 4, progressColor, progressColor2);
+            drawWindow(x + 2, y + h - pH + 2, w - 4, pH - 4, progressColor);
         }
 
     }
@@ -135,24 +115,18 @@ public class OverlayHelper extends Gui {
         OpenGLHelper.restoreGLState(savedGLState);
     }
 
+    /**
+     * Draws a transparent item in the slot
+     * @param itemStack item to draw
+     * @param x slot x
+     * @param y slot y
+     * @param renderItem Item Render
+     */
     public void drawItemStack(ItemStack itemStack, int x, int y, RenderItem renderItem) {
-        int[][] savedGLState = OpenGLHelper.saveGLState(new int[]{GL11.GL_ALPHA_TEST, GL11.GL_LIGHTING});
+        this.zLevel = 100.0f;
+        renderItem.zLevel = 100.0f;
 
-        GL11.glPushMatrix();
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        RenderHelper.enableGUIStandardItemLighting();
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        renderItem.renderItemIntoGUI(itemStack, x, y);
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glPopMatrix();
-
-        OpenGLHelper.restoreGLState(savedGLState);
-    }
-
-    public void drawTransparentItemStack(ItemStack itemStack, int x, int y, RenderItem renderItem) {
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         int colorOverlay = new Color(139, 139, 139, 200).hashCode();
         GlStateManager.disableLighting();
         GlStateManager.disableDepth();
@@ -162,17 +136,36 @@ public class OverlayHelper extends Gui {
         GlStateManager.colorMask(true, true, true, true);
         GlStateManager.enableLighting();
         GlStateManager.enableDepth();
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+        this.zLevel = 0.0f;
+        renderItem.zLevel = 0.0f;
     }
 
-    public void drawDisabledSlot(int x, int y) {
-        int colorDisabled = new Color(255, 85, 85, 128).hashCode();
+    /**
+     * Draws a slot that is disabled...
+     * @param x slot x
+     * @param y slot y
+     * @param renderItem Item Render
+     */
+    public void drawDisabledSlot(int x, int y, RenderItem renderItem) {
+        this.zLevel = 100.f;
+        renderItem.zLevel = 100.0f;
+
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        int colorOverlay = new Color(139, 139, 139, 200).hashCode();
         GlStateManager.disableLighting();
         GlStateManager.disableDepth();
         GlStateManager.colorMask(true, true, true, false);
-        this.drawGradientRect(x, y, x + 16, y + 16, colorDisabled, colorDisabled);
+        renderItem.renderItemAndEffectIntoGUI(new ItemStack(Blocks.barrier), x, y);
+        this.drawGradientRect(x, y, x + 16, y + 16, colorOverlay, colorOverlay);
         GlStateManager.colorMask(true, true, true, true);
         GlStateManager.enableLighting();
         GlStateManager.enableDepth();
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+        this.zLevel = 0.0f;
+        renderItem.zLevel = 0.0f;
     }
 
 //    public void drawCenteredStrings(int x, int y, int w, int offset, ArrayList<ColorString> messages) {
@@ -222,4 +215,6 @@ public class OverlayHelper extends Gui {
         Minecraft.getMinecraft().getTextureManager().bindTexture(resource);
         drawTexturedModalRect(0, 0, 0, 0, 128, 128);
     }
+
+
 }

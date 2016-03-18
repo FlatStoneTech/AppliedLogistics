@@ -20,7 +20,6 @@
 
 package tech.flatstone.appliedlogistics.common.container.builder;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
@@ -30,84 +29,59 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import scala.collection.parallel.ParIterableLike;
-import tech.flatstone.appliedlogistics.AppliedLogistics;
-import tech.flatstone.appliedlogistics.client.gui.GuiHandler;
 import tech.flatstone.appliedlogistics.common.container.ContainerBase;
-import tech.flatstone.appliedlogistics.common.container.slot.SlotDisabled;
-import tech.flatstone.appliedlogistics.common.container.slot.SlotMachineInput;
-import tech.flatstone.appliedlogistics.common.container.slot.SlotNormal;
-import tech.flatstone.appliedlogistics.common.container.slot.SlotRestrictedInput;
+import tech.flatstone.appliedlogistics.common.container.slot.*;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityBuilder;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
-import tech.flatstone.appliedlogistics.common.util.PlanDetails;
 import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class ContainerBuilder extends ContainerBase {
-    PlanDetails planDetails = null;
-    IInventory inventory;
-    TileEntityBuilder tileEntity;
+    private IInventory inventory;
+    private TileEntityBuilder tileEntity;
+    private InventoryPlayer inventoryPlayer;
+    private List<PlanRequiredMaterials> requiredMaterialsList = new ArrayList<PlanRequiredMaterials>();
+    private static ContainerBuilder INSTANCE = null;
 
     public ContainerBuilder(InventoryPlayer inventoryPlayer, TileEntity tileEntity) {
         super(inventoryPlayer, tileEntity);
         this.tileEntity = (TileEntityBuilder) tileEntity;
         this.inventory = (IInventory) tileEntity;
+        this.inventoryPlayer = inventoryPlayer;
 
-        addSlotToContainer(new SlotMachineInput(inventory, 0, 12, 22));
-        //addSlotToContainer(new SlotRestrictedInput(inventory, 0, 12, 22, new ArrayList<ItemStack>() {{
-        //    add(new ItemStack(Items.ITEM_PLAN.item));
-        //}}, new ItemStack(Items.ITEM_PLAN.item)));
+        INSTANCE = this;
 
+        ((TileEntityBuilder)tileEntity).updatePlan();
+        drawSlots();
+    }
+    private void drawSlots() {
+        inventorySlots.clear();
+        drawMaterialSlots();
+
+        addSlotToContainer(new SlotMachineInput(inventory, 0, 12, 22, new ItemStack(Items.ITEM_PLAN.item)));
         bindPlayerInventory(inventoryPlayer, 0, 140);
-
-        // Upper Left = 8, 60
-        addSlotToContainer(new SlotNormal(inventory, 1, 8, 60));
-
-
-        addSlotToContainer(new SlotRestrictedInput(inventory, 2, 26, 60, new ArrayList<ItemStack>() {{
-            add(new ItemStack(Items.ITEM_MATERIAL_GEAR.item));
-        }}, new ItemStack(Items.ITEM_MATERIAL_GEAR.item)));
     }
 
+    private void drawMaterialSlots() {
+        requiredMaterialsList = tileEntity.getPlanRequiredMaterialsList();
 
-    @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
+        int offsetX = 8;
+        int offsetY = 60;
 
-        if (planDetails != tileEntity.getPlanDetails()) {
-            planDetails = tileEntity.getPlanDetails();
-
-            LogHelper.info(">>> Update the Container...");
-
-            for (int i = 36; i < this.inventorySlots.size(); i++) {
-                this.inventorySlots.remove(i);
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (requiredMaterialsList.size() <= (j + (i * 9))) {
+                    addSlotToContainer(new SlotDisabled(inventory, j + (i * 9) + 1, j * 18 + offsetX, offsetY + i * 18));
+                } else {
+                    // todo: restricted input...
+                    addSlotToContainer(new SlotNormal(inventory, j + (i * 9) + 1, j * 18 + offsetX, offsetY + i * 18));
+                }
             }
-
-
-            addSlotToContainer(new SlotDisabled(inventory, 1, 8, 60));
-            addSlotToContainer(new SlotRestrictedInput(inventory, 2, 26, 60, new ArrayList<ItemStack>() {{
-                add(new ItemStack(Items.ITEM_ORE_NUGGET.item));
-            }}, new ItemStack(Items.ITEM_ORE_NUGGET.item)));
-
-
-            for (int i = 0; i < this.crafters.size(); i++) {
-                ICrafting crafting = (ICrafting) this.crafters.get(i);
-                crafting.sendProgressBarUpdate(this, 0, 0);
-            }
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void updateProgressBar(int id, int data) {
-        super.updateProgressBar(id, data);
-
-        for (int i = 0; i < this.inventorySlots.size(); i++) {
-            //LogHelper.info(">>> " + this.inventorySlots.get(i).toString());
         }
     }
 
@@ -116,13 +90,28 @@ public class ContainerBuilder extends ContainerBase {
         if ((slotId >= 0 && (slotId < this.inventorySlots.size()))) {
             Slot slotInput = (Slot) this.inventorySlots.get(slotId);
             if (slotInput instanceof SlotMachineInput) {
-                LogHelper.info(">>> Slot was clicked...");
-
                 tileEntity.updatePlan();
+                drawSlots();
                 this.detectAndSendChanges();
             }
         }
 
         return super.slotClick(slotId, clickedButton, mode, playerIn);
+    }
+
+    public static void test() {
+        if (INSTANCE != null) {
+            INSTANCE.drawSlots();
+        }
+    }
+
+    public boolean equalLists(List<PlanRequiredMaterials> a, List<PlanRequiredMaterials> b) {
+        if ((a.size() != b.size()) || (a == null && b != null) || (a != null && b == null))
+            return false;
+
+        if (a == null && b == null)
+            return true;
+
+        return a.equals(b);
     }
 }

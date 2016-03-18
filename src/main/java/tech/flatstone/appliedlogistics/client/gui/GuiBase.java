@@ -30,11 +30,11 @@ import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.container.slot.SlotBase;
 import tech.flatstone.appliedlogistics.common.container.slot.SlotDisabled;
+import tech.flatstone.appliedlogistics.common.util.GuiHelper;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
-import tech.flatstone.appliedlogistics.common.util.OverlayHelper;
 
 public abstract class GuiBase extends GuiContainer {
-    OverlayHelper overlayHelper = new OverlayHelper();
+    GuiHelper guiHelper = new GuiHelper();
 
     public GuiBase(Container container) {
         super(container);
@@ -124,34 +124,6 @@ public abstract class GuiBase extends GuiContainer {
         this.mc.getTextureManager().bindTexture(resourceLocation);
     }
 
-    protected void drawItem(int x, int y, ItemStack itemStack) {
-        this.zLevel = 100.0F;
-        itemRender.zLevel = 100.0F;
-
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
-        overlayHelper.drawTransparentItemStack(itemStack, x, y, itemRender);
-
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
-        itemRender.zLevel = 0.0F;
-        this.zLevel = 0.0F;
-    }
-
-    protected void drawDisabledSlot(int x, int y) {
-        this.zLevel = 100.0F;
-        itemRender.zLevel = 100.0F;
-
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
-        overlayHelper.drawDisabledSlot(x, y);
-
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
-        itemRender.zLevel = 0.0F;
-        this.zLevel = 0.0F;
-    }
-
     protected final void drawGuiContainerBackgroundLayer(float f, int x, int y) {
         int ox = this.guiLeft;
         int oy = this.guiTop;
@@ -177,27 +149,26 @@ public abstract class GuiBase extends GuiContainer {
     }
 
     @Override
-    public void drawSlot(Slot s) {
+    public void drawSlot(Slot slot) {
         try {
-            ItemStack is = s.getStack();
-            if (s instanceof SlotBase && ((SlotBase) s).renderIconWithItem()) {
-                SlotBase aes = (SlotBase) s;
-                drawItem(aes.defX, aes.defY, aes.overlayIcon);
+            if (slot instanceof SlotBase && ((SlotBase) slot).renderIconWithItem() && !slot.getHasStack()) {
+                SlotBase aes = (SlotBase) slot;
+                guiHelper.drawItemStack(aes.getOverlayIcon(), aes.getDefX(), aes.getDefY(), this.itemRender);
             }
-            if (s instanceof SlotBase && s instanceof SlotDisabled) {
-                SlotBase aes = (SlotBase) s;
-                drawDisabledSlot(aes.defX, aes.defY);
+            if (slot instanceof SlotBase && slot instanceof SlotDisabled) {
+                SlotBase aes = (SlotBase) slot;
+                guiHelper.drawDisabledSlot(aes.getDefX(), aes.getDefY(), this.itemRender);
             }
 
-            if ((s instanceof SlotBase)) {
-                ((SlotBase) s).isDisplay = true;
-                safeDrawSlot(s);
+            if ((slot instanceof SlotBase)) {
+                ((SlotBase) slot).setDisplay(true);
+                safeDrawSlot(slot);
             } else {
-                safeDrawSlot(s);
+                safeDrawSlot(slot);
             }
             return;
         } catch (Exception err) {
-            safeDrawSlot(s);
+            safeDrawSlot(slot);
         }
     }
 

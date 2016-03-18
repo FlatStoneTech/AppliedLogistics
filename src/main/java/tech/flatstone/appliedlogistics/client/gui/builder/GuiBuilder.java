@@ -21,20 +21,22 @@
 package tech.flatstone.appliedlogistics.client.gui.builder;
 
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import tech.flatstone.appliedlogistics.ModMessages;
 import tech.flatstone.appliedlogistics.client.gui.GuiBase;
 import tech.flatstone.appliedlogistics.common.container.builder.ContainerBuilder;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityBuilder;
+import tech.flatstone.appliedlogistics.common.util.GuiHelper;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
-import tech.flatstone.appliedlogistics.common.util.OverlayHelper;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.awt.*;
 
 public class GuiBuilder extends GuiBase {
     TileEntityBuilder tileEntity;
-    OverlayHelper overlayHelper = new OverlayHelper();
+    GuiHelper guiHelper = new GuiHelper();
 
     public GuiBuilder(InventoryPlayer inventoryPlayer, TileEntityBuilder tileEntity) {
         super(new ContainerBuilder(inventoryPlayer, tileEntity));
@@ -82,13 +84,28 @@ public class GuiBuilder extends GuiBase {
          * Progress Bars
          */
         this.fontRendererObj.drawString(LanguageHelper.getTranslatedMessage(ModMessages.MESSAGE_BUILDER_WEIGHT), 184, 129, 4210752);
-        overlayHelper.drawHorzProgressBar(186, 142, 62, 6, 0, colorBackground, colorBorder, colorProgressBackgroundGood);
-        overlayHelper.drawCenteredString(186, 141, 62, "1000kg", colorFont);
+        guiHelper.drawHorzProgressBar(186, 142, 62, 6, 0, colorBackground, colorBorder, colorProgressBackgroundGood);
+        guiHelper.drawCenteredString(186, 141, 62, "1000kg", colorFont);
 
         this.fontRendererObj.drawString(LanguageHelper.getTranslatedMessage(ModMessages.MESSAGE_BUILDER_TIME), 184, 155, 4210752);
-        overlayHelper.drawHorzProgressBar(186, 168, 62, 6, 0, colorBackground, colorBorder, colorProgressBackground);
-        overlayHelper.drawCenteredString(186, 167, 62, "0% (0:00)", colorFont);
+        guiHelper.drawHorzProgressBar(186, 168, 62, 6, 0, colorBackground, colorBorder, colorProgressBackground);
+        guiHelper.drawCenteredString(186, 167, 62, "0% (0:00)", colorFont);
 
 //
     }
+
+    @Override
+    public void updateScreen() {
+        super.updateScreen();
+
+        ContainerBuilder.test();
+    }
+
+    @Override
+    public void drawSlot(Slot slot) {
+        super.drawSlot(slot);
+        LogHelper.info(">>> Drawing Slot: " + slot.getSlotIndex());
+    }
+
+
 }

@@ -39,6 +39,7 @@ import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInv
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
 import tech.flatstone.appliedlogistics.common.util.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -48,6 +49,7 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
     private TechLevel planTechLevel = null;
     private ItemPlanBase planBase = null;
     private PlanDetails planDetails = null;
+    private List<PlanRequiredMaterials> planRequiredMaterialsList = new ArrayList<PlanRequiredMaterials>();
 
     @Override
     public IInventory getInternalInventory() {
@@ -57,6 +59,10 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
     @Override
     public void saveChanges() {
 
+    }
+
+    public List<PlanRequiredMaterials> getPlanRequiredMaterialsList() {
+        return planRequiredMaterialsList;
     }
 
     public TechLevel getPlanTechLevel() {
@@ -100,27 +106,33 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
             LogHelper.info(">>> Plan Change (" + temp + ")");
             planTechLevel = temp;
 
-            // todo: clear slot list
+            // Clear old details...
+            planRequiredMaterialsList.clear();
             planDetails = null;
 
-
-            if (planTechLevel == null)
+            if (planTechLevel == null) {
+                this.markForUpdate();
+                this.markDirty();
                 return;
-
+            }
 
             planDetails = ((IMachinePlan) planBase).getTechLevels(planTechLevel);
-            LogHelper.info(">>> Updating the Plan Details...");
+            planRequiredMaterialsList = planDetails.getRequiredMaterialsList();
+
             this.markForUpdate();
             this.markDirty();
-
-            // todo: lets look at the plan to get the slots setup...
         }
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, ItemStack itemStack) {
+        return super.isItemValidForSlot(slot, itemStack);
     }
 
     @Override
     public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
         if (slot == 0) {
-            //updatePlan();
+            updatePlan();
         }
     }
 
