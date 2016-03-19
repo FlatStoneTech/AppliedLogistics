@@ -21,6 +21,7 @@
 package tech.flatstone.appliedlogistics.client.gui.builder;
 
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -34,6 +35,7 @@ import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 import tech.flatstone.appliedlogistics.common.util.PlanDetails;
 import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,12 +43,22 @@ public class GuiBuilder extends GuiBase {
     TileEntityBuilder tileEntity;
     GuiHelper guiHelper = new GuiHelper();
     List<PlanRequiredMaterials> requiredMaterialsList = new ArrayList<PlanRequiredMaterials>();
+    private GuiButton btnStartBuilder;
 
     public GuiBuilder(InventoryPlayer inventoryPlayer, TileEntityBuilder tileEntity) {
         super(new ContainerBuilder(inventoryPlayer, tileEntity));
         this.xSize = 256;
         this.ySize = 222;
         this.tileEntity = tileEntity;
+    }
+
+    @Override
+    public void initGui() {
+        this.buttonList.clear();
+        this.buttonList.add(this.btnStartBuilder = new GuiButton(0, 268, 126, 68, 20, LanguageHelper.LABEL.translateMessage("build")));
+        this.btnStartBuilder.enabled = false;
+
+        super.initGui();
     }
 
     @Override
@@ -88,15 +100,15 @@ public class GuiBuilder extends GuiBase {
         /**
          * Progress Bars
          */
-        if (planDetails != null) {
+        if (planDetails != null && tileEntity.getTicksRemaining() == 0) {
             int weightMax = planDetails.getTotalWeight();
             int weightTotal = tileEntity.getTotalWeight();
-            int weightProgressColor = colorProgressBackgroundGood;
+            int weightProgressColor = colorProgressBackground;
 
             float weightPercent = ((((float) weightTotal) / (float) weightMax)) * 100;
 
-            if (weightPercent > 90)
-                weightProgressColor = colorProgressBackgroundWarn;
+            if (tileEntity.isMeetingBuildRequirements())
+                weightProgressColor = colorProgressBackgroundGood;
 
             if (weightPercent > 100) {
                 weightPercent = 100;
@@ -111,14 +123,15 @@ public class GuiBuilder extends GuiBase {
             guiHelper.drawCenteredString(40, 26, 126, weightLabel, colorFont);
         }
 
-
-//        guiHelper.drawHorzProgressBar(40, 26, 126, 8, 0, colorBackground, colorBorder, colorProgressBackground);
-//        String timeLabel = String.format("%s %s (%s%%)",
-//                LanguageHelper.LABEL.translateMessage("timeleft"),
-//                "0:00",
-//                "50"
-//                );
-//        guiHelper.drawCenteredString(40, 26, 126, timeLabel, colorFont);
+        if (planDetails != null && tileEntity.getTicksRemaining() > 0) {
+            guiHelper.drawHorzProgressBar(40, 26, 126, 8, 0, colorBackground, colorBorder, colorProgressBackground);
+            String timeLabel = String.format("%s %s (%s%%)",
+                    LanguageHelper.LABEL.translateMessage("timeleft"),
+                    "0:00",
+                    "50"
+            );
+            guiHelper.drawCenteredString(40, 26, 126, timeLabel, colorFont);
+        }
     }
 
     @Override
@@ -129,6 +142,8 @@ public class GuiBuilder extends GuiBase {
         if (!equalLists(requiredMaterialsList, tileEntity.getPlanRequiredMaterialsList())) {
             requiredMaterialsList = tileEntity.getPlanRequiredMaterialsList();
         }
+
+        btnStartBuilder.enabled = tileEntity.isMeetingBuildRequirements();
     }
 
     @Override
@@ -146,7 +161,6 @@ public class GuiBuilder extends GuiBase {
         }
     }
 
-    //todo: put this into a helper...
     public boolean equalLists(List<PlanRequiredMaterials> a, List<PlanRequiredMaterials> b) {
         if ((a.size() != b.size()) || (a == null && b != null) || (a != null && b == null))
             return false;
@@ -155,6 +169,15 @@ public class GuiBuilder extends GuiBase {
             return true;
 
         return a.equals(b);
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton button) throws IOException {
+        switch (button.id) {
+            case 0:
+                tileEntity.startBuilding();
+                break;
+        }
     }
 
     protected void renderToolTip(PlanRequiredMaterials materials, int x, int y) {
@@ -219,10 +242,6 @@ public class GuiBuilder extends GuiBase {
                             materials.getItemWeight()
                     ));
                 }
-                j++;
-
-                // Add Time Information
-                //todo: maybe?
             } else {
                 list.set(i, EnumChatFormatting.GRAY + (String) list.get(i));
             }

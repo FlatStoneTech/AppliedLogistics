@@ -13,9 +13,18 @@ public class SlotBuilderPlan extends SlotBase {
     }
 
     @Override
-    public ItemStack decrStackSize(int amount) {
-        // todo: check if tile is processing or not...
+    public boolean canBeHovered() {
+        if (tileEntity.getTicksRemaining() > 0)
+            return false;
 
-        return super.decrStackSize(amount);
+        return true;
     }
+
+//    @Override
+//    public ItemStack decrStackSize(int amount) {
+//        if (tileEntity.getTicksRemaining() > 0)
+//            return null;
+//
+//        return super.decrStackSize(amount);
+//    }
 }

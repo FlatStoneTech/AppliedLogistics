@@ -44,6 +44,7 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
     private ItemPlanBase planBase = null;
     private PlanDetails planDetails = null;
     private List<PlanRequiredMaterials> planRequiredMaterialsList = new ArrayList<PlanRequiredMaterials>();
+    private int ticksRemaining = 0;
 
     @Override
     public IInventory getInternalInventory() {
@@ -53,6 +54,10 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
     @Override
     public void saveChanges() {
 
+    }
+
+    public int getTicksRemaining() {
+        return ticksRemaining;
     }
 
     public List<PlanRequiredMaterials> getPlanRequiredMaterialsList() {
@@ -69,12 +74,37 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
             ItemStack itemInSlot = inventory.getStackInSlot(invSlot);
             if (itemInSlot != null)
                 itemCount = itemInSlot.stackSize;
-            weight = (materialWeight * itemCount) + weight;
+            weight += (materialWeight * itemCount);
 
             invSlot++;
         }
 
         return weight;
+    }
+
+    public boolean isMeetingBuildRequirements() {
+        int invSlot = 1;
+
+        if (ticksRemaining > 0)
+            return false;
+
+        for (PlanRequiredMaterials material : planRequiredMaterialsList) {
+            if (material.getMinCount() > 0) {
+                ItemStack itemInSlot = inventory.getStackInSlot(invSlot);
+                if (itemInSlot == null)
+                    return false;
+
+                if (itemInSlot.stackSize < material.getMinCount())
+                    return false;
+            }
+
+            invSlot++;
+        }
+
+        if (planDetails!= null && getTotalWeight() > planDetails.getTotalWeight())
+            return false;
+
+        return true;
     }
 
     public TechLevel getPlanTechLevel() {
@@ -190,5 +220,9 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
             updatePlan();
 
         // todo: process items if there are things to process...
+    }
+
+    public void startBuilding() {
+        ticksRemaining = 100;
     }
 }
