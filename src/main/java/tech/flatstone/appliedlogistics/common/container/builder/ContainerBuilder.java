@@ -20,26 +20,13 @@
 
 package tech.flatstone.appliedlogistics.common.container.builder;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.common.container.ContainerBase;
-import tech.flatstone.appliedlogistics.common.container.slot.*;
-import tech.flatstone.appliedlogistics.common.items.Items;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotBuilderInventory;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotBuilderPlan;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityBuilder;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
-import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 public class ContainerBuilder extends ContainerBase {
     private IInventory inventory;
@@ -54,6 +41,7 @@ public class ContainerBuilder extends ContainerBase {
 
         drawSlots();
     }
+
     private void drawSlots() {
         int offsetX = 8;
         int offsetY = 60;
@@ -64,7 +52,7 @@ public class ContainerBuilder extends ContainerBase {
             }
         }
 
-        addSlotToContainer(new SlotMachineInput(inventory, 0, 12, 22, new ItemStack(Items.ITEM_PLAN.item)));
+        addSlotToContainer(new SlotBuilderPlan(inventory, 0, 12, 22, tileEntity));
 
         bindPlayerInventory(inventoryPlayer, 0, 140);
     }

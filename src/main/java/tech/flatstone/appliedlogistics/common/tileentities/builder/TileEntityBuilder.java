@@ -20,7 +20,6 @@
 
 package tech.flatstone.appliedlogistics.common.tileentities.builder;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -29,10 +28,6 @@ import net.minecraft.util.ITickable;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
-import tech.flatstone.appliedlogistics.client.gui.GuiHandler;
-import tech.flatstone.appliedlogistics.client.gui.builder.GuiBuilder;
-import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
-import tech.flatstone.appliedlogistics.common.container.builder.ContainerBuilder;
 import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityInventoryBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
@@ -40,7 +35,6 @@ import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOp
 import tech.flatstone.appliedlogistics.common.util.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class TileEntityBuilder extends TileEntityInventoryBase implements ITickable {
@@ -63,6 +57,24 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
 
     public List<PlanRequiredMaterials> getPlanRequiredMaterialsList() {
         return planRequiredMaterialsList;
+    }
+
+    public int getTotalWeight() {
+        int weight = 0;
+        int invSlot = 1;
+
+        for (PlanRequiredMaterials material : planRequiredMaterialsList) {
+            int materialWeight = material.getItemWeight();
+            int itemCount = 0;
+            ItemStack itemInSlot = inventory.getStackInSlot(invSlot);
+            if (itemInSlot != null)
+                itemCount = itemInSlot.stackSize;
+            weight = (materialWeight * itemCount) + weight;
+
+            invSlot++;
+        }
+
+        return weight;
     }
 
     public TechLevel getPlanTechLevel() {

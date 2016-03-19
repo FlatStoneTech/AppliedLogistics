@@ -1,15 +1,37 @@
 # Messages
-messages.appliedlogistics.plan.invalid=Invalid Plan...
-messages.appliedlogistics.plan.insert=Insert Plan...
+message.appliedlogistics.plan.invalid=Invalid Plan...
+message.appliedlogistics.plan.insert=Insert Plan...
 
 # Labels
-labels.appliedlogistics.max=Max:
-labels.appliedlogistics.min=Min:
-labels.appliedlogistics.required=Required:
-labels.appliedlogistics.weightadded=Weight Added:
-labels.appliedlogistics.weightperitem=Weight per Item:
+label.appliedlogistics.max=Max:
+label.appliedlogistics.min=Min:
+label.appliedlogistics.required=Required:
+label.appliedlogistics.weightadded=Weight Added:
+label.appliedlogistics.weightperitem=Weight per Item:
+label.appliedlogistics.timeleft=Time Left:
+label.appliedlogistics.weightleft=Weight Left:
 
 # Blocks
+## Ores
+tile.appliedlogistics.ore.copper.name=Copper Ore
+tile.appliedlogistics.ore.tin.name=Tin Ore
+tile.appliedlogistics.ore.silver.name=Silver Ore
+tile.appliedlogistics.ore.lead.name=Lead Ore
+tile.appliedlogistics.ore.nickel.name=Nickel Ore
+tile.appliedlogistics.ore.rutile.name=Rutile Ore
+
+## Ingot Storage Blocks
+tile.appliedlogistics.ore_block.copper.name=Block of Copper
+tile.appliedlogistics.ore_block.tin.name=Block of Tin
+tile.appliedlogistics.ore_block.silver.name=Block of Silver
+tile.appliedlogistics.ore_block.lead.name=Block of Lead
+tile.appliedlogistics.ore_block.nickel.name=Block of Nickel
+tile.appliedlogistics.ore_block.rutile.name=Block of Rutile
+tile.appliedlogistics.ore_block.titanium.name=Block of Titanium
+tile.appliedlogistics.ore_block.bronze.name=Block of Bronze
+tile.appliedlogistics.ore_block.electrum.name=Block of Electrum
+tile.appliedlogistics.ore_block.steel.name=Block of Steel
+
 ## Builder
 tile.appliedlogistics.builder.stone.name=Stone Builder
 tile.appliedlogistics.builder.bronze.name=Bronze Builder
@@ -17,10 +39,71 @@ tile.appliedlogistics.builder.steel.name=Steel Builder
 tile.appliedlogistics.builder.industrial.name=Industrial Builder
 tile.appliedlogistics.builder.digital.name=Digital Builder
 
+## Machines
+tile.appliedlogistics.machine_pulverizer.name=Puliverizer
+
 # Items
+## Tools
+item.appliedlogistics.tool_hammer.name=Forge Hammer
+
 ## Plans
 item.appliedlogistics.plan.blank.name=Blank Machine Plan
 item.appliedlogistics.plan.pulverizer.name=Pulverizer Machine Plan
+
+## Gears
+item.appliedlogistics.material_gear.iron.name=Iron Gear
+item.appliedlogistics.material_gear.gold.name=Gold Gear
+item.appliedlogistics.material_gear.copper.name=Copper Gear
+item.appliedlogistics.material_gear.tin.name=Tin Gear
+item.appliedlogistics.material_gear.silver.name=Silver Gear
+item.appliedlogistics.material_gear.lead.name=Lead Gear
+item.appliedlogistics.material_gear.nickel.name=Nickel Gear
+item.appliedlogistics.material_gear.titanium.name=Titanium Gear
+item.appliedlogistics.material_gear.bronze.name=Bronze Gear
+item.appliedlogistics.material_gear.electrum.name=Electrum Gear
+item.appliedlogistics.material_gear.steel.name=Steel Gear
+item.appliedlogistics.material_gear.wood.name=Wooden Gear
+item.appliedlogistics.material_gear.stone.name=Stone Gear
+
+## Ingots
+item.appliedlogistics.ore_ingot.copper.name=Copper Ingot
+item.appliedlogistics.ore_ingot.tin.name=Tin Ingot
+item.appliedlogistics.ore_ingot.silver.name=Silver Ingot
+item.appliedlogistics.ore_ingot.lead.name=Lead Ingot
+item.appliedlogistics.ore_ingot.nickel.name=Nickel Ingot
+item.appliedlogistics.ore_ingot.rutile.name=Rutile Ingot
+item.appliedlogistics.ore_ingot.titanium.name=Titanium Ingot
+item.appliedlogistics.ore_ingot.bronze.name=Bronze Ingot
+item.appliedlogistics.ore_ingot.electrum.name=Electrum Ingot
+item.appliedlogistics.ore_ingot.steel.name=Steel Ingot
+
+## Dusts
+item.appliedlogistics.ore_dust.iron.name=Iron Dust
+item.appliedlogistics.ore_dust.gold.name=Gold Dust
+item.appliedlogistics.ore_dust.copper.name=Copper Dust
+item.appliedlogistics.ore_dust.tin.name=Tin Dust
+item.appliedlogistics.ore_dust.silver.name=Silver Dust
+item.appliedlogistics.ore_dust.lead.name=Lead Dust
+item.appliedlogistics.ore_dust.nickel.name=Nickel Dust
+item.appliedlogistics.ore_dust.rutile.name=Rutile Dust
+item.appliedlogistics.ore_dust.titanium.name=Titanium Dust
+item.appliedlogistics.ore_dust.bronze.name=Bronze Dust
+item.appliedlogistics.ore_dust.electrum.name=Electrum Dust
+item.appliedlogistics.ore_dust.steel.name=Steel Dust
+
+## Nuggets
+item.appliedlogistics.ore_nugget.iron.name=Iron Nugget
+item.appliedlogistics.ore_nugget.diamond.name=Diamond Nugget
+item.appliedlogistics.ore_nugget.copper.name=Copper Nugget
+item.appliedlogistics.ore_nugget.tin.name=Tin Nugget
+item.appliedlogistics.ore_nugget.silver.name=Silver Nugget
+item.appliedlogistics.ore_nugget.lead.name=Lead Nugget
+item.appliedlogistics.ore_nugget.nickel.name=Nickel Nugget
+item.appliedlogistics.ore_nugget.rutile.name=Rutile Nugget
+item.appliedlogistics.ore_nugget.titanium.name=Titanium Nugget
+item.appliedlogistics.ore_nugget.bronze.name=Bronze Nugget
+item.appliedlogistics.ore_nugget.electrum.name=Electrum Nugget
+item.appliedlogistics.ore_nugget.steel.name=Steel Nugget
 
 # Descriptions
 description.appliedlogistics.plan.pulverizer=Pulverizer used to process ores...

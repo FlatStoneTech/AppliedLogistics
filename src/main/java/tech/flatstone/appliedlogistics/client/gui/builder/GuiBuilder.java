@@ -20,26 +20,20 @@
 
 package tech.flatstone.appliedlogistics.client.gui.builder;
 
-import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
-import tech.flatstone.appliedlogistics.ModMessages;
 import tech.flatstone.appliedlogistics.client.gui.GuiBase;
-import tech.flatstone.appliedlogistics.client.gui.GuiHandler;
 import tech.flatstone.appliedlogistics.common.container.builder.ContainerBuilder;
 import tech.flatstone.appliedlogistics.common.container.slot.SlotBuilderInventory;
-import tech.flatstone.appliedlogistics.common.container.slot.SlotNormal;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityBuilder;
 import tech.flatstone.appliedlogistics.common.util.GuiHelper;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
+import tech.flatstone.appliedlogistics.common.util.PlanDetails;
 import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,33 +65,60 @@ public class GuiBuilder extends GuiBase {
 
     @Override
     public void drawFG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
+        PlanDetails planDetails = tileEntity.getPlanDetails();
+
         /**
          * Titles
          */
-        this.fontRendererObj.drawString(LanguageHelper.getTranslated(tileEntity.getUnlocalizedName()), 8, 6, 4210752);
-        this.fontRendererObj.drawString(LanguageHelper.getTranslated("container.inventory"), 8, 129, 4210752);
+        this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()), 8, 6, 4210752);
+        this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage("container.inventory"), 8, 129, 4210752);
 
         ItemStack itemPlan = tileEntity.getInternalInventory().getStackInSlot(0);
 
+        //todo: redo this...
         if (itemPlan == null) {
-            this.fontRendererObj.drawString(EnumChatFormatting.RED + LanguageHelper.getTranslatedMessage(ModMessages.MESSAGE_PLAN_INSERT), 36, 26, 4210752);
+            this.fontRendererObj.drawString(EnumChatFormatting.RED + LanguageHelper.MESSAGE.translateMessage("plan.insert"), 36, 26, 4210752);
         } else if (!itemPlan.hasTagCompound()) {
-            this.fontRendererObj.drawString(EnumChatFormatting.RED + LanguageHelper.getTranslatedMessage(ModMessages.MESSAGE_PLAN_INVALID), 36, 26, 4210752);
+            this.fontRendererObj.drawString(EnumChatFormatting.RED + LanguageHelper.MESSAGE.translateMessage("plan.invalid"), 36, 26, 4210752);
         } else {
-            this.fontRendererObj.drawString(LanguageHelper.getTranslated(itemPlan.getUnlocalizedName() + ".name"), 8, 48, 4210752);
+            this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage(itemPlan.getUnlocalizedName() + ".name"), 8, 48, 4210752);
         }
 
 
         /**
          * Progress Bars
          */
-        this.fontRendererObj.drawString(LanguageHelper.getTranslatedMessage(ModMessages.MESSAGE_BUILDER_WEIGHT), 184, 129, 4210752);
-        guiHelper.drawHorzProgressBar(186, 142, 62, 6, 0, colorBackground, colorBorder, colorProgressBackgroundGood);
-        guiHelper.drawCenteredString(186, 141, 62, "1000kg", colorFont);
+        if (planDetails != null) {
+            int weightMax = planDetails.getTotalWeight();
+            int weightTotal = tileEntity.getTotalWeight();
+            int weightProgressColor = colorProgressBackgroundGood;
 
-        this.fontRendererObj.drawString(LanguageHelper.getTranslatedMessage(ModMessages.MESSAGE_BUILDER_TIME), 184, 155, 4210752);
-        guiHelper.drawHorzProgressBar(186, 168, 62, 6, 0, colorBackground, colorBorder, colorProgressBackground);
-        guiHelper.drawCenteredString(186, 167, 62, "0% (0:00)", colorFont);
+            float weightPercent = ((((float) weightTotal) / (float) weightMax)) * 100;
+
+            if (weightPercent > 90)
+                weightProgressColor = colorProgressBackgroundWarn;
+
+            if (weightPercent > 100) {
+                weightPercent = 100;
+                weightProgressColor = colorProgressBackgroundBad;
+            }
+
+            guiHelper.drawHorzProgressBar(40, 26, 126, 8, Math.round(weightPercent), colorBackground, colorBorder, weightProgressColor);
+            String weightLabel = String.format("%s %dkg",
+                    LanguageHelper.LABEL.translateMessage("weightleft"),
+                    weightMax - weightTotal
+            );
+            guiHelper.drawCenteredString(40, 26, 126, weightLabel, colorFont);
+        }
+
+
+//        guiHelper.drawHorzProgressBar(40, 26, 126, 8, 0, colorBackground, colorBorder, colorProgressBackground);
+//        String timeLabel = String.format("%s %s (%s%%)",
+//                LanguageHelper.LABEL.translateMessage("timeleft"),
+//                "0:00",
+//                "50"
+//                );
+//        guiHelper.drawCenteredString(40, 26, 126, timeLabel, colorFont);
     }
 
     @Override
@@ -135,4 +156,80 @@ public class GuiBuilder extends GuiBase {
 
         return a.equals(b);
     }
+
+    protected void renderToolTip(PlanRequiredMaterials materials, int x, int y) {
+        ItemStack stack = materials.getRequiredMaterials().get(0);
+
+        List<String> list = stack.getTooltip(this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips);
+
+        for (int i = 0; i < list.size(); ++i) {
+            if (i == 0) {
+                list.set(i, stack.getRarity().rarityColor + (String) list.get(i));
+
+                /*
+                 * Add Material Information
+                 */
+                int j = 1;
+
+                // Add Description
+                if (!materials.getDescription().get(0).equalsIgnoreCase("")) {
+                    for (String description : materials.getDescription()) {
+                        list.add(i + j, String.format("%s%s%s",
+                                EnumChatFormatting.YELLOW,
+                                EnumChatFormatting.ITALIC,
+                                description
+                        ));
+                        j++;
+                    }
+                }
+
+                // Add Min / Max
+                if (materials.getMinCount() == materials.getMaxCount()) {
+                    list.add(i + j, String.format("%s%s%s %s",
+                            EnumChatFormatting.GRAY,
+                            EnumChatFormatting.ITALIC,
+                            LanguageHelper.LABEL.translateMessage("required"),
+                            materials.getMinCount()
+                    ));
+                } else {
+                    list.add(i + j, String.format("%s%s%s %s / %s %s",
+                            EnumChatFormatting.GRAY,
+                            EnumChatFormatting.ITALIC,
+                            LanguageHelper.LABEL.translateMessage("min"),
+                            materials.getMinCount(),
+                            LanguageHelper.LABEL.translateMessage("max"),
+                            materials.getMaxCount()
+                    ));
+                }
+                j++;
+
+                // Add Weight Information
+                if (materials.getMinCount() == materials.getMaxCount()) {
+                    list.add(i + j, String.format("%s%s%s %skg",
+                            EnumChatFormatting.GRAY,
+                            EnumChatFormatting.ITALIC,
+                            LanguageHelper.LABEL.translateMessage("weightadded"),
+                            materials.getItemWeight() * materials.getMaxCount()
+                    ));
+                } else {
+                    list.add(i + j, String.format("%s%s%s %skg",
+                            EnumChatFormatting.GRAY,
+                            EnumChatFormatting.ITALIC,
+                            LanguageHelper.LABEL.translateMessage("weightperitem"),
+                            materials.getItemWeight()
+                    ));
+                }
+                j++;
+
+                // Add Time Information
+                //todo: maybe?
+            } else {
+                list.set(i, EnumChatFormatting.GRAY + (String) list.get(i));
+            }
+        }
+
+        FontRenderer font = stack.getItem().getFontRenderer(stack);
+        this.drawHoveringText(list, x, y, (font == null ? fontRendererObj : font));
+    }
+
 }

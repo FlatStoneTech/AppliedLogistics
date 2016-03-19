@@ -27,11 +27,11 @@ import net.minecraft.item.ItemStack;
 
 public class SlotBase extends Slot {
     protected ItemStack overlayIcon = null;
-    private int defX;
-    private int defY;
     protected boolean isPlayerSide = false;
     protected boolean isDisplay = false;
     protected boolean isEnabled = true;
+    private int defX;
+    private int defY;
 
     public SlotBase(IInventory inventory, int idx, int x, int y) {
         super(inventory, idx, x, y);

@@ -20,29 +20,17 @@
 
 package tech.flatstone.appliedlogistics.client.gui;
 
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.ModInfo;
-import tech.flatstone.appliedlogistics.common.container.slot.SlotBase;
-import tech.flatstone.appliedlogistics.common.container.slot.SlotDisabled;
-import tech.flatstone.appliedlogistics.common.util.*;
+import tech.flatstone.appliedlogistics.common.util.GuiHelper;
+import tech.flatstone.appliedlogistics.common.util.OpenGLHelper;
 
 import java.awt.*;
-import java.util.List;
 
 public abstract class GuiBase extends GuiContainer {
     protected int colorBackground = new Color(56, 55, 69, 224).hashCode();
@@ -123,88 +111,6 @@ public abstract class GuiBase extends GuiContainer {
         return null;
     }
 
-    @Override
-    public void drawSlot(Slot slot) {
-        try {
-            //if (slot instanceof SlotBase && ((SlotBase) slot).renderIconWithItem() && !slot.getHasStack()) {
-            //    SlotBase aes = (SlotBase) slot;
-            //    guiHelper.drawItemStack(aes.getOverlayIcon(), aes.getDefX(), aes.getDefY(), this.itemRender);
-            //}
-            //if (slot instanceof SlotBase && slot instanceof SlotDisabled) {
-            //    SlotBase aes = (SlotBase) slot;
-            //    guiHelper.drawDisabledSlot(aes.getDefX(), aes.getDefY(), this.itemRender);
-           // }
-
-            if ((slot instanceof SlotBase)) {
-                ((SlotBase) slot).setDisplay(true);
-                safeDrawSlot(slot);
-            } else {
-                safeDrawSlot(slot);
-            }
-            return;
-        } catch (Exception err) {
-            safeDrawSlot(slot);
-        }
-    }
-
-    protected void renderToolTip(PlanRequiredMaterials materials, int x, int y) {
-        ItemStack stack = materials.getRequiredMaterials().get(0);
-
-        List<String> list = stack.getTooltip(this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips);
-
-        for (int i = 0; i < list.size(); ++i)
-        {
-            if (i == 0)
-            {
-                list.set(i, stack.getRarity().rarityColor + (String)list.get(i));
-
-                /*
-                 * Add Material Information
-                 */
-                int j = 1;
-
-                // Add Description
-                if (!materials.getDescription().get(0).equalsIgnoreCase("")) {
-                    for (String description : materials.getDescription()) {
-                        list.add(i + j, String.format("%s%s%s", EnumChatFormatting.YELLOW, EnumChatFormatting.ITALIC, description));
-                        j++;
-                    }
-                }
-
-                // Add Min / Max
-                if (materials.getMinCount() == materials.getMaxCount()) {
-                    String labelRequired = LanguageHelper.getTranslated(String.format("labels.%s.required", ModInfo.MOD_ID));
-                    list.add(i + j, String.format("%s%s%s %s", EnumChatFormatting.GRAY, EnumChatFormatting.ITALIC, labelRequired, materials.getMinCount()));
-                } else {
-                    String labelMin = LanguageHelper.getTranslated(String.format("labels.%s.min", ModInfo.MOD_ID));
-                    String labelMax = LanguageHelper.getTranslated(String.format("labels.%s.max", ModInfo.MOD_ID));
-                    list.add(i + j, String.format("%s%s%s %s / %s %s", EnumChatFormatting.GRAY, EnumChatFormatting.ITALIC, labelMin, materials.getMinCount(), labelMax, materials.getMaxCount()));
-                }
-                j++;
-
-                // Add Weight Information
-                if (materials.getMinCount() == materials.getMaxCount()) {
-                    String labelWeight = LanguageHelper.getTranslated(String.format("label.%s.weightadded", ModInfo.MOD_ID));
-                    list.add(i + j, String.format("%s%s%s %skg", EnumChatFormatting.GRAY, EnumChatFormatting.ITALIC, labelWeight, materials.getItemWeight() * materials.getMaxCount()));
-                } else {
-                    String labelWeight = LanguageHelper.getTranslated(String.format("label.%s.weightperitem", ModInfo.MOD_ID));
-                    list.add(i + j, String.format("%s%s%s %skg", EnumChatFormatting.GRAY, EnumChatFormatting.ITALIC, labelWeight, materials.getItemWeight()));
-                }
-                j++;
-
-                // Add Time Information
-                //todo: maybe?
-            }
-            else
-            {
-                list.set(i, EnumChatFormatting.GRAY + (String)list.get(i));
-            }
-        }
-
-        FontRenderer font = stack.getItem().getFontRenderer(stack);
-        this.drawHoveringText(list, x, y, (font == null ? fontRendererObj : font));
-    }
-
     protected void drawTransparentIconEmpty(Slot slot, ItemStack itemStack) {
         if (slot.getHasStack())
             return;
@@ -220,18 +126,18 @@ public abstract class GuiBase extends GuiContainer {
     }
 
     protected void drawTransparentIcon(Slot slot, ItemStack itemStack) {
-        guiHelper.drawItemStack(itemStack, slot.xDisplayPosition + guiLeft, slot.yDisplayPosition + guiTop, this.itemRender, true);
+        ItemStack displayStack = itemStack.copy();
+        if (itemStack.getItemDamage() == Short.MAX_VALUE)
+            displayStack.setItemDamage(0);
+
+        guiHelper.drawItemStack(displayStack, slot.xDisplayPosition + guiLeft, slot.yDisplayPosition + guiTop, this.itemRender, true);
     }
 
     protected void drawIcon(Slot slot, ItemStack itemStack) {
-        guiHelper.drawItemStack(itemStack, slot.xDisplayPosition + guiLeft, slot.yDisplayPosition + guiTop, this.itemRender, false);
-    }
+        ItemStack displayStack = itemStack.copy();
+        if (itemStack.getItemDamage() == Short.MAX_VALUE)
+            displayStack.setItemDamage(0);
 
-    private void safeDrawSlot(Slot s) {
-        try {
-            super.drawSlot(s);
-        } catch (Exception err) {
-            LogHelper.error(err.getMessage());
-        }
+        guiHelper.drawItemStack(itemStack, slot.xDisplayPosition + guiLeft, slot.yDisplayPosition + guiTop, this.itemRender, false);
     }
 }

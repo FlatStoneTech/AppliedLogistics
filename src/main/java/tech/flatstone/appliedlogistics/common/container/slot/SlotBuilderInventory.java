@@ -1,6 +1,5 @@
 package tech.flatstone.appliedlogistics.common.container.slot;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityBuilder;
@@ -29,6 +28,26 @@ public class SlotBuilderInventory extends SlotBase {
 
     @Override
     public boolean isItemValid(ItemStack stack) {
-        return canBeHovered();
+        if (!canBeHovered())
+            return false;
+
+        List<ItemStack> validItems = tileEntity.getPlanRequiredMaterialsList().get(slotID - 1).getRequiredMaterials();
+        for (ItemStack validItem : validItems) {
+            validItem.stackSize = 1;
+
+            if (validItem.isItemEqual(stack))
+                return true;
+
+            if (validItem.getItemDamage() == Short.MAX_VALUE && validItem.getItem() == stack.getItem())
+                return true;
+
+        }
+
+        return false;
+    }
+
+    @Override
+    public int getSlotStackLimit() {
+        return tileEntity.getPlanRequiredMaterialsList().get(slotID - 1).getMaxCount();
     }
 }

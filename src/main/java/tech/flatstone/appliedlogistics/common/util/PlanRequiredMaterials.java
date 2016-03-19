@@ -45,6 +45,10 @@ public class PlanRequiredMaterials {
         this.itemWeight = itemWeight;
         this.addTime = addTime;
         this.removeTime = removeTime;
+
+        if (!description.isEmpty())
+            description = LanguageHelper.DESCRIPTION.translateMessage(description);
+
         this.description = Arrays.asList(description.split("\\\\n"));
     }
 

@@ -24,28 +24,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.Attributes;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import java.awt.*;
-import java.text.AttributedCharacterIterator;
-import java.util.*;
 
 public class GuiHelper extends Gui {
     protected Minecraft mc = Minecraft.getMinecraft();
@@ -117,9 +106,10 @@ public class GuiHelper extends Gui {
 
     /**
      * Draws a transparent item in the slot
-     * @param itemStack item to draw
-     * @param x slot x
-     * @param y slot y
+     *
+     * @param itemStack  item to draw
+     * @param x          slot x
+     * @param y          slot y
      * @param renderItem Item Render
      */
     public void drawItemStack(ItemStack itemStack, int x, int y, RenderItem renderItem, boolean transparent) {
@@ -148,8 +138,9 @@ public class GuiHelper extends Gui {
 
     /**
      * Draws a slot that is disabled...
-     * @param x slot x
-     * @param y slot y
+     *
+     * @param x          slot x
+     * @param y          slot y
      * @param renderItem Item Render
      */
     public void drawDisabledSlot(int x, int y, RenderItem renderItem) {
