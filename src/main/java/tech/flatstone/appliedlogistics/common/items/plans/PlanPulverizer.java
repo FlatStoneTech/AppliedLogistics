@@ -50,22 +50,22 @@ public class PlanPulverizer extends ItemPlanBase implements IMachinePlan {
 
         switch (techLevel) {
             case STONE_AGE:
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("cobblestone"), 12, 12, 2, 120, 200));
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("plankWood"), 4, 4, 1, 40, 80));
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearWood"), 0, 1, 3, 60, 60));
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearStone"), 1, 2, 5, 80, 80));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("cobblestone"), 12, 12, 2, 120, 200, LanguageHelper.getTranslated(String.format("description.%s.plan.pulverizer.material.cobblestone", ModInfo.MOD_ID))));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("plankWood"), 4, 4, 1, 40, 80, ""));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearWood"), 0, 1, 3, 60, 60, ""));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearStone"), 1, 2, 5, 80, 80, ""));
 
                 planDetails = new PlanDetails(38, requiredMaterialsList, new ItemStack(Blocks.BLOCK_MACHINE_PULVERIZER.block, 1));
                 break;
 
             case BRONZE_AGE:
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("cobblestone"), 12, 12, 2, 120, 200));
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("plankWood"), 4, 4, 1, 40, 80));
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("ingotIron"), 2, 2, 4, 40, 80));
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("blockBronze"), 1, 1, 10, 60, 60));
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearStone"), 0, 2, 5, 80, 80));
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearIron"), 1, 2, 10, 80, 80));
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearBronze"), 2, 4, 12, 80, 80));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("cobblestone"), 12, 12, 2, 120, 200, ""));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("plankWood"), 4, 4, 1, 40, 80, ""));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("ingotIron"), 2, 2, 4, 40, 80, ""));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("blockBronze"), 1, 1, 10, 60, 60, ""));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearStone"), 0, 2, 5, 80, 80, ""));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearIron"), 1, 2, 10, 80, 80, ""));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearBronze"), 2, 4, 12, 80, 80, ""));
 
                 planDetails = new PlanDetails(38, requiredMaterialsList, new ItemStack(Blocks.BLOCK_MACHINE_PULVERIZER.block, 1));
                 break;

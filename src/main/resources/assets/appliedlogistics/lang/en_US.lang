@@ -2,6 +2,13 @@
 messages.appliedlogistics.plan.invalid=Invalid Plan...
 messages.appliedlogistics.plan.insert=Insert Plan...
 
+# Labels
+labels.appliedlogistics.max=Max:
+labels.appliedlogistics.min=Min:
+labels.appliedlogistics.required=Required:
+labels.appliedlogistics.weightadded=Weight Added:
+labels.appliedlogistics.weightperitem=Weight per Item:
+
 # Blocks
 ## Builder
 tile.appliedlogistics.builder.stone.name=Stone Builder
@@ -17,3 +24,5 @@ item.appliedlogistics.plan.pulverizer.name=Pulverizer Machine Plan
 
 # Descriptions
 description.appliedlogistics.plan.pulverizer=Pulverizer used to process ores...
+## Puliverizer Plan
+description.appliedlogistics.plan.pulverizer.material.cobblestone=Used to build the machine frame\ntesting line 2...

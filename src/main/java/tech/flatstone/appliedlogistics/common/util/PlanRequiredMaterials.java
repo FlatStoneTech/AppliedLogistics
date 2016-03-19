@@ -22,6 +22,7 @@ package tech.flatstone.appliedlogistics.common.util;
 
 import net.minecraft.item.ItemStack;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class PlanRequiredMaterials {
@@ -35,13 +36,16 @@ public class PlanRequiredMaterials {
     private float addTime;
     private float removeTime;
 
-    public PlanRequiredMaterials(List<ItemStack> requiredMaterials, int minCount, int maxCount, int itemWeight, float addTime, float removeTime) {
+    private List<String> description;
+
+    public PlanRequiredMaterials(List<ItemStack> requiredMaterials, int minCount, int maxCount, int itemWeight, float addTime, float removeTime, String description) {
         this.requiredMaterials = requiredMaterials;
         this.maxCount = maxCount;
         this.minCount = minCount;
         this.itemWeight = itemWeight;
         this.addTime = addTime;
         this.removeTime = removeTime;
+        this.description = Arrays.asList(description.split("\\\\n"));
     }
 
     public List<ItemStack> getRequiredMaterials() {
@@ -66,5 +70,9 @@ public class PlanRequiredMaterials {
 
     public float getRemoveTime() {
         return this.removeTime;
+    }
+
+    public List<String> getDescription() {
+        return description;
     }
 }

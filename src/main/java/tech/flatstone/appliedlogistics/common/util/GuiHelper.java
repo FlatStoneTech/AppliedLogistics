@@ -122,20 +122,24 @@ public class GuiHelper extends Gui {
      * @param y slot y
      * @param renderItem Item Render
      */
-    public void drawItemStack(ItemStack itemStack, int x, int y, RenderItem renderItem) {
-        this.zLevel = 0.0f;
-        renderItem.zLevel = 0.0f;
+    public void drawItemStack(ItemStack itemStack, int x, int y, RenderItem renderItem, boolean transparent) {
+        this.zLevel = 50.0f;
+        renderItem.zLevel = 50.0f;
 
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         int colorOverlay = new Color(139, 139, 139, 160).hashCode();
-        GlStateManager.disableLighting();
+
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        RenderHelper.enableGUIStandardItemLighting();
         GlStateManager.disableDepth();
         GlStateManager.colorMask(true, true, true, false);
         renderItem.renderItemAndEffectIntoGUI(itemStack, x, y);
-        this.drawGradientRect(x, y, x + 16, y + 16, colorOverlay, colorOverlay);
+        if (transparent)
+            this.drawGradientRect(x, y, x + 16, y + 16, colorOverlay, colorOverlay);
         GlStateManager.colorMask(true, true, true, true);
-        GlStateManager.enableLighting();
         GlStateManager.enableDepth();
+
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
         this.zLevel = 0.0f;

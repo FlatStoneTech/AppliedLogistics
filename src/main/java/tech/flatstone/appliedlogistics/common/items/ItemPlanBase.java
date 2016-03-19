@@ -40,6 +40,7 @@ import java.util.List;
 
 public class ItemPlanBase extends ItemBase implements IProvideRecipe, IItemRenderer {
     public static final String TAG_PLANTYPE = "PlanType";
+    //todo: maxshort on oredict = all items from this id, need to handle this somehow...
 
     public ItemPlanBase() {
         this.setHasSubtypes(true);

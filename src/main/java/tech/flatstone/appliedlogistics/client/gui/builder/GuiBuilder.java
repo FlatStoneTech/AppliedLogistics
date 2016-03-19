@@ -20,6 +20,7 @@
 
 package tech.flatstone.appliedlogistics.client.gui.builder;
 
+import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -58,20 +59,18 @@ public class GuiBuilder extends GuiBase {
     public void drawBG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
         bindTexture("gui/machines/builder.png");
         drawTexturedModalRect(paramInt1, paramInt2, 0, 0, this.xSize, this.ySize);
+
+        for (int i = 0; i < 27; i++) {
+            Slot slot = inventorySlots.getSlot(i);
+            if (slot instanceof SlotBuilderInventory && slot.getSlotIndex() > 0 && slot.getSlotIndex() <= requiredMaterialsList.size() && !slot.getHasStack()) {
+                ItemStack displayStack = requiredMaterialsList.get(slot.getSlotIndex() - 1).getRequiredMaterials().get(0);
+                this.drawTransparentIconEmpty(slot, displayStack);
+            }
+        }
     }
 
     @Override
     public void drawFG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
-        int colorBackground = new Color(56, 55, 69, 224).hashCode();
-        int colorBorder = new Color(48, 41, 69).hashCode();
-        int colorFont = new Color(255, 255, 255).hashCode();
-        int colorErrorFont = new Color(255, 64, 64).hashCode();
-        int colorProgressBackground = new Color(64, 64, 255, 128).hashCode();
-        int colorProgressBackgroundGood = new Color(0, 170, 0).hashCode();
-        int colorProgressBackgroundWarn = new Color(255, 170, 0).hashCode();
-        int colorProgressBackgroundBad = new Color(255, 85, 85).hashCode();
-
-
         /**
          * Titles
          */
@@ -99,8 +98,6 @@ public class GuiBuilder extends GuiBase {
         this.fontRendererObj.drawString(LanguageHelper.getTranslatedMessage(ModMessages.MESSAGE_BUILDER_TIME), 184, 155, 4210752);
         guiHelper.drawHorzProgressBar(186, 168, 62, 6, 0, colorBackground, colorBorder, colorProgressBackground);
         guiHelper.drawCenteredString(186, 167, 62, "0% (0:00)", colorFont);
-
-//
     }
 
     @Override
@@ -114,26 +111,19 @@ public class GuiBuilder extends GuiBase {
     }
 
     @Override
-    public void drawSlot(Slot slot) {
-        super.drawSlot(slot);
+    public void drawScreen(int mouse_x, int mouse_y, float btn) {
+        super.drawScreen(mouse_x, mouse_y, btn);
+
+        Slot slot = getSlotUnderMouse();
+        if (slot == null)
+            return;
+
 
         if (slot instanceof SlotBuilderInventory && slot.getSlotIndex() > 0 && slot.getSlotIndex() <= requiredMaterialsList.size() && !slot.getHasStack()) {
-            ItemStack displayStack = requiredMaterialsList.get(slot.getSlotIndex() - 1).getRequiredMaterials().get(0);
-            guiHelper.drawItemStack(displayStack, slot.xDisplayPosition, slot.yDisplayPosition, this.mc.getRenderItem());
-            //LogHelper.info(">>> Draw slot " + slot.getSlotIndex());
-        } else if (slot instanceof SlotBuilderInventory && slot.getSlotIndex() > 0 && slot.getSlotIndex() > requiredMaterialsList.size()) {
-            guiHelper.drawItemStack(new ItemStack(Blocks.barrier), slot.xDisplayPosition, slot.yDisplayPosition, this.mc.getRenderItem());
-
+            PlanRequiredMaterials requiredMaterials = requiredMaterialsList.get(slot.getSlotIndex() - 1);
+            renderToolTip(requiredMaterials, mouse_x, mouse_y);
         }
     }
-
-    /**
-     * > Icon that goes into the slot (disabled icon / itemstack from the materials list)
-     * > Disable the slot if it is disabled...
-     *
-     * > Actually disable the hover on the slot...
-     *
-     */
 
     //todo: put this into a helper...
     public boolean equalLists(List<PlanRequiredMaterials> a, List<PlanRequiredMaterials> b) {

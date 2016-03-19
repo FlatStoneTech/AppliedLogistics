@@ -20,20 +20,39 @@
 
 package tech.flatstone.appliedlogistics.client.gui;
 
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.container.slot.SlotBase;
 import tech.flatstone.appliedlogistics.common.container.slot.SlotDisabled;
-import tech.flatstone.appliedlogistics.common.util.GuiHelper;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
+import tech.flatstone.appliedlogistics.common.util.*;
+
+import java.awt.*;
+import java.util.List;
 
 public abstract class GuiBase extends GuiContainer {
+    protected int colorBackground = new Color(56, 55, 69, 224).hashCode();
+    protected int colorBorder = new Color(48, 41, 69).hashCode();
+    protected int colorFont = new Color(255, 255, 255).hashCode();
+    protected int colorErrorFont = new Color(255, 64, 64).hashCode();
+    protected int colorProgressBackground = new Color(64, 64, 255, 128).hashCode();
+    protected int colorProgressBackgroundGood = new Color(0, 170, 0).hashCode();
+    protected int colorProgressBackgroundWarn = new Color(255, 170, 0).hashCode();
+    protected int colorProgressBackgroundBad = new Color(255, 85, 85).hashCode();
     GuiHelper guiHelper = new GuiHelper();
 
     public GuiBase(Container container) {
@@ -50,64 +69,20 @@ public abstract class GuiBase extends GuiContainer {
         super.drawScreen(mouse_x, mouse_y, btn);
     }
 
-    public void drawTooltip(int par2, int par3, int forceWidth, String Msg) {
-        GL11.glPushAttrib(1048575);
-        GL11.glDisable(32826);
-        RenderHelper.disableStandardItemLighting();
-        GL11.glDisable(2896);
-        GL11.glDisable(2929);
-        String[] var4 = Msg.split("\n");
-        if (var4.length > 0) {
-            int var5 = 0;
-            for (int var6 = 0; var6 < var4.length; var6++) {
-                int var7 = this.fontRendererObj.getStringWidth(var4[var6]);
-                if (var7 > var5) {
-                    var5 = var7;
-                }
-            }
-            int var6 = par2 + 12;
-            int var7 = par3 - 12;
-            int var9 = 8;
-            if (var4.length > 1) {
-                var9 += 2 + (var4.length - 1) * 10;
-            }
-            if (this.guiTop + var7 + var9 + 6 > this.height) {
-                var7 = this.height - var9 - this.guiTop - 6;
-            }
-            if (forceWidth > 0) {
-                var5 = forceWidth;
-            }
-            this.zLevel = 300.0F;
-            itemRender.zLevel = 300.0F;
-            int var10 = -267386864;
-            drawGradientRect(var6 - 3, var7 - 4, var6 + var5 + 3, var7 - 3, var10, var10);
-            drawGradientRect(var6 - 3, var7 + var9 + 3, var6 + var5 + 3, var7 + var9 + 4, var10, var10);
-            drawGradientRect(var6 - 3, var7 - 3, var6 + var5 + 3, var7 + var9 + 3, var10, var10);
-            drawGradientRect(var6 - 4, var7 - 3, var6 - 3, var7 + var9 + 3, var10, var10);
-            drawGradientRect(var6 + var5 + 3, var7 - 3, var6 + var5 + 4, var7 + var9 + 3, var10, var10);
-            int var11 = 1347420415;
-            int var12 = (var11 & 0xFEFEFE) >> 1 | var11 & 0xFF000000;
-            drawGradientRect(var6 - 3, var7 - 3 + 1, var6 - 3 + 1, var7 + var9 + 3 - 1, var11, var12);
-            drawGradientRect(var6 + var5 + 2, var7 - 3 + 1, var6 + var5 + 3, var7 + var9 + 3 - 1, var11, var12);
-            drawGradientRect(var6 - 3, var7 - 3, var6 + var5 + 3, var7 - 3 + 1, var11, var11);
-            drawGradientRect(var6 - 3, var7 + var9 + 2, var6 + var5 + 3, var7 + var9 + 3, var12, var12);
-            for (int var13 = 0; var13 < var4.length; var13++) {
-                String var14 = var4[var13];
-                if (var13 == 0) {
-                    var14 = "§" + Integer.toHexString(15) + var14;
-                } else {
-                    var14 = "§7" + var14;
-                }
-                this.fontRendererObj.drawStringWithShadow(var14, var6, var7, -1);
-                if (var13 == 0) {
-                    var7 += 2;
-                }
-                var7 += 10;
-            }
-            this.zLevel = 0.0F;
-            itemRender.zLevel = 0.0F;
-        }
-        GL11.glPopAttrib();
+    public void drawTooltip(int mouse_x, int mouse_y, int forceWidth, String Msg) {
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        int[][] savedGLState = OpenGLHelper.saveGLState(new int[]{GL11.GL_ALPHA_TEST, GL11.GL_LIGHTING});
+
+        GL11.glPushMatrix();
+
+
+        guiHelper.drawWindowWithBorder(mouse_x, mouse_y, forceWidth, 10, colorBackground, colorBorder);
+        guiHelper.drawCenteredString(mouse_x, mouse_y, forceWidth, "Hello World", colorFont);
+
+        GL11.glPopMatrix();
+
+        OpenGLHelper.restoreGLState(savedGLState);
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
     public abstract void drawBG(int paramInt1, int paramInt2, int paramInt3, int paramInt4);
@@ -151,14 +126,14 @@ public abstract class GuiBase extends GuiContainer {
     @Override
     public void drawSlot(Slot slot) {
         try {
-            if (slot instanceof SlotBase && ((SlotBase) slot).renderIconWithItem() && !slot.getHasStack()) {
-                SlotBase aes = (SlotBase) slot;
-                guiHelper.drawItemStack(aes.getOverlayIcon(), aes.getDefX(), aes.getDefY(), this.itemRender);
-            }
-            if (slot instanceof SlotBase && slot instanceof SlotDisabled) {
-                SlotBase aes = (SlotBase) slot;
-                guiHelper.drawDisabledSlot(aes.getDefX(), aes.getDefY(), this.itemRender);
-            }
+            //if (slot instanceof SlotBase && ((SlotBase) slot).renderIconWithItem() && !slot.getHasStack()) {
+            //    SlotBase aes = (SlotBase) slot;
+            //    guiHelper.drawItemStack(aes.getOverlayIcon(), aes.getDefX(), aes.getDefY(), this.itemRender);
+            //}
+            //if (slot instanceof SlotBase && slot instanceof SlotDisabled) {
+            //    SlotBase aes = (SlotBase) slot;
+            //    guiHelper.drawDisabledSlot(aes.getDefX(), aes.getDefY(), this.itemRender);
+           // }
 
             if ((slot instanceof SlotBase)) {
                 ((SlotBase) slot).setDisplay(true);
@@ -170,6 +145,86 @@ public abstract class GuiBase extends GuiContainer {
         } catch (Exception err) {
             safeDrawSlot(slot);
         }
+    }
+
+    protected void renderToolTip(PlanRequiredMaterials materials, int x, int y) {
+        ItemStack stack = materials.getRequiredMaterials().get(0);
+
+        List<String> list = stack.getTooltip(this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips);
+
+        for (int i = 0; i < list.size(); ++i)
+        {
+            if (i == 0)
+            {
+                list.set(i, stack.getRarity().rarityColor + (String)list.get(i));
+
+                /*
+                 * Add Material Information
+                 */
+                int j = 1;
+
+                // Add Description
+                if (!materials.getDescription().get(0).equalsIgnoreCase("")) {
+                    for (String description : materials.getDescription()) {
+                        list.add(i + j, String.format("%s%s%s", EnumChatFormatting.YELLOW, EnumChatFormatting.ITALIC, description));
+                        j++;
+                    }
+                }
+
+                // Add Min / Max
+                if (materials.getMinCount() == materials.getMaxCount()) {
+                    String labelRequired = LanguageHelper.getTranslated(String.format("labels.%s.required", ModInfo.MOD_ID));
+                    list.add(i + j, String.format("%s%s%s %s", EnumChatFormatting.GRAY, EnumChatFormatting.ITALIC, labelRequired, materials.getMinCount()));
+                } else {
+                    String labelMin = LanguageHelper.getTranslated(String.format("labels.%s.min", ModInfo.MOD_ID));
+                    String labelMax = LanguageHelper.getTranslated(String.format("labels.%s.max", ModInfo.MOD_ID));
+                    list.add(i + j, String.format("%s%s%s %s / %s %s", EnumChatFormatting.GRAY, EnumChatFormatting.ITALIC, labelMin, materials.getMinCount(), labelMax, materials.getMaxCount()));
+                }
+                j++;
+
+                // Add Weight Information
+                if (materials.getMinCount() == materials.getMaxCount()) {
+                    String labelWeight = LanguageHelper.getTranslated(String.format("label.%s.weightadded", ModInfo.MOD_ID));
+                    list.add(i + j, String.format("%s%s%s %skg", EnumChatFormatting.GRAY, EnumChatFormatting.ITALIC, labelWeight, materials.getItemWeight() * materials.getMaxCount()));
+                } else {
+                    String labelWeight = LanguageHelper.getTranslated(String.format("label.%s.weightperitem", ModInfo.MOD_ID));
+                    list.add(i + j, String.format("%s%s%s %skg", EnumChatFormatting.GRAY, EnumChatFormatting.ITALIC, labelWeight, materials.getItemWeight()));
+                }
+                j++;
+
+                // Add Time Information
+                //todo: maybe?
+            }
+            else
+            {
+                list.set(i, EnumChatFormatting.GRAY + (String)list.get(i));
+            }
+        }
+
+        FontRenderer font = stack.getItem().getFontRenderer(stack);
+        this.drawHoveringText(list, x, y, (font == null ? fontRendererObj : font));
+    }
+
+    protected void drawTransparentIconEmpty(Slot slot, ItemStack itemStack) {
+        if (slot.getHasStack())
+            return;
+
+        drawTransparentIcon(slot, itemStack);
+    }
+
+    protected void drawIconEmpty(Slot slot, ItemStack itemStack) {
+        if (slot.getHasStack())
+            return;
+
+        drawIcon(slot, itemStack);
+    }
+
+    protected void drawTransparentIcon(Slot slot, ItemStack itemStack) {
+        guiHelper.drawItemStack(itemStack, slot.xDisplayPosition + guiLeft, slot.yDisplayPosition + guiTop, this.itemRender, true);
+    }
+
+    protected void drawIcon(Slot slot, ItemStack itemStack) {
+        guiHelper.drawItemStack(itemStack, slot.xDisplayPosition + guiLeft, slot.yDisplayPosition + guiTop, this.itemRender, false);
     }
 
     private void safeDrawSlot(Slot s) {
