@@ -121,6 +121,12 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
     public boolean isMeetingBuildRequirements() {
         int invSlot = 1;
 
+        if (planDetails == null)
+            return false;
+
+        if (inventory.getStackInSlot(28) != null)
+            return false;
+
         if (ticksRemaining > 0)
             return false;
 
@@ -210,7 +216,6 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
     @Override
     public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
         if (slot == 0) {
-            LogHelper.info(">>> Need to update the plan...");
             updatePlan();
         }
     }
@@ -290,7 +295,7 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
 
             outputItem.setTagCompound(tagMachineItems);
 
-            this.inventory.setInventorySlotContents(28, outputItem);
+            this.inventory.setInventorySlotContents(28, outputItem); //todo: check to make sure that output slot has room...
 
             for (int i = 29; i < 56; i++) {
                 inventory.setInventorySlotContents(i, null);

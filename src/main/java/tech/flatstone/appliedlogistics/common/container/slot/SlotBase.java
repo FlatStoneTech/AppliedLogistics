@@ -39,6 +39,10 @@ public class SlotBase extends Slot {
         this.defY = y;
     }
 
+    public boolean isPlayerSide() {
+        return isPlayerSide;
+    }
+
     public int getDefX() {
         return defX;
     }
