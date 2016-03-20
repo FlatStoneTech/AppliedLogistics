@@ -28,8 +28,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import tech.flatstone.appliedlogistics.common.container.slot.*;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
-import tech.flatstone.appliedlogistics.common.util.Platform;
 
 import java.util.ArrayList;
 import java.util.HashSet;

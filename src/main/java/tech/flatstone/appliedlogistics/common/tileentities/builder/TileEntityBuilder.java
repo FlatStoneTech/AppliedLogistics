@@ -143,7 +143,7 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
             invSlot++;
         }
 
-        if (planDetails!= null && getTotalWeight() > planDetails.getTotalWeight())
+        if (planDetails != null && getTotalWeight() > planDetails.getTotalWeight())
             return false;
 
         return true;
@@ -266,7 +266,7 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
         // todo: process items if there are things to process...
 
         if (ticksRemaining > 0) {
-            ticksRemaining --;
+            ticksRemaining--;
         }
 
         if (ticksRemaining <= 0) {
@@ -308,7 +308,7 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
 
     @Override
     public void actionPerformed(int buttonID) {
-        switch(buttonID) {
+        switch (buttonID) {
             case 0:
                 inventoryToInternal();
                 ticksRemaining = getTotalTicks();
@@ -328,7 +328,7 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
                 inventory.setInventorySlotContents(invSlot + 28, itemIn);
                 inventory.setInventorySlotContents(invSlot, null);
             }
-            invSlot ++;
+            invSlot++;
         }
     }
 }
