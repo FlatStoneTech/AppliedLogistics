@@ -120,7 +120,7 @@ public class GuiBuilder extends GuiBase {
 
             guiHelper.drawHorzProgressBar(40, 26, 126, 8, Math.round(weightPercent), colorBackground, colorBorder, weightProgressColor);
             String weightLabel = String.format("%s: %dkg",
-                    LanguageHelper.LABEL.translateMessage("weightleft"),
+                    LanguageHelper.LABEL.translateMessage("weight_left"),
                     weightMax - weightTotal
             );
             guiHelper.drawCenteredString(40, 26, 126, weightLabel, colorFont);
@@ -137,7 +137,7 @@ public class GuiBuilder extends GuiBase {
 
             guiHelper.drawHorzProgressBar(40, 26, 126, 8, Math.round(timePercent), colorBackground, colorBorder, timeProgressColor);
             String timeLabel = String.format("%s: %s (%d%%)",
-                    LanguageHelper.LABEL.translateMessage("timeleft"),
+                    LanguageHelper.LABEL.translateMessage("time_left"),
                     DurationFormatUtils.formatDuration(secondsLeft, "mm:ss"),
                     Math.round(timePercent)
             );
@@ -239,14 +239,14 @@ public class GuiBuilder extends GuiBase {
                     list.add(i + j, String.format("%s%s%s: %skg",
                             EnumChatFormatting.GRAY,
                             EnumChatFormatting.ITALIC,
-                            LanguageHelper.LABEL.translateMessage("weightadded"),
+                            LanguageHelper.LABEL.translateMessage("weight_added"),
                             materials.getItemWeight() * materials.getMaxCount()
                     ));
                 } else {
                     list.add(i + j, String.format("%s%s%s: %skg",
                             EnumChatFormatting.GRAY,
                             EnumChatFormatting.ITALIC,
-                            LanguageHelper.LABEL.translateMessage("weightperitem"),
+                            LanguageHelper.LABEL.translateMessage("weight_per_item"),
                             materials.getItemWeight()
                     ));
                 }

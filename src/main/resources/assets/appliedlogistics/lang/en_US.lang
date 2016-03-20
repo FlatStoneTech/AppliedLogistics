@@ -6,10 +6,10 @@ message.appliedlogistics.plan.insert=Insert Plan...
 label.appliedlogistics.max=Max
 label.appliedlogistics.min=Min
 label.appliedlogistics.required=Required
-label.appliedlogistics.weightadded=Weight Added
-label.appliedlogistics.weightperitem=Weight per Item
-label.appliedlogistics.timeleft=Time Left
-label.appliedlogistics.weightleft=Weight Left
+label.appliedlogistics.weight_added=Weight Added
+label.appliedlogistics.weight_per_item=Weight per Item
+label.appliedlogistics.time_left=Time Left
+label.appliedlogistics.weight_left=Weight Left
 label.appliedlogistics.build=Build
 
 # Blocks
@@ -39,9 +39,10 @@ tile.appliedlogistics.builder.bronze.name=Bronze Builder
 tile.appliedlogistics.builder.steel.name=Steel Builder
 tile.appliedlogistics.builder.industrial.name=Industrial Builder
 tile.appliedlogistics.builder.digital.name=Digital Builder
+tile.appliedlogistics.builder.creative.name=Creative Builder
 
 ## Machines
-tile.appliedlogistics.machine_pulverizer.name=Puliverizer
+tile.appliedlogistics.machine_pulverizer.name=Pulverizer
 
 # Items
 ## Tools
@@ -110,3 +111,9 @@ item.appliedlogistics.ore_nugget.steel.name=Steel Nugget
 description.appliedlogistics.plan.pulverizer=Pulverizer used to process ores...
 ## Puliverizer Plan
 description.appliedlogistics.plan.pulverizer.material.cobblestone=Used to build the machine frame\ntesting line 2...
+
+# Creative Tabs
+itemGroup.appliedlogistics.general=Applied Logistics Items
+itemGroup.appliedlogistics.ores=Applied Logistics Ores
+itemGroup.appliedlogistics.machines=Applied Logistics Machines
+itemGroup.appliedlogistics.plans=Applied Logistics Plans

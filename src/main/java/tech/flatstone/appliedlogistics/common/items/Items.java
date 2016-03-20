@@ -46,7 +46,7 @@ public enum Items {
 
     ITEM_TOOL_HAMMER("tool_hammer", new ItemHammer(), AppliedLogisticsCreativeTabs.tabGeneral),
 
-    ITEM_PLAN("plan", new ItemPlanBase(), AppliedLogisticsCreativeTabs.tabGeneral),;
+    ITEM_PLAN("plan", new ItemPlanBase(), AppliedLogisticsCreativeTabs.tabPlans),;
 
     public final Item item;
     private final String internalName;

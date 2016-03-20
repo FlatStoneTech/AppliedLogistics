@@ -70,7 +70,7 @@ configurations {
 }
 
 dependencies {
-    //mods(group: 'journeymap', name: 'journeymap', version: '1.8.8-5.1.3')
-    //compile(group: 'journeymap-api', name: 'journeymap-api', version: '1.8.9-0.9')
-    compile 'org.jgrapht:jgrapht-core:0.9.1'
+    mods "mcp.mobius.waila:Waila:1.6.0-B3_1.8.8"
+    mods "mezz.jei:jei_1.8.8:2.8.3.39"
+    compile "org.jgrapht:jgrapht-core:0.9.1"
 }

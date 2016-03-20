@@ -44,7 +44,7 @@ public enum Blocks {
     BLOCK_ORE("ore", new BlockOre(), ItemOre.class, AppliedLogisticsCreativeTabs.tabOres),
     BLOCK_ORE_BLOCK("ore_block", new BlockOreBlock(), ItemOreBlock.class, AppliedLogisticsCreativeTabs.tabOres),
 
-    BLOCK_BUILDER("builder", new BlockBuilder(), ItemBuilder.class, AppliedLogisticsCreativeTabs.tabGeneral),
+    BLOCK_BUILDER("builder", new BlockBuilder(), ItemBuilder.class, AppliedLogisticsCreativeTabs.tabMachines),
 
     BLOCK_MACHINE_PULVERIZER("machine_pulverizer", new BlockPulverizer(), AppliedLogisticsCreativeTabs.tabMachines);
 

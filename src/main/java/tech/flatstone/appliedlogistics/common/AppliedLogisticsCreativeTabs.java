@@ -22,6 +22,7 @@ package tech.flatstone.appliedlogistics.common;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.items.Items;
 
@@ -31,6 +32,11 @@ public class AppliedLogisticsCreativeTabs {
         public Item getTabIconItem() {
             return Items.ITEM_TOOL_HAMMER.item;
         }
+
+        @Override
+        public String getTabLabel() {
+            return ModInfo.MOD_ID + ".general";
+        }
     };
 
     public static final CreativeTabs tabOres = new CreativeTabs(ModInfo.MOD_ID) {
@@ -38,12 +44,34 @@ public class AppliedLogisticsCreativeTabs {
         public Item getTabIconItem() {
             return Items.ITEM_ORE_DUST.item;
         }
+
+        @Override
+        public String getTabLabel() {
+            return ModInfo.MOD_ID + ".ores";
+        }
     };
 
     public static final CreativeTabs tabMachines = new CreativeTabs(ModInfo.MOD_ID) {
         @Override
         public Item getTabIconItem() {
             return Items.ITEM_MATERIAL_GEAR.item;
+        }
+
+        @Override
+        public String getTabLabel() {
+            return ModInfo.MOD_ID + ".machines";
+        }
+    };
+
+    public static final CreativeTabs tabPlans = new CreativeTabs(ModInfo.MOD_ID) {
+        @Override
+        public Item getTabIconItem() {
+            return Items.ITEM_PLAN.item;
+        }
+
+        @Override
+        public String getTabLabel() {
+            return ModInfo.MOD_ID + ".plans";
         }
     };
 }

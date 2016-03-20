@@ -27,7 +27,8 @@ public enum TechLevel implements IStringSerializable {
     BRONZE_AGE("bronze"),
     STEEL_AGE("steel"),
     INDUSTRIAL_AGE("industrial"),
-    DIGITAL_AGE("digital"),;
+    DIGITAL_AGE("digital"),
+    CREATIVE("creative"),;
 
     private static final TechLevel[] META_LOOKUP = new TechLevel[values().length];
 
