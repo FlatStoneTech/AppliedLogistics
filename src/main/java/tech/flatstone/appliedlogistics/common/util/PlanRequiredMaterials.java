@@ -33,12 +33,12 @@ public class PlanRequiredMaterials {
 
     private int itemWeight;
 
-    private float addTime;
-    private float removeTime;
+    private int addTime;
+    private int removeTime;
 
     private List<String> description;
 
-    public PlanRequiredMaterials(List<ItemStack> requiredMaterials, int minCount, int maxCount, int itemWeight, float addTime, float removeTime, String description) {
+    public PlanRequiredMaterials(List<ItemStack> requiredMaterials, int minCount, int maxCount, int itemWeight, int addTime, int removeTime, String description) {
         this.requiredMaterials = requiredMaterials;
         this.maxCount = maxCount;
         this.minCount = minCount;
@@ -68,11 +68,11 @@ public class PlanRequiredMaterials {
         return this.itemWeight;
     }
 
-    public float getAddTime() {
+    public int getAddTime() {
         return this.addTime;
     }
 
-    public float getRemoveTime() {
+    public int getRemoveTime() {
         return this.removeTime;
     }
 

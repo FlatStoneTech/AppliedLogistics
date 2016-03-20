@@ -26,9 +26,12 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import tech.flatstone.appliedlogistics.client.gui.GuiBase;
 import tech.flatstone.appliedlogistics.common.container.builder.ContainerBuilder;
 import tech.flatstone.appliedlogistics.common.container.slot.SlotBuilderInventory;
+import tech.flatstone.appliedlogistics.common.network.PacketHandler;
+import tech.flatstone.appliedlogistics.common.network.messages.PacketButtonClick;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityBuilder;
 import tech.flatstone.appliedlogistics.common.util.GuiHelper;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
@@ -116,7 +119,7 @@ public class GuiBuilder extends GuiBase {
             }
 
             guiHelper.drawHorzProgressBar(40, 26, 126, 8, Math.round(weightPercent), colorBackground, colorBorder, weightProgressColor);
-            String weightLabel = String.format("%s %dkg",
+            String weightLabel = String.format("%s: %dkg",
                     LanguageHelper.LABEL.translateMessage("weightleft"),
                     weightMax - weightTotal
             );
@@ -124,11 +127,19 @@ public class GuiBuilder extends GuiBase {
         }
 
         if (planDetails != null && tileEntity.getTicksRemaining() > 0) {
-            guiHelper.drawHorzProgressBar(40, 26, 126, 8, 0, colorBackground, colorBorder, colorProgressBackground);
-            String timeLabel = String.format("%s %s (%s%%)",
+            int timeMax = tileEntity.getTotalTicks();
+            int timeCurrent = tileEntity.getTicksRemaining();
+            int timeProgressColor = colorProgressBackground;
+
+            float timePercent = ((((float) timeMax - (float) timeCurrent) / (float) timeMax)) * 100;
+
+            int secondsLeft = (timeCurrent / 20) * 1000;
+
+            guiHelper.drawHorzProgressBar(40, 26, 126, 8, Math.round(timePercent), colorBackground, colorBorder, timeProgressColor);
+            String timeLabel = String.format("%s: %s (%d%%)",
                     LanguageHelper.LABEL.translateMessage("timeleft"),
-                    "0:00",
-                    "50"
+                    DurationFormatUtils.formatDuration(secondsLeft, "mm:ss"),
+                    Math.round(timePercent)
             );
             guiHelper.drawCenteredString(40, 26, 126, timeLabel, colorFont);
         }
@@ -173,11 +184,8 @@ public class GuiBuilder extends GuiBase {
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
-        switch (button.id) {
-            case 0:
-                tileEntity.startBuilding();
-                break;
-        }
+        PacketButtonClick packetButtonClick = new PacketButtonClick(button.id, tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ());
+        PacketHandler.INSTANCE.sendToServer(packetButtonClick);
     }
 
     protected void renderToolTip(PlanRequiredMaterials materials, int x, int y) {
@@ -208,14 +216,14 @@ public class GuiBuilder extends GuiBase {
 
                 // Add Min / Max
                 if (materials.getMinCount() == materials.getMaxCount()) {
-                    list.add(i + j, String.format("%s%s%s %s",
+                    list.add(i + j, String.format("%s%s%s: %s",
                             EnumChatFormatting.GRAY,
                             EnumChatFormatting.ITALIC,
                             LanguageHelper.LABEL.translateMessage("required"),
                             materials.getMinCount()
                     ));
                 } else {
-                    list.add(i + j, String.format("%s%s%s %s / %s %s",
+                    list.add(i + j, String.format("%s%s%s: %s / %s %s",
                             EnumChatFormatting.GRAY,
                             EnumChatFormatting.ITALIC,
                             LanguageHelper.LABEL.translateMessage("min"),
@@ -228,14 +236,14 @@ public class GuiBuilder extends GuiBase {
 
                 // Add Weight Information
                 if (materials.getMinCount() == materials.getMaxCount()) {
-                    list.add(i + j, String.format("%s%s%s %skg",
+                    list.add(i + j, String.format("%s%s%s: %skg",
                             EnumChatFormatting.GRAY,
                             EnumChatFormatting.ITALIC,
                             LanguageHelper.LABEL.translateMessage("weightadded"),
                             materials.getItemWeight() * materials.getMaxCount()
                     ));
                 } else {
-                    list.add(i + j, String.format("%s%s%s %skg",
+                    list.add(i + j, String.format("%s%s%s: %skg",
                             EnumChatFormatting.GRAY,
                             EnumChatFormatting.ITALIC,
                             LanguageHelper.LABEL.translateMessage("weightperitem"),

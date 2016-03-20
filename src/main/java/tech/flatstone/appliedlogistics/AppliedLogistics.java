@@ -31,6 +31,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.integrations.IntegrationsManager;
+import tech.flatstone.appliedlogistics.common.network.PacketHandler;
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.world.WorldGen;
 import tech.flatstone.appliedlogistics.proxy.IProxy;
@@ -50,6 +51,8 @@ public class AppliedLogistics {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        PacketHandler.init();
+
         // Register Blocks
         proxy.registerBlocks();
         proxy.registerItems();

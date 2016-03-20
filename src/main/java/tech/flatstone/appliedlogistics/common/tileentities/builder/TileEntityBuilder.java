@@ -22,6 +22,7 @@ package tech.flatstone.appliedlogistics.common.tileentities.builder;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
@@ -37,14 +38,15 @@ import tech.flatstone.appliedlogistics.common.util.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityBuilder extends TileEntityInventoryBase implements ITickable {
+public class TileEntityBuilder extends TileEntityInventoryBase implements ITickable, INetworkButton {
     public static final String TAG_PLANTYPE = "PlanType";
-    private InternalInventory inventory = new InternalInventory(this, 100);
+    private InternalInventory inventory = new InternalInventory(this, 56);
     private TechLevel planTechLevel = null;
     private ItemPlanBase planBase = null;
     private PlanDetails planDetails = null;
     private List<PlanRequiredMaterials> planRequiredMaterialsList = new ArrayList<PlanRequiredMaterials>();
     private int ticksRemaining = 0;
+    private boolean machineWorking = false;
 
     @Override
     public IInventory getInternalInventory() {
@@ -54,6 +56,22 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
     @Override
     public void saveChanges() {
 
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTagCompound) {
+        super.readFromNBT(nbtTagCompound);
+
+        ticksRemaining = nbtTagCompound.getInteger("ticksRemaining");
+        machineWorking = nbtTagCompound.getBoolean("machineWorking");
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound nbtTagCompound) {
+        super.writeToNBT(nbtTagCompound);
+
+        nbtTagCompound.setInteger("ticksRemaining", ticksRemaining);
+        nbtTagCompound.setBoolean("machineWorking", machineWorking);
     }
 
     public int getTicksRemaining() {
@@ -80,6 +98,24 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
         }
 
         return weight;
+    }
+
+    public int getTotalTicks() {
+        int ticks = 0;
+        int invSlot = 28;
+
+        for (PlanRequiredMaterials material : planRequiredMaterialsList) {
+            int tickTime = material.getAddTime();
+            int itemCount = 0;
+            ItemStack itemInSlot = inventory.getStackInSlot(invSlot);
+            if (itemInSlot != null)
+                itemCount = itemInSlot.stackSize;
+            ticks += (tickTime * itemCount);
+
+            invSlot++;
+        }
+
+        return ticks;
     }
 
     public boolean isMeetingBuildRequirements() {
@@ -219,10 +255,75 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
         if (inventory.getStackInSlot(0) != null && planTechLevel == null)
             updatePlan();
 
+        if (!machineWorking)
+            return;
+
         // todo: process items if there are things to process...
+
+        if (ticksRemaining > 0) {
+            ticksRemaining --;
+        }
+
+        if (ticksRemaining <= 0) {
+            machineWorking = false;
+
+            if (Platform.isClient())
+                return;
+
+            ItemStack outputItem = planDetails.getItemOutput().copy();
+
+            NBTTagCompound tagMachineItems = new NBTTagCompound();
+
+            NBTTagCompound tagCompound = new NBTTagCompound();
+            int j = 0;
+            for (int i = 29; i < 56; i++) {
+                NBTTagCompound item = new NBTTagCompound();
+                ItemStack itemStack = this.getStackInSlot(i);
+                if (itemStack != null) {
+                    itemStack.writeToNBT(item);
+                    tagCompound.setTag("item_" + j, item);
+                    j++;
+                }
+            }
+
+            tagMachineItems.setTag("MachineItemData", tagCompound);
+
+            outputItem.setTagCompound(tagMachineItems);
+
+            this.inventory.setInventorySlotContents(28, outputItem);
+
+            for (int i = 29; i < 56; i++) {
+                inventory.setInventorySlotContents(i, null);
+            }
+
+            this.markForUpdate();
+            this.markDirty();
+        }
     }
 
-    public void startBuilding() {
-        ticksRemaining = 100;
+    @Override
+    public void actionPerformed(int buttonID) {
+        switch(buttonID) {
+            case 0:
+                inventoryToInternal();
+                ticksRemaining = getTotalTicks();
+                machineWorking = true;
+                this.markForUpdate();
+                this.markDirty();
+                break;
+        }
+    }
+
+    private void inventoryToInternal() {
+        int invSlot = 1;
+
+        for (PlanRequiredMaterials material : planRequiredMaterialsList) {
+            ItemStack itemIn = inventory.getStackInSlot(invSlot);
+            if (itemIn != null) {
+                inventory.setInventorySlotContents(invSlot + 28, itemIn);
+                inventory.setInventorySlotContents(invSlot, null);
+            }
+            invSlot ++;
+        }
     }
 }

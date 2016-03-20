@@ -26,6 +26,7 @@ import net.minecraft.tileentity.TileEntity;
 import tech.flatstone.appliedlogistics.common.container.ContainerBase;
 import tech.flatstone.appliedlogistics.common.container.slot.SlotBuilderInventory;
 import tech.flatstone.appliedlogistics.common.container.slot.SlotBuilderPlan;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotOutput;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityBuilder;
 
 public class ContainerBuilder extends ContainerBase {
@@ -53,6 +54,7 @@ public class ContainerBuilder extends ContainerBase {
         }
 
         addSlotToContainer(new SlotBuilderPlan(inventory, 0, 12, 22, tileEntity));
+        addSlotToContainer(new SlotOutput(inventory, 28, 227, 194));
 
         bindPlayerInventory(inventoryPlayer, 0, 140);
     }

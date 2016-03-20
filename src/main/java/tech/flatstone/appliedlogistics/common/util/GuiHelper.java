@@ -165,12 +165,12 @@ public class GuiHelper extends Gui {
 
 //    public void drawCenteredStrings(int x, int y, int w, int offset, ArrayList<ColorString> messages) {
 //        for (int i = 0; i < messages.size(); i++) {
-//            ColorString message = messages.get(i);
-//            int messageWidth = fontRenderer.getStringWidth(message.getMessage());
+//            ColorString messages = messages.get(i);
+//            int messageWidth = fontRenderer.getStringWidth(messages.getMessage());
 //            int messageX = x + ((w >> 1) - (messageWidth >> 1));
 //            int messageY = y + (1 + offset * i);
 //
-//            fontRenderer.drawStringWithShadow(message.getMessage(), messageX, messageY, message.getColor());
+//            fontRenderer.drawStringWithShadow(messages.getMessage(), messageX, messageY, messages.getColor());
 //        }
 //    }
 

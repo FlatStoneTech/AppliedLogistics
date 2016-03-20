@@ -3,13 +3,14 @@ message.appliedlogistics.plan.invalid=Invalid Plan...
 message.appliedlogistics.plan.insert=Insert Plan...
 
 # Labels
-label.appliedlogistics.max=Max:
-label.appliedlogistics.min=Min:
-label.appliedlogistics.required=Required:
-label.appliedlogistics.weightadded=Weight Added:
-label.appliedlogistics.weightperitem=Weight per Item:
-label.appliedlogistics.timeleft=Time Left:
-label.appliedlogistics.weightleft=Weight Left:
+label.appliedlogistics.max=Max
+label.appliedlogistics.min=Min
+label.appliedlogistics.required=Required
+label.appliedlogistics.weightadded=Weight Added
+label.appliedlogistics.weightperitem=Weight per Item
+label.appliedlogistics.timeleft=Time Left
+label.appliedlogistics.weightleft=Weight Left
+label.appliedlogistics.build=Build
 
 # Blocks
 ## Ores
