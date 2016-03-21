@@ -87,11 +87,6 @@ public class PlanPulverizer extends ItemPlanBase implements IMachinePlan {
     }
 
     @Override
-    public ItemStack getMachineItemStack() {
-        return new ItemStack(Blocks.BLOCK_MACHINE_PULVERIZER.block);
-    }
-
-    @Override
     public String getMachineDetails(TechLevel techLevel, List<ItemStack> inventory) {
         ItemStack speedUpgrades = null;
         ItemStack chanceUpgrades = null;

@@ -40,7 +40,5 @@ public interface IMachinePlan {
      */
     PlanDetails getTechLevels(TechLevel techLevel);
 
-    ItemStack getMachineItemStack();
-
     String getMachineDetails(TechLevel techLevel, List<ItemStack> inventory);
 }

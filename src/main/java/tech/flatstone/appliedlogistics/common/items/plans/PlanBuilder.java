@@ -18,77 +18,66 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.util;
+package tech.flatstone.appliedlogistics.common.items.plans;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.oredict.OreDictionary;
+import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
+import tech.flatstone.appliedlogistics.api.features.TechLevel;
+import tech.flatstone.appliedlogistics.common.blocks.Blocks;
+import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
+import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
+import tech.flatstone.appliedlogistics.common.util.PlanDetails;
+import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
-public class PlanRequiredMaterials {
-    private List<ItemStack> requiredMaterials;
-
-    private int minCount;
-    private int maxCount;
-
-    private int itemWeight;
-
-    private int addTime;
-    private int removeTime;
-
-    private List<String> description;
-
-    public PlanRequiredMaterials(ItemStack requiredMatieral, int minCount, int maxCount, int itemWeight, int addTime, int removeTime) {
-        this(requiredMatieral, minCount, maxCount, itemWeight, addTime, removeTime, "");
+public class PlanBuilder extends ItemPlanBase implements IMachinePlan {
+    public PlanBuilder() {
+        this.setUnlocalizedName(String.format("%s:%s", ModInfo.MOD_ID, "plan.builder"));
     }
 
-    public PlanRequiredMaterials(ItemStack requiredMatieral, int minCount, int maxCount, int itemWeight, int addTime, int removeTime, String description) {
-        this(Arrays.asList(requiredMatieral), minCount, maxCount, itemWeight, addTime, removeTime, description);
+    @Override
+    public String getUnlocalizedPlanDescription() {
+        return String.format("%s%s%s",
+                EnumChatFormatting.YELLOW,
+                EnumChatFormatting.ITALIC,
+                LanguageHelper.DESCRIPTION.translateMessage("plan.builder")
+        );
     }
 
-    public PlanRequiredMaterials(List<ItemStack> requiredMaterials, int minCount, int maxCount, int itemWeight, int addTime, int removeTime) {
-        this(requiredMaterials, minCount, maxCount, itemWeight, addTime, removeTime, "");
+    @Override
+    public PlanDetails getTechLevels(TechLevel techLevel) {
+        PlanDetails planDetails = null;
+        List<PlanRequiredMaterials> requiredMaterialsList = new ArrayList<PlanRequiredMaterials>();
+
+        switch (techLevel) {
+            case STONE_AGE:
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("ingotBronze"), 7, 7, 6, 100, 100));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Blocks.BLOCK_BUILDER.block, 1, 0), 1, 1, 10, 100, 100));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(net.minecraft.init.Items.comparator), 0, 1, 10, 200, 200, "Adds comparator output"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(net.minecraft.init.Blocks.redstone_block), 0, 1, 10, 200, 200, "Adds redstone input to launch build"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(net.minecraft.init.Blocks.hopper), 0, 1, 10, 200, 200, "Adds support to adding / removing items with pipes and hoppers"));
+
+                planDetails = new PlanDetails(72, requiredMaterialsList, new ItemStack(Blocks.BLOCK_BUILDER.block, 1, 1));
+                break;
+
+            case BRONZE_AGE:
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("ingotSteel"), 7, 7, 15, 100, 100));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Blocks.BLOCK_BUILDER.block, 1, 1), 1, 1, 10, 100, 100));
+
+                planDetails = new PlanDetails(1000, requiredMaterialsList, new ItemStack(Blocks.BLOCK_BUILDER.block, 1, 2));
+                break;
+        }
+
+        return planDetails;
     }
 
-    public PlanRequiredMaterials(List<ItemStack> requiredMaterials, int minCount, int maxCount, int itemWeight, int addTime, int removeTime, String description) {
-        this.requiredMaterials = requiredMaterials;
-        this.maxCount = maxCount;
-        this.minCount = minCount;
-        this.itemWeight = itemWeight;
-        this.addTime = addTime;
-        this.removeTime = removeTime;
-
-        if (!description.isEmpty())
-            description = LanguageHelper.DESCRIPTION.translateMessage(description);
-
-        this.description = Arrays.asList(description.split("\\\\n"));
-    }
-
-    public List<ItemStack> getRequiredMaterials() {
-        return this.requiredMaterials;
-    }
-
-    public int getMinCount() {
-        return this.minCount;
-    }
-
-    public int getMaxCount() {
-        return this.maxCount;
-    }
-
-    public int getItemWeight() {
-        return this.itemWeight;
-    }
-
-    public int getAddTime() {
-        return this.addTime;
-    }
-
-    public int getRemoveTime() {
-        return this.removeTime;
-    }
-
-    public List<String> getDescription() {
-        return description;
+    @Override
+    public String getMachineDetails(TechLevel techLevel, List<ItemStack> inventory) {
+        return "";
     }
 }
