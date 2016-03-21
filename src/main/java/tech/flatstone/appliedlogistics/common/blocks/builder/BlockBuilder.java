@@ -57,9 +57,6 @@ public class BlockBuilder extends BlockBase implements IProvideRecipe {
         if (worldIn.isRemote)
             return true;
 
-        TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
-        tileEntity.updatePlan();
-
         playerIn.openGui(AppliedLogistics.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
@@ -105,5 +102,15 @@ public class BlockBuilder extends BlockBase implements IProvideRecipe {
         ));
     }
 
+    @Override
+    public boolean hasComparatorInputOverride() {
+        return true;
+    }
 
+    @Override
+    public int getComparatorInputOverride(World worldIn, BlockPos pos) {
+        TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
+
+        return tileEntity.getComparatorOutput();
+    }
 }

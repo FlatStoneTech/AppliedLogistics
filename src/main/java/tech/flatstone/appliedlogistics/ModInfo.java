@@ -30,4 +30,5 @@ public class ModInfo {
     public static final String CLIENT_PROXY_CLASS = "tech.flatstone." + MOD_ID + ".proxy.ClientProxy";
     public static final String FINGERPRINT = "@FINGERPRINT@";
     public static final String GUI_FACTORY = "tech.flatstone." + MOD_ID + ".configuration.AppLogConfigGuiFactory";
+    public static final String PATH_INTEGRATIONS = "tech.flatstone." + MOD_ID + ".common.integrations.";
 }

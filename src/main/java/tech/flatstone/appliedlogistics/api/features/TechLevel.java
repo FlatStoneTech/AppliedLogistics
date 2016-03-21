@@ -21,6 +21,7 @@
 package tech.flatstone.appliedlogistics.api.features;
 
 import net.minecraft.util.IStringSerializable;
+import tech.flatstone.appliedlogistics.ModInfo;
 
 public enum TechLevel implements IStringSerializable {
     STONE_AGE("stone"),
@@ -58,5 +59,9 @@ public enum TechLevel implements IStringSerializable {
 
     public String getName() {
         return this.name;
+    }
+
+    public String getUnlocalizedName() {
+        return String.format("%s.%s.%s.%s", "label", ModInfo.MOD_ID, "tech_level", this.name);
     }
 }

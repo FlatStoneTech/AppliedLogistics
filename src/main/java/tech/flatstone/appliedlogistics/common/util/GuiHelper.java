@@ -174,11 +174,22 @@ public class GuiHelper extends Gui {
 //        }
 //    }
 
-    public void drawCenteredString(int x, int y, int w, String message, int color) {
+    public void drawCenteredStringWithShadow(int x, int y, int w, String message, int color) {
         int messageWidth = fontRenderer.getStringWidth(message);
         int messageX = x + ((w >> 1) - (messageWidth >> 1));
 
         fontRenderer.drawStringWithShadow(message, messageX, y, color);
+    }
+
+    public void drawStringWithShadow(int x, int y, String message, int color) {
+        fontRenderer.drawStringWithShadow(message, x, y, color);
+    }
+
+    public void drawCenteredString(int x, int y, int w, String message, int color) {
+        int messageWidth = fontRenderer.getStringWidth(message);
+        int messageX = x + ((w >> 1) - (messageWidth >> 1));
+
+        fontRenderer.drawString(message, messageX, y, color);
     }
 
     public void drawPlayerHead(int x, int y) {

@@ -18,66 +18,69 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.util;
+package tech.flatstone.appliedlogistics.common.integrations.waila;
 
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.inventory.IInventory;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
+import mcp.mobius.waila.api.IWailaDataProvider;
+import mcp.mobius.waila.api.IWailaRegistrar;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
 
-import java.util.Random;
+import java.util.List;
 
-public class TileHelper {
-    public static <T> T getTileEntity(IBlockAccess world, BlockPos blockPos, Class<T> tClass) {
-        TileEntity tileEntity = world.getTileEntity(blockPos);
-        return !tClass.isInstance(tileEntity) ? null : (T) tileEntity;
+public class WailaTileHandler implements IWailaDataProvider {
+
+    public static void callbackRegister(IWailaRegistrar registrar) {
+        WailaTileHandler instance = new WailaTileHandler();
+
+        registrar.registerHeadProvider(instance, BlockBase.class);
+        registrar.registerBodyProvider(instance, BlockBase.class);
+        registrar.registerTailProvider(instance, BlockBase.class);
     }
 
-    public static void DropItems(TileEntity tileEntity) {
-        IInventory inventory = (IInventory) tileEntity;
-
-        DropItems(tileEntity, 0, inventory.getSizeInventory());
+    @Override
+    public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        return accessor.getStack();
     }
 
-    public static void DropItems(TileEntity tileEntity, int min, int max) {
-        if (!(tileEntity instanceof IInventory)) {
-            return;
-        }
+    @Override
+    public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        TileEntity tileEntity = accessor.getTileEntity();
+        if (tileEntity instanceof IWailaHeadMessage)
+            return ((IWailaHeadMessage) tileEntity).getWailaHeadToolTip(itemStack, currenttip, accessor, config);
 
-        IInventory inventory = (IInventory) tileEntity;
-        World world = tileEntity.getWorld();
-        BlockPos blockPos = tileEntity.getPos();
+        return currenttip;
+    }
 
-        for (int i = min; i < max; i++) {
-            ItemStack itemStack = inventory.getStackInSlot(i);
+    @Override
+    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        TileEntity tileEntity = accessor.getTileEntity();
+        if (tileEntity instanceof IWailaBodyMessage)
+            return ((IWailaBodyMessage) tileEntity).getWailaBodyToolTip(itemStack, currenttip, accessor, config);
 
-            if (itemStack != null && itemStack.stackSize > 0) {
-                Random rand = new Random();
+        return currenttip;
+    }
 
-                float dX = rand.nextFloat() * 0.8F + 0.1F;
-                float dY = rand.nextFloat() * 0.8F + 0.1F;
-                float dZ = rand.nextFloat() * 0.8F + 0.1F;
+    @Override
+    public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        TileEntity tileEntity = accessor.getTileEntity();
+        if (tileEntity instanceof IWailaTailMessage)
+            return ((IWailaTailMessage) tileEntity).getWailaTailToolTip(itemStack, currenttip, accessor, config);
 
-                EntityItem entityItem = new EntityItem(world, blockPos.getX() + dX, blockPos.getY() + dY, blockPos.getZ() + dZ, itemStack.copy());
+        return currenttip;
+    }
 
-                if (itemStack.hasTagCompound()) {
-                    entityItem.getEntityItem().setTagCompound((NBTTagCompound) itemStack.getTagCompound().copy());
-                }
+    @Override
+    public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos) {
+        if (te != null)
+            te.writeToNBT(tag);
 
-                float factor = 0.05F;
-                entityItem.motionX = rand.nextGaussian() * factor;
-                entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
-                entityItem.motionZ = rand.nextGaussian() * factor;
-                world.spawnEntityInWorld(entityItem);
-                itemStack.stackSize = 0;
-                inventory.setInventorySlotContents(i, null);
-            }
-        }
-
-        inventory.markDirty();
+        return tag;
     }
 }

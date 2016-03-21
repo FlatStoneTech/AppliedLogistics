@@ -22,7 +22,6 @@ package tech.flatstone.appliedlogistics.common;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.items.Items;
 

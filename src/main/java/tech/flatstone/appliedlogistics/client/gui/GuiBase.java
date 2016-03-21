@@ -65,7 +65,7 @@ public abstract class GuiBase extends GuiContainer {
 
 
         guiHelper.drawWindowWithBorder(mouse_x, mouse_y, forceWidth, 10, colorBackground, colorBorder);
-        guiHelper.drawCenteredString(mouse_x, mouse_y, forceWidth, "Hello World", colorFont);
+        guiHelper.drawCenteredStringWithShadow(mouse_x, mouse_y, forceWidth, "Hello World", colorFont);
 
         GL11.glPopMatrix();
 

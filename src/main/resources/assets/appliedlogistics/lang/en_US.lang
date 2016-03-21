@@ -11,6 +11,17 @@ label.appliedlogistics.weight_per_item=Weight per Item
 label.appliedlogistics.time_left=Time Left
 label.appliedlogistics.weight_left=Weight Left
 label.appliedlogistics.build=Build
+label.appliedlogistics.plan=Plan
+label.appliedlogistics.tech_level.stone=Stone
+label.appliedlogistics.tech_level.bronze=Bronze
+label.appliedlogistics.tech_level.steel=Steel
+label.appliedlogistics.tech_level.industrial=Industrial
+label.appliedlogistics.tech_level.digital=Digital
+label.appliedlogistics.tech_level.creative=Creative
+label.appliedlogistics.details=Details
+label.appliedlogistics.speed=Speed
+label.appliedlogistics.chance=Chance
+label.appliedlogistics.material_chance=Material Chance
 
 # Blocks
 ## Ores

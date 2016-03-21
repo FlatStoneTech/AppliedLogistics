@@ -18,66 +18,14 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.util;
+package tech.flatstone.appliedlogistics.common.integrations.waila;
 
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.inventory.IInventory;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
 
-import java.util.Random;
+import java.util.List;
 
-public class TileHelper {
-    public static <T> T getTileEntity(IBlockAccess world, BlockPos blockPos, Class<T> tClass) {
-        TileEntity tileEntity = world.getTileEntity(blockPos);
-        return !tClass.isInstance(tileEntity) ? null : (T) tileEntity;
-    }
-
-    public static void DropItems(TileEntity tileEntity) {
-        IInventory inventory = (IInventory) tileEntity;
-
-        DropItems(tileEntity, 0, inventory.getSizeInventory());
-    }
-
-    public static void DropItems(TileEntity tileEntity, int min, int max) {
-        if (!(tileEntity instanceof IInventory)) {
-            return;
-        }
-
-        IInventory inventory = (IInventory) tileEntity;
-        World world = tileEntity.getWorld();
-        BlockPos blockPos = tileEntity.getPos();
-
-        for (int i = min; i < max; i++) {
-            ItemStack itemStack = inventory.getStackInSlot(i);
-
-            if (itemStack != null && itemStack.stackSize > 0) {
-                Random rand = new Random();
-
-                float dX = rand.nextFloat() * 0.8F + 0.1F;
-                float dY = rand.nextFloat() * 0.8F + 0.1F;
-                float dZ = rand.nextFloat() * 0.8F + 0.1F;
-
-                EntityItem entityItem = new EntityItem(world, blockPos.getX() + dX, blockPos.getY() + dY, blockPos.getZ() + dZ, itemStack.copy());
-
-                if (itemStack.hasTagCompound()) {
-                    entityItem.getEntityItem().setTagCompound((NBTTagCompound) itemStack.getTagCompound().copy());
-                }
-
-                float factor = 0.05F;
-                entityItem.motionX = rand.nextGaussian() * factor;
-                entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
-                entityItem.motionZ = rand.nextGaussian() * factor;
-                world.spawnEntityInWorld(entityItem);
-                itemStack.stackSize = 0;
-                inventory.setInventorySlotContents(i, null);
-            }
-        }
-
-        inventory.markDirty();
-    }
+public interface IWailaBodyMessage {
+    List<String> getWailaBodyToolTip(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config);
 }

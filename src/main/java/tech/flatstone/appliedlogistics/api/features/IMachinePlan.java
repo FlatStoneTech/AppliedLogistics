@@ -23,6 +23,8 @@ package tech.flatstone.appliedlogistics.api.features;
 import net.minecraft.item.ItemStack;
 import tech.flatstone.appliedlogistics.common.util.PlanDetails;
 
+import java.util.List;
+
 public interface IMachinePlan {
     /**
      * Gets the unlocalized name for the description
@@ -39,4 +41,6 @@ public interface IMachinePlan {
     PlanDetails getTechLevels(TechLevel techLevel);
 
     ItemStack getMachineItemStack();
+
+    String getMachineDetails(TechLevel techLevel, List<ItemStack> inventory);
 }

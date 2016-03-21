@@ -75,6 +75,12 @@ public class PlanPulverizer extends ItemPlanBase implements IMachinePlan {
 
                 planDetails = new PlanDetails(138, requiredMaterialsList, new ItemStack(Blocks.BLOCK_MACHINE_PULVERIZER.block, 1));
                 break;
+
+            case INDUSTRIAL_AGE:
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearBronze"), 2, 4, 12, 80, 80, ""));
+
+                planDetails = new PlanDetails(138, requiredMaterialsList, new ItemStack(Blocks.BLOCK_ORE_BLOCK.block, 1, 4));
+                break;
         }
 
         return planDetails;
@@ -83,5 +89,41 @@ public class PlanPulverizer extends ItemPlanBase implements IMachinePlan {
     @Override
     public ItemStack getMachineItemStack() {
         return new ItemStack(Blocks.BLOCK_MACHINE_PULVERIZER.block);
+    }
+
+    @Override
+    public String getMachineDetails(TechLevel techLevel, List<ItemStack> inventory) {
+        ItemStack speedUpgrades = null;
+        ItemStack chanceUpgrades = null;
+
+        switch (techLevel) {
+            case STONE_AGE:
+                speedUpgrades = inventory.get(2);
+                chanceUpgrades = inventory.get(3);
+                break;
+        }
+
+        int speedMultipler = 0;
+        if (speedUpgrades != null)
+            speedMultipler = speedUpgrades.stackSize * 75;
+
+        int chanceMultipler = 0;
+        if (chanceUpgrades != null)
+            chanceMultipler = chanceUpgrades.stackSize * 80;
+
+
+        String outputMessage = String.format("%s\n" +
+                        "\n" +
+                        "%s:\n(+%s%%)\n" +
+                        "\n" +
+                        "%s:\n(+%s%%)",
+                LanguageHelper.LABEL.translateMessage("details"),
+                LanguageHelper.LABEL.translateMessage("speed"),
+                speedMultipler,
+                LanguageHelper.LABEL.translateMessage("material_chance"),
+                chanceMultipler
+        );
+
+        return outputMessage;
     }
 }

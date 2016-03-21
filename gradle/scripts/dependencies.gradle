@@ -70,7 +70,11 @@ configurations {
 }
 
 dependencies {
-    mods "mcp.mobius.waila:Waila:1.6.0-B3_1.8.8"
+    // installable
     mods "mezz.jei:jei_1.8.8:2.8.3.39"
+    mods "net.darkhax.wawla:Wawla:1.8.9-1.1.4.171"
+
+    // provided apis
+    compile "mcp.mobius.waila:Waila:1.6.0-B3_1.8.8"
     compile "org.jgrapht:jgrapht-core:0.9.1"
 }

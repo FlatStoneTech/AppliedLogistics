@@ -20,15 +20,18 @@
 
 package tech.flatstone.appliedlogistics.common.tileentities.builder;
 
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
+import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaBodyMessage;
 import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityInventoryBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
@@ -36,57 +39,26 @@ import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOp
 import tech.flatstone.appliedlogistics.common.util.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
-public class TileEntityBuilder extends TileEntityInventoryBase implements ITickable, INetworkButton {
-    public static final String TAG_PLANTYPE = "PlanType";
+
+public class TileEntityBuilder extends TileEntityInventoryBase implements ITickable, INetworkButton, IWailaBodyMessage {
     private InternalInventory inventory = new InternalInventory(this, 56);
-    private TechLevel planTechLevel = null;
-    private ItemPlanBase planBase = null;
-    private PlanDetails planDetails = null;
-    private List<PlanRequiredMaterials> planRequiredMaterialsList = new ArrayList<PlanRequiredMaterials>();
+    private HashMap<TechLevel, PlanDetails> planDetails = new HashMap<TechLevel, PlanDetails>();
+    private String planName = "";
+    private ItemStack planItem = null;
+    private int selectedTechLevel = -1;
+    private int buildingTechLevel = -1;
     private int ticksRemaining = 0;
     private boolean machineWorking = false;
-
-    @Override
-    public IInventory getInternalInventory() {
-        return inventory;
-    }
-
-    @Override
-    public void saveChanges() {
-
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound) {
-        super.readFromNBT(nbtTagCompound);
-
-        ticksRemaining = nbtTagCompound.getInteger("ticksRemaining");
-        machineWorking = nbtTagCompound.getBoolean("machineWorking");
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound) {
-        super.writeToNBT(nbtTagCompound);
-
-        nbtTagCompound.setInteger("ticksRemaining", ticksRemaining);
-        nbtTagCompound.setBoolean("machineWorking", machineWorking);
-    }
-
-    public int getTicksRemaining() {
-        return ticksRemaining;
-    }
-
-    public List<PlanRequiredMaterials> getPlanRequiredMaterialsList() {
-        return planRequiredMaterialsList;
-    }
 
     public int getTotalWeight() {
         int weight = 0;
         int invSlot = 1;
 
-        for (PlanRequiredMaterials material : planRequiredMaterialsList) {
+        for (PlanRequiredMaterials material : getPlanDetails().getRequiredMaterialsList()) {
             int materialWeight = material.getItemWeight();
             int itemCount = 0;
             ItemStack itemInSlot = inventory.getStackInSlot(invSlot);
@@ -98,24 +70,6 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
         }
 
         return weight;
-    }
-
-    public int getTotalTicks() {
-        int ticks = 0;
-        int invSlot = 28;
-
-        for (PlanRequiredMaterials material : planRequiredMaterialsList) {
-            int tickTime = material.getAddTime();
-            int itemCount = 0;
-            ItemStack itemInSlot = inventory.getStackInSlot(invSlot);
-            if (itemInSlot != null)
-                itemCount = itemInSlot.stackSize;
-            ticks += (tickTime * itemCount);
-
-            invSlot++;
-        }
-
-        return ticks;
     }
 
     public boolean isMeetingBuildRequirements() {
@@ -130,7 +84,10 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
         if (ticksRemaining > 0)
             return false;
 
-        for (PlanRequiredMaterials material : planRequiredMaterialsList) {
+        if (getPlanDetails() == null)
+            return false;
+
+        for (PlanRequiredMaterials material : getPlanDetails().getRequiredMaterialsList()) {
             if (material.getMinCount() > 0) {
                 ItemStack itemInSlot = inventory.getStackInSlot(invSlot);
                 if (itemInSlot == null)
@@ -143,81 +100,146 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
             invSlot++;
         }
 
-        if (planDetails != null && getTotalWeight() > planDetails.getTotalWeight())
+        if (planDetails != null && getTotalWeight() > getPlanDetails().getTotalWeight())
             return false;
 
         return true;
     }
 
-    public TechLevel getPlanTechLevel() {
-        if (worldObj == null)
-            return null;
+    public int getSelectedTechLevel() {
+        return selectedTechLevel;
+    }
 
-        ItemStack planItemStack = inventory.getStackInSlot(0);
+    public int getTicksRemaining() {
+        return ticksRemaining;
+    }
 
-        if (planItemStack == null || !planItemStack.hasTagCompound())
-            return null;
+    public int getBuildingTechLevel() {
+        return buildingTechLevel;
+    }
 
-        String planName = planItemStack.getTagCompound().getString(TAG_PLANTYPE);
-        planBase = (ItemPlanBase) PlanRegistry.getPlanAsItem(planName);
+    public Set<TechLevel> getTechLevels() {
+        return planDetails.keySet();
+    }
 
-        if (planBase == null) { //todo: invalidation...
-            LogHelper.info(">>> TODO: Invalidation...");
-            return null;
-        }
-
-        for (int i = getBlockMetadata(); i >= 0; i--) {
-            if (((IMachinePlan) planBase).getTechLevels(TechLevel.byMeta(i)) != null)
-                return TechLevel.byMeta(i);
-        }
+    public PlanDetails getPlanDetails(TechLevel techLevel) {
+        if (planDetails.containsKey(techLevel))
+            return planDetails.get(techLevel);
 
         return null;
     }
 
     public PlanDetails getPlanDetails() {
-        return planDetails;
+        if (planDetails.containsKey(TechLevel.byMeta(selectedTechLevel)))
+            return planDetails.get(TechLevel.byMeta(selectedTechLevel));
+
+        return null;
     }
 
-    public void updatePlan() {
-        TechLevel temp = getPlanTechLevel();
-        if (temp != planTechLevel && temp == null && Platform.isServer()) {
-            TileHelper.DropItems(this);
-            this.markForUpdate();
-            this.markDirty();
-        }
-
-        if (temp != planTechLevel) {
-            LogHelper.info(">>> Plan Change (" + temp + ")");
-            planTechLevel = temp;
-
-            // Clear old details...
-            planRequiredMaterialsList.clear();
-            planDetails = null;
-
-            if (planTechLevel == null) {
-                this.markForUpdate();
-                this.markDirty();
-                return;
-            }
-
-            planDetails = ((IMachinePlan) planBase).getTechLevels(planTechLevel);
-            planRequiredMaterialsList = planDetails.getRequiredMaterialsList();
-
-            this.markForUpdate();
-            this.markDirty();
-        }
+    public ItemStack getPlanItem() {
+        return planItem;
     }
 
     @Override
-    public boolean isItemValidForSlot(int slot, ItemStack itemStack) {
-        return super.isItemValidForSlot(slot, itemStack);
+    public void readFromNBT(NBTTagCompound nbtTagCompound) {
+        super.readFromNBT(nbtTagCompound);
+
+        selectedTechLevel = nbtTagCompound.getInteger("selectedTechLevel");
+        ticksRemaining = nbtTagCompound.getInteger("ticksRemaining");
+        machineWorking = nbtTagCompound.getBoolean("machineWorking");
+        buildingTechLevel = nbtTagCompound.getInteger("buildingTechLevel");
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound nbtTagCompound) {
+        super.writeToNBT(nbtTagCompound);
+
+        nbtTagCompound.setInteger("selectedTechLevel", selectedTechLevel);
+        nbtTagCompound.setInteger("ticksRemaining", ticksRemaining);
+        nbtTagCompound.setBoolean("machineWorking", machineWorking);
+        nbtTagCompound.setInteger("buildingTechLevel", buildingTechLevel);
+    }
+
+    private void updatePlanDetails() {
+        ItemStack itemStack = inventory.getStackInSlot(0);
+
+        if (planItem != null && !planItem.isItemEqual(itemStack)) {
+            planItem = null;
+        }
+
+        if (planItem == null && !planDetails.isEmpty()) {
+            planDetails.clear();
+            planName = "";
+            planChange();
+            return;
+        }
+
+        if (itemStack == null)
+            return;
+
+        if (!planDetails.isEmpty())
+            return;
+
+        if (!itemStack.hasTagCompound() || !itemStack.getTagCompound().hasKey("PlanType"))
+            return;
+
+        planName = itemStack.getTagCompound().getString("PlanType");
+        ItemPlanBase planBase = (ItemPlanBase) PlanRegistry.getPlanAsItem(planName);
+
+        if (planBase == null) {
+            // todo: invalidate item
+            LogHelper.warn("Plan no longer matches an item, either a mod has changed, or something else bad happened...");
+            LogHelper.warn("Plan raw name is: " + planName);
+            return;
+        }
+
+        if (!(planBase instanceof IMachinePlan))
+            return;
+
+        for (int i = getBlockMetadata(); i >= 0; i--) {
+            TechLevel techLevel = TechLevel.byMeta(i);
+            PlanDetails details = ((IMachinePlan) planBase).getTechLevels(techLevel);
+            if (details != null)
+                planDetails.put(techLevel, details);
+        }
+
+        if (planDetails.isEmpty()) {
+            LogHelper.fatal("The plan that was inserted has no techlevel recipes... this is probably not good...");
+            LogHelper.fatal("Plan Name: " + planName);
+            return;
+        }
+
+        planItem = itemStack;
+        planChange();
+    }
+
+    private void planChange() {
+        if (planItem == null && Platform.isServer()) {
+            TileHelper.DropItems(this);
+        }
+
+        if (planItem == null)
+            return;
+
+        if (selectedTechLevel == -1) {
+            for (TechLevel techLevel : planDetails.keySet()) {
+                if (techLevel.getMeta() > selectedTechLevel)
+                    selectedTechLevel = techLevel.getMeta();
+            }
+        }
+
+        this.markForUpdate();
+        this.markDirty();
+    }
+
+    @Override
+    public IInventory getInternalInventory() {
+        return inventory;
     }
 
     @Override
     public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
-        if (slot == 0) {
-            updatePlan();
-        }
+
     }
 
     @Override
@@ -231,54 +253,27 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
     }
 
     @Override
-    public int getField(int id) {
-        return 0;
-    }
-
-    @Override
-    public void setField(int id, int value) {
-
-    }
-
-    @Override
-    public int getFieldCount() {
-        return 0;
-    }
-
-    @Override
-    public void clear() {
-
-    }
-
-    @Override
-    public IChatComponent getDisplayName() {
-        return null;
-    }
-
-    @Override
     public void update() {
-        if (inventory.getStackInSlot(0) != null && planTechLevel == null)
-            updatePlan();
+        updatePlanDetails();
 
-        if (!machineWorking)
-            return;
-
-        // todo: process items if there are things to process...
-
-        if (ticksRemaining > 0) {
+        if (getTotalTicks() > 0 && machineWorking) {
             ticksRemaining--;
         }
 
-        if (ticksRemaining <= 0) {
+        if (ticksRemaining <= 0 && machineWorking) {
             machineWorking = false;
-
+            ticksRemaining = 0;
+            // Machine is done...
             if (Platform.isClient())
                 return;
 
-            ItemStack outputItem = planDetails.getItemOutput().copy();
+            if (getPlanDetails() == null)
+                return;
+
+            ItemStack outputItem = getPlanDetails(TechLevel.byMeta(buildingTechLevel)).getItemOutput().copy();
+            buildingTechLevel = -1;
 
             NBTTagCompound tagMachineItems = new NBTTagCompound();
-
             NBTTagCompound tagCompound = new NBTTagCompound();
             int j = 0;
             for (int i = 29; i < 56; i++) {
@@ -290,12 +285,10 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
                     j++;
                 }
             }
-
             tagMachineItems.setTag("MachineItemData", tagCompound);
-
             outputItem.setTagCompound(tagMachineItems);
 
-            this.inventory.setInventorySlotContents(28, outputItem); //todo: check to make sure that output slot has room...
+            this.inventory.setInventorySlotContents(28, outputItem);
 
             for (int i = 29; i < 56; i++) {
                 inventory.setInventorySlotContents(i, null);
@@ -307,22 +300,83 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
     }
 
     @Override
+    public List<String> getWailaBodyToolTip(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        List<String> newTooltip = currentTip;
+
+        if (planDetails == null || getPlanDetails() == null || planItem == null)
+            return newTooltip;
+
+        newTooltip.add(String.format("%s: %s",
+                LanguageHelper.LABEL.translateMessage("plan"),
+                LanguageHelper.NONE.translateMessage(planItem.getUnlocalizedName() + ".name")
+        ));
+
+        if (ticksRemaining == 0)
+            return newTooltip;
+
+        float timePercent = ((((float) getTotalTicks() - (float) ticksRemaining) / (float) getTotalTicks())) * 100;
+        int secondsLeft = (ticksRemaining / 20) * 1000;
+
+        newTooltip.add(String.format("%s: %s (%d%%)",
+                LanguageHelper.LABEL.translateMessage("time_left"),
+                DurationFormatUtils.formatDuration(secondsLeft, "mm:ss"),
+                Math.round(timePercent)
+        ));
+
+        return newTooltip;
+    }
+
+    @Override
     public void actionPerformed(int buttonID) {
         switch (buttonID) {
-            case 0:
+            case 0: // Build
                 inventoryToInternal();
+                buildingTechLevel = selectedTechLevel;
                 ticksRemaining = getTotalTicks();
                 machineWorking = true;
                 this.markForUpdate();
                 this.markDirty();
                 break;
+
+            case 1: // Previous Tech Level
+                changeLevel(getPrevTechLevel());
+                break;
+
+            case 2: // Next Tech Level
+                changeLevel(getNextTechLevel());
+                break;
         }
+    }
+
+    public int getNextTechLevel() {
+        int nextTechLevel = selectedTechLevel;
+        for (int i = selectedTechLevel + 1; i <= this.getBlockMetadata(); i++) {
+            if (planDetails.containsKey(TechLevel.byMeta(i)))
+                return i;
+        }
+        return nextTechLevel;
+    }
+
+    public int getPrevTechLevel() {
+        int prevTechLevel = selectedTechLevel;
+        for (int i = selectedTechLevel - 1; i >= 0; i--) {
+            if (planDetails.containsKey(TechLevel.byMeta(i)))
+                return i;
+        }
+        return prevTechLevel;
+    }
+
+    private void changeLevel(int newTechLevel) {
+        selectedTechLevel = newTechLevel;
+        TileHelper.DropItems(this, 1, 27);
+        this.markForUpdate();
+        this.markDirty();
     }
 
     private void inventoryToInternal() {
         int invSlot = 1;
 
-        for (PlanRequiredMaterials material : planRequiredMaterialsList) {
+        for (PlanRequiredMaterials material : getPlanDetails().getRequiredMaterialsList()) {
             ItemStack itemIn = inventory.getStackInSlot(invSlot);
             if (itemIn != null) {
                 inventory.setInventorySlotContents(invSlot + 28, itemIn);
@@ -330,5 +384,70 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
             }
             invSlot++;
         }
+    }
+
+    public int getTotalTicks() {
+        int ticks = 0;
+        int invSlot = 28;
+
+        if (getPlanDetails() == null)
+            return 0;
+
+        for (PlanRequiredMaterials material : getPlanDetails(TechLevel.byMeta(buildingTechLevel)).getRequiredMaterialsList()) {
+            int tickTime = material.getAddTime();
+            int itemCount = 0;
+            ItemStack itemInSlot = inventory.getStackInSlot(invSlot);
+            if (itemInSlot != null)
+                itemCount = itemInSlot.stackSize;
+            ticks += (tickTime * itemCount);
+
+            invSlot++;
+        }
+
+        return ticks;
+    }
+
+    public int getComparatorOutput() {
+        if (planDetails == null)
+            return 0;
+
+        if (planItem == null)
+            return 0;
+
+        if (getPlanDetails() == null)
+            return 0;
+
+        // Check to see if overweight
+        if (getTotalWeight() > getPlanDetails().getTotalWeight())
+            return 15;
+
+        // Done Building
+        if (inventory.getStackInSlot(28) != null)
+            return 4;
+
+        // Building...
+        if (ticksRemaining > 0)
+            return 3;
+
+        // Ok to Build
+        if (isMeetingBuildRequirements())
+            return 2;
+
+        // Valid Plan
+        return 1;
+    }
+
+    public String getPlanDetailedDescription() {
+        ItemPlanBase planBase = (ItemPlanBase) PlanRegistry.getPlanAsItem(planName);
+
+        if (planBase == null || !(planBase instanceof IMachinePlan))
+            return "";
+
+        List<ItemStack> inventory = new ArrayList<ItemStack>();
+        for (int i = 1; i < 27; i++) {
+            inventory.add(getInternalInventory().getStackInSlot(i));
+        }
+
+        return ((IMachinePlan) planBase).getMachineDetails(TechLevel.byMeta(selectedTechLevel), inventory);
     }
 }

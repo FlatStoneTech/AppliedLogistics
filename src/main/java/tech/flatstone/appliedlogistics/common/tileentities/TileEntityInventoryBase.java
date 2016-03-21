@@ -26,6 +26,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.IInventoryCustom;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.IInventoryHandler;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
@@ -140,5 +141,36 @@ public abstract class TileEntityInventoryBase extends TileEntityBase implements 
     @Override
     public String getName() {
         return getCustomName();
+    }
+
+    @Override
+    public void saveChanges() {
+
+    }
+
+
+    @Override
+    public int getField(int id) {
+        return 0;
+    }
+
+    @Override
+    public void setField(int id, int value) {
+
+    }
+
+    @Override
+    public int getFieldCount() {
+        return 0;
+    }
+
+    @Override
+    public void clear() {
+
+    }
+
+    @Override
+    public IChatComponent getDisplayName() {
+        return null;
     }
 }

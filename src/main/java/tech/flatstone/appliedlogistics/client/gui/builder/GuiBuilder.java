@@ -27,6 +27,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.lwjgl.opengl.GL11;
+import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.client.gui.GuiBase;
 import tech.flatstone.appliedlogistics.common.container.builder.ContainerBuilder;
 import tech.flatstone.appliedlogistics.common.container.slot.SlotBuilderInventory;
@@ -39,14 +41,14 @@ import tech.flatstone.appliedlogistics.common.util.PlanDetails;
 import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class GuiBuilder extends GuiBase {
     TileEntityBuilder tileEntity;
     GuiHelper guiHelper = new GuiHelper();
-    List<PlanRequiredMaterials> requiredMaterialsList = new ArrayList<PlanRequiredMaterials>();
     private GuiButton btnStartBuilder;
+    private GuiButton btnPrevTechLevel;
+    private GuiButton btnNextTechLevel;
 
     public GuiBuilder(InventoryPlayer inventoryPlayer, TileEntityBuilder tileEntity) {
         super(new ContainerBuilder(inventoryPlayer, tileEntity));
@@ -57,11 +59,16 @@ public class GuiBuilder extends GuiBase {
 
     @Override
     public void initGui() {
-        this.buttonList.clear();
-        this.buttonList.add(this.btnStartBuilder = new GuiButton(0, 268, 126, 68, 20, LanguageHelper.LABEL.translateMessage("build")));
-        this.btnStartBuilder.enabled = false;
-
         super.initGui();
+        this.buttonList.clear();
+        this.buttonList.add(this.btnStartBuilder = new GuiButton(0, guiLeft + 183, guiTop + 117, 68, 20, LanguageHelper.LABEL.translateMessage("build")));
+
+        if (tileEntity.getBlockMetadata() > 0) {
+            this.buttonList.add(this.btnPrevTechLevel = new GuiButton(1, guiLeft + 183, guiTop + 139, 10, 20, "<"));
+            this.buttonList.add(this.btnNextTechLevel = new GuiButton(2, guiLeft + 241, guiTop + 139, 10, 20, ">"));
+        }
+
+        this.btnStartBuilder.enabled = false;
     }
 
     @Override
@@ -69,18 +76,22 @@ public class GuiBuilder extends GuiBase {
         bindTexture("gui/machines/builder.png");
         drawTexturedModalRect(paramInt1, paramInt2, 0, 0, this.xSize, this.ySize);
 
-        for (int i = 0; i < 27; i++) {
-            Slot slot = inventorySlots.getSlot(i);
-            if (slot instanceof SlotBuilderInventory && slot.getSlotIndex() > 0 && slot.getSlotIndex() <= requiredMaterialsList.size() && !slot.getHasStack()) {
-                ItemStack displayStack = requiredMaterialsList.get(slot.getSlotIndex() - 1).getRequiredMaterials().get(0);
-                this.drawTransparentIconEmpty(slot, displayStack);
+        PlanDetails planDetails = tileEntity.getPlanDetails();
+        if (planDetails != null) {
+            List<PlanRequiredMaterials> requiredMaterials = planDetails.getRequiredMaterialsList();
+            int slotID = 0;
+            for (PlanRequiredMaterials materials : requiredMaterials) {
+                Slot slot = this.inventorySlots.getSlot(slotID);
+                ItemStack stack = materials.getRequiredMaterials().get(0);
+                this.drawTransparentIconEmpty(slot, stack);
+                slotID++;
             }
         }
     }
 
     @Override
     public void drawFG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
-        PlanDetails planDetails = tileEntity.getPlanDetails();
+        //PlanDetails planDetails = tileEntity.getPlanDetails();
 
         /**
          * Titles
@@ -88,23 +99,38 @@ public class GuiBuilder extends GuiBase {
         this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()), 8, 6, 4210752);
         this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage("container.inventory"), 8, 129, 4210752);
 
+        if (this.tileEntity.getBlockMetadata() != 0 && this.tileEntity.getPlanItem() != null) {
+            guiHelper.drawCenteredString(194, 145, 46, LanguageHelper.NONE.translateMessage(TechLevel.byMeta(tileEntity.getSelectedTechLevel()).getUnlocalizedName()), 4210752);
+        }
+
         ItemStack itemPlan = tileEntity.getInternalInventory().getStackInSlot(0);
 
-        //todo: redo this...
-        if (itemPlan == null) {
+        if (tileEntity.getPlanItem() == null) {
             this.fontRendererObj.drawString(EnumChatFormatting.RED + LanguageHelper.MESSAGE.translateMessage("plan.insert"), 36, 26, 4210752);
-        } else if (!itemPlan.hasTagCompound()) {
-            this.fontRendererObj.drawString(EnumChatFormatting.RED + LanguageHelper.MESSAGE.translateMessage("plan.invalid"), 36, 26, 4210752);
         } else {
             this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage(itemPlan.getUnlocalizedName() + ".name"), 8, 48, 4210752);
         }
 
+        /**
+         * Description of things...
+         */
+        GL11.glPushMatrix();
+        GL11.glScalef(0.75f, 0.75f, 0.75f);
+        String machineDescription = tileEntity.getPlanDetailedDescription();
+        String[] description = machineDescription.split("\\n");
+        int messageY = 12;
+        for (String message : description) {
+            guiHelper.drawStringWithShadow(233, messageY, message, colorFont);
+            messageY += 9;
+        }
+        GL11.glScalef(1.0f, 1.0f, 1.0f);
+        GL11.glPopMatrix();
 
         /**
          * Progress Bars
          */
-        if (planDetails != null && tileEntity.getTicksRemaining() == 0) {
-            int weightMax = planDetails.getTotalWeight();
+        if (tileEntity.getPlanItem() != null && tileEntity.getTicksRemaining() == 0) {
+            int weightMax = tileEntity.getPlanDetails().getTotalWeight();
             int weightTotal = tileEntity.getTotalWeight();
             int weightProgressColor = colorProgressBackground;
 
@@ -123,10 +149,10 @@ public class GuiBuilder extends GuiBase {
                     LanguageHelper.LABEL.translateMessage("weight_left"),
                     weightMax - weightTotal
             );
-            guiHelper.drawCenteredString(40, 26, 126, weightLabel, colorFont);
+            guiHelper.drawCenteredStringWithShadow(40, 26, 126, weightLabel, colorFont);
         }
 
-        if (planDetails != null && tileEntity.getTicksRemaining() > 0) {
+        if (tileEntity.getPlanItem() != null && tileEntity.getTicksRemaining() > 0) {
             int timeMax = tileEntity.getTotalTicks();
             int timeCurrent = tileEntity.getTicksRemaining();
             int timeProgressColor = colorProgressBackground;
@@ -141,20 +167,20 @@ public class GuiBuilder extends GuiBase {
                     DurationFormatUtils.formatDuration(secondsLeft, "mm:ss"),
                     Math.round(timePercent)
             );
-            guiHelper.drawCenteredString(40, 26, 126, timeLabel, colorFont);
+            guiHelper.drawCenteredStringWithShadow(40, 26, 126, timeLabel, colorFont);
         }
     }
 
     @Override
     public void updateScreen() {
         super.updateScreen();
-        tileEntity.updatePlan();
-
-        if (!equalLists(requiredMaterialsList, tileEntity.getPlanRequiredMaterialsList())) {
-            requiredMaterialsList = tileEntity.getPlanRequiredMaterialsList();
-        }
 
         btnStartBuilder.enabled = tileEntity.isMeetingBuildRequirements();
+
+        if (tileEntity.getBlockMetadata() > 0) {
+            btnNextTechLevel.enabled = tileEntity.getNextTechLevel() != tileEntity.getSelectedTechLevel();
+            btnPrevTechLevel.enabled = tileEntity.getPrevTechLevel() != tileEntity.getSelectedTechLevel();
+        }
     }
 
     @Override
@@ -165,10 +191,12 @@ public class GuiBuilder extends GuiBase {
         if (slot == null)
             return;
 
-
-        if (slot instanceof SlotBuilderInventory && slot.getSlotIndex() > 0 && slot.getSlotIndex() <= requiredMaterialsList.size() && !slot.getHasStack()) {
-            PlanRequiredMaterials requiredMaterials = requiredMaterialsList.get(slot.getSlotIndex() - 1);
-            renderToolTip(requiredMaterials, mouse_x, mouse_y);
+        PlanDetails planDetails = tileEntity.getPlanDetails();
+        if (planDetails != null) {
+            List<PlanRequiredMaterials> requiredMaterials = planDetails.getRequiredMaterialsList();
+            if (slot instanceof SlotBuilderInventory && slot.getSlotIndex() > 0 && slot.getSlotIndex() <= requiredMaterials.size() && !slot.getHasStack()) {
+                renderToolTip(requiredMaterials.get(slot.getSlotIndex() - 1), mouse_x, mouse_y);
+            }
         }
     }
 

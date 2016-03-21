@@ -23,6 +23,7 @@ package tech.flatstone.appliedlogistics.common.container.slot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityBuilder;
+import tech.flatstone.appliedlogistics.common.util.PlanDetails;
 import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 
 import java.util.List;
@@ -39,7 +40,11 @@ public class SlotBuilderInventory extends SlotBase {
 
     @Override
     public boolean canBeHovered() {
-        List<PlanRequiredMaterials> planRequiredMaterialsList = tileEntity.getPlanRequiredMaterialsList();
+        PlanDetails planDetails = tileEntity.getPlanDetails();
+        if (planDetails == null)
+            return false;
+
+        List<PlanRequiredMaterials> planRequiredMaterialsList = planDetails.getRequiredMaterialsList();
         if (planRequiredMaterialsList.size() < slotID)
             return false;
 
@@ -51,7 +56,11 @@ public class SlotBuilderInventory extends SlotBase {
         if (!canBeHovered())
             return false;
 
-        List<ItemStack> validItems = tileEntity.getPlanRequiredMaterialsList().get(slotID - 1).getRequiredMaterials();
+        PlanDetails planDetails = tileEntity.getPlanDetails();
+        if (planDetails == null)
+            return false;
+
+        List<ItemStack> validItems = planDetails.getRequiredMaterialsList().get(slotID - 1).getRequiredMaterials();
         for (ItemStack validItem : validItems) {
             validItem.stackSize = 1;
 
@@ -68,6 +77,10 @@ public class SlotBuilderInventory extends SlotBase {
 
     @Override
     public int getSlotStackLimit() {
-        return tileEntity.getPlanRequiredMaterialsList().get(slotID - 1).getMaxCount();
+        PlanDetails planDetails = tileEntity.getPlanDetails();
+        if (planDetails == null)
+            return 0;
+
+        return planDetails.getRequiredMaterialsList().get(slotID - 1).getMaxCount();
     }
 }
