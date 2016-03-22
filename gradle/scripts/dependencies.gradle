@@ -56,6 +56,11 @@ repositories {
         url = "http://maven.cil.li/"
     }
 
+    maven {
+        name "Darkhax"
+        url = "http://maven.rubbix.net/"
+    }
+
     ivy {
         name "BuildCraft"
         artifactPattern "http://www.mod-buildcraft.com/releases/BuildCraft/[revision]/[module]-[revision]-[classifier].[ext]"

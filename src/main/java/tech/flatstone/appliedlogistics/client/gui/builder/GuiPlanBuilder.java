@@ -18,33 +18,69 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.api.features;
+package tech.flatstone.appliedlogistics.client.gui.builder;
 
-import net.minecraft.item.ItemStack;
-import tech.flatstone.appliedlogistics.common.util.PlanDetails;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.InventoryPlayer;
+import tech.flatstone.appliedlogistics.client.gui.GuiBase;
+import tech.flatstone.appliedlogistics.client.gui.GuiHandler;
+import tech.flatstone.appliedlogistics.common.container.builder.ContainerPlanBuilder;
+import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanBuilder;
+import tech.flatstone.appliedlogistics.common.util.GuiHelper;
+import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 
-import java.util.List;
+import java.io.IOException;
 
-public interface IMachinePlan {
-    /**
-     * Gets the unlocalized name for the description
-     *
-     * @return
-     */
-    String getLocalizedPlanDescription();
+public class GuiPlanBuilder extends GuiBase {
+    TileEntityPlanBuilder tileEntity;
+    GuiHelper guiHelper = new GuiHelper();
+    private GuiButton btnNextPlan;
+    private GuiButton btnPrevPlan;
 
-    /**
-     * Gets the tech levels for the plan
-     *
-     * @return
-     */
-    PlanDetails getTechLevels(TechLevel techLevel);
+    public GuiPlanBuilder(InventoryPlayer inventoryPlayer, TileEntityPlanBuilder tileEntity) {
+        super(new ContainerPlanBuilder(inventoryPlayer, tileEntity));
+        this.xSize = 218;
+        this.ySize = 183;
+        this.tileEntity = tileEntity;
+    }
 
-    String getMachineDetails(TechLevel techLevel, List<ItemStack> inventory);
+    @Override
+    public void initGui() {
+        super.initGui();
+        this.buttonList.clear();
 
-    /**
-     * Optional experence required to craft plan
-     * @return experence in int
-     */
-    int getPlanRequiredXP();
+        this.buttonList.add(this.btnPrevPlan = new GuiButton(0, guiLeft + 7, guiTop + 16, 10, 20, "<"));
+        this.buttonList.add(this.btnNextPlan = new GuiButton(1, guiLeft + 159, guiTop + 16, 10, 20, ">"));
+    }
+
+    @Override
+    public void drawBG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
+        bindTexture("gui/machines/plan_builder.png");
+        drawTexturedModalRect(paramInt1, paramInt2, 0, 0, this.xSize, this.ySize);
+    }
+
+    @Override
+    public void drawFG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
+        this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()), 8, 6, 4210752);
+        this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage("container.inventory"), 8, 90, 4210752);
+
+        guiHelper.drawCenteredString(22, 22, 133, "todo: plan name", 4210752);
+    }
+
+    @Override
+    public void updateScreen() {
+        super.updateScreen();
+    }
+
+    @Override
+    public void drawScreen(int mouse_x, int mouse_y, float btn) {
+        super.drawScreen(mouse_x, mouse_y, btn);
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton button) throws IOException {
+        super.actionPerformed(button);
+    }
+
+
 }

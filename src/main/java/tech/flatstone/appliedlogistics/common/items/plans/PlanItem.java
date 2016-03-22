@@ -18,33 +18,83 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.api.features;
+package tech.flatstone.appliedlogistics.common.items.plans;
 
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import tech.flatstone.appliedlogistics.common.util.PlanDetails;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.client.model.ModelLoader;
+import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
+import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
+import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
+import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 
 import java.util.List;
 
-public interface IMachinePlan {
-    /**
-     * Gets the unlocalized name for the description
-     *
-     * @return
-     */
-    String getLocalizedPlanDescription();
+public class PlanItem extends ItemPlanBase implements IItemRenderer {
+    public PlanItem() {
+        this.setHasSubtypes(true);
+        this.maxStackSize = 1;
+    }
 
-    /**
-     * Gets the tech levels for the plan
-     *
-     * @return
-     */
-    PlanDetails getTechLevels(TechLevel techLevel);
+    public static void setTagForPlan(ItemStack stack, Item plan) {
+        NBTTagCompound tagCompound = new NBTTagCompound();
+        tagCompound.setString("PlanType", plan.getUnlocalizedName());
+        stack.setTagCompound(tagCompound);
+    }
 
-    String getMachineDetails(TechLevel techLevel, List<ItemStack> inventory);
+    public static String getTagForPlan(ItemStack stack) {
+        NBTTagCompound tagCompound;
 
-    /**
-     * Optional experence required to craft plan
-     * @return experence in int
-     */
-    int getPlanRequiredXP();
+        if (stack.hasTagCompound()) {
+            tagCompound = stack.getTagCompound();
+        } else {
+            tagCompound = new NBTTagCompound();
+        }
+        String plan = tagCompound.getString("PlanType");
+
+        return plan;
+    }
+
+    @Override
+    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+        // Add registered plans
+        for (Item plan : PlanRegistry.getPlanItems()) {
+            ItemStack stack = new ItemStack(this);
+            setTagForPlan(stack, plan);
+
+            subItems.add(stack);
+        }
+    }
+
+    @Override
+    public String getUnlocalizedName(ItemStack stack) {
+        Item plan = PlanRegistry.getPlanAsItem(getTagForPlan(stack));
+
+        if (plan != null) {
+            String planName = plan.getUnlocalizedName();
+            return planName;
+        }
+
+        return super.getUnlocalizedName() + ".error";
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+        Item plan = PlanRegistry.getPlanAsItem(getTagForPlan(stack));
+
+        if (plan != null && plan instanceof IMachinePlan) {
+            String techLevel = ((IMachinePlan) plan).getLocalizedPlanDescription(); //todo: statscollector
+            tooltip.add(techLevel);
+        }
+    }
+
+    @Override
+    public void registerItemRenderer() {
+        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":plans/itemPlan", "inventory"));
+    }
 }

@@ -163,7 +163,7 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
     private void updatePlanDetails() {
         ItemStack itemStack = inventory.getStackInSlot(0);
 
-        if (planItem != null && !planItem.isItemEqual(itemStack)) {
+        if (!ItemStack.areItemStacksEqual(planItem, itemStack)) {
             planItem = null;
         }
 
@@ -215,7 +215,7 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
 
     private void planChange() {
         if (planItem == null && Platform.isServer()) {
-            TileHelper.DropItems(this);
+            TileHelper.DropItems(this, 1, 27);
         }
 
         if (planItem == null)

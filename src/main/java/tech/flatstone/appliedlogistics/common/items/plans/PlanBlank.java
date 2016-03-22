@@ -20,64 +20,36 @@
 
 package tech.flatstone.appliedlogistics.common.items.plans;
 
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.ModInfo;
-import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
-import tech.flatstone.appliedlogistics.api.features.TechLevel;
-import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
-import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
-import tech.flatstone.appliedlogistics.common.util.PlanDetails;
-import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
+import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
+import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class PlanBuilder extends ItemPlanBase implements IMachinePlan {
-    public PlanBuilder() {
-        this.setUnlocalizedName(String.format("%s:%s", ModInfo.MOD_ID, "plan.builder"));
+public class PlanBlank extends ItemPlanBase implements IProvideRecipe, IItemRenderer {
+    public PlanBlank() {
+        this.setMaxStackSize(16);
     }
 
     @Override
-    public String getUnlocalizedPlanDescription() {
-        return String.format("%s%s%s",
-                EnumChatFormatting.YELLOW,
-                EnumChatFormatting.ITALIC,
-                LanguageHelper.DESCRIPTION.translateMessage("plan.builder")
-        );
+    public void registerItemRenderer() {
+        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":plans/itemPlan", "inventory"));
     }
 
     @Override
-    public PlanDetails getTechLevels(TechLevel techLevel) {
-        PlanDetails planDetails = null;
-        List<PlanRequiredMaterials> requiredMaterialsList = new ArrayList<PlanRequiredMaterials>();
-
-        switch (techLevel) {
-            case STONE_AGE:
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("ingotBronze"), 7, 7, 6, 100, 100));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Blocks.BLOCK_BUILDER.block, 1, 0), 1, 1, 10, 100, 100));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(net.minecraft.init.Items.comparator), 0, 1, 10, 200, 200, "Adds comparator output"));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(net.minecraft.init.Blocks.redstone_block), 0, 1, 10, 200, 200, "Adds redstone input to launch build"));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(net.minecraft.init.Blocks.hopper), 0, 1, 10, 200, 200, "Adds support to adding / removing items with pipes and hoppers"));
-
-                planDetails = new PlanDetails(72, requiredMaterialsList, new ItemStack(Blocks.BLOCK_BUILDER.block, 1, 1));
-                break;
-
-            case BRONZE_AGE:
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("ingotSteel"), 7, 7, 15, 100, 100));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Blocks.BLOCK_BUILDER.block, 1, 1), 1, 1, 10, 100, 100));
-
-                planDetails = new PlanDetails(1000, requiredMaterialsList, new ItemStack(Blocks.BLOCK_BUILDER.block, 1, 2));
-                break;
-        }
-
-        return planDetails;
-    }
-
-    @Override
-    public String getMachineDetails(TechLevel techLevel, List<ItemStack> inventory) {
-        return "";
+    public void RegisterRecipes() {
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(this, 4),
+                "xyx",
+                "yzy",
+                "xyx",
+                'x', "stickWood",
+                'y', "plankWood",
+                'z', new ItemStack(Items.paper)
+        ));
     }
 }

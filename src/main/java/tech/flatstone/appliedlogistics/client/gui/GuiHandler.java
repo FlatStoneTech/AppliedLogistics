@@ -26,10 +26,13 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import tech.flatstone.appliedlogistics.client.gui.builder.GuiBuilder;
+import tech.flatstone.appliedlogistics.client.gui.builder.GuiPlanBuilder;
 import tech.flatstone.appliedlogistics.client.gui.machines.GuiPulverizer;
 import tech.flatstone.appliedlogistics.common.container.builder.ContainerBuilder;
+import tech.flatstone.appliedlogistics.common.container.builder.ContainerPlanBuilder;
 import tech.flatstone.appliedlogistics.common.container.machines.ContainerPulverizer;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityBuilder;
+import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanBuilder;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityPulverizer;
 
 public class GuiHandler implements IGuiHandler {
@@ -44,8 +47,8 @@ public class GuiHandler implements IGuiHandler {
         switch (ID) {
             case 0: // Builder GUI
                 return new ContainerBuilder(player.inventory, tileEntity);
-            case 1: // Pulverizer GUI
-                return new ContainerPulverizer(player.inventory, tileEntity);
+            case 1: // Plan Builder GUI
+                return new ContainerPlanBuilder(player.inventory, tileEntity);
         }
 
         return null;
@@ -61,8 +64,8 @@ public class GuiHandler implements IGuiHandler {
         switch (ID) {
             case 0: // Builder GUI
                 return new GuiBuilder(player.inventory, (TileEntityBuilder) tileEntity);
-            case 1: // Pulverizer GUI
-                return new GuiPulverizer(player.inventory, (TileEntityPulverizer) tileEntity);
+            case 1: // Plan Builder GUI
+                return new GuiPlanBuilder(player.inventory, (TileEntityPlanBuilder) tileEntity);
         }
 
         return null;

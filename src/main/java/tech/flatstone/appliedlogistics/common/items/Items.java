@@ -31,6 +31,8 @@ import tech.flatstone.appliedlogistics.common.items.material.ItemGear;
 import tech.flatstone.appliedlogistics.common.items.ore.ItemOreDust;
 import tech.flatstone.appliedlogistics.common.items.ore.ItemOreIngot;
 import tech.flatstone.appliedlogistics.common.items.ore.ItemOreNugget;
+import tech.flatstone.appliedlogistics.common.items.plans.PlanBlank;
+import tech.flatstone.appliedlogistics.common.items.plans.PlanItem;
 import tech.flatstone.appliedlogistics.common.items.tools.ItemHammer;
 import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 import tech.flatstone.appliedlogistics.common.util.Platform;
@@ -46,7 +48,8 @@ public enum Items {
 
     ITEM_TOOL_HAMMER("tool_hammer", new ItemHammer(), AppliedLogisticsCreativeTabs.tabGeneral),
 
-    ITEM_PLAN("plan", new ItemPlanBase(), AppliedLogisticsCreativeTabs.tabPlans),;
+    ITEM_PLAN_BLANK("plan_blank", new PlanBlank(), AppliedLogisticsCreativeTabs.tabPlans),
+    ITEM_PLAN("plan_item", new PlanItem(), AppliedLogisticsCreativeTabs.tabPlans);
 
     public final Item item;
     private final String internalName;

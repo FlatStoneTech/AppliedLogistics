@@ -18,33 +18,112 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.api.features;
+package tech.flatstone.appliedlogistics.common.plans;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.oredict.OreDictionary;
+import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
+import tech.flatstone.appliedlogistics.api.features.TechLevel;
+import tech.flatstone.appliedlogistics.common.blocks.Blocks;
+import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
+import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 import tech.flatstone.appliedlogistics.common.util.PlanDetails;
+import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public interface IMachinePlan {
-    /**
-     * Gets the unlocalized name for the description
-     *
-     * @return
-     */
-    String getLocalizedPlanDescription();
+public class PlanPulverizer extends ItemPlanBase implements IMachinePlan {
+    public PlanPulverizer() {
+        this.setUnlocalizedName(String.format("%s:%s", ModInfo.MOD_ID, "plan.pulverizer"));
+    }
 
-    /**
-     * Gets the tech levels for the plan
-     *
-     * @return
-     */
-    PlanDetails getTechLevels(TechLevel techLevel);
+    @Override
+    public String getLocalizedPlanDescription() {
+        return String.format("%s%s%s",
+                EnumChatFormatting.YELLOW,
+                EnumChatFormatting.ITALIC,
+                LanguageHelper.DESCRIPTION.translateMessage("plan.pulverizer")
+        );
+    }
 
-    String getMachineDetails(TechLevel techLevel, List<ItemStack> inventory);
+    @Override
+    public PlanDetails getTechLevels(TechLevel techLevel) {
+        PlanDetails planDetails = null;
+        List<PlanRequiredMaterials> requiredMaterialsList = new ArrayList<PlanRequiredMaterials>();
 
-    /**
-     * Optional experence required to craft plan
-     * @return experence in int
-     */
-    int getPlanRequiredXP();
+        switch (techLevel) {
+            case STONE_AGE:
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("cobblestone"), 12, 12, 2, 120, 200, "plan.pulverizer.material.cobblestone"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("plankWood"), 4, 4, 1, 40, 80, ""));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearWood"), 0, 1, 3, 60, 60, ""));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearStone"), 1, 2, 5, 80, 80, ""));
+
+                planDetails = new PlanDetails(38, requiredMaterialsList, new ItemStack(Blocks.BLOCK_MACHINE_PULVERIZER.block, 1));
+                break;
+
+            case BRONZE_AGE:
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("cobblestone"), 12, 12, 2, 120, 200, ""));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("plankWood"), 4, 4, 1, 40, 80, ""));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("ingotIron"), 2, 2, 4, 40, 80, ""));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("blockBronze"), 1, 1, 10, 60, 60, ""));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearStone"), 0, 2, 5, 80, 80, ""));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearIron"), 1, 2, 10, 80, 80, ""));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearBronze"), 2, 4, 12, 80, 80, ""));
+
+                planDetails = new PlanDetails(138, requiredMaterialsList, new ItemStack(Blocks.BLOCK_MACHINE_PULVERIZER.block, 1));
+                break;
+
+            case INDUSTRIAL_AGE:
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearBronze"), 2, 4, 12, 80, 80, ""));
+
+                planDetails = new PlanDetails(138, requiredMaterialsList, new ItemStack(Blocks.BLOCK_ORE_BLOCK.block, 1, 4));
+                break;
+        }
+
+        return planDetails;
+    }
+
+    @Override
+    public String getMachineDetails(TechLevel techLevel, List<ItemStack> inventory) {
+        ItemStack speedUpgrades = null;
+        ItemStack chanceUpgrades = null;
+
+        switch (techLevel) {
+            case STONE_AGE:
+                speedUpgrades = inventory.get(2);
+                chanceUpgrades = inventory.get(3);
+                break;
+        }
+
+        int speedMultipler = 0;
+        if (speedUpgrades != null)
+            speedMultipler = speedUpgrades.stackSize * 75;
+
+        int chanceMultipler = 0;
+        if (chanceUpgrades != null)
+            chanceMultipler = chanceUpgrades.stackSize * 80;
+
+
+        String outputMessage = String.format("%s\n" +
+                        "\n" +
+                        "%s:\n(+%s%%)\n" +
+                        "\n" +
+                        "%s:\n(+%s%%)",
+                LanguageHelper.LABEL.translateMessage("details"),
+                LanguageHelper.LABEL.translateMessage("speed"),
+                speedMultipler,
+                LanguageHelper.LABEL.translateMessage("material_chance"),
+                chanceMultipler
+        );
+
+        return outputMessage;
+    }
+
+    @Override
+    public int getPlanRequiredXP() {
+        return 5;
+    }
 }

@@ -40,7 +40,8 @@ public class TileHelper {
     public static void DropItems(TileEntity tileEntity) {
         IInventory inventory = (IInventory) tileEntity;
 
-        DropItems(tileEntity, 0, inventory.getSizeInventory());
+        if (inventory != null)
+            DropItems(tileEntity, 0, inventory.getSizeInventory());
     }
 
     public static void DropItems(TileEntity tileEntity, int min, int max) {

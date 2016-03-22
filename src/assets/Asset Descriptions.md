@@ -3,3 +3,7 @@
 ## Ores
 
 
+
+Plan Researcher Block:
+Plans
+- XP

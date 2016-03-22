@@ -29,7 +29,7 @@ import java.util.List;
 public class SlotRestrictedInput extends SlotBase {
     List<ItemStack> lockedItems;
 
-    public SlotRestrictedInput(IInventory inventory, int idx, int x, int y, ArrayList<ItemStack> lockedItems, ItemStack slotIcon) {
+    public SlotRestrictedInput(IInventory inventory, int idx, int x, int y, List<ItemStack> lockedItems, ItemStack slotIcon) {
         super(inventory, idx, x, y);
         this.lockedItems = lockedItems;
         this.overlayIcon = slotIcon;
