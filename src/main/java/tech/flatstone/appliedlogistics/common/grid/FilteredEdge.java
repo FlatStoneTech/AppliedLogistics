@@ -32,6 +32,7 @@ public class FilteredEdge<V> extends DefaultEdge {
     private UUID uuid;
     private ArrayList<String> list;
     private boolean isWhiteList;
+    private boolean isExit;
 
     public FilteredEdge(V start, V end, UUID uuid) {
         this.end = end;
@@ -85,4 +86,11 @@ public class FilteredEdge<V> extends DefaultEdge {
     }
 
 
+    public boolean isExit() {
+        return isExit;
+    }
+
+    public void setExit(boolean exit) {
+        isExit = exit;
+    }
 }
