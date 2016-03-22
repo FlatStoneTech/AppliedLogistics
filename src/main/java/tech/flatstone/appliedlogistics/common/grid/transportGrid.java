@@ -25,10 +25,12 @@ import org.jgrapht.graph.ClassBasedEdgeFactory;
 import tech.flatstone.appliedlogistics.api.features.ITransport;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.UUID;
 
 public class transportGrid implements ITransport {
-    DirectedAcyclicGraph<UUID, FilteredEdge> graph;
+    private DirectedAcyclicGraph<UUID, FilteredEdge> graph;
+    private Map<UUID, UUID> exitNodeMap;
 
     public transportGrid() {
         graph = new DirectedAcyclicGraph<UUID, FilteredEdge>(
@@ -76,6 +78,7 @@ public class transportGrid implements ITransport {
         UUID uuid = UUID.randomUUID();
         graph.addVertex(uuid);
         graph.addEdge(parentNode, uuid);
+        exitNodeMap.put(uuid, parentNode);
         return uuid;
     }
 
@@ -109,7 +112,8 @@ public class transportGrid implements ITransport {
     /**
      * List of objects that the exit node will accept
      * overwrites an existing whitelist or blacklist
-     * empty whitelist or null will cause node to accept no objects
+     * empty whitelist will cause node to accept no objects
+     * Strings in list can be regular expression
      *
      * @param exitNode
      * @param unlocalizedNameList
@@ -117,13 +121,16 @@ public class transportGrid implements ITransport {
      */
     @Override
     public boolean applyWhitelistToNode(UUID exitNode, ArrayList<String> unlocalizedNameList) {
-        return false;
+        UUID parentNode = exitNodeMap.get(exitNode);
+        graph.getEdge(parentNode, exitNode).setWhitelist(unlocalizedNameList);
+        return true;
     }
 
     /**
      * List of objects that the exit node will reject
      * overwrites an existing whitelist or blacklist
-     * empty blacklist or null will cause node to accept all objects
+     * empty blacklist will cause node to accept all objects
+     * Strings in list can be regular expression
      *
      * @param exitNode
      * @param unlocalizedNameList
@@ -131,7 +138,9 @@ public class transportGrid implements ITransport {
      */
     @Override
     public boolean applyBlacklistToNode(UUID exitNode, ArrayList<String> unlocalizedNameList) {
-        return false;
+        UUID parentNode = exitNodeMap.get(exitNode);
+        graph.getEdge(parentNode, exitNode).setBlacklist(unlocalizedNameList);
+        return true;
     }
 
 }

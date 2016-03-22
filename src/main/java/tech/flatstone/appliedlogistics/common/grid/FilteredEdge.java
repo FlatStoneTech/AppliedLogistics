@@ -23,18 +23,54 @@ package tech.flatstone.appliedlogistics.common.grid;
 
 import org.jgrapht.graph.DefaultEdge;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class FilteredEdge<V> extends DefaultEdge {
     private V start;
     private V end;
     private UUID uuid;
+    private ArrayList<String> list;
+    private boolean isWhiteList;
 
     public FilteredEdge(V start, V end, UUID uuid) {
         this.end = end;
         this.start = start;
         this.uuid = uuid;
     }
+
+    public void setWhitelist(ArrayList<String> whitelist) {
+        list = whitelist;
+        isWhiteList = true;
+    }
+
+    public void setBlacklist(ArrayList<String> blacklist) {
+        list = blacklist;
+        isWhiteList = false;
+    }
+
+    public boolean canRoute(String obj) {
+        if (isWhiteList) {
+            if (list.isEmpty())
+                return false;
+            else
+                return checkWhitelist(obj);
+        } else {
+            if (list.isEmpty())
+                return true;
+            else
+                return !checkWhitelist(obj);
+        }
+    }
+
+    private boolean checkWhitelist(String obj) {
+        for (String s : list) {
+            if (obj.matches(s))
+                return true;
+        }
+        return false;
+    }
+
 
     public V getStart() {
         return start;

@@ -71,7 +71,8 @@ public interface ITransport {
     /**
      * List of objects that the exit node will accept
      * overwrites an existing whitelist or blacklist
-     * empty whitelist or null will cause node to accept no objects
+     * empty whitelist will cause node to accept no objects
+     * Strings in list can be regular expression
      *
      * @param exitNode
      * @param unlocalizedNameList
@@ -82,7 +83,8 @@ public interface ITransport {
     /**
      * List of objects that the exit node will reject
      * overwrites an existing whitelist or blacklist
-     * empty blacklist or null will cause node to accept all objects
+     * empty blacklist will cause node to accept all objects
+     * Strings in list can be regular expression
      *
      * @param exitNode
      * @param unlocalizedNameList
