@@ -33,6 +33,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
@@ -95,7 +96,7 @@ public class BlockBuilder extends BlockBase implements IProvideRecipe {
                 "cwc",
                 "wgw",
                 "cxc",
-                'c', "craftingTableWood",
+                'c', OreDictionary.getOres("craftingTableWood").size() == 0 ? new ItemStack(net.minecraft.init.Blocks.crafting_table) : "craftingTableWood",
                 'w', "logWood",
                 'g', "gearStone",
                 'x', "chestWood"

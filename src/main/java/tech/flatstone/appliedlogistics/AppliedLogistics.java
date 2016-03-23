@@ -62,7 +62,6 @@ public class AppliedLogistics {
         proxy.registerBlueprints();
 
         proxy.registerFurnaceRecipes();
-        proxy.registerRecipes();
 
         proxy.registerOreDict();
 
@@ -83,6 +82,7 @@ public class AppliedLogistics {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
+        proxy.registerRecipes();
 
         proxy.registerHammerRecipes();
 

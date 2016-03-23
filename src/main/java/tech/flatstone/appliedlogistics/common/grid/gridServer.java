@@ -21,7 +21,7 @@
 package tech.flatstone.appliedlogistics.common.grid;
 
 
-public class gridServer implements Runnable{
+public class gridServer implements Runnable {
     @Override
     public void run() {
 

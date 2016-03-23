@@ -41,6 +41,7 @@ public abstract class GuiBase extends GuiContainer {
     protected int colorProgressBackgroundGood = new Color(0, 170, 0).hashCode();
     protected int colorProgressBackgroundWarn = new Color(255, 170, 0).hashCode();
     protected int colorProgressBackgroundBad = new Color(255, 85, 85).hashCode();
+    protected int colorXPGreen = new Color(128, 255, 32).hashCode();
     GuiHelper guiHelper = new GuiHelper();
 
     public GuiBase(Container container) {

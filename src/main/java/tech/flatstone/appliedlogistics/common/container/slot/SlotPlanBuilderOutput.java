@@ -18,28 +18,37 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-repositories {
-    mavenLocal()
-    mavenCentral()
+package tech.flatstone.appliedlogistics.common.container.slot;
 
-    maven {
-        name "FireBall API Depot"
-        url "http://dl.tsr.me/artifactory/libs-release/"
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
+import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanBuilder;
+
+public class SlotPlanBuilderOutput extends SlotOutput {
+    TileEntityPlanBuilder tileEntity;
+    int slotID;
+
+    public SlotPlanBuilderOutput(IInventory inventory, int idx, int x, int y, TileEntityPlanBuilder tileEntity) {
+        super(inventory, idx, x, y);
+        this.tileEntity = tileEntity;
+        this.slotID = idx;
     }
-}
 
-configurations {
-    mods
-    shade
-    compile.extendsFrom shade
-}
+    @Override
+    public boolean canTakeStack(EntityPlayer playerIn) {
+        IMachinePlan plan = tileEntity.getSelectedPlan();
+        if (plan == null)
+            return false;
 
-dependencies {
-    // installable
-    mods "mezz.jei:jei_1.8.8:2.8.3.39"
-    mods "net.darkhax.wawla:Wawla:1.8.9-1.1.4.171"
+        if (playerIn.capabilities.isCreativeMode || plan.getPlanRequiredXP() == 0)
+            return true;
 
-    // provided apis
-    compile "mcp.mobius.waila:Waila:1.6.0-B3_1.8.8"
-    compile "org.jgrapht:jgrapht-core:0.9.1"
+        if (playerIn.experienceLevel >= plan.getPlanRequiredXP()) {
+            playerIn.removeExperienceLevel(plan.getPlanRequiredXP());
+            return true;
+        }
+
+        return false;
+    }
 }

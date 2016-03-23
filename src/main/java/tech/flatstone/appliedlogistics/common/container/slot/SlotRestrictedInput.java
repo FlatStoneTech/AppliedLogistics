@@ -23,7 +23,6 @@ package tech.flatstone.appliedlogistics.common.container.slot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SlotRestrictedInput extends SlotBase {

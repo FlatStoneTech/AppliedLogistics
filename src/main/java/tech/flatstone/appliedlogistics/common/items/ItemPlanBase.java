@@ -20,24 +20,6 @@
 
 package tech.flatstone.appliedlogistics.common.items;
 
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import tech.flatstone.appliedlogistics.ModInfo;
-import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
-import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
-import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
-import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
-
-import java.util.List;
-
 public class ItemPlanBase extends ItemBase {
 
 }
