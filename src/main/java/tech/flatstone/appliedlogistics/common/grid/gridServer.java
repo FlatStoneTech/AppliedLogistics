@@ -21,9 +21,50 @@
 package tech.flatstone.appliedlogistics.common.grid;
 
 
-public class gridServer implements Runnable{
+import org.jgrapht.experimental.dag.DirectedAcyclicGraph;
+import org.jgrapht.graph.ClassBasedEdgeFactory;
+
+import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+class gridServer implements Runnable{
+    private DirectedAcyclicGraph<UUID, FilteredEdge> graph;
+    private ConcurrentLinkedQueue vertexQueue;
+    private ConcurrentLinkedQueue edgeQueue;
+
+    public gridServer() {
+        graph = new DirectedAcyclicGraph<UUID, FilteredEdge>(
+                new ClassBasedEdgeFactory<UUID, FilteredEdge>(FilteredEdge.class)
+        );
+
+        vertexQueue = new ConcurrentLinkedQueue();
+        edgeQueue = new ConcurrentLinkedQueue();
+
+        if (vertexQueue == null)
+            throw new NullPointerException();
+
+        if (edgeQueue == null)
+            throw new NullPointerException();
+    }
+
     @Override
     public void run() {
+        //sync with world server
+        //ingest vertex queue
+        //ingest edge queue
+        //update grid objects
+        //ingest new objects
+    }
 
+    boolean addVertex(UUID uuid){
+        return uuid != null && vertexQueue.offer(uuid);
+    }
+
+    boolean addEdge(UUID source, UUID destination) {
+        return !((source == null) || (destination == null)) && edgeQueue.offer(new uuidPair(source, destination));
+    }
+
+    FilteredEdge getEdge(UUID source, UUID destination){
+        return graph.getEdge(source,destination);
     }
 }

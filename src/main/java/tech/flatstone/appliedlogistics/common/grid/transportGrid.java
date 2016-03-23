@@ -30,13 +30,10 @@ import java.util.Map;
 import java.util.UUID;
 
 public class transportGrid implements ITransport {
-    private DirectedAcyclicGraph<UUID, FilteredEdge> graph;
+    private gridServer graphServer;
     private Map<UUID, UUID> exitNodeMap;
 
     public transportGrid() {
-        graph = new DirectedAcyclicGraph<UUID, FilteredEdge>(
-                new ClassBasedEdgeFactory<UUID, FilteredEdge>(FilteredEdge.class)
-        );
         exitNodeMap = new HashMap<UUID, UUID>();
     }
 
@@ -49,7 +46,7 @@ public class transportGrid implements ITransport {
     @Override
     public UUID createTransportNode() {
         UUID uuid = UUID.randomUUID();
-        graph.addVertex(uuid);
+        graphServer.addVertex(uuid);
         return uuid;
     }
 
@@ -63,8 +60,8 @@ public class transportGrid implements ITransport {
     @Override
     public UUID createEntryNode(UUID parentNode) {
         UUID uuid = UUID.randomUUID();
-        graph.addVertex(uuid);
-        graph.addEdge(uuid, parentNode);
+        graphServer.addVertex(uuid);
+        graphServer.addEdge(uuid, parentNode);
         return uuid;
     }
 
@@ -78,8 +75,8 @@ public class transportGrid implements ITransport {
     @Override
     public UUID createExitNode(UUID parentNode) {
         UUID uuid = UUID.randomUUID();
-        graph.addVertex(uuid);
-        graph.addEdge(parentNode, uuid);
+        graphServer.addVertex(uuid);
+        graphServer.addEdge(parentNode, uuid);
         exitNodeMap.put(uuid, parentNode);
         return uuid;
     }
@@ -96,7 +93,7 @@ public class transportGrid implements ITransport {
         if ((exitNodeMap.containsKey(destNode))||(exitNodeMap.containsKey(startNode))) {
             return false;
         }
-        graph.addEdge(startNode, destNode);
+        graphServer.addEdge(startNode, destNode);
         return true;
     }
 
@@ -112,8 +109,8 @@ public class transportGrid implements ITransport {
         if ((exitNodeMap.containsKey(node1))||(exitNodeMap.containsKey(node2))) {
             return false;
         }
-        graph.addEdge(node1, node2);
-        graph.addEdge(node2, node1);
+        graphServer.addEdge(node1, node2);
+        graphServer.addEdge(node2, node1);
         return true;
     }
 
@@ -130,7 +127,7 @@ public class transportGrid implements ITransport {
     @Override
     public boolean applyWhitelistToNode(UUID exitNode, ArrayList<String> unlocalizedNameList) {
         UUID parentNode = exitNodeMap.get(exitNode);
-        graph.getEdge(parentNode, exitNode).setWhitelist(unlocalizedNameList);
+        graphServer.getEdge(parentNode, exitNode).setWhitelist(unlocalizedNameList);
         return true;
     }
 
@@ -147,7 +144,7 @@ public class transportGrid implements ITransport {
     @Override
     public boolean applyBlacklistToNode(UUID exitNode, ArrayList<String> unlocalizedNameList) {
         UUID parentNode = exitNodeMap.get(exitNode);
-        graph.getEdge(parentNode, exitNode).setBlacklist(unlocalizedNameList);
+        graphServer.getEdge(parentNode, exitNode).setBlacklist(unlocalizedNameList);
         return true;
     }
 
