@@ -21,51 +21,11 @@
 repositories {
     mavenLocal()
     mavenCentral()
-    maven {
-        name "ChickenBones"
-        url "http://chickenbones.net/maven/"
-    }
-
-    maven {
-        name "Mobius"
-        url "http://mobiusstrip.eu/maven"
-    }
 
     maven {
         name "FireBall API Depot"
-        url "http://dl.tsr.me/artifactory/libs-release-local"
+        url "http://dl.tsr.me/artifactory/libs-release/"
     }
-
-    maven {
-        name = "Player"
-        url = "http://maven.ic2.player.to/"
-    }
-
-    maven {
-        name = "Tterrag"
-        url = "http://maven.tterrag.com/"
-    }
-
-    maven  {
-        name = "RX14 Proxy"
-        url = "http://mvn.rx14.co.uk/repo/"
-    }
-
-    maven {
-        name "OpenComputers Repo"
-        url = "http://maven.cil.li/"
-    }
-
-    maven {
-        name "Darkhax"
-        url = "http://maven.rubbix.net/"
-    }
-
-    ivy {
-        name "BuildCraft"
-        artifactPattern "http://www.mod-buildcraft.com/releases/BuildCraft/[revision]/[module]-[revision]-[classifier].[ext]"
-    }
-
 }
 
 configurations {

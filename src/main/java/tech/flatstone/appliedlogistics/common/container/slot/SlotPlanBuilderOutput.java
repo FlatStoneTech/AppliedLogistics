@@ -18,53 +18,37 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.grid;
+package tech.flatstone.appliedlogistics.common.container.slot;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
+import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanBuilder;
 
-import org.jgrapht.experimental.dag.DirectedAcyclicGraph;
-import org.jgrapht.graph.ClassBasedEdgeFactory;
+public class SlotPlanBuilderOutput extends SlotOutput {
+    TileEntityPlanBuilder tileEntity;
+    int slotID;
 
-import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
-class gridServer implements Runnable {
-    private DirectedAcyclicGraph<UUID, FilteredEdge> graph;
-    private ConcurrentLinkedQueue vertexQueue;
-    private ConcurrentLinkedQueue edgeQueue;
-
-    public gridServer() {
-        graph = new DirectedAcyclicGraph<UUID, FilteredEdge>(
-                new ClassBasedEdgeFactory<UUID, FilteredEdge>(FilteredEdge.class)
-        );
-
-        vertexQueue = new ConcurrentLinkedQueue();
-        edgeQueue = new ConcurrentLinkedQueue();
-
-        if (vertexQueue == null)
-            throw new NullPointerException();
-
-        if (edgeQueue == null)
-            throw new NullPointerException();
+    public SlotPlanBuilderOutput(IInventory inventory, int idx, int x, int y, TileEntityPlanBuilder tileEntity) {
+        super(inventory, idx, x, y);
+        this.tileEntity = tileEntity;
+        this.slotID = idx;
     }
 
     @Override
-    public void run() {
-        //sync with world server
-        //ingest vertex queue
-        //ingest edge queue
-        //update grid objects
-        //ingest new objects
-    }
+    public boolean canTakeStack(EntityPlayer playerIn) {
+        IMachinePlan plan = tileEntity.getSelectedPlan();
+        if (plan == null)
+            return false;
 
-    boolean addVertex(UUID uuid) {
-        return uuid != null && vertexQueue.offer(uuid);
-    }
+        if (playerIn.capabilities.isCreativeMode || plan.getPlanRequiredXP() == 0)
+            return true;
 
-    boolean addEdge(UUID source, UUID destination) {
-        return !((source == null) || (destination == null)) && edgeQueue.offer(new uuidPair(source, destination));
-    }
+        if (playerIn.experienceLevel >= plan.getPlanRequiredXP()) {
+            playerIn.removeExperienceLevel(plan.getPlanRequiredXP());
+            return true;
+        }
 
-    FilteredEdge getEdge(UUID source, UUID destination) {
-        return graph.getEdge(source, destination);
+        return false;
     }
 }

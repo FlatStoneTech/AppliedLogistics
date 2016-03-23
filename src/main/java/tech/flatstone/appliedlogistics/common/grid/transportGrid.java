@@ -20,8 +20,6 @@
 
 package tech.flatstone.appliedlogistics.common.grid;
 
-import org.jgrapht.experimental.dag.DirectedAcyclicGraph;
-import org.jgrapht.graph.ClassBasedEdgeFactory;
 import tech.flatstone.appliedlogistics.api.features.ITransport;
 
 import java.util.ArrayList;
@@ -90,7 +88,7 @@ public class transportGrid implements ITransport {
      */
     @Override
     public boolean createDirectionalNodeConnection(UUID startNode, UUID destNode) {
-        if ((exitNodeMap.containsKey(destNode))||(exitNodeMap.containsKey(startNode))) {
+        if ((exitNodeMap.containsKey(destNode)) || (exitNodeMap.containsKey(startNode))) {
             return false;
         }
         graphServer.addEdge(startNode, destNode);
@@ -106,7 +104,7 @@ public class transportGrid implements ITransport {
      */
     @Override
     public boolean createNodeConnection(UUID node1, UUID node2) {
-        if ((exitNodeMap.containsKey(node1))||(exitNodeMap.containsKey(node2))) {
+        if ((exitNodeMap.containsKey(node1)) || (exitNodeMap.containsKey(node2))) {
             return false;
         }
         graphServer.addEdge(node1, node2);

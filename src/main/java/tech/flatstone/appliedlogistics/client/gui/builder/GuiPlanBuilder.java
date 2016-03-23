@@ -20,16 +20,22 @@
 
 package tech.flatstone.appliedlogistics.client.gui.builder;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.client.gui.GuiBase;
-import tech.flatstone.appliedlogistics.client.gui.GuiHandler;
 import tech.flatstone.appliedlogistics.common.container.builder.ContainerPlanBuilder;
+import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
+import tech.flatstone.appliedlogistics.common.network.PacketHandler;
+import tech.flatstone.appliedlogistics.common.network.messages.PacketButtonClick;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanBuilder;
 import tech.flatstone.appliedlogistics.common.util.GuiHelper;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 
 import java.io.IOException;
+import java.util.UUID;
 
 public class GuiPlanBuilder extends GuiBase {
     TileEntityPlanBuilder tileEntity;
@@ -57,6 +63,22 @@ public class GuiPlanBuilder extends GuiBase {
     public void drawBG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
         bindTexture("gui/machines/plan_builder.png");
         drawTexturedModalRect(paramInt1, paramInt2, 0, 0, this.xSize, this.ySize);
+
+        IMachinePlan plan = tileEntity.getSelectedPlan();
+        if (plan == null)
+            return;
+
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        int playerXP = player.experienceLevel;
+
+        if (plan.getPlanRequiredXP() > playerXP && !player.capabilities.isCreativeMode) {
+            drawTexturedModalRect(paramInt1 + 188, paramInt2 + 117, 218, 0, 21, 28);
+        }
+
+        if (plan.getPlanRequiredXP() > 0) {
+            drawTexturedModalRect(paramInt1 + 173, paramInt2 + 21, 218, 28, 9, 9);
+            guiHelper.drawStringWithShadow(paramInt1 + 183, paramInt2 + 22, String.format("%s", plan.getPlanRequiredXP()), colorXPGreen);
+        }
     }
 
     @Override
@@ -64,7 +86,12 @@ public class GuiPlanBuilder extends GuiBase {
         this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()), 8, 6, 4210752);
         this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage("container.inventory"), 8, 90, 4210752);
 
-        guiHelper.drawCenteredString(22, 22, 133, "todo: plan name", 4210752);
+        IMachinePlan plan = tileEntity.getSelectedPlan();
+        if (plan == null)
+            return;
+
+        String planName = LanguageHelper.NONE.translateMessage(((ItemPlanBase) plan).getUnlocalizedName() + ".name");
+        guiHelper.drawCenteredString(22, 22, 133, planName, 4210752);
     }
 
     @Override
@@ -79,7 +106,9 @@ public class GuiPlanBuilder extends GuiBase {
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
-        super.actionPerformed(button);
+        UUID playerUUID = Minecraft.getMinecraft().thePlayer.getUniqueID();
+        PacketButtonClick packetButtonClick = new PacketButtonClick(button.id, tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ(), playerUUID);
+        PacketHandler.INSTANCE.sendToServer(packetButtonClick);
     }
 
 

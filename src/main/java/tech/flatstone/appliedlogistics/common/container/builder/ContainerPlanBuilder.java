@@ -22,18 +22,15 @@ package tech.flatstone.appliedlogistics.common.container.builder;
 
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import tech.flatstone.appliedlogistics.common.container.ContainerBase;
-import tech.flatstone.appliedlogistics.common.container.slot.SlotOutput;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotPlanBuilderOutput;
 import tech.flatstone.appliedlogistics.common.container.slot.SlotRestrictedInput;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanBuilder;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class ContainerPlanBuilder extends ContainerBase {
     private IInventory inventory;
@@ -51,7 +48,7 @@ public class ContainerPlanBuilder extends ContainerBase {
 
     private void drawSlots() {
         addSlotToContainer(new SlotRestrictedInput(inventory, 0, 190, 95, Arrays.asList(new ItemStack(Items.ITEM_PLAN_BLANK.getItem())), new ItemStack(Items.ITEM_PLAN_BLANK.getItem())));
-        addSlotToContainer(new SlotOutput(inventory, 1, 190, 155));
+        addSlotToContainer(new SlotPlanBuilderOutput(inventory, 1, 190, 155, tileEntity));
         bindPlayerInventory(inventoryPlayer, 0, 101);
     }
 }

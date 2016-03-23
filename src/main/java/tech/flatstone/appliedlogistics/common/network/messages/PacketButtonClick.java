@@ -23,26 +23,31 @@ package tech.flatstone.appliedlogistics.common.network.messages;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import tech.flatstone.appliedlogistics.common.util.INetworkButton;
+
+import java.util.UUID;
 
 public class PacketButtonClick implements IMessage, IMessageHandler<PacketButtonClick, IMessage> {
     private int buttonID;
     private int blockX;
     private int blockY;
     private int blockZ;
+    private UUID playerUUID;
 
     public PacketButtonClick() {
 
     }
 
-    public PacketButtonClick(int buttonID, int blockX, int blockY, int blockZ) {
+    public PacketButtonClick(int buttonID, int blockX, int blockY, int blockZ, UUID playerUUID) {
         this.buttonID = buttonID;
         this.blockX = blockX;
         this.blockY = blockY;
         this.blockZ = blockZ;
+        this.playerUUID = playerUUID;
     }
 
     @Override
@@ -51,6 +56,7 @@ public class PacketButtonClick implements IMessage, IMessageHandler<PacketButton
         this.blockX = buf.readInt();
         this.blockY = buf.readInt();
         this.blockZ = buf.readInt();
+        this.playerUUID = UUID.fromString(ByteBufUtils.readUTF8String(buf));
     }
 
     @Override
@@ -59,6 +65,7 @@ public class PacketButtonClick implements IMessage, IMessageHandler<PacketButton
         buf.writeInt(blockX);
         buf.writeInt(blockY);
         buf.writeInt(blockZ);
+        ByteBufUtils.writeUTF8String(buf, playerUUID.toString());
     }
 
     @Override
@@ -69,7 +76,7 @@ public class PacketButtonClick implements IMessage, IMessageHandler<PacketButton
             return null;
 
         if (tileEntity instanceof INetworkButton) {
-            ((INetworkButton) tileEntity).actionPerformed(message.buttonID);
+            ((INetworkButton) tileEntity).actionPerformed(message.buttonID, message.playerUUID);
         }
 
         return null;

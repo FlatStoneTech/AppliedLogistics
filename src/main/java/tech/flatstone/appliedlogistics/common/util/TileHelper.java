@@ -53,7 +53,7 @@ public class TileHelper {
         World world = tileEntity.getWorld();
         BlockPos blockPos = tileEntity.getPos();
 
-        for (int i = min; i < max; i++) {
+        for (int i = min; i <= max; i++) {
             ItemStack itemStack = inventory.getStackInSlot(i);
 
             if (itemStack != null && itemStack.stackSize > 0) {

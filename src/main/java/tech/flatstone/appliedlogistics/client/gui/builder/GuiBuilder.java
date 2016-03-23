@@ -20,6 +20,7 @@
 
 package tech.flatstone.appliedlogistics.client.gui.builder;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -42,6 +43,7 @@ import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 public class GuiBuilder extends GuiBase {
     TileEntityBuilder tileEntity;
@@ -212,7 +214,8 @@ public class GuiBuilder extends GuiBase {
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
-        PacketButtonClick packetButtonClick = new PacketButtonClick(button.id, tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ());
+        UUID playerUUID = Minecraft.getMinecraft().thePlayer.getUniqueID();
+        PacketButtonClick packetButtonClick = new PacketButtonClick(button.id, tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ(), playerUUID);
         PacketHandler.INSTANCE.sendToServer(packetButtonClick);
     }
 

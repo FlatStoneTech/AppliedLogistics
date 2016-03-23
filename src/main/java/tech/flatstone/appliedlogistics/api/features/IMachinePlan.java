@@ -44,6 +44,7 @@ public interface IMachinePlan {
 
     /**
      * Optional experence required to craft plan
+     *
      * @return experence in int
      */
     int getPlanRequiredXP();

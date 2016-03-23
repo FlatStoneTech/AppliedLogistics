@@ -22,13 +22,35 @@ package tech.flatstone.appliedlogistics.common.tileentities.builder;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
+import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
+import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityInventoryBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
+import tech.flatstone.appliedlogistics.common.util.INetworkButton;
 
-public class TileEntityPlanBuilder extends TileEntityInventoryBase {
+import java.util.UUID;
+
+public class TileEntityPlanBuilder extends TileEntityInventoryBase implements INetworkButton {
     InternalInventory inventory = new InternalInventory(this, 2);
+    private int selectedPlan = 0;
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTagCompound) {
+        super.readFromNBT(nbtTagCompound);
+
+        selectedPlan = nbtTagCompound.getInteger("selectedPlan");
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound nbtTagCompound) {
+        super.writeToNBT(nbtTagCompound);
+
+        nbtTagCompound.setInteger("selectedPlan", selectedPlan);
+    }
 
     @Override
     public IInventory getInternalInventory() {
@@ -37,7 +59,9 @@ public class TileEntityPlanBuilder extends TileEntityInventoryBase {
 
     @Override
     public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
-
+        if (slot == 0) {
+            inventory.setInventorySlotContents(1, new ItemStack(Items.ITEM_PLAN_BLANK.item));
+        }
     }
 
     @Override
@@ -48,5 +72,28 @@ public class TileEntityPlanBuilder extends TileEntityInventoryBase {
     @Override
     public ItemStack removeStackFromSlot(int index) {
         return null;
+    }
+
+    @Override
+    public void actionPerformed(int buttonID, UUID playerUUID) {
+        switch (buttonID) {
+            case 0: // Previous
+                if (selectedPlan != 0)
+                    selectedPlan--;
+                this.markForUpdate();
+                this.markDirty();
+                break;
+
+            case 1: // Next
+                if (selectedPlan != PlanRegistry.getPlanItems().size() - 1)
+                    selectedPlan++;
+                this.markForUpdate();
+                this.markDirty();
+                break;
+        }
+    }
+
+    public IMachinePlan getSelectedPlan() {
+        return (IMachinePlan) PlanRegistry.getPlanItems().toArray()[selectedPlan];
     }
 }
