@@ -24,8 +24,10 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.util.Constants;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
+import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityInventoryBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
@@ -59,8 +61,29 @@ public class TileEntityPlanBuilder extends TileEntityInventoryBase implements IN
 
     @Override
     public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
+        ItemStack inputSlot = inventory.getStackInSlot(0);
+        ItemStack outputSlot = inventory.getStackInSlot(1);
+
         if (slot == 0) {
-            inventory.setInventorySlotContents(1, new ItemStack(Items.ITEM_PLAN_BLANK.item));
+            if (inputSlot == null && outputSlot != null) {
+                inventory.setInventorySlotContents(1, null);
+                inventory.markDirty();
+                updateOutputItemNBT();
+            }
+
+            if (ItemStack.areItemsEqual(inputSlot, new ItemStack(Items.ITEM_PLAN_BLANK.getItem())) && outputSlot == null) {
+                inventory.setInventorySlotContents(1, new ItemStack(Items.ITEM_PLAN.getItem()));
+                inventory.markDirty();
+                updateOutputItemNBT();
+            }
+        }
+
+        if (slot == 1) {
+            if (ItemStack.areItemsEqual(inputSlot, new ItemStack(Items.ITEM_PLAN_BLANK.getItem())) && outputSlot == null) {
+                inventory.setInventorySlotContents(1, new ItemStack(Items.ITEM_PLAN.getItem()));
+                inventory.markDirty();
+                updateOutputItemNBT();
+            }
         }
     }
 
@@ -78,19 +101,44 @@ public class TileEntityPlanBuilder extends TileEntityInventoryBase implements IN
     public void actionPerformed(int buttonID, UUID playerUUID) {
         switch (buttonID) {
             case 0: // Previous
-                if (selectedPlan != 0)
+                if (hasPrevPlan())
                     selectedPlan--;
-                this.markForUpdate();
-                this.markDirty();
+                updateOutputItemNBT();
                 break;
 
             case 1: // Next
-                if (selectedPlan != PlanRegistry.getPlanItems().size() - 1)
+                if (hasNextPlan())
                     selectedPlan++;
-                this.markForUpdate();
-                this.markDirty();
+                updateOutputItemNBT();
                 break;
         }
+    }
+
+    public boolean hasNextPlan() {
+        return selectedPlan != PlanRegistry.getPlanItems().size() - 1;
+    }
+
+    public boolean hasPrevPlan() {
+        return selectedPlan != 0;
+    }
+
+    private void updateOutputItemNBT() {
+        ItemStack itemStack = inventory.getStackInSlot(1);
+        this.markForUpdate();
+        this.markDirty();
+
+        if (itemStack == null)
+            return;
+
+        IMachinePlan selectedPlan = getSelectedPlan();
+
+        if (selectedPlan == null)
+            return;
+
+        NBTTagCompound nbtTagCompound = new NBTTagCompound();
+        nbtTagCompound.setString("PlanType", ((ItemPlanBase)selectedPlan).getUnlocalizedName());
+
+        itemStack.setTagCompound(nbtTagCompound);
     }
 
     public IMachinePlan getSelectedPlan() {

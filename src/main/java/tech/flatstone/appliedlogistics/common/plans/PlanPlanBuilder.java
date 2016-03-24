@@ -35,18 +35,14 @@ import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlanBuilder extends ItemPlanBase implements IMachinePlan {
-    public PlanBuilder() {
+public class PlanPlanBuilder extends ItemPlanBase implements IMachinePlan {
+    public PlanPlanBuilder() {
         this.setUnlocalizedName(String.format("%s:%s", ModInfo.MOD_ID, "plan.builder"));
     }
 
     @Override
     public String getLocalizedPlanDescription() {
-        return String.format("%s%s%s",
-                EnumChatFormatting.YELLOW,
-                EnumChatFormatting.ITALIC,
-                LanguageHelper.DESCRIPTION.translateMessage("plan.builder")
-        );
+        return LanguageHelper.DESCRIPTION.translateMessage("plan.builder");
     }
 
     @Override

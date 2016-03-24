@@ -21,9 +21,11 @@
 package tech.flatstone.appliedlogistics.client.gui.builder;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.EnumChatFormatting;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.client.gui.GuiBase;
 import tech.flatstone.appliedlogistics.common.container.builder.ContainerPlanBuilder;
@@ -92,11 +94,17 @@ public class GuiPlanBuilder extends GuiBase {
 
         String planName = LanguageHelper.NONE.translateMessage(((ItemPlanBase) plan).getUnlocalizedName() + ".name");
         guiHelper.drawCenteredString(22, 22, 133, planName, 4210752);
+
+        String planDescription = plan.getLocalizedPlanDescription(); //198px Wide
+        guiHelper.renderSplitString(planDescription, 10, 40, 198, colorFont);
     }
 
     @Override
     public void updateScreen() {
         super.updateScreen();
+
+        btnNextPlan.enabled = tileEntity.hasNextPlan();
+        btnPrevPlan.enabled = tileEntity.hasPrevPlan();
     }
 
     @Override

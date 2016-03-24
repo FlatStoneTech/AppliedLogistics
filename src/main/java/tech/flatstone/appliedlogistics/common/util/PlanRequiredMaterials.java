@@ -36,7 +36,7 @@ public class PlanRequiredMaterials {
     private int addTime;
     private int removeTime;
 
-    private List<String> description;
+    private String description;
 
     public PlanRequiredMaterials(ItemStack requiredMatieral, int minCount, int maxCount, int itemWeight, int addTime, int removeTime) {
         this(requiredMatieral, minCount, maxCount, itemWeight, addTime, removeTime, "");
@@ -57,11 +57,7 @@ public class PlanRequiredMaterials {
         this.itemWeight = itemWeight;
         this.addTime = addTime;
         this.removeTime = removeTime;
-
-        if (!description.isEmpty())
-            description = LanguageHelper.DESCRIPTION.translateMessage(description);
-
-        this.description = Arrays.asList(description.split("\\\\n"));
+        this.description = description;
     }
 
     public List<ItemStack> getRequiredMaterials() {
@@ -88,7 +84,7 @@ public class PlanRequiredMaterials {
         return this.removeTime;
     }
 
-    public List<String> getDescription() {
+    public String getDescription() {
         return description;
     }
 }

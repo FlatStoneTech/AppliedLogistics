@@ -29,6 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.lwjgl.opengl.GL11;
+import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.client.gui.GuiBase;
 import tech.flatstone.appliedlogistics.common.container.builder.ContainerBuilder;
@@ -234,12 +235,12 @@ public class GuiBuilder extends GuiBase {
                 int j = 1;
 
                 // Add Description
-                if (!materials.getDescription().get(0).equalsIgnoreCase("")) {
-                    for (String description : materials.getDescription()) {
+                if (!materials.getDescription().isEmpty()) {
+                    for (String message : Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(materials.getDescription(), 150)) {
                         list.add(i + j, String.format("%s%s%s",
                                 EnumChatFormatting.YELLOW,
                                 EnumChatFormatting.ITALIC,
-                                description
+                                message
                         ));
                         j++;
                     }

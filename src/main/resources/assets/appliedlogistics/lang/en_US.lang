@@ -138,7 +138,7 @@ item.appliedlogistics.ore_nugget.steel.name=Steel Nugget
 ###          Descriptions             ###
 #########################################
 
-description.appliedlogistics.plan.pulverizer=Pulverizer used to process ores...
+description.appliedlogistics.plan.pulverizer=Box of tiny hammers that destroys rocky things!
 ## Puliverizer Plan #####################
 description.appliedlogistics.plan.pulverizer.material.cobblestone=Used to build the machine frame\ntesting line 2...
 

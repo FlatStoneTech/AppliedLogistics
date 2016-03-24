@@ -35,6 +35,8 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import java.awt.*;
+import java.util.*;
+import java.util.List;
 
 public class GuiHelper extends Gui {
     protected Minecraft mc = Minecraft.getMinecraft();
@@ -119,14 +121,19 @@ public class GuiHelper extends Gui {
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         int colorOverlay = new Color(139, 139, 139, 160).hashCode();
 
+        RenderHelper.enableGUIStandardItemLighting();
+        renderItem.renderItemAndEffectIntoGUI(itemStack, x, y);
+
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        RenderHelper.enableGUIStandardItemLighting();
+
         GlStateManager.disableDepth();
         GlStateManager.colorMask(true, true, true, false);
-        renderItem.renderItemAndEffectIntoGUI(itemStack, x, y);
-        if (transparent)
+        if (transparent) {
+            this.zLevel = 100.0f;
+            renderItem.zLevel = 100.0f;
             this.drawGradientRect(x, y, x + 16, y + 16, colorOverlay, colorOverlay);
+        }
         GlStateManager.colorMask(true, true, true, true);
         GlStateManager.enableDepth();
 
@@ -135,7 +142,7 @@ public class GuiHelper extends Gui {
         this.zLevel = 0.0f;
         renderItem.zLevel = 0.0f;
     }
-
+    
     /**
      * Draws a slot that is disabled...
      *
@@ -190,6 +197,19 @@ public class GuiHelper extends Gui {
         int messageX = x + ((w >> 1) - (messageWidth >> 1));
 
         fontRenderer.drawString(message, messageX, y, color);
+    }
+
+    public void renderSplitString(String str, int x, int y, int wrapWidth, int textColor)
+    {
+        for (String s : fontRenderer.listFormattedStringToWidth(str, wrapWidth))
+        {
+            drawStringWithShadow(x, y, s, textColor);
+            y += fontRenderer.FONT_HEIGHT;
+        }
+    }
+
+    public List<String> getSplitString(String str, int wrapWidth) {
+        return fontRenderer.listFormattedStringToWidth(str, wrapWidth);
     }
 
     public void drawPlayerHead(int x, int y) {

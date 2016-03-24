@@ -215,8 +215,10 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
             TileHelper.DropItems(this, 1, 27);
         }
 
-        if (planItem == null)
+        if (planItem == null) {
+            selectedTechLevel = -1;
             return;
+        }
 
         if (selectedTechLevel == -1) {
             for (TechLevel techLevel : planDetails.keySet()) {

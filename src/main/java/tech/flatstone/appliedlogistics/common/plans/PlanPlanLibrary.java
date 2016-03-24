@@ -18,51 +18,61 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.container.slot;
+package tech.flatstone.appliedlogistics.common.plans;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
+import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
-import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanBuilder;
+import tech.flatstone.appliedlogistics.api.features.TechLevel;
+import tech.flatstone.appliedlogistics.common.blocks.Blocks;
+import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
+import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
+import tech.flatstone.appliedlogistics.common.util.PlanDetails;
+import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 
-public class SlotPlanBuilderOutput extends SlotOutput {
-    TileEntityPlanBuilder tileEntity;
-    int slotID;
+import java.util.ArrayList;
+import java.util.List;
 
-    public SlotPlanBuilderOutput(IInventory inventory, int idx, int x, int y, TileEntityPlanBuilder tileEntity) {
-        super(inventory, idx, x, y);
-        this.tileEntity = tileEntity;
-        this.slotID = idx;
+public class PlanPlanLibrary extends ItemPlanBase implements IMachinePlan {
+    public PlanPlanLibrary() {
+        this.setUnlocalizedName(String.format("%s:%s", ModInfo.MOD_ID, "plan.library"));
     }
 
     @Override
-    public boolean canTakeStack(EntityPlayer playerIn) {
-        IMachinePlan plan = tileEntity.getSelectedPlan();
+    public String getLocalizedPlanDescription() {
+        return LanguageHelper.DESCRIPTION.translateMessage("plan.library");
+    }
 
-        ItemStack inputSlot = tileEntity.getStackInSlot(0);
+    @Override
+    public PlanDetails getTechLevels(TechLevel techLevel) {
+        PlanDetails planDetails = null;
+        List<PlanRequiredMaterials> requiredMaterialsList = new ArrayList<PlanRequiredMaterials>();
 
-        if (plan == null)
-            return false;
+        switch (techLevel) {
+            case STONE_AGE:
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("cobblestone"), 8, 8, 20, 100, 100));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("plankWood"), 4, 4, 10, 100, 100));
 
-        if (playerIn.capabilities.isCreativeMode || plan.getPlanRequiredXP() == 0 || playerIn.experienceLevel >= plan.getPlanRequiredXP()) {
-            if (!playerIn.capabilities.isCreativeMode) {
-                playerIn.removeExperienceLevel(plan.getPlanRequiredXP());
-            }
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("chestWood"), 1, 3, 10, 100, 100, "Each chest adds 9 slots of storage"));
 
-            if (inputSlot != null) {
-                ItemStack newInputSlot = inputSlot.copy();
-                newInputSlot.stackSize--;
-                if (newInputSlot.stackSize == 0)
-                    newInputSlot = null;
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(net.minecraft.init.Items.comparator), 0, 1, 10, 200, 200, "Adds comparator output"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(net.minecraft.init.Blocks.hopper), 0, 1, 10, 200, 200, "Adds support to adding items with pipes and hoppers"));
 
-                tileEntity.setInventorySlotContents(0, newInputSlot);
-            }
-            tileEntity.markDirty();
-
-            return true;
+                planDetails = new PlanDetails(72, requiredMaterialsList, new ItemStack(Blocks.BLOCK_BUILDER.block, 1, 1));
+                break;
         }
 
-        return false;
+        return planDetails;
+    }
+
+    @Override
+    public String getMachineDetails(TechLevel techLevel, List<ItemStack> inventory) {
+        return "";
+    }
+
+    @Override
+    public int getPlanRequiredXP() {
+        return 10;
     }
 }

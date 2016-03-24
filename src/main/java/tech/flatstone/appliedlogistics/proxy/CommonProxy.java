@@ -33,8 +33,9 @@ import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
 import tech.flatstone.appliedlogistics.client.gui.GuiHandler;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.items.Items;
-import tech.flatstone.appliedlogistics.common.plans.PlanBuilder;
-import tech.flatstone.appliedlogistics.common.plans.PlanPulverizer;
+import tech.flatstone.appliedlogistics.common.plans.PlanPlanBuilder;
+import tech.flatstone.appliedlogistics.common.plans.PlanPlanLibrary;
+import tech.flatstone.appliedlogistics.common.plans.PlanMachinePulverizer;
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.IProvideEvent;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
@@ -164,8 +165,9 @@ public abstract class CommonProxy implements IProxy {
 
     @Override
     public void registerBlueprints() {
-        PlanRegistry.registerPlan(new PlanPulverizer());
-        PlanRegistry.registerPlan(new PlanBuilder());
+        PlanRegistry.registerPlan(new PlanMachinePulverizer());
+        PlanRegistry.registerPlan(new PlanPlanBuilder());
+        PlanRegistry.registerPlan(new PlanPlanLibrary());
     }
 
     @Override
