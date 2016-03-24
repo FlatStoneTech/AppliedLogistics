@@ -23,35 +23,92 @@ package tech.flatstone.appliedlogistics.common.grid;
 
 import org.jgrapht.experimental.dag.DirectedAcyclicGraph;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
+import java.util.ArrayList;
 import java.util.UUID;
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CyclicBarrier;
 
 class gridServer implements Runnable {
     private DirectedAcyclicGraph<UUID, FilteredEdge> graph;
-    private ConcurrentLinkedQueue vertexQueue;
-    private ConcurrentLinkedQueue edgeQueue;
+    private ConcurrentLinkedQueue<UUID> vertexQueue;
+    private ConcurrentLinkedQueue<uuidPair> edgeQueue;
+    private CyclicBarrier barrier;
 
     public gridServer() {
         graph = new DirectedAcyclicGraph<UUID, FilteredEdge>(
                 new ClassBasedEdgeFactory<UUID, FilteredEdge>(FilteredEdge.class)
         );
 
-        vertexQueue = new ConcurrentLinkedQueue();
-        edgeQueue = new ConcurrentLinkedQueue();
+        vertexQueue = new ConcurrentLinkedQueue<UUID>();
+        edgeQueue = new ConcurrentLinkedQueue<uuidPair>();
 
         if (vertexQueue == null)
             throw new NullPointerException();
 
         if (edgeQueue == null)
             throw new NullPointerException();
+
+        barrier = new CyclicBarrier(2);
     }
 
     @Override
     public void run() {
         //sync with world server
+        try {
+            barrier.await();
+        } catch (InterruptedException e) {
+            LogHelper.fatal(e.getLocalizedMessage());
+            e.printStackTrace();
+        } catch (BrokenBarrierException e) {
+            LogHelper.fatal(e.getLocalizedMessage());
+            e.printStackTrace();
+        }
+
+        //step the transport simulation
+        this.gridTick();
+    }
+
+    /**
+     * this method is called from the games main server thread in the server tick handler
+     */
+    public void sync() {
+        try {
+            barrier.await();
+        } catch (InterruptedException e) {
+            LogHelper.fatal(e.getLocalizedMessage());
+            e.printStackTrace();
+        } catch (BrokenBarrierException e) {
+            LogHelper.fatal(e.getLocalizedMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void gridTick() {
+
         //ingest vertex queue
+        for (UUID id : vertexQueue) {
+            graph.addVertex(id);
+        }
+
         //ingest edge queue
+        ArrayList<uuidPair> vertexDoesNotExist = new ArrayList<uuidPair>();
+        for (uuidPair pair : edgeQueue) {
+            if ((graph.containsVertex(pair.getUuid1())) && (graph.containsVertex(pair.getUuid2()))) {
+                graph.getEdge(pair.getUuid1(), pair.getUuid2());
+            } else {
+                vertexDoesNotExist.add(pair);
+                LogHelper.debug("A vertex for edge:" + pair.getUuid1() + " -> " + pair.getUuid2() + " does not exist");
+            }
+        }
+
+        //handle a hopefully rare situation where a vertex and edge are added between ingest vertex and ingest edge
+        if (!vertexDoesNotExist.isEmpty()) {
+            edgeQueue.addAll(vertexDoesNotExist);
+        }
+
         //update grid objects
         //ingest new objects
     }
