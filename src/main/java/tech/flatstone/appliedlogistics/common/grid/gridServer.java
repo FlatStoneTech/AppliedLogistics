@@ -26,6 +26,7 @@ import org.jgrapht.graph.ClassBasedEdgeFactory;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.UUID;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -36,6 +37,7 @@ class gridServer implements Runnable {
     private ConcurrentLinkedQueue<UUID> vertexQueue;
     private ConcurrentLinkedQueue<uuidPair> edgeQueue;
     private CyclicBarrier barrier;
+    private LinkedList activeObjects;
 
     public gridServer() {
         graph = new DirectedAcyclicGraph<UUID, FilteredEdge>(
@@ -44,6 +46,7 @@ class gridServer implements Runnable {
 
         vertexQueue = new ConcurrentLinkedQueue<UUID>();
         edgeQueue = new ConcurrentLinkedQueue<uuidPair>();
+        activeObjects = new LinkedList();
 
         if (vertexQueue == null)
             throw new NullPointerException();
@@ -94,19 +97,19 @@ class gridServer implements Runnable {
         }
 
         //ingest edge queue
-        ArrayList<uuidPair> vertexDoesNotExist = new ArrayList<uuidPair>();
+        ArrayList<uuidPair> vertexMissing = new ArrayList<uuidPair>();
         for (uuidPair pair : edgeQueue) {
             if ((graph.containsVertex(pair.getUuid1())) && (graph.containsVertex(pair.getUuid2()))) {
                 graph.getEdge(pair.getUuid1(), pair.getUuid2());
             } else {
-                vertexDoesNotExist.add(pair);
+                vertexMissing.add(pair);
                 LogHelper.debug("A vertex for edge:" + pair.getUuid1() + " -> " + pair.getUuid2() + " does not exist");
             }
         }
 
         //handle a hopefully rare situation where a vertex and edge are added between ingest vertex and ingest edge
-        if (!vertexDoesNotExist.isEmpty()) {
-            edgeQueue.addAll(vertexDoesNotExist);
+        if (!vertexMissing.isEmpty()) {
+            edgeQueue.addAll(vertexMissing);
         }
 
         //update grid objects
