@@ -38,6 +38,7 @@ class gridServer implements Runnable {
     private ConcurrentLinkedQueue<uuidPair> edgeQueue;
     private CyclicBarrier barrier;
     private LinkedList activeObjects;
+    ArrayList<uuidPair> vertexMissing;
 
     public gridServer() {
         graph = new DirectedAcyclicGraph<UUID, FilteredEdge>(
@@ -55,6 +56,8 @@ class gridServer implements Runnable {
             throw new NullPointerException();
 
         barrier = new CyclicBarrier(2);
+
+        vertexMissing = new ArrayList<uuidPair>();
     }
 
     @Override
@@ -96,21 +99,23 @@ class gridServer implements Runnable {
             graph.addVertex(id);
         }
 
+        //handle a hopefully rare situation where a vertex and edge are added between ingest vertex and ingest edge
+        if (!vertexMissing.isEmpty()) {
+            edgeQueue.addAll(vertexMissing);
+            vertexMissing.clear();
+        }
+
         //ingest edge queue
-        ArrayList<uuidPair> vertexMissing = new ArrayList<uuidPair>();
         for (uuidPair pair : edgeQueue) {
             if ((graph.containsVertex(pair.getUuid1())) && (graph.containsVertex(pair.getUuid2()))) {
-                graph.getEdge(pair.getUuid1(), pair.getUuid2());
+                graph.addEdge(pair.getUuid1(), pair.getUuid2());
             } else {
                 vertexMissing.add(pair);
                 LogHelper.debug("A vertex for edge:" + pair.getUuid1() + " -> " + pair.getUuid2() + " does not exist");
             }
         }
 
-        //handle a hopefully rare situation where a vertex and edge are added between ingest vertex and ingest edge
-        if (!vertexMissing.isEmpty()) {
-            edgeQueue.addAll(vertexMissing);
-        }
+
 
         //update grid objects
         //ingest new objects

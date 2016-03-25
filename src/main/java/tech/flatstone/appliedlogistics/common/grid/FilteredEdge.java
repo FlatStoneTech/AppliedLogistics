@@ -24,13 +24,15 @@ package tech.flatstone.appliedlogistics.common.grid;
 import org.jgrapht.graph.DefaultEdge;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 public class FilteredEdge<V> extends DefaultEdge {
     private V start;
     private V end;
     private UUID uuid;
-    private ArrayList<String> list;
+    private List<String> list;
     private boolean isWhiteList;
     private boolean isExit;
 
@@ -38,15 +40,16 @@ public class FilteredEdge<V> extends DefaultEdge {
         this.end = end;
         this.start = start;
         this.uuid = uuid;
+        this.list = Collections.synchronizedList(new ArrayList<String>());
     }
 
     public void setWhitelist(ArrayList<String> whitelist) {
-        list = whitelist;
+        list = Collections.synchronizedList(whitelist);
         isWhiteList = true;
     }
 
     public void setBlacklist(ArrayList<String> blacklist) {
-        list = blacklist;
+        list = Collections.synchronizedList(blacklist);
         isWhiteList = false;
     }
 
