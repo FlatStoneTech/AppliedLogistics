@@ -18,102 +18,31 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.blocks;
+package tech.flatstone.appliedlogistics.common.container.builder;
 
-import net.minecraft.block.Block;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.util.StatCollector;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import tech.flatstone.appliedlogistics.common.AppliedLogisticsCreativeTabs;
-import tech.flatstone.appliedlogistics.common.blocks.builder.BlockBuilder;
-import tech.flatstone.appliedlogistics.common.blocks.builder.BlockPlanBuilder;
-import tech.flatstone.appliedlogistics.common.blocks.builder.BlockPlanLibrary;
-import tech.flatstone.appliedlogistics.common.blocks.machines.BlockPulverizer;
-import tech.flatstone.appliedlogistics.common.blocks.ore.BlockOre;
-import tech.flatstone.appliedlogistics.common.blocks.ore.BlockOreBlock;
-import tech.flatstone.appliedlogistics.common.items.builder.ItemBuilder;
-import tech.flatstone.appliedlogistics.common.items.ore.ItemOre;
-import tech.flatstone.appliedlogistics.common.items.ore.ItemOreBlock;
-import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
-import tech.flatstone.appliedlogistics.common.util.Platform;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.tileentity.TileEntity;
+import tech.flatstone.appliedlogistics.common.container.ContainerBase;
+import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanLibrary;
 
-import java.util.Locale;
+public class ContainerPlanLibrary extends ContainerBase {
+    private IInventory inventory;
+    private TileEntityPlanLibrary tileEntity;
+    private InventoryPlayer inventoryPlayer;
 
-public enum Blocks {
-    // Ore
-    BLOCK_ORE("ore", new BlockOre(), ItemOre.class, AppliedLogisticsCreativeTabs.tabOres),
-    BLOCK_ORE_BLOCK("ore_block", new BlockOreBlock(), ItemOreBlock.class, AppliedLogisticsCreativeTabs.tabOres),
+    public ContainerPlanLibrary(InventoryPlayer inventoryPlayer, TileEntity tileEntity) {
+        super(inventoryPlayer, tileEntity);
+        this.tileEntity = (TileEntityPlanLibrary) tileEntity;
+        this.inventory = (IInventory) tileEntity;
+        this.inventoryPlayer = inventoryPlayer;
 
-    BLOCK_BUILDER("builder", new BlockBuilder(), ItemBuilder.class, AppliedLogisticsCreativeTabs.tabMachines),
-    BLOCK_PLAN_BUILDER("plan_builder", new BlockPlanBuilder(), AppliedLogisticsCreativeTabs.tabMachines),
-    BLOCK_PLAN_LIBRARY("plan_library", new BlockPlanLibrary(), AppliedLogisticsCreativeTabs.tabMachines),
-
-    BLOCK_MACHINE_PULVERIZER("machine_pulverizer", new BlockPulverizer(), AppliedLogisticsCreativeTabs.tabMachines);
-
-    public final Block block;
-    private final String internalName;
-    private final Class<? extends ItemBlock> itemBlockClass;
-    private final CreativeTabs creativeTabs;
-    private final boolean defaultRenderer;
-
-    Blocks(String internalName, Block block) {
-        this(internalName, block, ItemBlock.class, null, true);
+        drawSlots();
     }
 
-    Blocks(String internalName, Block block, CreativeTabs creativeTabs) {
-        this(internalName, block, ItemBlock.class, creativeTabs, true);
-    }
-
-    Blocks(String internalName, Block block, Class<? extends ItemBlock> itemBlockClass) {
-        this(internalName, block, itemBlockClass, null, true);
-    }
-
-    Blocks(String internalName, Block block, Class<? extends ItemBlock> itemBlockClass, CreativeTabs creativeTabs) {
-        this(internalName, block, itemBlockClass, creativeTabs, true);
-    }
-
-    Blocks(String internalName, Block block, Class<? extends ItemBlock> itemBlockClass, CreativeTabs creativeTabs, boolean useDefaultRenderer) {
-        this.internalName = internalName;
-        this.block = block;
-        this.itemBlockClass = itemBlockClass;
-        this.creativeTabs = creativeTabs;
-        this.defaultRenderer = useDefaultRenderer;
-    }
-
-    public static void registerBlocks() {
-        for (Blocks b : Blocks.values()) {
-            b.registerBlock();
-        }
-    }
-
-
-    public String getInternalName() {
-        return internalName;
-    }
-
-    public String getStatName() {
-        return StatCollector.translateToLocal(block.getUnlocalizedName().replace("tileentities.", "blocks."));
-    }
-
-    private void registerBlock() {
-        if (!internalName.equals(internalName.toLowerCase(Locale.US))) {
-            throw new IllegalArgumentException(String.format("Unlocalized names need to be all lowercase! Item: %s", internalName));
-        }
-
-        // Register Block in Game Registry
-        GameRegistry.registerBlock(block.setCreativeTab(creativeTabs).setUnlocalizedName(internalName), itemBlockClass, internalName);
-
-        // If bock has Render Info, Register Renderer
-        if (block instanceof IBlockRenderer && Platform.isClient()) {
-            ((IBlockRenderer) block).registerBlockRenderer();
-        }
-
-        LogHelper.info("Registered Block: " + internalName);
-    }
-
-    public Block getBlock() {
-        return this.block;
+    private void drawSlots() {
+        //addSlotToContainer(new SlotRestrictedInput(inventory, 0, 190, 95, Arrays.asList(new ItemStack(Items.ITEM_PLAN_BLANK.getItem())), new ItemStack(Items.ITEM_PLAN_BLANK.getItem())));
+        //addSlotToContainer(new SlotPlanBuilderOutput(inventory, 1, 190, 155, tileEntity));
+        bindPlayerInventory(inventoryPlayer, 0, 62);
     }
 }
