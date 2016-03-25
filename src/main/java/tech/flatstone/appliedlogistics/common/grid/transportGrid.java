@@ -146,4 +146,18 @@ public class transportGrid implements ITransport {
         return true;
     }
 
+    /**
+     * inserts an object into the routing network
+     * the network will use the unlocalized name to find an exit node that will accept it
+     *
+     * @param entryNode
+     * @param unlocalizedName
+     * @param object
+     * @return
+     */
+    @Override
+    public boolean insertObjectToRoute(UUID entryNode, String unlocalizedName, Object object) {
+        return false;
+    }
+
 }

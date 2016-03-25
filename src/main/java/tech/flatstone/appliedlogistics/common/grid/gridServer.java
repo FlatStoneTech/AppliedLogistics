@@ -33,12 +33,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CyclicBarrier;
 
 class gridServer implements Runnable {
+    ArrayList<uuidPair> vertexMissing;
     private DirectedAcyclicGraph<UUID, FilteredEdge> graph;
     private ConcurrentLinkedQueue<UUID> vertexQueue;
     private ConcurrentLinkedQueue<uuidPair> edgeQueue;
     private CyclicBarrier barrier;
     private LinkedList activeObjects;
-    ArrayList<uuidPair> vertexMissing;
 
     public gridServer() {
         graph = new DirectedAcyclicGraph<UUID, FilteredEdge>(
@@ -114,7 +114,6 @@ class gridServer implements Runnable {
                 LogHelper.debug("A vertex for edge:" + pair.getUuid1() + " -> " + pair.getUuid2() + " does not exist");
             }
         }
-
 
 
         //update grid objects

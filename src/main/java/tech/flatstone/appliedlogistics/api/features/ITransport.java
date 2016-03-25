@@ -91,4 +91,15 @@ public interface ITransport {
      * @return
      */
     boolean applyBlacklistToNode(UUID exitNode, ArrayList<String> unlocalizedNameList);
+
+    /**
+     * inserts an object into the routing network
+     * the network will use the unlocalized name to find an exit node that will accept it
+     *
+     * @param entryNode
+     * @param unlocalizedName
+     * @param object
+     * @return
+     */
+    boolean insertObjectToRoute(UUID entryNode, String unlocalizedName, Object object);
 }
