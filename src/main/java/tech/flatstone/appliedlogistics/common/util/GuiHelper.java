@@ -142,7 +142,7 @@ public class GuiHelper extends Gui {
         this.zLevel = 0.0f;
         renderItem.zLevel = 0.0f;
     }
-    
+
     /**
      * Draws a slot that is disabled...
      *
