@@ -52,7 +52,7 @@ public enum Blocks {
 
     BLOCK_MACHINE_PULVERIZER("machine_pulverizer", new BlockPulverizer(), AppliedLogisticsCreativeTabs.tabMachines);
 
-    public final Block block;
+    private final Block block;
     private final String internalName;
     private final Class<? extends ItemBlock> itemBlockClass;
     private final CreativeTabs creativeTabs;

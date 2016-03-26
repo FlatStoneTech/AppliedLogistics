@@ -54,12 +54,12 @@ public class PlanPlanLibrary extends ItemPlanBase implements IMachinePlan {
                 requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("cobblestone"), 8, 8, 20, 100, 100));
                 requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("plankWood"), 4, 4, 10, 100, 100));
 
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("chestWood"), 1, 3, 10, 100, 100, "Each chest adds 9 slots of storage"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("chestWood"), 1, 6, 10, 100, 100, "Each chest adds 9 slots of storage"));
 
                 requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(net.minecraft.init.Items.comparator), 0, 1, 10, 200, 200, "Adds comparator output"));
                 requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(net.minecraft.init.Blocks.hopper), 0, 1, 10, 200, 200, "Adds support to adding items with pipes and hoppers"));
 
-                planDetails = new PlanDetails(72, requiredMaterialsList, new ItemStack(Blocks.BLOCK_BUILDER.block, 1, 1));
+                planDetails = new PlanDetails(72, requiredMaterialsList, new ItemStack(Blocks.BLOCK_PLAN_LIBRARY.getBlock(), 1, 1));
                 break;
         }
 

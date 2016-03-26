@@ -84,6 +84,9 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
         if (getPlanDetails() == null)
             return false;
 
+        if (getBlockMetadata() == TechLevel.CREATIVE.getMeta())
+            return true;
+
         for (PlanRequiredMaterials material : getPlanDetails().getRequiredMaterialsList()) {
             if (material.getMinCount() > 0) {
                 ItemStack itemInSlot = inventory.getStackInSlot(invSlot);
@@ -257,6 +260,10 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
 
         if (getTotalTicks() > 0 && machineWorking) {
             ticksRemaining--;
+
+            if (getBlockMetadata() == TechLevel.CREATIVE.getMeta()) {
+                ticksRemaining = 0;
+            }
         }
 
         if (ticksRemaining <= 0 && machineWorking) {

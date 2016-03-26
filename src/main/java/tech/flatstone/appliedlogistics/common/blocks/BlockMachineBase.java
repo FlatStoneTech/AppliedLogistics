@@ -18,84 +18,75 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics;
+package tech.flatstone.appliedlogistics.common.blocks;
 
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import tech.flatstone.appliedlogistics.api.features.EnumOreType;
-import tech.flatstone.appliedlogistics.common.blocks.Blocks;
-import tech.flatstone.appliedlogistics.common.integrations.IntegrationsManager;
-import tech.flatstone.appliedlogistics.common.network.PacketHandler;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
-import tech.flatstone.appliedlogistics.common.world.WorldGen;
-import tech.flatstone.appliedlogistics.proxy.IProxy;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
+import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-@Mod(modid = ModInfo.MOD_ID, name = ModInfo.MOD_NAME, certificateFingerprint = ModInfo.FINGERPRINT, dependencies = ModInfo.DEPENDENCIES, version = ModInfo.VERSION_BUILD)
-public class AppliedLogistics {
-    @Mod.Instance(ModInfo.MOD_ID)
-    public static AppliedLogistics instance;
+import java.util.ArrayList;
+import java.util.List;
 
-    @SidedProxy(clientSide = ModInfo.CLIENT_PROXY_CLASS, serverSide = ModInfo.SERVER_PROXY_CLASS)
-    public static IProxy proxy;
+public abstract class BlockMachineBase extends BlockBase {
 
-    public static void addConfiguredWorldGen(IBlockState state, String config) {
-        //todo: need to get config in here like asap...
-        WorldGen.addOreGen(config, state, 4, 20, 85, 8, 100);
+    protected BlockMachineBase(Material material) {
+        super(material);
     }
 
-    @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event) {
-        PacketHandler.init();
+    /**
+     * Hey FireBall, this might seem stupid, but you need this code for getDrops to get called before the TE is destroyed...
+     * Just remember that one stream that you spent an hour trying to figure out why it worked in the graves mod, well
+     * yeah, you need this and the next class too, the harvest block, dont ask why, just accept it...
+     *
+     * Thanks
+     * ~ Past FireBall
+     *
+     * @param world
+     * @param pos
+     * @param player
+     * @param willHarvest
+     * @return
+     */
+    @Override
+    public boolean removedByPlayer(World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
+        return willHarvest || super.removedByPlayer(world, pos, player, false);
+    }
 
-        // Register Blocks
-        proxy.registerBlocks();
-        proxy.registerItems();
+    @Override
+    public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity te) {
+        super.harvestBlock(world, player, pos, state, te);
+        world.setBlockToAir(pos);
+    }
 
-        proxy.registerGUIs();
+    @Override
+    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+        TileEntityBase tileEntityBase = TileHelper.getTileEntity(world, pos, TileEntityBase.class);
+        if (tileEntityBase != null) {
+            final ItemStack itemStack = new ItemStack(this);
 
-        proxy.registerBlueprints();
-
-        proxy.registerFurnaceRecipes();
-
-        proxy.registerOreDict();
-
-        proxy.registerEvents();
-
-        IntegrationsManager.instance().index();
-
-        for (int i = 0; i < EnumOres.values().length; i++) {
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE)) {
-                addConfiguredWorldGen(Blocks.BLOCK_ORE.getBlock().getStateFromMeta(i), EnumOres.byMeta(i).getUnlocalizedName());
+            NBTTagCompound machineItemData = tileEntityBase.getMachineItemData();
+            if (machineItemData != null) {
+                NBTTagCompound itemTag = new NBTTagCompound();
+                itemTag.setTag("MachineItemData", machineItemData);
+                itemStack.setTagCompound(itemTag);
             }
+
+            if (tileEntityBase.hasCustomName()) {
+                itemStack.setStackDisplayName(tileEntityBase.getCustomName());
+            }
+
+            ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
+            drops.add(itemStack);
+            return drops;
         }
-
-        IntegrationsManager.instance().preInit();
-
-
-    }
-
-    @Mod.EventHandler
-    public void init(FMLInitializationEvent event) {
-        proxy.registerRecipes();
-
-        proxy.registerHammerRecipes();
-
-        WorldGen worldGen = new WorldGen();
-        GameRegistry.registerWorldGenerator(worldGen, 0);
-        MinecraftForge.EVENT_BUS.register(worldGen);
-
-        // Init Integrations
-        IntegrationsManager.instance().init();
-    }
-
-    @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-        IntegrationsManager.instance().postInit();
+        return super.getDrops(world, pos, state, fortune);
     }
 }

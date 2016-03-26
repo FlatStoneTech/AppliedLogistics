@@ -21,10 +21,15 @@
 package tech.flatstone.appliedlogistics.client.gui.builder;
 
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.client.gui.GuiBase;
 import tech.flatstone.appliedlogistics.common.container.builder.ContainerPlanLibrary;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanLibrary;
 import tech.flatstone.appliedlogistics.common.util.GuiHelper;
+import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 
 public class GuiPlanLibrary extends GuiBase {
     TileEntityPlanLibrary tileEntity;
@@ -32,19 +37,46 @@ public class GuiPlanLibrary extends GuiBase {
 
     public GuiPlanLibrary(InventoryPlayer inventoryPlayer, TileEntityPlanLibrary tileEntity) {
         super(new ContainerPlanLibrary(inventoryPlayer, tileEntity));
+        int slotRows = tileEntity.getSlotRows();
         this.xSize = 176;
-        this.ySize = 144;
+        this.ySize = 126 + (18 * slotRows);
         this.tileEntity = tileEntity;
     }
 
     @Override
     public void drawBG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
         bindTexture("gui/machines/plan_library.png");
-        drawTexturedModalRect(paramInt1, paramInt2, 0, 0, this.xSize, this.ySize);
+        int slotRows = tileEntity.getSlotRows();
+        // Draw the top...
+        drawTexturedModalRect(paramInt1, paramInt2, 0, 0, this.xSize, 35);
+        int y = 35;
+        for (int i = 1; i < slotRows; i++) {
+            drawTexturedModalRect(paramInt1, paramInt2 + y, 0, 17, this.xSize, 18);
+            y = y + 18;
+        }
+        drawTexturedModalRect(paramInt1, paramInt2 + y, 0, 35, this.xSize, 109);
     }
 
     @Override
     public void drawFG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
+        int slotRows = tileEntity.getSlotRows();
 
+        this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()), 8, 6, 4210752);
+        this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage("container.inventory"), 8, 33 + (slotRows * 18), 4210752);
+
+        int iconX = 322;
+        if (tileEntity.isComparatorEnabled()) {
+            GL11.glScalef(0.5f, 0.5f, 0.5f);
+            guiHelper.drawItemStack(new ItemStack(Items.comparator), iconX, 12);
+            iconX = iconX - 18;
+            GL11.glScalef(2.0f, 2.0f, 2.0f);
+        }
+
+        if (tileEntity.isSidedEnabled()) {
+            GL11.glScalef(0.5f, 0.5f, 0.5f);
+            guiHelper.drawItemStack(new ItemStack(Blocks.hopper), iconX, 12);
+            iconX = iconX - 18;
+            GL11.glScalef(2.0f, 2.0f, 2.0f);
+        }
     }
 }

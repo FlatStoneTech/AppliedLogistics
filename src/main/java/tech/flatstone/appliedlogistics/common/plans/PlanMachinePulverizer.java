@@ -57,7 +57,7 @@ public class PlanMachinePulverizer extends ItemPlanBase implements IMachinePlan 
                 requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearWood"), 0, 1, 3, 60, 60, ""));
                 requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearStone"), 1, 2, 5, 80, 80, ""));
 
-                planDetails = new PlanDetails(38, requiredMaterialsList, new ItemStack(Blocks.BLOCK_MACHINE_PULVERIZER.block, 1));
+                planDetails = new PlanDetails(38, requiredMaterialsList, new ItemStack(Blocks.BLOCK_MACHINE_PULVERIZER.getBlock(), 1));
                 break;
 
             case BRONZE_AGE:
@@ -69,13 +69,13 @@ public class PlanMachinePulverizer extends ItemPlanBase implements IMachinePlan 
                 requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearIron"), 1, 2, 10, 80, 80, ""));
                 requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearBronze"), 2, 4, 12, 80, 80, ""));
 
-                planDetails = new PlanDetails(138, requiredMaterialsList, new ItemStack(Blocks.BLOCK_MACHINE_PULVERIZER.block, 1));
+                planDetails = new PlanDetails(138, requiredMaterialsList, new ItemStack(Blocks.BLOCK_MACHINE_PULVERIZER.getBlock(), 1));
                 break;
 
             case INDUSTRIAL_AGE:
                 requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearBronze"), 2, 4, 12, 80, 80, ""));
 
-                planDetails = new PlanDetails(138, requiredMaterialsList, new ItemStack(Blocks.BLOCK_ORE_BLOCK.block, 1, 4));
+                planDetails = new PlanDetails(138, requiredMaterialsList, new ItemStack(Blocks.BLOCK_ORE_BLOCK.getBlock(), 1, 4));
                 break;
         }
 

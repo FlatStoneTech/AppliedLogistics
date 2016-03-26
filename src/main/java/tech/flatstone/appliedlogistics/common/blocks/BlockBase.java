@@ -20,21 +20,31 @@
 
 package tech.flatstone.appliedlogistics.common.blocks;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
+import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
+import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityPulverizer;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BlockBase extends BlockContainer {
     protected boolean isInventory = false;
@@ -75,7 +85,7 @@ public class BlockBase extends BlockContainer {
     }
 
     private void setTileProvider(boolean b) {
-        ReflectionHelper.setPrivateValue(Block.class, this, b, "isTileProvider");
+        ReflectionHelper.setPrivateValue(Block.class, this, Boolean.valueOf(b), new String[]{"isTileProvider"});
     }
 
     public Class<? extends TileEntity> getTileEntityClass() {
@@ -105,15 +115,48 @@ public class BlockBase extends BlockContainer {
     @Override
     public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState state, EntityLivingBase placer, ItemStack itemStack) {
         super.onBlockPlacedBy(world, blockPos, state, placer, itemStack);
+        TileEntityBase tileEntityBase = TileHelper.getTileEntity(world, blockPos, TileEntityBase.class);
+
+        if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("MachineItemData")) {
+            tileEntityBase.setMachineItemData(itemStack.getTagCompound().getCompoundTag("MachineItemData"));
+        }
 
         if (itemStack.hasDisplayName()) {
-            TileEntityBase tileEntityBase = TileHelper.getTileEntity(world, blockPos, TileEntityBase.class);
             tileEntityBase.setCustomName(itemStack.getDisplayName());
         }
+
+        if (tileEntityBase instanceof TileEntityMachineBase)
+            ((TileEntityMachineBase)tileEntityBase).initMachineData();
     }
 
     @Override
     public int getRenderType() {
         return 3;
+    }
+
+    @Override
+    public boolean removedByPlayer(World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
+        return willHarvest || super.removedByPlayer(world, pos, player, false);
+    }
+
+    @Override
+    public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity te) {
+        super.harvestBlock(world, player, pos, state, te);
+        world.setBlockToAir(pos);
+    }
+
+    @Override
+    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+        TileEntityBase tileEntity = TileHelper.getTileEntity(world, pos, TileEntityBase.class);
+        if (tileEntity != null && tileEntity.hasCustomName()) {
+            final ItemStack itemStack = new ItemStack(this, 1, tileEntity.getBlockMetadata());
+            itemStack.setStackDisplayName(tileEntity.getCustomName());
+
+            ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
+            drops.add(itemStack);
+
+            return drops;
+        }
+        return super.getDrops(world, pos, state, fortune);
     }
 }

@@ -64,6 +64,9 @@ tile.appliedlogistics.builder.creative.name=Creative Builder
 ## Plan Builder #########################
 tile.appliedlogistics.plan_builder.name=Plan Builder
 
+## Plan Library #########################
+tile.appliedlogistics.plan_library.name=Plan Library
+
 ## Machines #############################
 tile.appliedlogistics.machine_pulverizer.name=Pulverizer
 

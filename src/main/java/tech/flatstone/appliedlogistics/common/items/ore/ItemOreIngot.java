@@ -120,7 +120,7 @@ public class ItemOreIngot extends ItemBase implements IItemRenderer, IProvideRec
         for (int i = 0; i < EnumOres.values().length; i++) {
             // Register Ore -> Ingot
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE) && EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT))
-                GameRegistry.addSmelting(new ItemStack(Blocks.BLOCK_ORE.block, 1, i), new ItemStack(Items.ITEM_ORE_INGOT.item, 1, i), 0);
+                GameRegistry.addSmelting(new ItemStack(Blocks.BLOCK_ORE.getBlock(), 1, i), new ItemStack(Items.ITEM_ORE_INGOT.item, 1, i), 0);
 
             // Register Dust -> Ingot
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.DUST) && EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT))

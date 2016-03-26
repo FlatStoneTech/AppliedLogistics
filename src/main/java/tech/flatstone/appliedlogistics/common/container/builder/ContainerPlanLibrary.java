@@ -22,9 +22,14 @@ package tech.flatstone.appliedlogistics.common.container.builder;
 
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import tech.flatstone.appliedlogistics.common.container.ContainerBase;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotRestrictedInput;
+import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanLibrary;
+
+import java.util.Arrays;
 
 public class ContainerPlanLibrary extends ContainerBase {
     private IInventory inventory;
@@ -43,6 +48,17 @@ public class ContainerPlanLibrary extends ContainerBase {
     private void drawSlots() {
         //addSlotToContainer(new SlotRestrictedInput(inventory, 0, 190, 95, Arrays.asList(new ItemStack(Items.ITEM_PLAN_BLANK.getItem())), new ItemStack(Items.ITEM_PLAN_BLANK.getItem())));
         //addSlotToContainer(new SlotPlanBuilderOutput(inventory, 1, 190, 155, tileEntity));
-        bindPlayerInventory(inventoryPlayer, 0, 62);
+        int slotRows = tileEntity.getSlotRows();
+
+        int slotY = 18;
+        int slotNumber = 0;
+        for (int i = 0; i < slotRows; i++) {
+            for (int j = 0; j < 9; j++) {
+                addSlotToContainer(new SlotRestrictedInput(inventory, slotNumber, j * 18 + 8, i * 18 + 18, Arrays.asList(new ItemStack(Items.ITEM_PLAN.getItem())), new ItemStack(Items.ITEM_PLAN.getItem())));
+                slotNumber++;
+            }
+        }
+
+        bindPlayerInventory(inventoryPlayer, 0, 44 + (18 * slotRows));
     }
 }

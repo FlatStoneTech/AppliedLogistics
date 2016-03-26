@@ -20,6 +20,8 @@
 
 package tech.flatstone.appliedlogistics.common.tileentities;
 
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.inventory.IInventory;
@@ -31,16 +33,21 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
+import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaHeadMessage;
 import tech.flatstone.appliedlogistics.common.util.ItemStackSrc;
+import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-public class TileEntityBase extends TileEntity {
-    public static final HashMap<Class, ItemStackSrc> myItem = new HashMap();
-    public String customName;
-    public int renderedFragment = 0;
+public class TileEntityBase extends TileEntity implements IWailaHeadMessage {
+    private static final HashMap<Class, ItemStackSrc> myItem = new HashMap();
+    private String customName;
+    private int renderedFragment = 0;
+    private NBTTagCompound machineItemData;
 
     public static void registerTileItem(Class c, ItemStackSrc wat) {
         myItem.put(c, wat);
@@ -119,7 +126,7 @@ public class TileEntityBase extends TileEntity {
     }
 
     public String getCustomName() {
-        return hasCustomName() ? this.customName : getUnlocalizedName();
+        return this.customName;
     }
 
     public void setCustomName(String customName) {
@@ -148,6 +155,10 @@ public class TileEntityBase extends TileEntity {
         if (this.customName != null) {
             nbtTagCompound.setString("CustomName", this.customName);
         }
+
+        if (this.machineItemData != null) {
+            nbtTagCompound.setTag("MachineItemData", machineItemData);
+        }
     }
 
     @Override
@@ -159,6 +170,20 @@ public class TileEntityBase extends TileEntity {
         } else {
             this.customName = null;
         }
+
+        if (nbtTagCompound.hasKey("MachineItemData")) {
+            this.machineItemData = nbtTagCompound.getCompoundTag("MachineItemData");
+        } else {
+            this.machineItemData = null;
+        }
+    }
+
+    public void setMachineItemData(NBTTagCompound machineItemData) {
+        this.machineItemData = machineItemData;
+    }
+
+    public NBTTagCompound getMachineItemData() {
+        return machineItemData;
     }
 
     public IBlockState getBlockState() {
@@ -166,5 +191,13 @@ public class TileEntityBase extends TileEntity {
             return null;
 
         return worldObj.getBlockState(pos);
+    }
+
+    @Override
+    public List<String> getWailaHeadToolTip(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        if (customName != null)
+            currentTip.add(String.format("%s%s%s", EnumChatFormatting.BLUE, EnumChatFormatting.ITALIC, customName));
+
+        return currentTip;
     }
 }

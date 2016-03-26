@@ -20,15 +20,61 @@
 
 package tech.flatstone.appliedlogistics.common.tileentities.builder;
 
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import tech.flatstone.appliedlogistics.common.tileentities.TileEntityInventoryBase;
+import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
 
-public class TileEntityPlanLibrary extends TileEntityInventoryBase {
-    InternalInventory inventory = new InternalInventory(this, 100);
+public class TileEntityPlanLibrary extends TileEntityMachineBase {
+    private InternalInventory inventory = new InternalInventory(this, 100);
+    private int slotRows = 0;
+    private boolean comparatorEnabled = false;
+    private boolean sidedEnabled = false;
+
+    @Override
+    public void initMachineData() {
+        NBTTagCompound machineItemData = this.getMachineItemData();
+        if (machineItemData != null) {
+            for (int i = 0; i < 27; i++) {
+                if (machineItemData.hasKey("item_" + i)) {
+                    ItemStack item = ItemStack.loadItemStackFromNBT(machineItemData.getCompoundTag("item_" + i));
+
+                    if (ItemStack.areItemsEqual(item, new ItemStack(Blocks.chest)))
+                        slotRows = item.stackSize;
+
+                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.comparator)))
+                        comparatorEnabled = true;
+
+                    if (ItemStack.areItemsEqual(item, new ItemStack(Blocks.hopper)))
+                        sidedEnabled = true;
+                }
+            }
+        }
+
+        if (machineItemData == null) {
+            // Load Default Details for the machine...
+            slotRows = 1;
+            comparatorEnabled = false;
+            sidedEnabled = false;
+        }
+    }
+
+    public int getSlotRows() {
+        return slotRows;
+    }
+
+    public boolean isComparatorEnabled() {
+        return comparatorEnabled;
+    }
+
+    public boolean isSidedEnabled() {
+        return sidedEnabled;
+    }
 
     @Override
     public IInventory getInternalInventory() {
@@ -48,5 +94,19 @@ public class TileEntityPlanLibrary extends TileEntityInventoryBase {
     @Override
     public ItemStack removeStackFromSlot(int index) {
         return null;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTagCompound) {
+        super.readFromNBT(nbtTagCompound);
+
+        slotRows = nbtTagCompound.getInteger("slotRows");
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound nbtTagCompound) {
+        super.writeToNBT(nbtTagCompound);
+
+        nbtTagCompound.setInteger("slotRows", slotRows);
     }
 }

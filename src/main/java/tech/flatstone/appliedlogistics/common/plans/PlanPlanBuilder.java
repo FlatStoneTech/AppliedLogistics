@@ -53,19 +53,19 @@ public class PlanPlanBuilder extends ItemPlanBase implements IMachinePlan {
         switch (techLevel) {
             case STONE_AGE:
                 requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("ingotBronze"), 7, 7, 6, 100, 100));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Blocks.BLOCK_BUILDER.block, 1, 0), 1, 1, 10, 100, 100));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Blocks.BLOCK_BUILDER.getBlock(), 1, 0), 1, 1, 10, 100, 100));
                 requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(net.minecraft.init.Items.comparator), 0, 1, 10, 200, 200, "Adds comparator output"));
                 requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(net.minecraft.init.Blocks.redstone_block), 0, 1, 10, 200, 200, "Adds redstone input to launch build"));
                 requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(net.minecraft.init.Blocks.hopper), 0, 1, 10, 200, 200, "Adds support to adding / removing items with pipes and hoppers"));
 
-                planDetails = new PlanDetails(72, requiredMaterialsList, new ItemStack(Blocks.BLOCK_BUILDER.block, 1, 1));
+                planDetails = new PlanDetails(72, requiredMaterialsList, new ItemStack(Blocks.BLOCK_BUILDER.getBlock(), 1, 1));
                 break;
 
             case BRONZE_AGE:
                 requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("ingotSteel"), 7, 7, 15, 100, 100));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Blocks.BLOCK_BUILDER.block, 1, 1), 1, 1, 10, 100, 100));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Blocks.BLOCK_BUILDER.getBlock(), 1, 1), 1, 1, 10, 100, 100));
 
-                planDetails = new PlanDetails(1000, requiredMaterialsList, new ItemStack(Blocks.BLOCK_BUILDER.block, 1, 2));
+                planDetails = new PlanDetails(1000, requiredMaterialsList, new ItemStack(Blocks.BLOCK_BUILDER.getBlock(), 1, 2));
                 break;
         }
 

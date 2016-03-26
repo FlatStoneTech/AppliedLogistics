@@ -27,10 +27,13 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
-import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
+import tech.flatstone.appliedlogistics.common.blocks.BlockMachineBase;
+import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanBuilder;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanLibrary;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
+import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-public class BlockPlanLibrary extends BlockBase {
+public class BlockPlanLibrary extends BlockMachineBase {
     public BlockPlanLibrary() {
         super(Material.rock);
         this.setTileEntity(TileEntityPlanLibrary.class);
@@ -38,6 +41,10 @@ public class BlockPlanLibrary extends BlockBase {
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+        TileEntityPlanLibrary tileEntityPlanLibrary = TileHelper.getTileEntity(worldIn, pos, TileEntityPlanLibrary.class);
+        if (tileEntityPlanLibrary != null)
+            LogHelper.info(">>> Rows: " + tileEntityPlanLibrary.getSlotRows());
+
         if (worldIn.isRemote)
             return true;
 

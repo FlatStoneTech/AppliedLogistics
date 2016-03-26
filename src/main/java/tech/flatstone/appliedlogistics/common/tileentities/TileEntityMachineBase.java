@@ -18,84 +18,15 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics;
+package tech.flatstone.appliedlogistics.common.tileentities;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import tech.flatstone.appliedlogistics.api.features.EnumOreType;
-import tech.flatstone.appliedlogistics.common.blocks.Blocks;
-import tech.flatstone.appliedlogistics.common.integrations.IntegrationsManager;
-import tech.flatstone.appliedlogistics.common.network.PacketHandler;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
-import tech.flatstone.appliedlogistics.common.world.WorldGen;
-import tech.flatstone.appliedlogistics.proxy.IProxy;
-
-@Mod(modid = ModInfo.MOD_ID, name = ModInfo.MOD_NAME, certificateFingerprint = ModInfo.FINGERPRINT, dependencies = ModInfo.DEPENDENCIES, version = ModInfo.VERSION_BUILD)
-public class AppliedLogistics {
-    @Mod.Instance(ModInfo.MOD_ID)
-    public static AppliedLogistics instance;
-
-    @SidedProxy(clientSide = ModInfo.CLIENT_PROXY_CLASS, serverSide = ModInfo.SERVER_PROXY_CLASS)
-    public static IProxy proxy;
-
-    public static void addConfiguredWorldGen(IBlockState state, String config) {
-        //todo: need to get config in here like asap...
-        WorldGen.addOreGen(config, state, 4, 20, 85, 8, 100);
+public abstract class TileEntityMachineBase extends TileEntityInventoryBase {
+    public void initMachineData() {
+        // NOOP
     }
 
-    @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event) {
-        PacketHandler.init();
-
-        // Register Blocks
-        proxy.registerBlocks();
-        proxy.registerItems();
-
-        proxy.registerGUIs();
-
-        proxy.registerBlueprints();
-
-        proxy.registerFurnaceRecipes();
-
-        proxy.registerOreDict();
-
-        proxy.registerEvents();
-
-        IntegrationsManager.instance().index();
-
-        for (int i = 0; i < EnumOres.values().length; i++) {
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE)) {
-                addConfiguredWorldGen(Blocks.BLOCK_ORE.getBlock().getStateFromMeta(i), EnumOres.byMeta(i).getUnlocalizedName());
-            }
-        }
-
-        IntegrationsManager.instance().preInit();
-
-
-    }
-
-    @Mod.EventHandler
-    public void init(FMLInitializationEvent event) {
-        proxy.registerRecipes();
-
-        proxy.registerHammerRecipes();
-
-        WorldGen worldGen = new WorldGen();
-        GameRegistry.registerWorldGenerator(worldGen, 0);
-        MinecraftForge.EVENT_BUS.register(worldGen);
-
-        // Init Integrations
-        IntegrationsManager.instance().init();
-    }
-
-    @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-        IntegrationsManager.instance().postInit();
-    }
+//    @Override
+//    public void onLoad() {
+//        initMachineData();
+//    }
 }

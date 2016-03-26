@@ -38,13 +38,14 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
+import tech.flatstone.appliedlogistics.common.blocks.BlockMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityBuilder;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 import java.util.List;
 
-public class BlockBuilder extends BlockBase implements IProvideRecipe {
+public class BlockBuilder extends BlockMachineBase implements IProvideRecipe {
     public static final PropertyEnum TECHLEVEL = PropertyEnum.create("tech", TechLevel.class);
 
     public BlockBuilder() {

@@ -99,7 +99,7 @@ public class GuiBuilder extends GuiBase {
         /**
          * Titles
          */
-        this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()), 8, 6, 4210752);
+        this.fontRendererObj.drawString(tileEntity.hasCustomName() ? tileEntity.getCustomName() : LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()), 8, 6, 4210752);
         this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage("container.inventory"), 8, 129, 4210752);
 
         if (this.tileEntity.getBlockMetadata() != 0 && this.tileEntity.getPlanItem() != null) {
@@ -132,7 +132,7 @@ public class GuiBuilder extends GuiBase {
         /**
          * Progress Bars
          */
-        if (tileEntity.getPlanItem() != null && tileEntity.getTicksRemaining() == 0) {
+        if (tileEntity.getPlanItem() != null && tileEntity.getTicksRemaining() == 0 && tileEntity.getBlockMetadata() != TechLevel.CREATIVE.getMeta()) {
             int weightMax = tileEntity.getPlanDetails().getTotalWeight();
             int weightTotal = tileEntity.getTotalWeight();
             int weightProgressColor = colorProgressBackground;
@@ -155,7 +155,7 @@ public class GuiBuilder extends GuiBase {
             guiHelper.drawCenteredStringWithShadow(40, 26, 126, weightLabel, colorFont);
         }
 
-        if (tileEntity.getPlanItem() != null && tileEntity.getTicksRemaining() > 0) {
+        if (tileEntity.getPlanItem() != null && tileEntity.getTicksRemaining() > 0 && tileEntity.getBlockMetadata() != TechLevel.CREATIVE.getMeta()) {
             int timeMax = tileEntity.getTotalTicks();
             int timeCurrent = tileEntity.getTicksRemaining();
             int timeProgressColor = colorProgressBackground;
