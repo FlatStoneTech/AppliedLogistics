@@ -29,7 +29,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.lwjgl.opengl.GL11;
-import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.client.gui.GuiBase;
 import tech.flatstone.appliedlogistics.common.container.builder.ContainerBuilder;

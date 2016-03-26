@@ -50,6 +50,15 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
     private int buildingTechLevel = -1;
     private int ticksRemaining = 0;
     private boolean machineWorking = false;
+    private EnumFacing directionFacing = EnumFacing.NORTH;
+
+    public EnumFacing getDirectionFacing() {
+        return directionFacing;
+    }
+
+    public void setDirectionFacing(EnumFacing directionFacing) {
+        this.directionFacing = directionFacing;
+    }
 
     public int getTotalWeight() {
         int weight = 0;
@@ -148,6 +157,7 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
         ticksRemaining = nbtTagCompound.getInteger("ticksRemaining");
         machineWorking = nbtTagCompound.getBoolean("machineWorking");
         buildingTechLevel = nbtTagCompound.getInteger("buildingTechLevel");
+        directionFacing = EnumFacing.byName(nbtTagCompound.getString("directionFacing"));
     }
 
     @Override
@@ -158,6 +168,7 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
         nbtTagCompound.setInteger("ticksRemaining", ticksRemaining);
         nbtTagCompound.setBoolean("machineWorking", machineWorking);
         nbtTagCompound.setInteger("buildingTechLevel", buildingTechLevel);
+        nbtTagCompound.setString("directionFacing", directionFacing.getName());
     }
 
     private void updatePlanDetails() {

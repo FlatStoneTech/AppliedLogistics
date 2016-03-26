@@ -22,18 +22,25 @@ package tech.flatstone.appliedlogistics.common.blocks.builder;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
+import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.BlockMachineBase;
-import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanBuilder;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanLibrary;
+import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
+import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-public class BlockPlanLibrary extends BlockMachineBase {
+public class BlockPlanLibrary extends BlockMachineBase implements IBlockRenderer {
     public BlockPlanLibrary() {
         super(Material.rock);
         this.setTileEntity(TileEntityPlanLibrary.class);
@@ -50,5 +57,28 @@ public class BlockPlanLibrary extends BlockMachineBase {
 
         playerIn.openGui(AppliedLogistics.instance, 2, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
+    }
+
+    @Override
+    public boolean hasComparatorInputOverride() {
+        return true;
+    }
+
+    @Override
+    public int getComparatorInputOverride(World worldIn, BlockPos pos) {
+        TileEntityPlanLibrary tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityPlanLibrary.class);
+        if (tileEntity == null || !tileEntity.isComparatorEnabled())
+            return 0;
+
+        IInventory inventory = new InternalInventory(tileEntity, tileEntity.getSlotRows() * 9);
+        for (int i = 0; i < inventory.getSizeInventory(); i++) {
+            inventory.setInventorySlotContents(i, tileEntity.getStackInSlot(i));
+        }
+        return Container.calcRedstoneFromInventory(inventory);
+    }
+
+    @Override
+    public void registerBlockRenderer() {
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(ModInfo.MOD_ID + ":builder/plan_library", "inventory"));
     }
 }

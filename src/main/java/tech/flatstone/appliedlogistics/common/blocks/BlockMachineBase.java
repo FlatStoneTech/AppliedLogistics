@@ -45,7 +45,7 @@ public abstract class BlockMachineBase extends BlockBase {
      * Hey FireBall, this might seem stupid, but you need this code for getDrops to get called before the TE is destroyed...
      * Just remember that one stream that you spent an hour trying to figure out why it worked in the graves mod, well
      * yeah, you need this and the next class too, the harvest block, dont ask why, just accept it...
-     *
+     * <p>
      * Thanks
      * ~ Past FireBall
      *

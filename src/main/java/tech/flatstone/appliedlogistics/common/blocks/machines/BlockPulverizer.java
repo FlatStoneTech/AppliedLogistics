@@ -22,23 +22,20 @@ package tech.flatstone.appliedlogistics.common.blocks.machines;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.item.Item;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
-import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
+import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.BlockMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityPulverizer;
-import tech.flatstone.appliedlogistics.common.util.TileHelper;
+import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class BlockPulverizer extends BlockMachineBase {
+public class BlockPulverizer extends BlockMachineBase implements IBlockRenderer {
     public BlockPulverizer() {
         super(Material.rock);
         this.setTileEntity(TileEntityPulverizer.class);
@@ -51,5 +48,10 @@ public class BlockPulverizer extends BlockMachineBase {
 
         playerIn.openGui(AppliedLogistics.instance, 1, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
+    }
+
+    @Override
+    public void registerBlockRenderer() {
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(ModInfo.MOD_ID + ":machines/machine_pulverizer", "inventory"));
     }
 }

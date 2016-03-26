@@ -35,7 +35,6 @@ import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
 import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
-import tech.flatstone.appliedlogistics.common.util.GuiHelper;
 import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 
 import java.util.List;

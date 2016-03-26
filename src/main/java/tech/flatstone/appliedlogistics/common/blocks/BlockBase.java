@@ -20,7 +20,6 @@
 
 package tech.flatstone.appliedlogistics.common.blocks;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -28,9 +27,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -40,7 +37,6 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
-import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityPulverizer;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 import java.util.ArrayList;
@@ -126,7 +122,7 @@ public class BlockBase extends BlockContainer {
         }
 
         if (tileEntityBase instanceof TileEntityMachineBase)
-            ((TileEntityMachineBase)tileEntityBase).initMachineData();
+            ((TileEntityMachineBase) tileEntityBase).initMachineData();
     }
 
     @Override

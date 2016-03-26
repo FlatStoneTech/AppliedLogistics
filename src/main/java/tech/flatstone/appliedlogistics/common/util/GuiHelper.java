@@ -35,7 +35,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
 
 public class GuiHelper extends Gui {
@@ -199,10 +198,8 @@ public class GuiHelper extends Gui {
         fontRenderer.drawString(message, messageX, y, color);
     }
 
-    public void renderSplitString(String str, int x, int y, int wrapWidth, int textColor)
-    {
-        for (String s : fontRenderer.listFormattedStringToWidth(str, wrapWidth))
-        {
+    public void renderSplitString(String str, int x, int y, int wrapWidth, int textColor) {
+        for (String s : fontRenderer.listFormattedStringToWidth(str, wrapWidth)) {
             drawStringWithShadow(x, y, s, textColor);
             y += fontRenderer.FONT_HEIGHT;
         }

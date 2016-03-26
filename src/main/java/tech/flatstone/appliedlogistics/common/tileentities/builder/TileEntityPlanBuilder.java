@@ -24,7 +24,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.util.Constants;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
 import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
@@ -136,7 +135,7 @@ public class TileEntityPlanBuilder extends TileEntityInventoryBase implements IN
             return;
 
         NBTTagCompound nbtTagCompound = new NBTTagCompound();
-        nbtTagCompound.setString("PlanType", ((ItemPlanBase)selectedPlan).getUnlocalizedName());
+        nbtTagCompound.setString("PlanType", ((ItemPlanBase) selectedPlan).getUnlocalizedName());
 
         itemStack.setTagCompound(nbtTagCompound);
     }

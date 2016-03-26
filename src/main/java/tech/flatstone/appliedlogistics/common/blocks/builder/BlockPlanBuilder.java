@@ -22,22 +22,27 @@ package tech.flatstone.appliedlogistics.common.blocks.builder;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
+import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanBuilder;
+import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-public class BlockPlanBuilder extends BlockBase implements IProvideRecipe {
+public class BlockPlanBuilder extends BlockBase implements IProvideRecipe, IBlockRenderer {
     public BlockPlanBuilder() {
         super(Material.rock);
         this.setTileEntity(TileEntityPlanBuilder.class);
@@ -69,5 +74,10 @@ public class BlockPlanBuilder extends BlockBase implements IProvideRecipe {
     public void breakBlock(World world, BlockPos blockPos, IBlockState blockState) {
         TileEntity tileEntity = world.getTileEntity(blockPos);
         TileHelper.DropItems(tileEntity, 0, 0);
+    }
+
+    @Override
+    public void registerBlockRenderer() {
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(ModInfo.MOD_ID + ":builder/plan_builder", "inventory"));
     }
 }

@@ -21,11 +21,9 @@
 package tech.flatstone.appliedlogistics.client.gui.builder;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.EnumChatFormatting;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.client.gui.GuiBase;
 import tech.flatstone.appliedlogistics.common.container.builder.ContainerPlanBuilder;

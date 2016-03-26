@@ -37,7 +37,6 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaHeadMessage;
 import tech.flatstone.appliedlogistics.common.util.ItemStackSrc;
-import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -178,12 +177,12 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage {
         }
     }
 
-    public void setMachineItemData(NBTTagCompound machineItemData) {
-        this.machineItemData = machineItemData;
-    }
-
     public NBTTagCompound getMachineItemData() {
         return machineItemData;
+    }
+
+    public void setMachineItemData(NBTTagCompound machineItemData) {
+        this.machineItemData = machineItemData;
     }
 
     public IBlockState getBlockState() {

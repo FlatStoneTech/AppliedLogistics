@@ -88,6 +88,16 @@ public class TileEntityPlanLibrary extends TileEntityMachineBase {
 
     @Override
     public int[] getAccessibleSlotsBySide(EnumFacing side) {
+        if (sidedEnabled) {
+            int[] slots = new int[slotRows * 9];
+
+            for (int i = 0; i < slotRows * 9; i++) {
+                slots[i] = i;
+            }
+
+            return slots;
+        }
+
         return new int[0];
     }
 
@@ -101,6 +111,8 @@ public class TileEntityPlanLibrary extends TileEntityMachineBase {
         super.readFromNBT(nbtTagCompound);
 
         slotRows = nbtTagCompound.getInteger("slotRows");
+        comparatorEnabled = nbtTagCompound.getBoolean("comparatorEnabled");
+        sidedEnabled = nbtTagCompound.getBoolean("sidedEnabled");
     }
 
     @Override
@@ -108,5 +120,17 @@ public class TileEntityPlanLibrary extends TileEntityMachineBase {
         super.writeToNBT(nbtTagCompound);
 
         nbtTagCompound.setInteger("slotRows", slotRows);
+        nbtTagCompound.setBoolean("comparatorEnabled", comparatorEnabled);
+        nbtTagCompound.setBoolean("sidedEnabled", sidedEnabled);
+    }
+
+    @Override
+    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
+        return this.isItemValidForSlot(index, itemStackIn);
+    }
+
+    @Override
+    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
+        return true;
     }
 }
