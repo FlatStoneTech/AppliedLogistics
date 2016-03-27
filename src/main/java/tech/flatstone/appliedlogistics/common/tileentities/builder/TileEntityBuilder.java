@@ -33,7 +33,7 @@ import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
 import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaBodyMessage;
 import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
-import tech.flatstone.appliedlogistics.common.tileentities.TileEntityInventoryBase;
+import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
 import tech.flatstone.appliedlogistics.common.util.*;
@@ -41,7 +41,7 @@ import tech.flatstone.appliedlogistics.common.util.*;
 import java.util.*;
 
 
-public class TileEntityBuilder extends TileEntityInventoryBase implements ITickable, INetworkButton, IWailaBodyMessage {
+public class TileEntityBuilder extends TileEntityMachineBase implements ITickable, INetworkButton, IWailaBodyMessage {
     private InternalInventory inventory = new InternalInventory(this, 56);
     private HashMap<TechLevel, PlanDetails> planDetails = new HashMap<TechLevel, PlanDetails>();
     private String planName = "";
@@ -50,15 +50,6 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
     private int buildingTechLevel = -1;
     private int ticksRemaining = 0;
     private boolean machineWorking = false;
-    private EnumFacing directionFacing = EnumFacing.NORTH;
-
-    public EnumFacing getDirectionFacing() {
-        return directionFacing;
-    }
-
-    public void setDirectionFacing(EnumFacing directionFacing) {
-        this.directionFacing = directionFacing;
-    }
 
     public int getTotalWeight() {
         int weight = 0;
@@ -157,7 +148,6 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
         ticksRemaining = nbtTagCompound.getInteger("ticksRemaining");
         machineWorking = nbtTagCompound.getBoolean("machineWorking");
         buildingTechLevel = nbtTagCompound.getInteger("buildingTechLevel");
-        directionFacing = EnumFacing.byName(nbtTagCompound.getString("directionFacing"));
     }
 
     @Override
@@ -168,7 +158,6 @@ public class TileEntityBuilder extends TileEntityInventoryBase implements ITicka
         nbtTagCompound.setInteger("ticksRemaining", ticksRemaining);
         nbtTagCompound.setBoolean("machineWorking", machineWorking);
         nbtTagCompound.setInteger("buildingTechLevel", buildingTechLevel);
-        nbtTagCompound.setString("directionFacing", directionFacing.getName());
     }
 
     private void updatePlanDetails() {

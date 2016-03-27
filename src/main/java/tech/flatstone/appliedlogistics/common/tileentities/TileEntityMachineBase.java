@@ -20,13 +20,80 @@
 
 package tech.flatstone.appliedlogistics.common.tileentities;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import tech.flatstone.appliedlogistics.common.items.Items;
+
 public abstract class TileEntityMachineBase extends TileEntityInventoryBase {
+    private boolean comparatorEnabled = false;
+    private boolean sidedEnabled = false;
+    private boolean craftingEnabled = false;
+    private boolean redstoneEnabled = false;
+
     public void initMachineData() {
-        // NOOP
+        NBTTagCompound machineItemData = this.getMachineItemData();
+        if (machineItemData != null) {
+            for (int i = 0; i < 27; i++) {
+                if (machineItemData.hasKey("item_" + i)) {
+                    ItemStack item = ItemStack.loadItemStackFromNBT(machineItemData.getCompoundTag("item_" + i));
+
+                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_KIT_REDSTONE_OUTPUT.getItem())))
+                        comparatorEnabled = true;
+
+                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_KIT_AUTOMATION.getItem())))
+                        sidedEnabled = true;
+
+                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_KIT_CRAFTING.getItem())))
+                        craftingEnabled = true;
+
+                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_KIT_REDSTONE_INPUT.getItem())))
+                        redstoneEnabled = true;
+                }
+            }
+        }
+
+        if (machineItemData == null) {
+            // Load Default Details for the machine...
+            comparatorEnabled = false;
+            sidedEnabled = false;
+            craftingEnabled = false;
+            redstoneEnabled = false;
+        }
     }
 
-//    @Override
-//    public void onLoad() {
-//        initMachineData();
-//    }
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTagCompound) {
+        super.readFromNBT(nbtTagCompound);
+
+        comparatorEnabled = nbtTagCompound.getBoolean("comparatorEnabled");
+        sidedEnabled = nbtTagCompound.getBoolean("sidedEnabled");
+        craftingEnabled = nbtTagCompound.getBoolean("craftingEnabled");
+        redstoneEnabled = nbtTagCompound.getBoolean("redstoneEnabled");
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound nbtTagCompound) {
+        super.writeToNBT(nbtTagCompound);
+
+        nbtTagCompound.setBoolean("comparatorEnabled", comparatorEnabled);
+        nbtTagCompound.setBoolean("sidedEnabled", sidedEnabled);
+        nbtTagCompound.setBoolean("craftingEnabled", craftingEnabled);
+        nbtTagCompound.setBoolean("redstoneEnabled", redstoneEnabled);
+    }
+
+    public boolean isComparatorEnabled() {
+        return comparatorEnabled;
+    }
+
+    public boolean isSidedEnabled() {
+        return sidedEnabled;
+    }
+
+    public boolean isCraftingEnabled() {
+        return craftingEnabled;
+    }
+
+    public boolean isRedstoneEnabled() {
+        return redstoneEnabled;
+    }
 }

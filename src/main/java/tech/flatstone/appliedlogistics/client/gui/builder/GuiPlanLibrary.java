@@ -24,7 +24,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.client.gui.GuiBase;
 import tech.flatstone.appliedlogistics.common.container.builder.ContainerPlanLibrary;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanLibrary;
@@ -66,17 +65,13 @@ public class GuiPlanLibrary extends GuiBase {
 
         int iconX = 322;
         if (tileEntity.isComparatorEnabled()) {
-            GL11.glScalef(0.5f, 0.5f, 0.5f);
-            guiHelper.drawItemStack(new ItemStack(Items.comparator), iconX, 12);
+            guiHelper.drawMiniItemStack(new ItemStack(Items.comparator), iconX, 12);
             iconX = iconX - 18;
-            GL11.glScalef(2.0f, 2.0f, 2.0f);
         }
 
         if (tileEntity.isSidedEnabled()) {
-            GL11.glScalef(0.5f, 0.5f, 0.5f);
-            guiHelper.drawItemStack(new ItemStack(Blocks.hopper), iconX, 12);
+            guiHelper.drawMiniItemStack(new ItemStack(Blocks.hopper), iconX, 12);
             iconX = iconX - 18;
-            GL11.glScalef(2.0f, 2.0f, 2.0f);
         }
     }
 

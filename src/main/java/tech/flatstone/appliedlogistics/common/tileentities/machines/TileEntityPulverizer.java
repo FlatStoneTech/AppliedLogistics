@@ -23,22 +23,16 @@ package tech.flatstone.appliedlogistics.common.tileentities.machines;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityInventoryBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
 
 public class TileEntityPulverizer extends TileEntityInventoryBase {
-    InternalInventory inventory = new InternalInventory(this, 4);
+    InternalInventory inventory = new InternalInventory(this, 6);
 
     @Override
     public IInventory getInternalInventory() {
         return inventory;
-    }
-
-    @Override
-    public void saveChanges() {
-
     }
 
     @Override
@@ -56,28 +50,17 @@ public class TileEntityPulverizer extends TileEntityInventoryBase {
         return null;
     }
 
-    @Override
-    public int getField(int id) {
-        return 0;
-    }
+    /**
+     * slot 0 = item to pulverize
+     * slot 1 = item it is working on (internal)
+     * slot 2 = item output (primary)
+     * slot 3 = item output (primary)
+     * slot 4 = item output (secondary)
+     * slot 5 = fuel input (opt)
+     */
 
-    @Override
-    public void setField(int id, int value) {
-
-    }
-
-    @Override
-    public int getFieldCount() {
-        return 0;
-    }
-
-    @Override
-    public void clear() {
-
-    }
-
-    @Override
-    public IChatComponent getDisplayName() {
-        return null;
-    }
+    /**
+     * Stone tier, fuel = side, input = top?
+     * all other tiers, input all sides...
+     */
 }

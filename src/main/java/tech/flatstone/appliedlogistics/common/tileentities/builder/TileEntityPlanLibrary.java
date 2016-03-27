@@ -24,7 +24,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
@@ -32,11 +31,11 @@ import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOp
 public class TileEntityPlanLibrary extends TileEntityMachineBase {
     private InternalInventory inventory = new InternalInventory(this, 100);
     private int slotRows = 0;
-    private boolean comparatorEnabled = false;
-    private boolean sidedEnabled = false;
 
     @Override
     public void initMachineData() {
+        super.initMachineData();
+
         NBTTagCompound machineItemData = this.getMachineItemData();
         if (machineItemData != null) {
             for (int i = 0; i < 27; i++) {
@@ -45,12 +44,6 @@ public class TileEntityPlanLibrary extends TileEntityMachineBase {
 
                     if (ItemStack.areItemsEqual(item, new ItemStack(net.minecraft.init.Blocks.chest)))
                         slotRows = item.stackSize;
-
-                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_KIT_REDSTONE_OUTPUT.getItem())))
-                        comparatorEnabled = true;
-
-                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_KIT_AUTOMATION.getItem())))
-                        sidedEnabled = true;
                 }
             }
         }
@@ -58,21 +51,11 @@ public class TileEntityPlanLibrary extends TileEntityMachineBase {
         if (machineItemData == null) {
             // Load Default Details for the machine...
             slotRows = 1;
-            comparatorEnabled = false;
-            sidedEnabled = false;
         }
     }
 
     public int getSlotRows() {
         return slotRows;
-    }
-
-    public boolean isComparatorEnabled() {
-        return comparatorEnabled;
-    }
-
-    public boolean isSidedEnabled() {
-        return sidedEnabled;
     }
 
     @Override
@@ -87,7 +70,7 @@ public class TileEntityPlanLibrary extends TileEntityMachineBase {
 
     @Override
     public int[] getAccessibleSlotsBySide(EnumFacing side) {
-        if (sidedEnabled) {
+        if (isSidedEnabled()) {
             int[] slots = new int[slotRows * 9];
 
             for (int i = 0; i < slotRows * 9; i++) {
@@ -110,8 +93,6 @@ public class TileEntityPlanLibrary extends TileEntityMachineBase {
         super.readFromNBT(nbtTagCompound);
 
         slotRows = nbtTagCompound.getInteger("slotRows");
-        comparatorEnabled = nbtTagCompound.getBoolean("comparatorEnabled");
-        sidedEnabled = nbtTagCompound.getBoolean("sidedEnabled");
     }
 
     @Override
@@ -119,8 +100,6 @@ public class TileEntityPlanLibrary extends TileEntityMachineBase {
         super.writeToNBT(nbtTagCompound);
 
         nbtTagCompound.setInteger("slotRows", slotRows);
-        nbtTagCompound.setBoolean("comparatorEnabled", comparatorEnabled);
-        nbtTagCompound.setBoolean("sidedEnabled", sidedEnabled);
     }
 
     @Override

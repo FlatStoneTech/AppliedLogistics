@@ -24,7 +24,6 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,22 +33,23 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.world.World;
+import net.minecraft.util.EnumFacing;
 import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaHeadMessage;
-import tech.flatstone.appliedlogistics.common.util.ItemStackSrc;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class TileEntityBase extends TileEntity implements IWailaHeadMessage {
-    private static final HashMap<Class, ItemStackSrc> myItem = new HashMap();
     private String customName;
     private int renderedFragment = 0;
     private NBTTagCompound machineItemData;
+    private EnumFacing directionFacing = null;
 
-    public static void registerTileItem(Class c, ItemStackSrc wat) {
-        myItem.put(c, wat);
+    public EnumFacing getDirectionFacing() {
+        return directionFacing;
+    }
+
+    public void setDirectionFacing(EnumFacing directionFacing) {
+        this.directionFacing = directionFacing;
     }
 
     @Override
@@ -100,26 +100,6 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage {
             this.invalidate();
     }
 
-    public void getDrops(World w, int x, int y, int z, ArrayList<ItemStack> drops) {
-        if (this instanceof IInventory) {
-            IInventory inventory = (IInventory) this;
-            for (int l = 0; l < inventory.getSizeInventory(); l++) {
-                ItemStack itemStack = inventory.getStackInSlot(l);
-                if (itemStack != null) {
-                    drops.add(itemStack);
-                }
-            }
-        }
-    }
-
-    protected ItemStack getItemFromTile(Object object) {
-        ItemStackSrc itemStackSrc = myItem.get(object.getClass());
-        if (itemStackSrc == null) {
-            return null;
-        }
-        return itemStackSrc.stack(1);
-    }
-
     public TileEntity getTile() {
         return this;
     }
@@ -151,30 +131,23 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage {
     public void writeToNBT(NBTTagCompound nbtTagCompound) {
         super.writeToNBT(nbtTagCompound);
 
-        if (this.customName != null) {
+        if (this.customName != null)
             nbtTagCompound.setString("CustomName", this.customName);
-        }
 
-        if (this.machineItemData != null) {
+        if (this.machineItemData != null)
             nbtTagCompound.setTag("MachineItemData", machineItemData);
-        }
+
+        if (this.directionFacing != null)
+            nbtTagCompound.setString("directionFacing", directionFacing.getName());
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound) {
         super.readFromNBT(nbtTagCompound);
 
-        if (nbtTagCompound.hasKey("CustomName")) {
-            this.customName = nbtTagCompound.getString("CustomName");
-        } else {
-            this.customName = null;
-        }
-
-        if (nbtTagCompound.hasKey("MachineItemData")) {
-            this.machineItemData = nbtTagCompound.getCompoundTag("MachineItemData");
-        } else {
-            this.machineItemData = null;
-        }
+        this.customName = nbtTagCompound.hasKey("CustomName") ? nbtTagCompound.getString("CustomName") : null;
+        this.machineItemData = nbtTagCompound.hasKey("MachineItemData") ? nbtTagCompound.getCompoundTag("MachineItemData") : null;
+        this.directionFacing = nbtTagCompound.hasKey("directionFacing") ? EnumFacing.byName(nbtTagCompound.getString("directionFacing")) : null;
     }
 
     public NBTTagCompound getMachineItemData() {
