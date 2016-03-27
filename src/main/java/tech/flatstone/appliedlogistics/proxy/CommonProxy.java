@@ -174,4 +174,9 @@ public abstract class CommonProxy implements IProxy {
     public void registerGUIs() {
         NetworkRegistry.INSTANCE.registerGuiHandler(AppliedLogistics.instance, new GuiHandler());
     }
+
+    @Override
+    public void registerRenderers() {
+
+    }
 }

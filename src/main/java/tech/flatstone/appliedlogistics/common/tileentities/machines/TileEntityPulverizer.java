@@ -26,8 +26,10 @@ import net.minecraft.util.EnumFacing;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityInventoryBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
+import tech.flatstone.appliedlogistics.common.util.ICrankable;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
-public class TileEntityPulverizer extends TileEntityInventoryBase {
+public class TileEntityPulverizer extends TileEntityInventoryBase implements ICrankable {
     InternalInventory inventory = new InternalInventory(this, 6);
 
     @Override
@@ -48,6 +50,16 @@ public class TileEntityPulverizer extends TileEntityInventoryBase {
     @Override
     public ItemStack removeStackFromSlot(int index) {
         return null;
+    }
+
+    @Override
+    public void doCrank() {
+        LogHelper.info(">>> Hey I Cranked...");
+    }
+
+    @Override
+    public boolean canAttachCrank() {
+        return true;
     }
 
     /**

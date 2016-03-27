@@ -22,11 +22,11 @@ package tech.flatstone.appliedlogistics.common.grid;
 
 import java.util.UUID;
 
-public class uuidPair {
+public class UUIDPair {
     private UUID uuid1;
     private UUID uuid2;
 
-    public uuidPair(UUID uuid1, UUID uuid2) {
+    public UUIDPair(UUID uuid1, UUID uuid2) {
         this.uuid1 = uuid1;
         this.uuid2 = uuid2;
     }

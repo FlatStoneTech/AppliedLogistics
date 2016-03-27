@@ -21,12 +21,83 @@
 package tech.flatstone.appliedlogistics.common.blocks.misc;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
+import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCrank;
+import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
+import tech.flatstone.appliedlogistics.common.util.ICrankable;
+import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
+import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-public class BlockCrank extends BlockBase {
+public class BlockCrank extends BlockBase implements IProvideRecipe, IBlockRenderer {
     public BlockCrank() {
         super(Material.wood);
         this.setTileEntity(TileEntityCrank.class);
+    }
+
+    @Override
+    public boolean isFullCube() {
+        return false;
+    }
+
+    @Override
+    public boolean isOpaqueCube() {
+        return false;
+    }
+
+    @Override
+    public int getRenderType() {
+        return 2;
+    }
+
+    @Override
+    public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos) {
+        //setBlockBounds(.25f, 0, .25f, .25f, .75f, .25f);
+        setBlockBounds(7 / 16f, 0, 7 / 16f, 9 / 16f, .75f, 9 / 16f);
+    }
+
+    @Override
+    public void RegisterRecipes() {
+
+    }
+
+    @Override
+    public void registerBlockRenderer() {
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(ModInfo.MOD_ID + ":" + "misc_crank", "inventory"));
+    }
+
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+        //todo: check not fake player
+        //todo: check that there is work to do
+
+        TileEntityCrank tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityCrank.class);
+        if (tileEntity == null)
+            return true;
+
+        tileEntity.doCrank();
+        return true;
+    }
+
+    @Override
+    public boolean canPlaceBlockAt(World worldIn, BlockPos pos) {
+        TileEntity tileEntity = TileHelper.getTileEntity(worldIn, pos.down(), TileEntity.class);
+        if (tileEntity == null)
+            return false;
+
+        if (!(tileEntity instanceof ICrankable))
+            return false;
+
+        return ((ICrankable) tileEntity).canAttachCrank();
     }
 }

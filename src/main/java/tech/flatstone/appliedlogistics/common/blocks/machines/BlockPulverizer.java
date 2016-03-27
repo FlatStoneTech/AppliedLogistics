@@ -25,6 +25,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -32,8 +33,10 @@ import net.minecraftforge.client.model.ModelLoader;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.BlockMachineBase;
+import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityPulverizer;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
+import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 public class BlockPulverizer extends BlockMachineBase implements IBlockRenderer {
     public BlockPulverizer() {
@@ -43,6 +46,10 @@ public class BlockPulverizer extends BlockMachineBase implements IBlockRenderer 
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+        TileEntityPulverizer tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityPulverizer.class);
+        if (tileEntity != null && tileEntity.canAttachCrank() && ItemStack.areItemsEqual(playerIn.getCurrentEquippedItem(), new ItemStack(Blocks.BLOCK_MISC_CRANK.getBlock())))
+            return false;
+
         if (worldIn.isRemote)
             return true;
 

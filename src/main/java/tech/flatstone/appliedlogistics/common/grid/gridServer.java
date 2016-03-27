@@ -32,23 +32,23 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CyclicBarrier;
 
-class gridServer implements Runnable {
-    private ArrayList<uuidPair> vertexMissing;
+class GridServer implements Runnable {
+    private ArrayList<UUIDPair> vertexMissing;
     private DirectedAcyclicGraph<UUID, FilteredEdge> graph;
     private ConcurrentLinkedQueue<UUID> vertexQueue;
-    private ConcurrentLinkedQueue<uuidPair> edgeQueue;
+    private ConcurrentLinkedQueue<UUIDPair> edgeQueue;
     private CyclicBarrier barrier;
     private LinkedList<TransportContainer> activeCargo;
     private ConcurrentLinkedQueue<TransportContainer> incomingCargo;
     private ConcurrentLinkedQueue<TransportContainer> outgoingCargo;
 
-    public gridServer() {
+    public GridServer() {
         graph = new DirectedAcyclicGraph<UUID, FilteredEdge>(
                 new ClassBasedEdgeFactory<UUID, FilteredEdge>(FilteredEdge.class)
         );
 
         vertexQueue = new ConcurrentLinkedQueue<UUID>();
-        edgeQueue = new ConcurrentLinkedQueue<uuidPair>();
+        edgeQueue = new ConcurrentLinkedQueue<UUIDPair>();
 
         incomingCargo = new ConcurrentLinkedQueue<TransportContainer>();
         activeCargo = new LinkedList<TransportContainer>();
@@ -61,7 +61,7 @@ class gridServer implements Runnable {
 
         barrier = new CyclicBarrier(2);
 
-        vertexMissing = new ArrayList<uuidPair>();
+        vertexMissing = new ArrayList<UUIDPair>();
     }
 
     public void addCargo(TransportContainer objectContainer) {
@@ -114,7 +114,7 @@ class gridServer implements Runnable {
         }
 
         //ingest edge queue
-        for (uuidPair pair : edgeQueue) {
+        for (UUIDPair pair : edgeQueue) {
             if ((graph.containsVertex(pair.getUuid1())) && (graph.containsVertex(pair.getUuid2()))) {
                 graph.addEdge(pair.getUuid1(), pair.getUuid2());
             } else {
@@ -132,7 +132,7 @@ class gridServer implements Runnable {
     }
 
     boolean addEdge(UUID source, UUID destination) {
-        return !((source == null) || (destination == null)) && edgeQueue.offer(new uuidPair(source, destination));
+        return !((source == null) || (destination == null)) && edgeQueue.offer(new UUIDPair(source, destination));
     }
 
     FilteredEdge getEdge(UUID source, UUID destination) {

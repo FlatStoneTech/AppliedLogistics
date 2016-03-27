@@ -20,5 +20,13 @@
 
 package tech.flatstone.appliedlogistics.proxy;
 
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import tech.flatstone.appliedlogistics.client.render.RenderCrank;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCrank;
+
 public class ClientProxy extends CommonProxy {
+    @Override
+    public void registerRenderers() {
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrank.class, new RenderCrank());
+    }
 }

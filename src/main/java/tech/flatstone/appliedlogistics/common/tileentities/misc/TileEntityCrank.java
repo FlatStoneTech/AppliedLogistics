@@ -20,15 +20,77 @@
 
 package tech.flatstone.appliedlogistics.common.tileentities.misc;
 
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
+import tech.flatstone.appliedlogistics.common.util.ICrankable;
+import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 public class TileEntityCrank extends TileEntityBase implements ITickable {
-    private final int ticksPerRotation = 20;
-    private float rotation;
+    private float rotation = 0;
+    private boolean rotating = false;
 
     @Override
     public void update() {
+        if (rotating) {
+            rotation += 15;
 
+            if (rotation == 180) {
+                rotation = 180;
+                rotating = false;
+                crankDone();
+            }
+            if (rotation == 360) {
+                rotation = 0;
+                rotating = false;
+                crankDone();
+            }
+        }
+    }
+
+    public float getRotation() {
+        return rotation;
+    }
+
+    public boolean isRotating() {
+        return rotating;
+    }
+
+    public void crankDone() {
+        TileEntity tileEntity = TileHelper.getTileEntity(this.worldObj, this.pos.down(), TileEntity.class);
+        if (tileEntity != null && tileEntity instanceof ICrankable && !worldObj.isRemote)
+            ((ICrankable) tileEntity).doCrank();
+    }
+
+    @Override
+    public boolean hasFastRenderer() {
+        return true;
+    }
+
+    public void doCrank() {
+        if (rotating == true)
+            return;
+
+        if (worldObj.isRemote)
+            return;
+
+        rotating = true;
+        this.markForUpdate();
+        this.markDirty();
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound nbtTagCompound) {
+        super.writeToNBT(nbtTagCompound);
+
+        nbtTagCompound.setBoolean("rotating", this.rotating);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTagCompound) {
+        super.readFromNBT(nbtTagCompound);
+
+        this.rotating = nbtTagCompound.getBoolean("rotating");
     }
 }

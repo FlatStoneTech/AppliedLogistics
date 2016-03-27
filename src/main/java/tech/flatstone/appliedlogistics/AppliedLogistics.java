@@ -67,6 +67,8 @@ public class AppliedLogistics {
 
         proxy.registerEvents();
 
+        proxy.registerRenderers();
+
         IntegrationsManager.instance().index();
 
         for (int i = 0; i < EnumOres.values().length; i++) {

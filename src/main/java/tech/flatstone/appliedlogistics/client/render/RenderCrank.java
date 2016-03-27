@@ -18,54 +18,49 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.proxy;
+package tech.flatstone.appliedlogistics.client.render;
 
-public interface IProxy {
-    /**
-     * Register Blocks
-     */
-    void registerBlocks();
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockModelRenderer;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.VertexFormatElement;
+import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraftforge.client.model.animation.FastTESR;
+import tech.flatstone.appliedlogistics.client.util.ModelTransformer;
+import tech.flatstone.appliedlogistics.common.blocks.Blocks;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCrank;
 
-    /**
-     * Register Items
-     */
-    void registerItems();
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector4f;
 
-    /**
-     * Register Ore Dictionary
-     */
-    void registerOreDict();
+public class RenderCrank extends FastTESR<TileEntityCrank> {
+    @Override
+    public void renderTileEntityFast(final TileEntityCrank te, double x, double y, double z, final float partialTicks, int destroyStage, WorldRenderer worldRenderer) {
+        IBakedModel origModel = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(Blocks.BLOCK_MISC_CRANK.getBlock().getDefaultState());
 
-    /**
-     * Register Furnace Recipes
-     */
-    void registerFurnaceRecipes();
+        worldRenderer.setTranslation(-te.getPos().getX() + x, -te.getPos().getY() + y, -te.getPos().getZ() + z);
 
-    /**
-     * Register Hammer Recipes
-     */
-    void registerHammerRecipes();
+        IBakedModel model = ModelTransformer.transform(origModel, new ModelTransformer.IVertexTransformer() {
+            @Override
+            public float[] transform(VertexFormatElement.EnumType type, VertexFormatElement.EnumUsage usage, float... data) {
+                if (usage == VertexFormatElement.EnumUsage.POSITION) {
+                    Vector4f vec = new Vector4f(data[0] - 0.5F, data[1] - 0.5F, data[2] - 0.5F, 0);
+                    Matrix4f mat = new Matrix4f();
+                    mat.setIdentity();
+                    if (te.isRotating())
+                        mat.rotY((float) Math.toRadians(te.getRotation() + 15 * partialTicks));
+                    if (!te.isRotating())
+                        mat.rotY((float) Math.toRadians(te.getRotation()));
+                    mat.transform(vec);
+                    data[0] = vec.x + 0.5F;
+                    data[1] = vec.y + 0.5F;
+                    data[2] = vec.z + 0.5F;
+                }
+                return data;
+            }
+        }, ModelTransformer.IVertexFormatTransformer.COMPUTE_NORMALS, worldRenderer.getVertexFormat());
 
-    /**
-     * Register Recipes
-     */
-    void registerRecipes();
-
-    /**
-     * Register Events
-     */
-    void registerEvents();
-
-    /**
-     * Register Blueprints
-     */
-    void registerBlueprints();
-
-    /**
-     * Register GUIs
-     */
-    void registerGUIs();
-
-    void registerRenderers();
+        BlockModelRenderer modelRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer();
+        modelRenderer.renderModel(te.getWorld(), model, Blocks.BLOCK_MISC_CRANK.getBlock().getDefaultState(), te.getPos(), worldRenderer);
+    }
 }
-

@@ -27,11 +27,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class transportGrid implements ITransport {
-    private gridServer graphServer;
+public class TransportGrid implements ITransport {
+    private GridServer graphServer;
     private Map<UUID, UUID> exitNodeMap;
 
-    public transportGrid() {
+    public TransportGrid() {
         exitNodeMap = new HashMap<UUID, UUID>();
     }
 
