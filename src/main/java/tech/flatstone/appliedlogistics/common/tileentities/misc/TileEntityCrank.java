@@ -18,11 +18,17 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics;
+package tech.flatstone.appliedlogistics.common.tileentities.misc;
 
-public class ModMessages {
-    public static final String MESSAGE_PLAN_INVALID = "plan.invalid";
-    public static final String MESSAGE_PLAN_INSERT = "plan.insert";
-    public static final String MESSAGE_BUILDER_WEIGHT = "plan.builder.weight";
-    public static final String MESSAGE_BUILDER_TIME = "plan.builder.time";
+import net.minecraft.util.ITickable;
+import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
+
+public class TileEntityCrank extends TileEntityBase implements ITickable {
+    private final int ticksPerRotation = 20;
+    private float rotation;
+
+    @Override
+    public void update() {
+
+    }
 }

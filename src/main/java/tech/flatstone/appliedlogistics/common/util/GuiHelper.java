@@ -142,6 +142,16 @@ public class GuiHelper extends Gui {
         renderItem.zLevel = 0.0f;
     }
 
+    public void drawMiniItemStack(ItemStack itemStack, int x, int y) {
+        int[][] savedGLState = OpenGLHelper.saveGLState(new int[]{GL11.GL_ALPHA_TEST, GL11.GL_LIGHTING});
+        GL11.glPushMatrix();
+        GL11.glScalef(0.5f, 0.5f, 0.5f);
+        drawItemStack(itemStack, x, y);
+        GL11.glScalef(2.0f, 2.0f, 2.0f);
+        GL11.glPopMatrix();
+        OpenGLHelper.restoreGLState(savedGLState);
+    }
+
     /**
      * Draws a slot that is disabled...
      *

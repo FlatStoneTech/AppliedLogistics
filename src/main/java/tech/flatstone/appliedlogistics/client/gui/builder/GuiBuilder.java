@@ -24,6 +24,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -170,6 +172,22 @@ public class GuiBuilder extends GuiBase {
                     Math.round(timePercent)
             );
             guiHelper.drawCenteredStringWithShadow(40, 26, 126, timeLabel, colorFont);
+        }
+
+        int iconX = 322;
+        if (tileEntity.isComparatorEnabled()) {
+            guiHelper.drawMiniItemStack(new ItemStack(Items.comparator), iconX, 12);
+            iconX = iconX - 18;
+        }
+
+        if (tileEntity.isRedstoneEnabled()) {
+            guiHelper.drawMiniItemStack(new ItemStack(Items.redstone), iconX, 12);
+            iconX = iconX - 18;
+        }
+
+        if (tileEntity.isSidedEnabled()) {
+            guiHelper.drawMiniItemStack(new ItemStack(Blocks.hopper), iconX, 12);
+            iconX = iconX - 18;
         }
     }
 

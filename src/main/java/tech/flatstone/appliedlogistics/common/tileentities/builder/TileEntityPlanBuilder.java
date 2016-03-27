@@ -38,41 +38,10 @@ import java.util.UUID;
 public class TileEntityPlanBuilder extends TileEntityMachineBase implements INetworkButton {
     InternalInventory inventory = new InternalInventory(this, 2);
     private int selectedPlan = 0;
-    private boolean comparatorEnabled = false;
-    private boolean sidedEnabled = false;
-    private boolean craftingEnabled = false;
-    private boolean redstoneEnabled = false;
 
     @Override
     public void initMachineData() {
-        NBTTagCompound machineItemData = this.getMachineItemData();
-        if (machineItemData != null) {
-            for (int i = 0; i < 27; i++) {
-                if (machineItemData.hasKey("item_" + i)) {
-                    ItemStack item = ItemStack.loadItemStackFromNBT(machineItemData.getCompoundTag("item_" + i));
 
-                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_KIT_REDSTONE_OUTPUT.getItem())))
-                        comparatorEnabled = true;
-
-                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_KIT_AUTOMATION.getItem())))
-                        sidedEnabled = true;
-
-                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_KIT_CRAFTING.getItem())))
-                        craftingEnabled = true;
-
-                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_KIT_REDSTONE_INPUT.getItem())))
-                        redstoneEnabled = true;
-                }
-            }
-        }
-
-        if (machineItemData == null) {
-            // Load Default Details for the machine...
-            comparatorEnabled = false;
-            sidedEnabled = false;
-            craftingEnabled = false;
-            redstoneEnabled = false;
-        }
     }
 
     @Override
@@ -80,10 +49,6 @@ public class TileEntityPlanBuilder extends TileEntityMachineBase implements INet
         super.readFromNBT(nbtTagCompound);
 
         selectedPlan = nbtTagCompound.getInteger("selectedPlan");
-        comparatorEnabled = nbtTagCompound.getBoolean("comparatorEnabled");
-        sidedEnabled = nbtTagCompound.getBoolean("sidedEnabled");
-        craftingEnabled = nbtTagCompound.getBoolean("craftingEnabled");
-        redstoneEnabled = nbtTagCompound.getBoolean("redstoneEnabled");
     }
 
     @Override
@@ -91,10 +56,6 @@ public class TileEntityPlanBuilder extends TileEntityMachineBase implements INet
         super.writeToNBT(nbtTagCompound);
 
         nbtTagCompound.setInteger("selectedPlan", selectedPlan);
-        nbtTagCompound.setBoolean("comparatorEnabled", comparatorEnabled);
-        nbtTagCompound.setBoolean("sidedEnabled", sidedEnabled);
-        nbtTagCompound.setBoolean("craftingEnabled", craftingEnabled);
-        nbtTagCompound.setBoolean("redstoneEnabled", redstoneEnabled);
     }
 
     @Override

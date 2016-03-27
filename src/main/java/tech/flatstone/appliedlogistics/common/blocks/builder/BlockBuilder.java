@@ -96,6 +96,7 @@ public class BlockBuilder extends BlockMachineBase implements IProvideRecipe, IB
             tileEntity.setDirectionFacing(placer.getHorizontalFacing().getOpposite());
         }
 
+        super.onBlockPlacedBy(world, blockPos, state, placer, itemStack);
     }
 
     @Override

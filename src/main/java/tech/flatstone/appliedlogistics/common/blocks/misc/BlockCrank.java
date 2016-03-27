@@ -18,33 +18,15 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.util;
+package tech.flatstone.appliedlogistics.common.blocks.misc;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.block.material.Material;
+import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCrank;
 
-public class ItemStackSrc {
-    public final Item item;
-    public final Block block;
-    public final int damage;
-
-    public ItemStackSrc(Item i, int dmg) {
-        this.block = null;
-        this.item = i;
-        this.damage = dmg;
-    }
-
-    public ItemStackSrc(Block b, int dmg) {
-        this.block = b;
-        this.item = null;
-        this.damage = dmg;
-    }
-
-    public ItemStack stack(int i) {
-        if (this.block != null) {
-            return new ItemStack(this.block, i, this.damage);
-        }
-        return new ItemStack(this.item, i, this.damage);
+public class BlockCrank extends BlockBase {
+    public BlockCrank() {
+        super(Material.wood);
+        this.setTileEntity(TileEntityCrank.class);
     }
 }
