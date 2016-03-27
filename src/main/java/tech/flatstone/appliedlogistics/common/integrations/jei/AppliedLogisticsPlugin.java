@@ -24,6 +24,9 @@ import mezz.jei.api.BlankModPlugin;
 import mezz.jei.api.IJeiHelpers;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
+import tech.flatstone.appliedlogistics.common.integrations.jei.Builder.BuilderCategory;
+import tech.flatstone.appliedlogistics.common.integrations.jei.Builder.BuilderRecipeHandler;
+import tech.flatstone.appliedlogistics.common.integrations.jei.Builder.BuilderRecipeMaker;
 import tech.flatstone.appliedlogistics.common.integrations.jei.PlanBuilder.PlanBuilderCategory;
 import tech.flatstone.appliedlogistics.common.integrations.jei.PlanBuilder.PlanBuilderRecipeHandler;
 import tech.flatstone.appliedlogistics.common.integrations.jei.PlanBuilder.PlanBuilderRecipeMaker;
@@ -38,11 +41,12 @@ public class AppliedLogisticsPlugin extends BlankModPlugin {
     public void register(@Nonnull IModRegistry registry) {
         jeiHelper = registry.getJeiHelpers();
 
-        registry.addRecipeCategories(new PlanBuilderCategory());
+        registry.addRecipeCategories(new PlanBuilderCategory(), new BuilderCategory());
 
-        registry.addRecipeHandlers(new PlanBuilderRecipeHandler());
+        registry.addRecipeHandlers(new PlanBuilderRecipeHandler(), new BuilderRecipeHandler());
 
         registry.addRecipes(PlanBuilderRecipeMaker.getRecipes());
+        registry.addRecipes(BuilderRecipeMaker.getRecipes());
 
         super.register(registry);
     }

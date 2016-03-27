@@ -48,6 +48,6 @@ public class BuilderRecipeHandler implements IRecipeHandler<BuilderRecipeJEI> {
 
     @Override
     public boolean isRecipeValid(@Nonnull BuilderRecipeJEI builderRecipeJEI) {
-        return false;
+        return builderRecipeJEI.getInputs().size() > 1 && builderRecipeJEI.getOutputs().size() > 0;
     }
 }

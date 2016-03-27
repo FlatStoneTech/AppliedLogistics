@@ -18,6 +18,7 @@ label.appliedlogistics.time_left=Time Left
 label.appliedlogistics.weight_left=Weight Left
 label.appliedlogistics.build=Build
 label.appliedlogistics.plan=Plan
+label.appliedlogistics.tech_level=Tech Level
 label.appliedlogistics.tech_level.stone=Stone
 label.appliedlogistics.tech_level.bronze=Bronze
 label.appliedlogistics.tech_level.steel=Steel
@@ -159,3 +160,4 @@ itemGroup.appliedlogistics.plans=Applied Logistics Plans
 #########################################
 
 jei.appliedlogistics.category.plan_builder=Plan Builder
+jei.appliedlogistics.category.builder=Builder

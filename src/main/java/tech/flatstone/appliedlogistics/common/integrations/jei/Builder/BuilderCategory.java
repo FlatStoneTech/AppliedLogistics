@@ -25,6 +25,7 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.integrations.jei.AppliedLogisticsPlugin;
@@ -38,7 +39,7 @@ public class BuilderCategory implements IRecipeCategory {
     private final String localizedName = LanguageHelper.JEI.translateMessage("category.builder");
 
     @Nonnull
-    private final IDrawable background = AppliedLogisticsPlugin.jeiHelper.getGuiHelper().createDrawable(new ResourceLocation(ModInfo.MOD_ID + ":textures/gui/jei/builder.png"), 0, 0, 162, 82);
+    private final IDrawable background = AppliedLogisticsPlugin.jeiHelper.getGuiHelper().createDrawable(new ResourceLocation(ModInfo.MOD_ID + ":textures/gui/jei/builder.png"), 0, 0, 162, 85);
 
     @Nonnull
     @Override
@@ -70,6 +71,28 @@ public class BuilderCategory implements IRecipeCategory {
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayout iRecipeLayout, @Nonnull IRecipeWrapper iRecipeWrapper) {
+        iRecipeLayout.getItemStacks().init(0, true, 0, 5);
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 9; j++) {
+                iRecipeLayout.getItemStacks().init(i * 9 + j + 1, true, j * 18, (i * 18) + 31);
+            }
+        }
+        iRecipeLayout.getItemStacks().init(29, false, 139, 5);
 
+        if (iRecipeWrapper instanceof BuilderRecipeJEI) {
+            BuilderRecipeJEI builderRecipeJEI = (BuilderRecipeJEI) iRecipeWrapper;
+            iRecipeLayout.getItemStacks().set(0, (ItemStack) builderRecipeJEI.getInputs().get(0));
+
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 9; j++) {
+                    if (builderRecipeJEI.getInputs().size() <= (i * 9 + j + 1))
+                        break;
+                    ItemStack item = (ItemStack) builderRecipeJEI.getInputs().get(i * 9 + j + 1);
+                    iRecipeLayout.getItemStacks().set(i * 9 + j + 1, item);
+                }
+            }
+
+            iRecipeLayout.getItemStacks().set(29, (ItemStack) builderRecipeJEI.getOutputs().get(0));
+        }
     }
 }

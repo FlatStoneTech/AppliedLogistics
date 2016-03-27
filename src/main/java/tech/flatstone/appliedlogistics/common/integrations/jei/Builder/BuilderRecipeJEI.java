@@ -21,7 +21,51 @@
 package tech.flatstone.appliedlogistics.common.integrations.jei.Builder;
 
 import mezz.jei.api.recipe.BlankRecipeWrapper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.item.ItemStack;
+import tech.flatstone.appliedlogistics.api.features.TechLevel;
+import tech.flatstone.appliedlogistics.common.util.GuiHelper;
+import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class BuilderRecipeJEI extends BlankRecipeWrapper {
+    @Nonnull
+    private final List<ItemStack> inputs;
 
+    @Nonnull
+    private final TechLevel techLevel;
+
+    @Nonnull
+    private final ItemStack output;
+
+    GuiHelper guiHelper = new GuiHelper();
+
+    public BuilderRecipeJEI(@Nonnull List<ItemStack> inputs, @Nonnull ItemStack plan, @Nonnull TechLevel techLevel, @Nonnull ItemStack output) {
+        this.inputs = new ArrayList<ItemStack>();
+        this.inputs.add(plan);
+        this.inputs.addAll(inputs);
+        this.techLevel = techLevel;
+        this.output = output;
+    }
+
+    @Nonnull
+    @Override
+    public List getInputs() {
+        return inputs;
+    }
+
+    @Nonnull
+    @Override
+    public List getOutputs() {
+        return Collections.singletonList(output);
+    }
+
+    @Override
+    public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
+        guiHelper.drawCenteredString(0, 10, 152, LanguageHelper.LABEL.translateMessage("tech_level") + ": " + LanguageHelper.LABEL.translateMessage("tech_level." + techLevel.getName()), 4210752);
+    }
 }
