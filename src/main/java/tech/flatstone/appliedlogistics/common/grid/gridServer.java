@@ -33,12 +33,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CyclicBarrier;
 
 class gridServer implements Runnable {
-    ArrayList<uuidPair> vertexMissing;
+    private ArrayList<uuidPair> vertexMissing;
     private DirectedAcyclicGraph<UUID, FilteredEdge> graph;
     private ConcurrentLinkedQueue<UUID> vertexQueue;
     private ConcurrentLinkedQueue<uuidPair> edgeQueue;
     private CyclicBarrier barrier;
-    private LinkedList activeObjects;
+    private LinkedList<TransportContainer> activeCargo;
+    private ConcurrentLinkedQueue<TransportContainer> incomingCargo;
+    private ConcurrentLinkedQueue<TransportContainer> outgoingCargo;
 
     public gridServer() {
         graph = new DirectedAcyclicGraph<UUID, FilteredEdge>(
@@ -47,7 +49,9 @@ class gridServer implements Runnable {
 
         vertexQueue = new ConcurrentLinkedQueue<UUID>();
         edgeQueue = new ConcurrentLinkedQueue<uuidPair>();
-        activeObjects = new LinkedList();
+
+        incomingCargo = new ConcurrentLinkedQueue<TransportContainer>();
+        activeCargo = new LinkedList<TransportContainer>();
 
         if (vertexQueue == null)
             throw new NullPointerException();
@@ -58,6 +62,10 @@ class gridServer implements Runnable {
         barrier = new CyclicBarrier(2);
 
         vertexMissing = new ArrayList<uuidPair>();
+    }
+
+    public void addCargo(TransportContainer objectContainer) {
+        this.incomingCargo.add(objectContainer);
     }
 
     @Override
@@ -114,7 +122,6 @@ class gridServer implements Runnable {
                 LogHelper.debug("A vertex for edge:" + pair.getUuid1() + " -> " + pair.getUuid2() + " does not exist");
             }
         }
-
 
         //update grid objects
         //ingest new objects

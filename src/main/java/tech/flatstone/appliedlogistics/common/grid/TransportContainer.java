@@ -27,6 +27,7 @@ public class TransportContainer {
     private Object load;
 
     private UUID source;
+    private UUID currentNode;
     private UUID destination;
 
     public TransportContainer(UUID source, String unlocalizedName, Object load) {
@@ -35,12 +36,24 @@ public class TransportContainer {
         this.unlocalizedName = unlocalizedName;
     }
 
+    public UUID getCurrentNode() {
+        return currentNode;
+    }
+
+    public void setCurrentNode(UUID currentNode) {
+        this.currentNode = currentNode;
+    }
+
     public String getUnlocalizedName() {
         return unlocalizedName;
     }
 
     public UUID getDestination() {
         return destination;
+    }
+
+    public void setDestination(UUID destination) {
+        this.destination = destination;
     }
 
     public UUID getSource() {
