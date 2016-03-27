@@ -20,12 +20,11 @@
 
 package tech.flatstone.appliedlogistics.common.tileentities.builder;
 
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
@@ -44,13 +43,13 @@ public class TileEntityPlanLibrary extends TileEntityMachineBase {
                 if (machineItemData.hasKey("item_" + i)) {
                     ItemStack item = ItemStack.loadItemStackFromNBT(machineItemData.getCompoundTag("item_" + i));
 
-                    if (ItemStack.areItemsEqual(item, new ItemStack(Blocks.chest)))
+                    if (ItemStack.areItemsEqual(item, new ItemStack(net.minecraft.init.Blocks.chest)))
                         slotRows = item.stackSize;
 
-                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.comparator)))
+                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_KIT_REDSTONE_OUTPUT.getItem())))
                         comparatorEnabled = true;
 
-                    if (ItemStack.areItemsEqual(item, new ItemStack(Blocks.hopper)))
+                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_KIT_AUTOMATION.getItem())))
                         sidedEnabled = true;
                 }
             }

@@ -6,6 +6,9 @@
     "name=gold": {
       "model": "gold_block"
     },
+    "name=diamond": {
+      "model": "diamond_block"
+    },
     "name=copper": {
       "model": "appliedlogistics:materials/block/copper"
     },
@@ -35,6 +38,12 @@
     },
     "name=steel": {
       "model": "appliedlogistics:materials/block/steel"
+    },
+    "name=wood": {
+      "model": "stone"
+    },
+    "name=stone": {
+      "model": "stone"
     }
   }
 }

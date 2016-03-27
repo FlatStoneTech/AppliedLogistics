@@ -153,3 +153,9 @@ itemGroup.appliedlogistics.general=Applied Logistics Items
 itemGroup.appliedlogistics.ores=Applied Logistics Ores
 itemGroup.appliedlogistics.machines=Applied Logistics Machines
 itemGroup.appliedlogistics.plans=Applied Logistics Plans
+
+#########################################
+###               JEI                 ###
+#########################################
+
+jei.appliedlogistics.category.plan_builder=Plan Builder

@@ -25,7 +25,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import tech.flatstone.appliedlogistics.common.AppliedLogisticsCreativeTabs;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.common.blocks.builder.BlockBuilder;
 import tech.flatstone.appliedlogistics.common.blocks.builder.BlockPlanBuilder;
 import tech.flatstone.appliedlogistics.common.blocks.builder.BlockPlanLibrary;

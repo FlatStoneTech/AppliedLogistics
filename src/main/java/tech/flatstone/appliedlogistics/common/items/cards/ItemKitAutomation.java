@@ -18,59 +18,39 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common;
+package tech.flatstone.appliedlogistics.common.items.cards;
 
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.common.items.ItemBase;
 import tech.flatstone.appliedlogistics.common.items.Items;
+import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
+import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 
-public class AppliedLogisticsCreativeTabs {
-    public static final CreativeTabs tabGeneral = new CreativeTabs(ModInfo.MOD_ID) {
-        @Override
-        public Item getTabIconItem() {
-            return Items.ITEM_TOOL_HAMMER.item;
-        }
+public class ItemKitAutomation extends ItemBase implements IProvideRecipe, IItemRenderer {
+    public ItemKitAutomation() {
+        this.setMaxStackSize(8);
+    }
 
-        @Override
-        public String getTabLabel() {
-            return ModInfo.MOD_ID + ".general";
-        }
-    };
+    @Override
+    public void registerItemRenderer() {
+        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":cards/kit_automation", "inventory"));
+    }
 
-    public static final CreativeTabs tabOres = new CreativeTabs(ModInfo.MOD_ID) {
-        @Override
-        public Item getTabIconItem() {
-            return Items.ITEM_ORE_DUST.item;
-        }
-
-        @Override
-        public String getTabLabel() {
-            return ModInfo.MOD_ID + ".ores";
-        }
-    };
-
-    public static final CreativeTabs tabMachines = new CreativeTabs(ModInfo.MOD_ID) {
-        @Override
-        public Item getTabIconItem() {
-            return Items.ITEM_MATERIAL_GEAR.item;
-        }
-
-        @Override
-        public String getTabLabel() {
-            return ModInfo.MOD_ID + ".machines";
-        }
-    };
-
-    public static final CreativeTabs tabPlans = new CreativeTabs(ModInfo.MOD_ID) {
-        @Override
-        public Item getTabIconItem() {
-            return Items.ITEM_PLAN.item;
-        }
-
-        @Override
-        public String getTabLabel() {
-            return ModInfo.MOD_ID + ".plans";
-        }
-    };
+    @Override
+    public void RegisterRecipes() {
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(this, 1),
+                " h ",
+                "rxr",
+                "grg",
+                'h', new ItemStack(net.minecraft.init.Blocks.hopper),
+                'r', "dustRedstone",
+                'x', new ItemStack(Items.ITEM_CARD_BLANK.getItem()),
+                'g', "dyeGreen"
+        ));
+    }
 }

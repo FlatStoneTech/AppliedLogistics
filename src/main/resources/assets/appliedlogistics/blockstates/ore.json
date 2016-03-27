@@ -6,6 +6,9 @@
     "type=gold": {
       "model": "gold_ore"
     },
+    "type=diamond": {
+      "model": "stone"
+    },
     "type=copper": {
       "model": "appliedlogistics:materials/ore/copper"
     },
@@ -23,6 +26,24 @@
     },
     "type=rutile": {
       "model": "appliedlogistics:materials/ore/rutile"
+    },
+    "type=titanium": {
+      "model": "stone"
+    },
+    "type=bronze": {
+      "model": "stone"
+    },
+    "type=electrum": {
+      "model": "stone"
+    },
+    "type=steel": {
+      "model": "stone"
+    },
+    "type=wood": {
+      "model": "stone"
+    },
+    "type=stone": {
+      "model": "stone"
     }
   }
 }

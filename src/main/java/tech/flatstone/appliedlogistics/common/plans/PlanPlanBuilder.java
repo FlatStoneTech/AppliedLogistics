@@ -27,6 +27,7 @@ import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
+import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 import tech.flatstone.appliedlogistics.common.util.PlanDetails;
 import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
@@ -51,20 +52,47 @@ public class PlanPlanBuilder extends ItemPlanBase implements IMachinePlan {
 
         switch (techLevel) {
             case STONE_AGE:
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("ingotBronze"), 7, 7, 6, 100, 100));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Blocks.BLOCK_BUILDER.getBlock(), 1, 0), 1, 1, 10, 100, 100));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(net.minecraft.init.Items.comparator), 0, 1, 10, 200, 200, "Adds comparator output"));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(net.minecraft.init.Blocks.redstone_block), 0, 1, 10, 200, 200, "Adds redstone input to launch build"));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(net.minecraft.init.Blocks.hopper), 0, 1, 10, 200, 200, "Adds support to adding / removing items with pipes and hoppers"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("ingotBronze"), 8, 8, 6, 100, 100));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Blocks.BLOCK_BUILDER.getBlock()), 1, 1, 10, 100, 100));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_REDSTONE_OUTPUT.getItem()), 0, 1, 10, 200, 200, "Adds comparator output"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_REDSTONE_INPUT.getItem()), 0, 1, 10, 200, 200, "Adds redstone input to launch build"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_AUTOMATION.getItem()), 0, 1, 10, 200, 200, "Adds support to adding / removing items with pipes and hoppers"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_CRAFTING.getItem()), 0, 1, 10, 200, 200, "Adds crafting grid to machine"));
 
                 planDetails = new PlanDetails(72, requiredMaterialsList, new ItemStack(Blocks.BLOCK_BUILDER.getBlock(), 1, 1));
                 break;
 
             case BRONZE_AGE:
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("ingotSteel"), 7, 7, 15, 100, 100));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Blocks.BLOCK_BUILDER.getBlock(), 1, 1), 1, 1, 10, 100, 100));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("ingotSteel"), 8, 8, 15, 100, 100));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Blocks.BLOCK_BUILDER.getBlock()), 1, 1, 10, 100, 100));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_REDSTONE_OUTPUT.getItem()), 0, 1, 10, 200, 200, "Adds comparator output"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_REDSTONE_INPUT.getItem()), 0, 1, 10, 200, 200, "Adds redstone input to launch build"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_AUTOMATION.getItem()), 0, 1, 10, 200, 200, "Adds support to adding / removing items with pipes and hoppers"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_CRAFTING.getItem()), 0, 1, 10, 200, 200, "Adds crafting grid to machine"));
 
                 planDetails = new PlanDetails(1000, requiredMaterialsList, new ItemStack(Blocks.BLOCK_BUILDER.getBlock(), 1, 2));
+                break;
+
+            case STEEL_AGE:
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("ingotTitanium"), 8, 8, 15, 100, 100));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Blocks.BLOCK_BUILDER.getBlock()), 1, 1, 10, 100, 100));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_REDSTONE_OUTPUT.getItem()), 0, 1, 10, 200, 200, "Adds comparator output"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_REDSTONE_INPUT.getItem()), 0, 1, 10, 200, 200, "Adds redstone input to launch build"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_AUTOMATION.getItem()), 0, 1, 10, 200, 200, "Adds support to adding / removing items with pipes and hoppers"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_CRAFTING.getItem()), 0, 1, 10, 200, 200, "Adds crafting grid to machine"));
+
+                planDetails = new PlanDetails(1000, requiredMaterialsList, new ItemStack(Blocks.BLOCK_BUILDER.getBlock(), 1, 3));
+                break;
+
+            case INDUSTRIAL_AGE:
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("ingotElectrum"), 8, 8, 15, 100, 100));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Blocks.BLOCK_BUILDER.getBlock()), 1, 1, 10, 100, 100));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_REDSTONE_OUTPUT.getItem()), 0, 1, 10, 200, 200, "Adds comparator output"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_REDSTONE_INPUT.getItem()), 0, 1, 10, 200, 200, "Adds redstone input to launch build"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_AUTOMATION.getItem()), 0, 1, 10, 200, 200, "Adds support to adding / removing items with pipes and hoppers"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_CRAFTING.getItem()), 0, 1, 10, 200, 200, "Adds crafting grid to machine"));
+
+                planDetails = new PlanDetails(1000, requiredMaterialsList, new ItemStack(Blocks.BLOCK_BUILDER.getBlock(), 1, 4));
                 break;
         }
 

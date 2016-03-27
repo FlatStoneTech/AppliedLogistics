@@ -25,8 +25,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.ModInfo;
-import tech.flatstone.appliedlogistics.common.AppliedLogisticsCreativeTabs;
+import tech.flatstone.appliedlogistics.common.items.cards.*;
 import tech.flatstone.appliedlogistics.common.items.material.ItemGear;
 import tech.flatstone.appliedlogistics.common.items.ore.ItemOreDust;
 import tech.flatstone.appliedlogistics.common.items.ore.ItemOreIngot;
@@ -45,6 +46,12 @@ public enum Items {
     ITEM_ORE_NUGGET("ore_nugget", new ItemOreNugget(), AppliedLogisticsCreativeTabs.tabOres),
 
     ITEM_MATERIAL_GEAR("material_gear", new ItemGear(), AppliedLogisticsCreativeTabs.tabGeneral),
+
+    ITEM_CARD_BLANK("card_blank", new ItemKitCard(), AppliedLogisticsCreativeTabs.tabGeneral),
+    ITEM_KIT_AUTOMATION("kit_automation", new ItemKitAutomation(), AppliedLogisticsCreativeTabs.tabGeneral),
+    ITEM_KIT_CRAFTING("kit_crafting", new ItemKitCrafting(), AppliedLogisticsCreativeTabs.tabGeneral),
+    ITEM_KIT_REDSTONE_INPUT("kit_redstone_input", new ItemKitRedstoneInput(), AppliedLogisticsCreativeTabs.tabGeneral),
+    ITEM_KIT_REDSTONE_OUTPUT("kit_redstone_output", new ItemKitRedstoneOutput(), AppliedLogisticsCreativeTabs.tabGeneral),
 
     ITEM_TOOL_HAMMER("tool_hammer", new ItemHammer(), AppliedLogisticsCreativeTabs.tabGeneral),
 

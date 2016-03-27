@@ -29,6 +29,7 @@ public enum LanguageHelper {
     BLOCK("tile"),
     ITEM("item"),
     DESCRIPTION("description"),
+    JEI("jei"),
     NONE(""),;
 
     private String name;

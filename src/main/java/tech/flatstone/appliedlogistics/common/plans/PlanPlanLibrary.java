@@ -27,6 +27,7 @@ import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
+import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 import tech.flatstone.appliedlogistics.common.util.PlanDetails;
 import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
@@ -56,10 +57,10 @@ public class PlanPlanLibrary extends ItemPlanBase implements IMachinePlan {
 
                 requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("chestWood"), 1, 6, 10, 100, 100, "Each chest adds 9 slots of storage"));
 
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(net.minecraft.init.Items.comparator), 0, 1, 10, 200, 200, "Adds comparator output"));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(net.minecraft.init.Blocks.hopper), 0, 1, 10, 200, 200, "Adds support to adding items with pipes and hoppers"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_REDSTONE_OUTPUT.getItem()), 0, 1, 10, 200, 200, "Adds comparator output"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_AUTOMATION.getItem()), 0, 1, 10, 200, 200, "Adds support to adding items with pipes and hoppers"));
 
-                planDetails = new PlanDetails(72, requiredMaterialsList, new ItemStack(Blocks.BLOCK_PLAN_LIBRARY.getBlock(), 1, 1));
+                planDetails = new PlanDetails(72, requiredMaterialsList, new ItemStack(Blocks.BLOCK_PLAN_LIBRARY.getBlock()));
                 break;
         }
 

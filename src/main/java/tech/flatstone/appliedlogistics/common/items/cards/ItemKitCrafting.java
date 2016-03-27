@@ -1,11 +1,3 @@
-apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'com.matthewprenger.cursegradle'
-
-apply from: 'gradle/scripts/dependencies.gradle'
-apply from: 'gradle/scripts/integration.gradle'
-apply from: 'gradle/scripts/artifacts.gradle'
-apply from: 'gradle/scripts/optional.gradle'
-
 /*
  *
  * LIMITED USE SOFTWARE LICENSE AGREEMENT
@@ -26,98 +18,40 @@ apply from: 'gradle/scripts/optional.gradle'
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-// For those who want the bleeding edge
-buildscript {
-    repositories {
-        jcenter()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
+package tech.flatstone.appliedlogistics.common.items.cards;
+
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.common.items.ItemBase;
+import tech.flatstone.appliedlogistics.common.items.Items;
+import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
+import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
+
+public class ItemKitCrafting extends ItemBase implements IProvideRecipe, IItemRenderer {
+    public ItemKitCrafting() {
+        this.setMaxStackSize(8);
     }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
-        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.0.7"
+
+    @Override
+    public void registerItemRenderer() {
+        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":cards/kit_crafting", "inventory"));
     }
-}
 
-configurations.all {
-    resolutionStrategy.cacheDynamicVersionsFor 7200, 'hours'
-}
-
-sourceCompatibility = JavaVersion.VERSION_1_6
-targetCompatibility = JavaVersion.VERSION_1_6
-
-ext {
-    curseApiKey = ""
-    curseReleaseType = "alpha"
-}
-
-version = minecraft_version + "-" + "b" + cibuild + "-univeral"
-archivesBaseName = cibasename
-
-// If TeamCity is running this build, lets set the version info
-if (hasProperty("teamcity")) {
-    version = minecraft_version + "-" + teamcity["build.number"] + "-universal"
-
-    // Fix for main branch being built
-    version = version.replaceAll("/", "-")
-
-    curseApiKey = teamcity["apiKey"]
-    curseReleaseType = teamcity["releaseType"]
-}
-
-minecraft {
-    version = minecraft_version + "-" + forge_version
-
-    replaceIn "ModInfo.java"
-
-    replace "@VERSION@", project.version
-    replace "@MCVERSION@", minecraft_version
-
-    runDir = "run"
-    mappings = "stable_20"
-
-    useDepAts = true
-}
-
-processResources
-        {
-            // this will ensure that this task is redone when the versions change.
-            inputs.property "version", project.version
-            inputs.property "mcversion", project.minecraft.version
-
-            // replace stuff in mcmod.info, nothing else
-            from(sourceSets.main.resources.srcDirs) {
-                include 'mcmod.info'
-
-                // replace version and mcversion
-                expand 'version':project.version, 'mcversion':project.minecraft.version
-            }
-
-            // copy everything else, thats not the mcmod.info
-            from(sourceSets.main.resources.srcDirs) {
-                exclude 'mcmod.info'
-            }
-        }
-
-// Add Access Transformers Manifest
-jar {
-    manifest {
-        attributes 'FMLAT': 'AppliedLogistics_at.cfg'
-    }
-}
-
-curseforge {
-    apiKey = curseApiKey
-    project {
-        releaseType = curseReleaseType
-        id = "1"
-        changelog = file("build/libs/changelog.txt")
-        addGameVersion minecraft_version
-        addArtifact devJar
+    @Override
+    public void RegisterRecipes() {
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(this, 1),
+                " c ",
+                "rxr",
+                "grg",
+                'c', OreDictionary.getOres("craftingTableWood").size() == 0 ? new ItemStack(net.minecraft.init.Blocks.crafting_table) : "craftingTableWood",
+                'r', "dustRedstone",
+                'x', new ItemStack(Items.ITEM_CARD_BLANK.getItem()),
+                'g', "dyeGreen"
+        ));
     }
 }
