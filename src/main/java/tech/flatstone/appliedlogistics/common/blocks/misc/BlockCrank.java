@@ -33,6 +33,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -69,10 +70,10 @@ public class BlockCrank extends BlockBase implements IProvideRecipe, IBlockRende
         return 2;
     }
 
-//    @Override
-//    public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos) {
-//        setBlockBounds(7 / 16f, 0, 7 / 16f, 9 / 16f, .75f, 9 / 16f);
-//    }
+    @Override
+    public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos) {
+        setBlockBounds(7 / 16f, 0, 7 / 16f, 9 / 16f, .75f, 9 / 16f);
+    }
 
     @Override
     public void RegisterRecipes() {
@@ -170,6 +171,7 @@ public class BlockCrank extends BlockBase implements IProvideRecipe, IBlockRende
         AxisAlignedBB crankTop = new AxisAlignedBB(7 / 16d, 10 / 16d, 2 / 16d, 9 / 16d, 12 / 16d, 14 / 16d).offset(-0.5, -0.5, -0.5);
         AxisAlignedBB crankShaft = new AxisAlignedBB(7 / 16d, 0, 7 / 16d, 9 / 16d, 10 / 16d, 9 / 16d).offset(-0.5, -0.5, -0.5);
 
+        GL11.glPushMatrix();
         GlStateManager.translate(posBlock.getX() - renderManager.viewerPosX + 0.5, posBlock.getY() - renderManager.viewerPosY + 0.5, posBlock.getZ() - renderManager.viewerPosZ + 0.5);
         if (tileEntity.isRotating())
             GlStateManager.rotate(tileEntity.getRotation() + 15 * event.partialTicks, 0, 1, 0);
@@ -189,6 +191,8 @@ public class BlockCrank extends BlockBase implements IProvideRecipe, IBlockRende
         GlStateManager.depthMask(true);
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
+
+        GL11.glPopMatrix();
     }
 
     @Override

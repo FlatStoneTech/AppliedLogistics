@@ -47,7 +47,12 @@ public class BlockPulverizer extends BlockMachineBase implements IBlockRenderer 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntityPulverizer tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityPulverizer.class);
-        if (tileEntity != null && tileEntity.canAttachCrank() && ItemStack.areItemsEqual(playerIn.getCurrentEquippedItem(), new ItemStack(Blocks.BLOCK_MISC_CRANK.getBlock())))
+        if (hitY == 1 &&
+                tileEntity != null &&
+                tileEntity.canAttachCrank() &&
+                ItemStack.areItemsEqual(playerIn.getCurrentEquippedItem(), new ItemStack(Blocks.BLOCK_MISC_CRANK.getBlock())) &&
+                !(ItemStack.areItemsEqual(new ItemStack(worldIn.getBlockState(pos.up()).getBlock()), new ItemStack(Blocks.BLOCK_MISC_CRANK.getBlock())))
+                )
             return false;
 
         if (worldIn.isRemote)
