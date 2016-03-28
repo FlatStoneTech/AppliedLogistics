@@ -20,26 +20,35 @@
 
 package tech.flatstone.appliedlogistics.common.blocks.misc;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
+import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCrank;
-import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
-import tech.flatstone.appliedlogistics.common.util.ICrankable;
-import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
-import tech.flatstone.appliedlogistics.common.util.TileHelper;
+import tech.flatstone.appliedlogistics.common.util.*;
 
-public class BlockCrank extends BlockBase implements IProvideRecipe, IBlockRenderer {
+import java.util.List;
+
+public class BlockCrank extends BlockBase implements IProvideRecipe, IBlockRenderer, IProvideEvent {
     public BlockCrank() {
         super(Material.wood);
         this.setTileEntity(TileEntityCrank.class);
@@ -60,15 +69,19 @@ public class BlockCrank extends BlockBase implements IProvideRecipe, IBlockRende
         return 2;
     }
 
-    @Override
-    public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos) {
-        //setBlockBounds(.25f, 0, .25f, .25f, .75f, .25f);
-        setBlockBounds(7 / 16f, 0, 7 / 16f, 9 / 16f, .75f, 9 / 16f);
-    }
+//    @Override
+//    public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos) {
+//        setBlockBounds(7 / 16f, 0, 7 / 16f, 9 / 16f, .75f, 9 / 16f);
+//    }
 
     @Override
     public void RegisterRecipes() {
-
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(this),
+                "sss",
+                " s ",
+                " s ",
+                's', "stickWood"
+        ));
     }
 
     @Override
@@ -99,5 +112,99 @@ public class BlockCrank extends BlockBase implements IProvideRecipe, IBlockRende
             return false;
 
         return ((ICrankable) tileEntity).canAttachCrank();
+    }
+
+    @Override
+    public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
+        TileEntity tileEntity = TileHelper.getTileEntity(worldIn, pos.down(), TileEntity.class);
+        if (tileEntity == null)
+            breakCrank(worldIn, pos, true);
+
+        if (!(tileEntity instanceof ICrankable))
+            breakCrank(worldIn, pos, true);
+    }
+
+    public void breakCrank(World worldIn, BlockPos pos, boolean dropItem) {
+        if (worldIn.isRemote)
+            return;
+
+        worldIn.destroyBlock(pos, dropItem);
+        worldIn.setBlockToAir(pos);
+    }
+
+    @Override
+    public MovingObjectPosition collisionRayTrace(World worldIn, BlockPos pos, Vec3 start, Vec3 end) {
+        TileEntityCrank tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityCrank.class);
+        EnumFacing crankRotation = tileEntity.getCrankRotation();
+
+        AxisAlignedBB crankTop = new AxisAlignedBB(7 / 16d, 10 / 16d, 2 / 16d, 9 / 16d, 12 / 16d, 14 / 16d);
+        AxisAlignedBB crankShaft = new AxisAlignedBB(7 / 16d, 0, 7 / 16d, 9 / 16d, 10 / 16d, 9 / 16d).offset(pos.getX(), pos.getY(), pos.getZ());
+
+        crankTop = RotationHelper.rotateBB(crankTop, crankRotation).offset(pos.getX(), pos.getY(), pos.getZ());
+
+        MovingObjectPosition crankTopPos = crankTop.calculateIntercept(start, end);
+        MovingObjectPosition crankShaftPos = crankShaft.calculateIntercept(start, end);
+
+        if (crankTopPos != null) {
+            return new MovingObjectPosition(start.addVector((double) pos.getX(), (double) pos.getY(), (double) pos.getZ()), crankTopPos.sideHit, pos);
+        }
+
+        if (crankShaftPos != null)
+            return new MovingObjectPosition(start.addVector((double) pos.getX(), (double) pos.getY(), (double) pos.getZ()), crankShaftPos.sideHit, pos);
+
+        return null;
+    }
+
+    @SubscribeEvent
+    public void drawBlockHighlight(DrawBlockHighlightEvent event) {
+        if (!(ItemStack.areItemsEqual(new ItemStack(event.player.worldObj.getBlockState(event.target.getBlockPos()).getBlock()), new ItemStack(Blocks.BLOCK_MISC_CRANK.getBlock()))))
+            return;
+
+        event.setCanceled(true);
+
+        TileEntityCrank tileEntity = TileHelper.getTileEntity(event.player.worldObj, event.target.getBlockPos(), TileEntityCrank.class);
+
+        RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
+        BlockPos posBlock = event.target.getBlockPos();
+
+        AxisAlignedBB crankTop = new AxisAlignedBB(7 / 16d, 10 / 16d, 2 / 16d, 9 / 16d, 12 / 16d, 14 / 16d).offset(-0.5, -0.5, -0.5);
+        AxisAlignedBB crankShaft = new AxisAlignedBB(7 / 16d, 0, 7 / 16d, 9 / 16d, 10 / 16d, 9 / 16d).offset(-0.5, -0.5, -0.5);
+
+        GlStateManager.translate(posBlock.getX() - renderManager.viewerPosX + 0.5, posBlock.getY() - renderManager.viewerPosY + 0.5, posBlock.getZ() - renderManager.viewerPosZ + 0.5);
+        if (tileEntity.isRotating())
+            GlStateManager.rotate(tileEntity.getRotation() + 15 * event.partialTicks, 0, 1, 0);
+        if (!tileEntity.isRotating())
+            GlStateManager.rotate(tileEntity.getRotation(), 0, 1, 0);
+
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.color(0.0F, 0.0F, 0.0F, 0.4F);
+        GL11.glLineWidth(2.0F);
+        GlStateManager.disableTexture2D();
+        GlStateManager.depthMask(false);
+
+        event.context.drawSelectionBoundingBox(crankTop);
+        event.context.drawSelectionBoundingBox(crankShaft);
+
+        GlStateManager.depthMask(true);
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+    }
+
+    @Override
+    public void addCollisionBoxesToList(World worldIn, BlockPos pos, IBlockState state, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
+        TileEntityCrank tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityCrank.class);
+        EnumFacing crankRotation = tileEntity.getCrankRotation();
+
+        AxisAlignedBB crankTop = new AxisAlignedBB(7 / 16d, 10 / 16d, 2 / 16d, 9 / 16d, 12 / 16d, 14 / 16d);
+        AxisAlignedBB crankShaft = new AxisAlignedBB(7 / 16d, 0, 7 / 16d, 9 / 16d, 10 / 16d, 9 / 16d).offset(pos.getX(), pos.getY(), pos.getZ());
+
+        crankTop = RotationHelper.rotateBB(crankTop, crankRotation).offset(pos.getX(), pos.getY(), pos.getZ());
+
+        if (mask != null && crankTop.intersectsWith(mask))
+            list.add(crankTop);
+
+        if (mask != null && crankShaft.intersectsWith(mask))
+            list.add(crankShaft);
     }
 }

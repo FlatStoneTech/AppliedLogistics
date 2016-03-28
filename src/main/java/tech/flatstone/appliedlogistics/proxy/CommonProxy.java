@@ -90,7 +90,7 @@ public abstract class CommonProxy implements IProxy {
             String oreName = EnumOres.byMeta(i).getName();
 
             // Register Hammer
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.DUST) && EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE))
+            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.DUST) && (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE) || EnumOres.byMeta(i).isTypeSet(EnumOreType.VANILLA)))
                 HammerRegistry.registerOreDictOre(oreName);
         }
 
@@ -128,6 +128,8 @@ public abstract class CommonProxy implements IProxy {
 
     @Override
     public void registerEvents() {
+        //todo: Re-do this, make better... fore intead of fori
+
         for (int i = 0; i < Items.values().length; i++) {
             Item item = Items.values()[i].getItem();
             if (item instanceof IProvideEvent) {
@@ -146,20 +148,14 @@ public abstract class CommonProxy implements IProxy {
 
     @Override
     public void registerRecipes() {
-        // Add Recipes provided by the items
-        for (int i = 0; i < Items.values().length; i++) {
-            Item item = Items.values()[i].getItem();
-            if (item instanceof IProvideRecipe) {
-                ((IProvideRecipe) item).RegisterRecipes();
-            }
+        for (Items item : Items.values()) {
+            if (item.getItem() instanceof IProvideRecipe)
+                ((IProvideRecipe) item.getItem()).RegisterRecipes();
         }
 
-        // Add Recipes provided by the blocks
-        for (int i = 0; i < Blocks.values().length; i++) {
-            Block block = Blocks.values()[i].getBlock();
-            if (block instanceof IProvideRecipe) {
-                ((IProvideRecipe) block).RegisterRecipes();
-            }
+        for (Blocks block : Blocks.values()) {
+            if (block.getBlock() instanceof IProvideRecipe)
+                ((IProvideRecipe) block.getBlock()).RegisterRecipes();
         }
     }
 

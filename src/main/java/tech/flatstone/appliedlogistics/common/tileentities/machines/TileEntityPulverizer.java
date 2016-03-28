@@ -23,6 +23,7 @@ package tech.flatstone.appliedlogistics.common.tileentities.machines;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCrank;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityInventoryBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
@@ -31,6 +32,7 @@ import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 public class TileEntityPulverizer extends TileEntityInventoryBase implements ICrankable {
     InternalInventory inventory = new InternalInventory(this, 6);
+    int badCrankCount = 0;
 
     @Override
     public IInventory getInternalInventory() {
@@ -55,6 +57,13 @@ public class TileEntityPulverizer extends TileEntityInventoryBase implements ICr
     @Override
     public void doCrank() {
         LogHelper.info(">>> Hey I Cranked...");
+
+        //todo: check for work to do..
+        badCrankCount++;
+        if (badCrankCount > 3) {
+            badCrankCount = 0;
+            ((BlockCrank) this.worldObj.getBlockState(pos.up()).getBlock()).breakCrank(this.worldObj, this.pos.up(), false);
+        }
     }
 
     @Override

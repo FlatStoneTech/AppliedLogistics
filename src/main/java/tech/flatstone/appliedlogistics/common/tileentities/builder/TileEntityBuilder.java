@@ -31,6 +31,7 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
+import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCrank;
 import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaBodyMessage;
 import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
@@ -41,7 +42,7 @@ import tech.flatstone.appliedlogistics.common.util.*;
 import java.util.*;
 
 
-public class TileEntityBuilder extends TileEntityMachineBase implements ITickable, INetworkButton, IWailaBodyMessage {
+public class TileEntityBuilder extends TileEntityMachineBase implements ITickable, INetworkButton, IWailaBodyMessage, ICrankable, IRotatable {
     private InternalInventory inventory = new InternalInventory(this, 56);
     private HashMap<TechLevel, PlanDetails> planDetails = new HashMap<TechLevel, PlanDetails>();
     private String planName = "";
@@ -50,6 +51,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
     private int buildingTechLevel = -1;
     private int ticksRemaining = 0;
     private boolean machineWorking = false;
+    private int badCrankCount = 0;
 
     public int getTotalWeight() {
         int weight = 0;
@@ -455,5 +457,27 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
         }
 
         return ((IMachinePlan) planBase).getMachineDetails(TechLevel.byMeta(selectedTechLevel), inventory);
+    }
+
+    @Override
+    public void doCrank() {
+        LogHelper.info(">>> Hey I Cranked...");
+
+        //todo: check for work to do..
+        badCrankCount++;
+        if (badCrankCount > 3) {
+            badCrankCount = 0;
+            ((BlockCrank) this.worldObj.getBlockState(pos.up()).getBlock()).breakCrank(this.worldObj, this.pos.up(), false);
+        }
+    }
+
+    @Override
+    public boolean canAttachCrank() {
+        return getBlockMetadata() == 0;
+    }
+
+    @Override
+    public EnumFacing getDirection() {
+        return this.getDirectionFacing();
     }
 }

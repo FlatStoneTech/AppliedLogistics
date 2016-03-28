@@ -43,6 +43,7 @@ import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockMachineBase;
+import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityBuilder;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
@@ -52,7 +53,7 @@ import java.util.List;
 
 public class BlockBuilder extends BlockMachineBase implements IProvideRecipe, IBlockRenderer {
     public static final PropertyEnum TECHLEVEL = PropertyEnum.create("tech", TechLevel.class);
-    public static final PropertyEnum FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+    public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
     public BlockBuilder() {
         super(Material.rock);
@@ -62,6 +63,10 @@ public class BlockBuilder extends BlockMachineBase implements IProvideRecipe, IB
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+        TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
+        if (tileEntity != null && tileEntity.canAttachCrank() && ItemStack.areItemsEqual(playerIn.getCurrentEquippedItem(), new ItemStack(Blocks.BLOCK_MISC_CRANK.getBlock())))
+            return false;
+
         if (worldIn.isRemote)
             return true;
 

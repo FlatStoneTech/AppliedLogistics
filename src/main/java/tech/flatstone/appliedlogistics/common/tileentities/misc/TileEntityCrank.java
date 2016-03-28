@@ -22,35 +22,46 @@ package tech.flatstone.appliedlogistics.common.tileentities.misc;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
 import tech.flatstone.appliedlogistics.common.util.ICrankable;
+import tech.flatstone.appliedlogistics.common.util.IRotatable;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 public class TileEntityCrank extends TileEntityBase implements ITickable {
-    private float rotation = 0;
+    private int rotation = 0;
     private boolean rotating = false;
 
     @Override
     public void update() {
         if (rotating) {
             rotation += 15;
-
-            if (rotation == 180) {
-                rotation = 180;
+            if (rotation % 180 == 0) {
                 rotating = false;
                 crankDone();
-            }
-            if (rotation == 360) {
-                rotation = 0;
-                rotating = false;
-                crankDone();
+                if (rotation == 360)
+                    rotation = 0;
             }
         }
     }
 
     public float getRotation() {
+        TileEntity tileEntity = TileHelper.getTileEntity(this.worldObj, this.pos.down(), TileEntity.class);
+        if (tileEntity != null && tileEntity instanceof IRotatable) {
+            EnumFacing facing = ((IRotatable) tileEntity).getDirection();
+            int offset = ((facing.getHorizontalIndex() + 1) * 90);
+            return offset + rotation;
+        }
         return rotation;
+    }
+
+    public EnumFacing getCrankRotation() {
+        TileEntity tileEntity = TileHelper.getTileEntity(this.worldObj, this.pos.down(), TileEntity.class);
+        if (tileEntity != null && tileEntity instanceof IRotatable) {
+            return ((IRotatable) tileEntity).getDirection();
+        }
+        return EnumFacing.EAST;
     }
 
     public boolean isRotating() {
