@@ -34,6 +34,7 @@ import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCrank;
 import tech.flatstone.appliedlogistics.common.blocks.ore.BlockOre;
 import tech.flatstone.appliedlogistics.common.blocks.ore.BlockOreBlock;
 import tech.flatstone.appliedlogistics.common.items.builder.ItemBuilder;
+import tech.flatstone.appliedlogistics.common.items.misc.ItemCrank;
 import tech.flatstone.appliedlogistics.common.items.ore.ItemOre;
 import tech.flatstone.appliedlogistics.common.items.ore.ItemOreBlock;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
@@ -51,7 +52,7 @@ public enum Blocks {
     BLOCK_PLAN_BUILDER("plan_builder", new BlockPlanBuilder(), AppliedLogisticsCreativeTabs.tabMachines),
     BLOCK_PLAN_LIBRARY("plan_library", new BlockPlanLibrary(), AppliedLogisticsCreativeTabs.tabMachines),
 
-    BLOCK_MISC_CRANK("misc_crank", new BlockCrank(), AppliedLogisticsCreativeTabs.tabGeneral),
+    BLOCK_MISC_CRANK("misc_crank", new BlockCrank(), ItemCrank.class, AppliedLogisticsCreativeTabs.tabGeneral),
 
     BLOCK_MACHINE_PULVERIZER("machine_pulverizer", new BlockPulverizer(), AppliedLogisticsCreativeTabs.tabMachines);
 

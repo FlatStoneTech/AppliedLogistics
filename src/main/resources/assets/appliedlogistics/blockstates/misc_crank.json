@@ -12,7 +12,27 @@
     ],
     "inventory": [
       {
-        "transform": "forge:default-block"
+        "transform": {
+          "thirdperson": {
+            "rotation": [
+              {
+                "z": 170
+              },
+              {
+                "y": 45
+              },
+              {
+                "z": -100
+              }
+            ],
+            "translation": [
+              0.0,
+              0.1,
+              0.0
+            ],
+            "scale": 1.5
+          }
+        }
       }
     ]
   }

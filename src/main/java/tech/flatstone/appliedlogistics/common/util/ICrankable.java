@@ -24,4 +24,6 @@ public interface ICrankable {
     void doCrank();
 
     boolean canAttachCrank();
+
+    boolean canCrank();
 }

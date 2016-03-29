@@ -71,6 +71,11 @@ public class TileEntityPulverizer extends TileEntityInventoryBase implements ICr
         return true;
     }
 
+    @Override
+    public boolean canCrank() {
+        return true;
+    }
+
     /**
      * slot 0 = item to pulverize
      * slot 1 = item it is working on (internal)

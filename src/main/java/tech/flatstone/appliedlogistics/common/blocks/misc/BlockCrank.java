@@ -53,6 +53,7 @@ public class BlockCrank extends BlockBase implements IProvideRecipe, IBlockRende
     public BlockCrank() {
         super(Material.wood);
         this.setTileEntity(TileEntityCrank.class);
+        this.setHarvestLevel("Axe", 0);
     }
 
     @Override

@@ -86,9 +86,14 @@ public class TileEntityCrank extends TileEntityBase implements ITickable {
         if (worldObj.isRemote)
             return;
 
-        rotating = true;
-        this.markForUpdate();
-        this.markDirty();
+        TileEntity tileEntity = TileHelper.getTileEntity(this.worldObj, this.pos.down(), TileEntity.class);
+        if (tileEntity != null && tileEntity instanceof ICrankable) {
+            if (((ICrankable) tileEntity).canCrank()) {
+                rotating = true;
+                this.markForUpdate();
+                this.markDirty();
+            }
+        }
     }
 
     @Override

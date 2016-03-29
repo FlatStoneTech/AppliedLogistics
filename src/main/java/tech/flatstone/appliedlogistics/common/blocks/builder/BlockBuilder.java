@@ -20,6 +20,7 @@
 
 package tech.flatstone.appliedlogistics.common.blocks.builder;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
@@ -156,5 +157,14 @@ public class BlockBuilder extends BlockMachineBase implements IProvideRecipe, IB
         for (int i = 0; i < TechLevel.values().length; i++) {
             ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), i, new ModelResourceLocation(ModInfo.MOD_ID + ":builder/builder_" + TechLevel.byMeta(i).getName(), "inventory"));
         }
+    }
+
+    @Override
+    public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
+        TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
+        if (tileEntity == null)
+            return;
+
+        tileEntity.setBadCrankCount(0);
     }
 }

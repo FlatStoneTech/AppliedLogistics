@@ -71,6 +71,10 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
         return weight;
     }
 
+    public void setBadCrankCount(int badCrankCount) {
+        this.badCrankCount = badCrankCount;
+    }
+
     public boolean isMeetingBuildRequirements() {
         int invSlot = 1;
 
@@ -243,7 +247,9 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
 
     @Override
     public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
-
+        if (slot == 28) {
+            badCrankCount = 0;
+        }
     }
 
     @Override
@@ -261,7 +267,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
         updatePlanDetails();
 
         if (getTotalTicks() > 0 && machineWorking) {
-            ticksRemaining--;
+            //ticksRemaining--;
 
             if (getBlockMetadata() == TechLevel.CREATIVE.getMeta()) {
                 ticksRemaining = 0;
@@ -461,19 +467,31 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
 
     @Override
     public void doCrank() {
-        LogHelper.info(">>> Hey I Cranked...");
-
-        //todo: check for work to do..
-        badCrankCount++;
-        if (badCrankCount > 3) {
+        if (getTotalTicks() > 0 && machineWorking) {
+            ticksRemaining = ticksRemaining - 20;
             badCrankCount = 0;
-            ((BlockCrank) this.worldObj.getBlockState(pos.up()).getBlock()).breakCrank(this.worldObj, this.pos.up(), false);
+            this.markForUpdate();
+            this.markDirty();
         }
     }
 
     @Override
     public boolean canAttachCrank() {
         return getBlockMetadata() == 0;
+    }
+
+    @Override
+    public boolean canCrank() {
+        if (getTotalTicks() > 0 && machineWorking)
+            return true;
+
+        badCrankCount++;
+        if (badCrankCount > 5) {
+            badCrankCount = 0;
+            ((BlockCrank) this.worldObj.getBlockState(pos.up()).getBlock()).breakCrank(this.worldObj, this.pos.up(), false);
+        }
+
+        return false;
     }
 
     @Override
