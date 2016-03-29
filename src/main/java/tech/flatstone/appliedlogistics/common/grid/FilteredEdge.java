@@ -55,15 +55,9 @@ public class FilteredEdge<V> extends DefaultEdge {
 
     public boolean canRoute(String obj) {
         if (isWhiteList) {
-            if (list.isEmpty())
-                return false;
-            else
-                return checkWhitelist(obj);
+            return !list.isEmpty() && checkWhitelist(obj);
         } else {
-            if (list.isEmpty())
-                return true;
-            else
-                return !checkWhitelist(obj);
+            return list.isEmpty() || !checkWhitelist(obj);
         }
     }
 
@@ -76,11 +70,13 @@ public class FilteredEdge<V> extends DefaultEdge {
     }
 
 
-    public V getStart() {
+    @Override
+    public V getSource() {
         return start;
     }
 
-    public V getEnd() {
+    @Override
+    public V getTarget() {
         return end;
     }
 

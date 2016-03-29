@@ -31,11 +31,11 @@ public class UUIDPair {
         this.uuid2 = uuid2;
     }
 
-    public UUID getUuid1() {
+    public UUID getUUID1() {
         return uuid1;
     }
 
-    public UUID getUuid2() {
+    public UUID getUUID2() {
         return uuid2;
     }
 

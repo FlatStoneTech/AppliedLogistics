@@ -169,7 +169,7 @@ public class TransportGrid implements ITransport {
      */
     @Override
     public Object getObjectFromGrid(UUID exitNode) {
-        return null;
+        return graphServer.getCargo(exitNode);
     }
 
 }

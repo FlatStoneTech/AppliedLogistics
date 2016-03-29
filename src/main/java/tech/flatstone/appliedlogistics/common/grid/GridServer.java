@@ -29,18 +29,19 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.UUID;
 import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CyclicBarrier;
 
 class GridServer implements Runnable {
-    private ArrayList<UUIDPair> vertexMissing;
+    private ArrayList<UUIDPair> vertexCache; // Caches vertices that cannot currently be added
     private DirectedAcyclicGraph<UUID, FilteredEdge> graph;
     private ConcurrentLinkedQueue<UUID> vertexQueue;
     private ConcurrentLinkedQueue<UUIDPair> edgeQueue;
     private CyclicBarrier barrier;
     private LinkedList<TransportContainer> activeCargo;
     private ConcurrentLinkedQueue<TransportContainer> incomingCargo;
-    private ConcurrentLinkedQueue<TransportContainer> outgoingCargo;
+    private ConcurrentHashMap<UUID, TransportContainer> outgoingCargo;
 
     public GridServer() {
         graph = new DirectedAcyclicGraph<UUID, FilteredEdge>(
@@ -52,6 +53,7 @@ class GridServer implements Runnable {
 
         incomingCargo = new ConcurrentLinkedQueue<TransportContainer>();
         activeCargo = new LinkedList<TransportContainer>();
+        outgoingCargo = new ConcurrentHashMap<UUID, TransportContainer>();
 
         if (vertexQueue == null)
             throw new NullPointerException();
@@ -61,14 +63,16 @@ class GridServer implements Runnable {
 
         barrier = new CyclicBarrier(2);
 
-        vertexMissing = new ArrayList<UUIDPair>();
+        vertexCache = new ArrayList<UUIDPair>();
     }
 
     void addCargo(TransportContainer objectContainer) {
-        this.incomingCargo.add(objectContainer);
+        this.incomingCargo.offer(objectContainer);
     }
 
-    TransportContainer getCargo() { return this.outgoingCargo.remove(); }
+    TransportContainer getCargo(UUID exitNode) {
+        return this.outgoingCargo.get(exitNode);
+    }
 
     @Override
     public void run() {
@@ -110,23 +114,31 @@ class GridServer implements Runnable {
         }
 
         //handle a hopefully rare situation where a vertex and edge are added between ingest vertex and ingest edge
-        if (!vertexMissing.isEmpty()) {
-            edgeQueue.addAll(vertexMissing);
-            vertexMissing.clear();
+        if (!vertexCache.isEmpty()) {
+            edgeQueue.addAll(vertexCache);
+            vertexCache.clear();
         }
 
         //ingest edge queue
         for (UUIDPair pair : edgeQueue) {
-            if ((graph.containsVertex(pair.getUuid1())) && (graph.containsVertex(pair.getUuid2()))) {
-                graph.addEdge(pair.getUuid1(), pair.getUuid2());
+            if ((graph.containsVertex(pair.getUUID1())) && (graph.containsVertex(pair.getUUID2()))) {
+                graph.addEdge(pair.getUUID1(), pair.getUUID2());
             } else {
-                vertexMissing.add(pair);
-                LogHelper.debug("A vertex for edge:" + pair.getUuid1() + " -> " + pair.getUuid2() + " does not exist");
+                vertexCache.add(pair);
+                LogHelper.debug("A vertex for edge:" + pair.getUUID1() + " -> " + pair.getUUID2() + " does not exist");
             }
         }
 
         //update grid objects
+        for (TransportContainer container : activeCargo) {
+            outgoingCargo.put(container.getDestination(), container);
+        }
+
         //ingest new objects
+        for (TransportContainer container : incomingCargo) {
+            //// TODO: 2016-03-28 solve for destination
+            activeCargo.add(container);
+        }
     }
 
     boolean addVertex(UUID uuid) {
