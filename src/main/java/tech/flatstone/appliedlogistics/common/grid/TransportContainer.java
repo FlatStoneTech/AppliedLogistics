@@ -24,16 +24,24 @@ import java.util.UUID;
 
 public class TransportContainer {
     private String unlocalizedName;
-    private Object load;
-
+    private Object cargo;
     private UUID source;
     private UUID currentNode;
     private UUID destination;
+    private int timeOnNode;
 
-    public TransportContainer(UUID source, String unlocalizedName, Object load) {
-        this.load = load;
+    public TransportContainer(UUID source, String unlocalizedName, Object cargo) {
+        this.cargo = cargo;
         this.source = source;
         this.unlocalizedName = unlocalizedName;
+    }
+
+    public Object getCargo() {
+        return cargo;
+    }
+
+    public int getTimeOnNode() {
+        return timeOnNode;
     }
 
     public UUID getCurrentNode() {

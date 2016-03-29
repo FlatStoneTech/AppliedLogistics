@@ -101,5 +101,11 @@ public interface ITransport {
      * @param object
      * @return
      */
-    boolean insertObjectToRoute(UUID entryNode, String unlocalizedName, Object object);
+    boolean insertObjectToGrid(UUID entryNode, String unlocalizedName, Object object);
+
+    /**
+     * Gets an object from the routing network if available
+     * returns null if no object
+     */
+    Object getObjectFromGrid(UUID exitNode);
 }

@@ -20,122 +20,156 @@
 
 package tech.flatstone.appliedlogistics.common.grid;
 
-
-import org.jgrapht.experimental.dag.DirectedAcyclicGraph;
-import org.jgrapht.graph.ClassBasedEdgeFactory;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
+import tech.flatstone.appliedlogistics.api.features.ITransport;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CyclicBarrier;
 
-class GridServer implements Runnable {
-    private ArrayList<UUIDPair> vertexMissing;
-    private DirectedAcyclicGraph<UUID, FilteredEdge> graph;
-    private ConcurrentLinkedQueue<UUID> vertexQueue;
-    private ConcurrentLinkedQueue<UUIDPair> edgeQueue;
-    private CyclicBarrier barrier;
-    private LinkedList<TransportContainer> activeCargo;
-    private ConcurrentLinkedQueue<TransportContainer> incomingCargo;
-    private ConcurrentLinkedQueue<TransportContainer> outgoingCargo;
+public class TransportGrid implements ITransport {
+    private GridServer graphServer;
+    private Map<UUID, UUID> exitNodeMap;
 
-    public GridServer() {
-        graph = new DirectedAcyclicGraph<UUID, FilteredEdge>(
-                new ClassBasedEdgeFactory<UUID, FilteredEdge>(FilteredEdge.class)
-        );
-
-        vertexQueue = new ConcurrentLinkedQueue<UUID>();
-        edgeQueue = new ConcurrentLinkedQueue<UUIDPair>();
-
-        incomingCargo = new ConcurrentLinkedQueue<TransportContainer>();
-        activeCargo = new LinkedList<TransportContainer>();
-
-        if (vertexQueue == null)
-            throw new NullPointerException();
-
-        if (edgeQueue == null)
-            throw new NullPointerException();
-
-        barrier = new CyclicBarrier(2);
-
-        vertexMissing = new ArrayList<UUIDPair>();
-    }
-
-    public void addCargo(TransportContainer objectContainer) {
-        this.incomingCargo.add(objectContainer);
-    }
-
-    @Override
-    public void run() {
-        //sync with world server
-        try {
-            barrier.await();
-        } catch (InterruptedException e) {
-            LogHelper.fatal(e.getLocalizedMessage());
-            e.printStackTrace();
-        } catch (BrokenBarrierException e) {
-            LogHelper.fatal(e.getLocalizedMessage());
-            e.printStackTrace();
-        }
-
-        //step the transport simulation
-        this.gridTick();
+    public TransportGrid() {
+        exitNodeMap = new HashMap<UUID, UUID>();
     }
 
     /**
-     * this method is called from the games main server thread in the server tick handler
+     * Creates routing node
+     * no limit on how may nodes this node can connect to
+     *
+     * @return
      */
-    public void sync() {
-        try {
-            barrier.await();
-        } catch (InterruptedException e) {
-            LogHelper.fatal(e.getLocalizedMessage());
-            e.printStackTrace();
-        } catch (BrokenBarrierException e) {
-            LogHelper.fatal(e.getLocalizedMessage());
-            e.printStackTrace();
+    @Override
+    public UUID createTransportNode() {
+        UUID uuid = UUID.randomUUID();
+        graphServer.addVertex(uuid);
+        return uuid;
+    }
+
+    /**
+     * Creates a node that accepts input into the routing network
+     * can only connect to one other node
+     *
+     * @param parentNode
+     * @return
+     */
+    @Override
+    public UUID createEntryNode(UUID parentNode) {
+        UUID uuid = UUID.randomUUID();
+        graphServer.addVertex(uuid);
+        graphServer.addEdge(uuid, parentNode);
+        return uuid;
+    }
+
+    /**
+     * Creates a node that receives routed objects from the network
+     * can only connect to one other node
+     *
+     * @param parentNode
+     * @return
+     */
+    @Override
+    public UUID createExitNode(UUID parentNode) {
+        UUID uuid = UUID.randomUUID();
+        graphServer.addVertex(uuid);
+        graphServer.addEdge(parentNode, uuid);
+        exitNodeMap.put(uuid, parentNode);
+        return uuid;
+    }
+
+    /**
+     * Connects two nodes allowing objects to flow in one direction
+     *
+     * @param startNode
+     * @param destNode
+     * @return
+     */
+    @Override
+    public boolean createDirectionalNodeConnection(UUID startNode, UUID destNode) {
+        if ((exitNodeMap.containsKey(destNode)) || (exitNodeMap.containsKey(startNode))) {
+            return false;
         }
+        graphServer.addEdge(startNode, destNode);
+        return true;
     }
 
-    private void gridTick() {
-
-        //ingest vertex queue
-        for (UUID id : vertexQueue) {
-            graph.addVertex(id);
+    /**
+     * Connects two nodes allowing objects to flow in both directions
+     *
+     * @param node1
+     * @param node2
+     * @return
+     */
+    @Override
+    public boolean createNodeConnection(UUID node1, UUID node2) {
+        if ((exitNodeMap.containsKey(node1)) || (exitNodeMap.containsKey(node2))) {
+            return false;
         }
-
-        //handle a hopefully rare situation where a vertex and edge are added between ingest vertex and ingest edge
-        if (!vertexMissing.isEmpty()) {
-            edgeQueue.addAll(vertexMissing);
-            vertexMissing.clear();
-        }
-
-        //ingest edge queue
-        for (UUIDPair pair : edgeQueue) {
-            if ((graph.containsVertex(pair.getUuid1())) && (graph.containsVertex(pair.getUuid2()))) {
-                graph.addEdge(pair.getUuid1(), pair.getUuid2());
-            } else {
-                vertexMissing.add(pair);
-                LogHelper.debug("A vertex for edge:" + pair.getUuid1() + " -> " + pair.getUuid2() + " does not exist");
-            }
-        }
-
-        //update grid objects
-        //ingest new objects
+        graphServer.addEdge(node1, node2);
+        graphServer.addEdge(node2, node1);
+        return true;
     }
 
-    boolean addVertex(UUID uuid) {
-        return uuid != null && vertexQueue.offer(uuid);
+    /**
+     * List of objects that the exit node will accept
+     * overwrites an existing whitelist or blacklist
+     * empty whitelist will cause node to accept no objects
+     * Strings in list can be regular expression
+     *
+     * @param exitNode
+     * @param unlocalizedNameList
+     * @return
+     */
+    @Override
+    public boolean applyWhitelistToNode(UUID exitNode, ArrayList<String> unlocalizedNameList) {
+        UUID parentNode = exitNodeMap.get(exitNode);
+        graphServer.getEdge(parentNode, exitNode).setWhitelist(unlocalizedNameList);
+        return true;
     }
 
-    boolean addEdge(UUID source, UUID destination) {
-        return !((source == null) || (destination == null)) && edgeQueue.offer(new UUIDPair(source, destination));
+    /**
+     * List of objects that the exit node will reject
+     * overwrites an existing whitelist or blacklist
+     * empty blacklist will cause node to accept all objects
+     * Strings in list can be regular expression
+     *
+     * @param exitNode
+     * @param unlocalizedNameList
+     * @return
+     */
+    @Override
+    public boolean applyBlacklistToNode(UUID exitNode, ArrayList<String> unlocalizedNameList) {
+        UUID parentNode = exitNodeMap.get(exitNode);
+        graphServer.getEdge(parentNode, exitNode).setBlacklist(unlocalizedNameList);
+        return true;
     }
 
-    FilteredEdge getEdge(UUID source, UUID destination) {
-        return graph.getEdge(source, destination);
+    /**
+     * inserts an object into the routing network
+     * the network will use the unlocalized name to find an exit node that will accept it
+     *
+     * @param entryNode
+     * @param unlocalizedName
+     * @param object
+     * @return
+     */
+    @Override
+    public boolean insertObjectToGrid(UUID entryNode, String unlocalizedName, Object object) {
+        graphServer.addCargo(new TransportContainer(entryNode, unlocalizedName, object));
+        return true;
     }
+
+    /**
+     * Gets an object from the routing network if available
+     * returns null if no object
+     *
+     * @param exitNode
+     */
+    @Override
+    public Object getObjectFromGrid(UUID exitNode) {
+        return null;
+    }
+
 }
