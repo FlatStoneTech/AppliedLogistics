@@ -22,25 +22,25 @@ package tech.flatstone.appliedlogistics.api.registries;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import tech.flatstone.appliedlogistics.api.registries.helpers.Hammerable;
+import tech.flatstone.appliedlogistics.api.registries.helpers.Crushable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class HammerRegistry {
-    public static ArrayList<Hammerable> registery = new ArrayList<Hammerable>();
+    private static ArrayList<Crushable> registry = new ArrayList<Crushable>();
 
     public static void register(ItemStack input, ItemStack output, float chance, float luckMultiplier) {
-        registery.add(new Hammerable(input, output, chance, luckMultiplier));
+        registry.add(new Crushable(input, output, chance, luckMultiplier));
     }
 
     public static List<ItemStack> getBlocks() {
         ArrayList<ItemStack> blocks = new ArrayList();
 
-        Iterator<Hammerable> iterator = registery.iterator();
+        Iterator<Crushable> iterator = registry.iterator();
         while (iterator.hasNext()) {
-            Hammerable entry = iterator.next();
+            Crushable entry = iterator.next();
 
             if (!blocks.contains(entry.inItemStack))
                 blocks.add(entry.inItemStack);
@@ -49,12 +49,12 @@ public class HammerRegistry {
         return blocks;
     }
 
-    public static ArrayList<Hammerable> getDrops(ItemStack itemStack) {
-        ArrayList<Hammerable> dropsList = new ArrayList();
+    public static ArrayList<Crushable> getDrops(ItemStack itemStack) {
+        ArrayList<Crushable> dropsList = new ArrayList();
 
-        Iterator<Hammerable> it = registery.iterator();
+        Iterator<Crushable> it = registry.iterator();
         while (it.hasNext()) {
-            Hammerable drop = it.next();
+            Crushable drop = it.next();
 
             if (drop.inItemStack.isItemEqual(itemStack) && drop.outItemStack != null)
                 dropsList.add(drop);
@@ -64,11 +64,11 @@ public class HammerRegistry {
     }
 
     public static boolean containsBlock(ItemStack itemStack) {
-        ArrayList<Hammerable> blocks = new ArrayList();
+        ArrayList<Crushable> blocks = new ArrayList();
 
-        Iterator<Hammerable> it = registery.iterator();
+        Iterator<Crushable> it = registry.iterator();
         while (it.hasNext()) {
-            Hammerable block = it.next();
+            Crushable block = it.next();
             if (itemStack.isItemEqual(block.inItemStack)) {
                 return true;
             }

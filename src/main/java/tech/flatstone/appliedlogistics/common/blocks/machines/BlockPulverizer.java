@@ -58,7 +58,7 @@ public class BlockPulverizer extends BlockMachineBase implements IBlockRenderer 
         if (worldIn.isRemote)
             return true;
 
-        playerIn.openGui(AppliedLogistics.instance, 1, worldIn, pos.getX(), pos.getY(), pos.getZ());
+        playerIn.openGui(AppliedLogistics.instance, 3, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
 

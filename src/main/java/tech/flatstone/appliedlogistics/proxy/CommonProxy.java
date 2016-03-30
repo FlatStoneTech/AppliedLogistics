@@ -30,6 +30,7 @@ import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.api.registries.HammerRegistry;
 import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
+import tech.flatstone.appliedlogistics.api.registries.PulverizerRegistry;
 import tech.flatstone.appliedlogistics.client.gui.GuiHandler;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.items.Items;
@@ -84,26 +85,37 @@ public abstract class CommonProxy implements IProxy {
     }
 
     @Override
-    public void registerHammerRecipes() {
+    public void registerCrusherRecipes() {
         // Ores -> Dust
         for (int i = 0; i < EnumOres.values().length; i++) {
             String oreName = EnumOres.byMeta(i).getName();
 
-            // Register Hammer
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.DUST) && (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE) || EnumOres.byMeta(i).isTypeSet(EnumOreType.VANILLA)))
+            // Register Ores
+            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.DUST) && (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE) || EnumOres.byMeta(i).isTypeSet(EnumOreType.VANILLA))) {
                 HammerRegistry.registerOreDictOre(oreName);
+                PulverizerRegistry.registerOreDictOre(oreName);
+            }
+
+            // Register Ingots
+            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT) && (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE) || EnumOres.byMeta(i).isTypeSet(EnumOreType.VANILLA)))
+                PulverizerRegistry.registerOreDictIngot(oreName);
         }
+
+        // Add other misc vanilla things
 
         // Coal
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(Items.ITEM_ORE_NUGGET.item, 1, EnumOres.DIAMOND.getMeta()), 0.005f, 0.01f);
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(net.minecraft.init.Items.coal, 2), 1.0f, 0.5f);
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(net.minecraft.init.Items.coal, 1), 0.5f, 0.5f);
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(net.minecraft.init.Items.coal, 1), 0.5f, 0.5f);
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(Items.ITEM_ORE_NUGGET.item, 1, EnumOres.DIAMOND.getMeta()), 1.5f, true);
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(net.minecraft.init.Items.coal), 1.5f, true);
 
         // Redstone
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 6), 1.0f, 0.5f);
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 4), 0.1f, 0.1f);
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 2), 0.0f, 0.5f);
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.redstone_ore), new ItemStack(net.minecraft.init.Items.redstone), 4.0f, true);
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.lit_redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 6), 1.0f, 0.5f);
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.lit_redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 4), 0.1f, 0.1f);
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.lit_redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 2), 0.0f, 0.5f);

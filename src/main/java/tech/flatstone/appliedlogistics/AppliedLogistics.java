@@ -86,7 +86,7 @@ public class AppliedLogistics {
     public void init(FMLInitializationEvent event) {
         proxy.registerRecipes();
 
-        proxy.registerHammerRecipes();
+        proxy.registerCrusherRecipes();
 
         WorldGen worldGen = new WorldGen();
         GameRegistry.registerWorldGenerator(worldGen, 0);

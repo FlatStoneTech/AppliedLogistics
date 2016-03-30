@@ -28,12 +28,15 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 import tech.flatstone.appliedlogistics.client.gui.builder.GuiBuilder;
 import tech.flatstone.appliedlogistics.client.gui.builder.GuiPlanBuilder;
 import tech.flatstone.appliedlogistics.client.gui.builder.GuiPlanLibrary;
+import tech.flatstone.appliedlogistics.client.gui.machines.GuiPulverizer;
 import tech.flatstone.appliedlogistics.common.container.builder.ContainerBuilder;
 import tech.flatstone.appliedlogistics.common.container.builder.ContainerPlanBuilder;
 import tech.flatstone.appliedlogistics.common.container.builder.ContainerPlanLibrary;
+import tech.flatstone.appliedlogistics.common.container.machines.ContainerPulverizer;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityBuilder;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanBuilder;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanLibrary;
+import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityPulverizer;
 
 public class GuiHandler implements IGuiHandler {
 
@@ -51,6 +54,8 @@ public class GuiHandler implements IGuiHandler {
                 return new ContainerPlanBuilder(player.inventory, tileEntity);
             case 2: // Plan Library GUI
                 return new ContainerPlanLibrary(player.inventory, tileEntity);
+            case 3: // Pulverizer
+                return new ContainerPulverizer(player.inventory, tileEntity);
         }
 
         return null;
@@ -70,6 +75,8 @@ public class GuiHandler implements IGuiHandler {
                 return new GuiPlanBuilder(player.inventory, (TileEntityPlanBuilder) tileEntity);
             case 2: // Plan Library GUI
                 return new GuiPlanLibrary(player.inventory, (TileEntityPlanLibrary) tileEntity);
+            case 3: // Pulverizer
+                return new GuiPulverizer(player.inventory, (TileEntityPulverizer) tileEntity);
         }
 
         return null;

@@ -30,8 +30,8 @@ public class GuiPulverizer extends GuiBase {
 
     public GuiPulverizer(InventoryPlayer inventoryPlayer, TileEntityPulverizer tileEntity) {
         super(new ContainerPulverizer(inventoryPlayer, tileEntity));
-        this.xSize = 176;
-        this.ySize = 221;
+        this.xSize = 218;
+        this.ySize = 186;
         this.tileEntity = tileEntity;
     }
 

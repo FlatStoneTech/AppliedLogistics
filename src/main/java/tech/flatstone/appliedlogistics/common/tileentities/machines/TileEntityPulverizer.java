@@ -20,19 +20,84 @@
 
 package tech.flatstone.appliedlogistics.common.tileentities.machines;
 
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
+import tech.flatstone.appliedlogistics.api.features.TechLevel;
+import tech.flatstone.appliedlogistics.api.registries.PulverizerRegistry;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCrank;
+import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaBodyMessage;
+import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityInventoryBase;
+import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
+import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.ICrankable;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
-public class TileEntityPulverizer extends TileEntityInventoryBase implements ICrankable {
-    InternalInventory inventory = new InternalInventory(this, 6);
-    int badCrankCount = 0;
+import java.util.List;
+
+public class TileEntityPulverizer extends TileEntityMachineBase implements ITickable, IWailaBodyMessage, ICrankable {
+    private InternalInventory inventory = new InternalInventory(this, 11);
+    private float speedMultiplier = 0.0f;
+    private float fortuneMultiplier = 0.0f;
+    private int maxProcessCount = 1;
+    private int ticksRemaining = 0;
+    private boolean machineWorking = false;
+    private int badCrankCount = 0;
+
+    @Override
+    public void initMachineData() {
+        super.initMachineData();
+
+        NBTTagCompound machineItemData = this.getMachineItemData();
+        if (machineItemData != null) {
+            for (int i = 0; i < 27; i++) {
+                if (machineItemData.hasKey("item_" + i)) {
+                    ItemStack item = ItemStack.loadItemStackFromNBT(machineItemData.getCompoundTag("item_" + i));
+
+                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.WOOD.getMeta())))
+                        speedMultiplier = 1.5f * item.stackSize;
+
+                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.COBBLESTONE.getMeta())))
+                        fortuneMultiplier = 0.6f * item.stackSize;
+                }
+            }
+        }
+
+        if (machineItemData == null) {
+            // Load Default Details for the machine...
+            speedMultiplier = 0.0f;
+            fortuneMultiplier = 0.0f;
+        }
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTagCompound) {
+        super.readFromNBT(nbtTagCompound);
+
+        speedMultiplier = nbtTagCompound.getFloat("speedMultiplier");
+        fortuneMultiplier = nbtTagCompound.getFloat("fortuneMultiplier");
+        ticksRemaining = nbtTagCompound.getInteger("ticksRemaining");
+        machineWorking = nbtTagCompound.getBoolean("machineWorking");
+        maxProcessCount = nbtTagCompound.getInteger("maxProcessCount");
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound nbtTagCompound) {
+        super.writeToNBT(nbtTagCompound);
+
+        nbtTagCompound.setFloat("speedMultiplier", speedMultiplier);
+        nbtTagCompound.setFloat("fortuneMultiplier", fortuneMultiplier);
+        nbtTagCompound.setInteger("ticksRemaining", ticksRemaining);
+        nbtTagCompound.setBoolean("machineWorking", machineWorking);
+        nbtTagCompound.setInteger("maxProcessCount", maxProcessCount);
+    }
 
     @Override
     public IInventory getInternalInventory() {
@@ -56,13 +121,10 @@ public class TileEntityPulverizer extends TileEntityInventoryBase implements ICr
 
     @Override
     public void doCrank() {
-        LogHelper.info(">>> Hey I Cranked...");
-
-        //todo: check for work to do..
-        badCrankCount++;
-        if (badCrankCount > 3) {
-            badCrankCount = 0;
-            ((BlockCrank) this.worldObj.getBlockState(pos.up()).getBlock()).breakCrank(this.worldObj, this.pos.up(), false);
+        if (ticksRemaining > 0 && machineWorking) {
+            ticksRemaining = ticksRemaining - 20;
+            this.markForUpdate();
+            this.markDirty();
         }
     }
 
@@ -73,20 +135,92 @@ public class TileEntityPulverizer extends TileEntityInventoryBase implements ICr
 
     @Override
     public boolean canCrank() {
-        return true;
+        if (ticksRemaining > 0 && machineWorking)
+            return true;
+
+        badCrankCount++;
+        if (badCrankCount > 5) {
+            badCrankCount = 0;
+            ((BlockCrank) this.worldObj.getBlockState(pos.up()).getBlock()).breakCrank(this.worldObj, this.pos.up(), false);
+        }
+
+        return false;
+    }
+
+    @Override
+    public void update() {
+        if (inventory.getStackInSlot(0) != null && inventory.getStackInSlot(1) == null) {
+            ItemStack itemIn = inventory.getStackInSlot(0);
+            ItemStack itemOut;
+
+            if (!PulverizerRegistry.containsBlock(itemIn))
+                return;
+
+            if (itemIn.stackSize - maxProcessCount <= 0) {
+                itemOut = itemIn.copy();
+                itemIn = null;
+            } else {
+                itemOut = itemIn.copy();
+                itemOut.stackSize = maxProcessCount;
+                itemIn.stackSize =- maxProcessCount;
+            }
+
+            inventory.setInventorySlotContents(0, itemIn);
+            inventory.setInventorySlotContents(1, itemOut);
+
+            ticksRemaining = 200;   // todo: time registry for pulverizer
+            machineWorking = true;
+
+            this.markForUpdate();
+            this.markDirty();
+        }
+
+        if (ticksRemaining > 0 && machineWorking && getBlockMetadata() == TechLevel.CREATIVE.getMeta())
+            ticksRemaining = 0;
+
+        if (ticksRemaining <= 0 && machineWorking) {
+            machineWorking = false;
+            ticksRemaining = 0;
+            // Machine is done...
+
+            // todo: pulverize code here... RNG, etc...
+
+            inventory.setInventorySlotContents(1, null);
+
+            this.markForUpdate();
+            this.markDirty();
+        }
+    }
+
+    @Override
+    public List<String> getWailaBodyToolTip(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        return currentTip;
     }
 
     /**
      * slot 0 = item to pulverize
      * slot 1 = item it is working on (internal)
-     * slot 2 = item output (primary)
-     * slot 3 = item output (primary)
-     * slot 4 = item output (secondary)
-     * slot 5 = fuel input (opt)
+     * slot 2, 3, 4, 5, 6, 7, 8, 9, 10 = item output
+     * slot 11 = fuel input (opt) ???
      */
 
     /**
      * Stone tier, fuel = side, input = top?
      * all other tiers, input all sides...
+     */
+
+    /**
+     * Pulverizer Registry:
+     *
+     * (Item Registry)
+     * ItemStack input
+     * ItemStack output
+     * float chance
+     *
+     * (Time Registry)
+     * ItemStack input
+     * int ticks
+     *
+     * 200 ticks = default * machine multipler
      */
 }

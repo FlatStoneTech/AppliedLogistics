@@ -32,6 +32,6 @@ public class ContainerPulverizer extends ContainerBase {
         super(inventoryPlayer, tileEntity);
         this.inventory = (IInventory) tileEntity;
 
-        bindPlayerInventory(inventoryPlayer, 0, 138);
+        bindPlayerInventory(inventoryPlayer, 0, 70);
     }
 }

@@ -22,13 +22,13 @@ package tech.flatstone.appliedlogistics.api.registries.helpers;
 
 import net.minecraft.item.ItemStack;
 
-public class Hammerable {
+public class Crushable {
     public ItemStack inItemStack;
     public ItemStack outItemStack;
     public float chance;
     public float luckMultiplier;
 
-    public Hammerable(ItemStack inItemStack, ItemStack outItemStack, float chance, float luckMultiplier) {
+    public Crushable(ItemStack inItemStack, ItemStack outItemStack, float chance, float luckMultiplier) {
         this.inItemStack = inItemStack;
         this.outItemStack = outItemStack;
         this.chance = chance;

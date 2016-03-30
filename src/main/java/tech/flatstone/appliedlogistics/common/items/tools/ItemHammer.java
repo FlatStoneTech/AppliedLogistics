@@ -38,7 +38,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.registries.HammerRegistry;
-import tech.flatstone.appliedlogistics.api.registries.helpers.Hammerable;
+import tech.flatstone.appliedlogistics.api.registries.helpers.Crushable;
 import tech.flatstone.appliedlogistics.common.items.ItemBaseTool;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
@@ -84,13 +84,13 @@ public class ItemHammer extends ItemBaseTool implements IItemRenderer, IProvideR
         int fortune = EnchantmentHelper.getFortuneModifier(player);
         boolean valid = false;
 
-        ArrayList<Hammerable> drops = HammerRegistry.getDrops(blockItemStack);
+        ArrayList<Crushable> drops = HammerRegistry.getDrops(blockItemStack);
 
         if (drops.size() > 0) {
-            Iterator<Hammerable> it = drops.iterator();
+            Iterator<Crushable> it = drops.iterator();
 
             while (it.hasNext()) {
-                Hammerable drop = it.next();
+                Crushable drop = it.next();
 
                 if (!world.isRemote && world.rand.nextFloat() <= drop.chance + (drop.luckMultiplier * fortune)) {
                     EntityItem entityItem = new EntityItem(world, (double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, drop.outItemStack.copy());

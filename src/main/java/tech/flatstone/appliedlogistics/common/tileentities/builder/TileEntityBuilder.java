@@ -467,9 +467,8 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
 
     @Override
     public void doCrank() {
-        if (getTotalTicks() > 0 && machineWorking) {
+        if (ticksRemaining > 0 && machineWorking) {
             ticksRemaining = ticksRemaining - 20;
-            badCrankCount = 0;
             this.markForUpdate();
             this.markDirty();
         }
@@ -482,7 +481,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
 
     @Override
     public boolean canCrank() {
-        if (getTotalTicks() > 0 && machineWorking)
+        if (ticksRemaining > 0 && machineWorking)
             return true;
 
         badCrankCount++;

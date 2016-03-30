@@ -24,12 +24,12 @@ import net.minecraft.util.IStringSerializable;
 import tech.flatstone.appliedlogistics.ModInfo;
 
 public enum TechLevel implements IStringSerializable {
-    STONE_AGE("stone"),
-    BRONZE_AGE("bronze"),
-    STEEL_AGE("steel"),
-    INDUSTRIAL_AGE("industrial"),
-    DIGITAL_AGE("digital"),
-    CREATIVE("creative"),;
+    STONE_AGE("stone"),             // Only cobblestone machines, hand cranked
+    BRONZE_AGE("bronze"),           //
+    STEEL_AGE("steel"),             //
+    INDUSTRIAL_AGE("industrial"),   // Steam powered power system, machines can use power
+    DIGITAL_AGE("digital"),         //
+    CREATIVE("creative"),;          // N/A
 
     private static final TechLevel[] META_LOOKUP = new TechLevel[values().length];
 
