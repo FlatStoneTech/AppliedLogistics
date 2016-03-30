@@ -41,6 +41,7 @@ public class FilteredEdge<V> extends DefaultEdge {
         this.start = start;
         this.uuid = uuid;
         this.list = Collections.synchronizedList(new ArrayList<String>());
+        this.isWhiteList = true;
     }
 
     public void setWhitelist(ArrayList<String> whitelist) {
@@ -91,5 +92,10 @@ public class FilteredEdge<V> extends DefaultEdge {
 
     public void setExit(boolean exit) {
         isExit = exit;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + start + " : " + end + ")";
     }
 }

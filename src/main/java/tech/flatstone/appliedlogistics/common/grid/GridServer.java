@@ -23,6 +23,7 @@ package tech.flatstone.appliedlogistics.common.grid;
 
 import org.jgrapht.experimental.dag.DirectedAcyclicGraph;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
+import org.jgrapht.traverse.ClosestFirstIterator;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.util.ArrayList;
@@ -38,8 +39,10 @@ class GridServer implements Runnable {
     private DirectedAcyclicGraph<UUID, FilteredEdge> graph;
     private ConcurrentLinkedQueue<UUID> vertexQueue;
     private ConcurrentLinkedQueue<UUIDPair> edgeQueue;
+    private ConcurrentLinkedQueue<UUIDPair> exitQueue;
     private CyclicBarrier barrier;
     private LinkedList<TransportContainer> activeCargo;
+    private LinkedList<FilteredEdge> exitNodes;
     private ConcurrentLinkedQueue<TransportContainer> incomingCargo;
     private ConcurrentHashMap<UUID, TransportContainer> outgoingCargo;
 
@@ -50,6 +53,9 @@ class GridServer implements Runnable {
 
         vertexQueue = new ConcurrentLinkedQueue<UUID>();
         edgeQueue = new ConcurrentLinkedQueue<UUIDPair>();
+        exitQueue = new ConcurrentLinkedQueue<UUIDPair>();
+
+        exitNodes = new LinkedList<FilteredEdge>();
 
         incomingCargo = new ConcurrentLinkedQueue<TransportContainer>();
         activeCargo = new LinkedList<TransportContainer>();
@@ -129,6 +135,12 @@ class GridServer implements Runnable {
             }
         }
 
+        for (UUIDPair pair : exitQueue) {
+            FilteredEdge edge = graph.getEdge(pair.getUUID1(),pair.getUUID2());
+            edge.setExit(true);
+            exitNodes.add(edge);
+        }
+
         //update grid objects
         for (TransportContainer container : activeCargo) {
             outgoingCargo.put(container.getDestination(), container);
@@ -137,6 +149,11 @@ class GridServer implements Runnable {
         //ingest new objects
         for (TransportContainer container : incomingCargo) {
             //// TODO: 2016-03-28 solve for destination
+            ClosestFirstIterator<UUID, FilteredEdge> closestFirstIterator =
+                    new ClosestFirstIterator<UUID, FilteredEdge>(
+                            graph, container.getSource(), container.getSearchRange()
+                    );
+
             activeCargo.add(container);
         }
     }
@@ -147,6 +164,10 @@ class GridServer implements Runnable {
 
     boolean addEdge(UUID source, UUID destination) {
         return !((source == null) || (destination == null)) && edgeQueue.offer(new UUIDPair(source, destination));
+    }
+
+    boolean markEdgeExit(UUID source, UUID destination) {
+        return source != null && exitQueue.offer(new UUIDPair(source, destination));
     }
 
     FilteredEdge getEdge(UUID source, UUID destination) {

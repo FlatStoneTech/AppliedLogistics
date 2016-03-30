@@ -28,12 +28,24 @@ public class TransportContainer {
     private UUID source;
     private UUID currentNode;
     private UUID destination;
+    private double searchRange;
     private int timeOnNode;
 
+    public TransportContainer(UUID source, String unlocalizedName, Object cargo, double searchRange) {
+        this.source = source;
+        this.unlocalizedName = unlocalizedName;
+        this.cargo = cargo;
+        this.searchRange = searchRange;
+    }
     public TransportContainer(UUID source, String unlocalizedName, Object cargo) {
         this.cargo = cargo;
         this.source = source;
         this.unlocalizedName = unlocalizedName;
+        this.searchRange = Double.POSITIVE_INFINITY;
+    }
+
+    public double getSearchRange() {
+        return searchRange;
     }
 
     public Object getCargo() {
