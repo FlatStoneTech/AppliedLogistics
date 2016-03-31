@@ -24,6 +24,7 @@ package tech.flatstone.appliedlogistics.common.grid;
 import org.jgrapht.experimental.dag.DirectedAcyclicGraph;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.traverse.ClosestFirstIterator;
+import tech.flatstone.appliedlogistics.common.util.GraphHelper;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.util.ArrayList;
@@ -42,7 +43,6 @@ class GridServer implements Runnable {
     private ConcurrentLinkedQueue<UUIDPair> exitQueue;
     private CyclicBarrier barrier;
     private LinkedList<TransportContainer> activeCargo;
-    private LinkedList<FilteredEdge> exitNodes;
     private ConcurrentLinkedQueue<TransportContainer> incomingCargo;
     private ConcurrentHashMap<UUID, TransportContainer> outgoingCargo;
 
@@ -54,8 +54,6 @@ class GridServer implements Runnable {
         vertexQueue = new ConcurrentLinkedQueue<UUID>();
         edgeQueue = new ConcurrentLinkedQueue<UUIDPair>();
         exitQueue = new ConcurrentLinkedQueue<UUIDPair>();
-
-        exitNodes = new LinkedList<FilteredEdge>();
 
         incomingCargo = new ConcurrentLinkedQueue<TransportContainer>();
         activeCargo = new LinkedList<TransportContainer>();
@@ -136,9 +134,8 @@ class GridServer implements Runnable {
         }
 
         for (UUIDPair pair : exitQueue) {
-            FilteredEdge edge = graph.getEdge(pair.getUUID1(),pair.getUUID2());
+            FilteredEdge edge = graph.getEdge(pair.getUUID1(), pair.getUUID2());
             edge.setExit(true);
-            exitNodes.add(edge);
         }
 
         //update grid objects
@@ -148,11 +145,19 @@ class GridServer implements Runnable {
 
         //ingest new objects
         for (TransportContainer container : incomingCargo) {
-            //// TODO: 2016-03-28 solve for destination
             ClosestFirstIterator<UUID, FilteredEdge> closestFirstIterator =
                     new ClosestFirstIterator<UUID, FilteredEdge>(
                             graph, container.getSource(), container.getSearchRange()
                     );
+
+            while (closestFirstIterator.hasNext()) {
+                UUID uuid = closestFirstIterator.next();
+                FilteredEdge edge = closestFirstIterator.getSpanningTreeEdge(uuid);
+                if ((edge.isExit()) && (edge.canRoute(container.getUnlocalizedName()))) {
+                    container.setDestination(uuid);
+                    container.setPath(GraphHelper.findPathBetween(closestFirstIterator, container.getSource(), uuid));
+                }
+            }
 
             activeCargo.add(container);
         }

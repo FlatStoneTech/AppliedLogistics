@@ -33,7 +33,6 @@ import tech.flatstone.appliedlogistics.api.registries.helpers.Crushable;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCrank;
 import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaBodyMessage;
 import tech.flatstone.appliedlogistics.common.items.Items;
-import tech.flatstone.appliedlogistics.common.tileentities.TileEntityInventoryBase;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
@@ -217,7 +216,7 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
                 boolean itemFortune = crushable.luckMultiplier == 1.0f;
                 float rng = rnd.nextFloat();
 
-                int itemCount = (int)Math.floor((itemChance + rng + outItem.stackSize) * fortuneMultiplier);
+                int itemCount = (int) Math.floor((itemChance + rng + outItem.stackSize) * fortuneMultiplier);
                 LogHelper.info(">>> Item Chance: (" + outItem.getUnlocalizedName() + ") " + itemCount);
 
             }
