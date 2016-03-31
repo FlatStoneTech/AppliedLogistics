@@ -108,14 +108,14 @@ public abstract class CommonProxy implements IProxy {
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(net.minecraft.init.Items.coal, 2), 1.0f, 0.5f);
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(net.minecraft.init.Items.coal, 1), 0.5f, 0.5f);
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(net.minecraft.init.Items.coal, 1), 0.5f, 0.5f);
-        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(Items.ITEM_ORE_NUGGET.item, 1, EnumOres.DIAMOND.getMeta()), 1.5f, true);
-        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(net.minecraft.init.Items.coal), 1.5f, true);
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(Items.ITEM_ORE_NUGGET.item, 1, EnumOres.DIAMOND.getMeta()), 0.05f, true);
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(net.minecraft.init.Items.coal, 2), 1.5f, true);
 
         // Redstone
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 6), 1.0f, 0.5f);
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 4), 0.1f, 0.1f);
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 2), 0.0f, 0.5f);
-        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.redstone_ore), new ItemStack(net.minecraft.init.Items.redstone), 4.0f, true);
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 4), 4.0f, true);
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.lit_redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 6), 1.0f, 0.5f);
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.lit_redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 4), 0.1f, 0.1f);
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.lit_redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 2), 0.0f, 0.5f);

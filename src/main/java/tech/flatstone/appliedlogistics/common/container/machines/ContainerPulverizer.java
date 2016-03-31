@@ -24,6 +24,9 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import tech.flatstone.appliedlogistics.common.container.ContainerBase;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotDisabled;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotNormal;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotOutput;
 
 public class ContainerPulverizer extends ContainerBase {
     IInventory inventory;
@@ -33,5 +36,14 @@ public class ContainerPulverizer extends ContainerBase {
         this.inventory = (IInventory) tileEntity;
 
         bindPlayerInventory(inventoryPlayer, 0, 70);
+
+        addSlotToContainer(new SlotNormal(inventory, 0, 12, 22));
+        addSlotToContainer(new SlotDisabled(inventory, 1, 190, 124));
+
+        for (int i = 0; i < 9; i++) {
+            addSlotToContainer(new SlotOutput(inventory, i + 2, 8 + (18 * i), 162));
+        }
+
+
     }
 }

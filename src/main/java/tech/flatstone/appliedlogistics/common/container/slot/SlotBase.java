@@ -66,8 +66,8 @@ public class SlotBase extends Slot {
 
     @Override
     public ItemStack getStack() {
-        if (!isEnabled)
-            return null;
+        //if (!isEnabled)
+        //    return null;
 
         if (this.inventory.getSizeInventory() <= getSlotIndex())
             return null;

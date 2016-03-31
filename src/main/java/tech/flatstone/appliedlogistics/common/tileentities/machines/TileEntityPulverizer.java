@@ -29,6 +29,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.api.registries.PulverizerRegistry;
+import tech.flatstone.appliedlogistics.api.registries.helpers.Crushable;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCrank;
 import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaBodyMessage;
 import tech.flatstone.appliedlogistics.common.items.Items;
@@ -40,7 +41,9 @@ import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.ICrankable;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class TileEntityPulverizer extends TileEntityMachineBase implements ITickable, IWailaBodyMessage, ICrankable {
     private InternalInventory inventory = new InternalInventory(this, 11);
@@ -65,7 +68,7 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
                         speedMultiplier = 1.5f * item.stackSize;
 
                     if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.COBBLESTONE.getMeta())))
-                        fortuneMultiplier = 0.6f * item.stackSize;
+                        fortuneMultiplier = 0.8f * item.stackSize;
                 }
             }
         }
@@ -74,6 +77,7 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
             // Load Default Details for the machine...
             speedMultiplier = 0.0f;
             fortuneMultiplier = 0.0f;
+            maxProcessCount = 1;
         }
     }
 
@@ -161,14 +165,18 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
                 itemIn = null;
             } else {
                 itemOut = itemIn.copy();
+
                 itemOut.stackSize = maxProcessCount;
-                itemIn.stackSize =- maxProcessCount;
+                itemIn.stackSize = itemIn.stackSize - maxProcessCount;
             }
+
+            if (itemIn != null && itemIn.stackSize == 0) itemIn = null;
+            if (itemOut.stackSize == 0) itemOut = null;
 
             inventory.setInventorySlotContents(0, itemIn);
             inventory.setInventorySlotContents(1, itemOut);
 
-            ticksRemaining = 200;   // todo: time registry for pulverizer
+            ticksRemaining = 0;   // todo: time registry for pulverizer
             machineWorking = true;
 
             this.markForUpdate();
@@ -183,9 +191,39 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
             ticksRemaining = 0;
             // Machine is done...
 
+            if (worldObj.isRemote)
+                return;
+
+            //todo: actually crash the game if bad things happened
+            ItemStack processItem = inventory.getStackInSlot(1);
+            if (processItem == null) {
+                //LogHelper.fatal("Bad things have happened...");
+                return;
+            }
+
             // todo: pulverize code here... RNG, etc...
+            ArrayList<Crushable> drops = PulverizerRegistry.getDrops(processItem);
+
+            if (drops.isEmpty()) {
+                //LogHelper.fatal("Bad things have happened...");
+                return;
+            }
+
+            Random rnd = new Random();
+
+            for (Crushable crushable : drops) {
+                ItemStack outItem = crushable.outItemStack;
+                float itemChance = crushable.chance;
+                boolean itemFortune = crushable.luckMultiplier == 1.0f;
+                float rng = rnd.nextFloat();
+
+                int itemCount = (int)Math.floor((itemChance + rng + outItem.stackSize) * fortuneMultiplier);
+                LogHelper.info(">>> Item Chance: (" + outItem.getUnlocalizedName() + ") " + itemCount);
+
+            }
 
             inventory.setInventorySlotContents(1, null);
+            badCrankCount = 0;
 
             this.markForUpdate();
             this.markDirty();
