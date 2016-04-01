@@ -23,26 +23,29 @@ package tech.flatstone.appliedlogistics.common.util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
-public class GuiHelper extends Gui {
+public class GuiHelper extends GuiScreen {
     protected Minecraft mc = Minecraft.getMinecraft();
     protected TextureManager textureManager = mc.renderEngine;
     protected FontRenderer fontRenderer = mc.fontRendererObj;
 
     public GuiHelper() {
+        this.itemRender = mc.getRenderItem();
     }
 
     public void drawWindow(int x, int y, int w, int h, int bgColor) {
@@ -249,5 +252,78 @@ public class GuiHelper extends Gui {
         drawTexturedModalRect(0, 0, 0, 0, 128, 128);
     }
 
+    public void renderToolTip(ArrayList<String> messages, int x, int y) {
+        this.drawHoveringText(messages, x, y, fontRenderer);
+    }
 
+    public void renderItemStackToolTip(PlanRequiredMaterials materials, int x, int y) {
+        ItemStack stack = materials.getRequiredMaterials().get(0);
+
+        List<String> list = stack.getTooltip(this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips);
+
+        for (int i = 0; i < list.size(); ++i) {
+            if (i == 0) {
+                list.set(i, stack.getRarity().rarityColor + (String) list.get(i));
+
+                /*
+                 * Add Material Information
+                 */
+                int j = 1;
+
+                // Add Description
+                if (!materials.getDescription().isEmpty()) {
+                    for (String message : Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(materials.getDescription(), 150)) {
+                        list.add(i + j, String.format("%s%s%s",
+                                EnumChatFormatting.YELLOW,
+                                EnumChatFormatting.ITALIC,
+                                message
+                        ));
+                        j++;
+                    }
+                }
+
+                // Add Min / Max
+                if (materials.getMinCount() == materials.getMaxCount()) {
+                    list.add(i + j, String.format("%s%s%s: %s",
+                            EnumChatFormatting.GRAY,
+                            EnumChatFormatting.ITALIC,
+                            LanguageHelper.LABEL.translateMessage("required"),
+                            materials.getMinCount()
+                    ));
+                } else {
+                    list.add(i + j, String.format("%s%s%s: %s / %s %s",
+                            EnumChatFormatting.GRAY,
+                            EnumChatFormatting.ITALIC,
+                            LanguageHelper.LABEL.translateMessage("min"),
+                            materials.getMinCount(),
+                            LanguageHelper.LABEL.translateMessage("max"),
+                            materials.getMaxCount()
+                    ));
+                }
+                j++;
+
+                // Add Weight Information
+                if (materials.getMinCount() == materials.getMaxCount()) {
+                    list.add(i + j, String.format("%s%s%s: %skg",
+                            EnumChatFormatting.GRAY,
+                            EnumChatFormatting.ITALIC,
+                            LanguageHelper.LABEL.translateMessage("weight_added"),
+                            materials.getItemWeight() * materials.getMaxCount()
+                    ));
+                } else {
+                    list.add(i + j, String.format("%s%s%s: %skg",
+                            EnumChatFormatting.GRAY,
+                            EnumChatFormatting.ITALIC,
+                            LanguageHelper.LABEL.translateMessage("weight_per_item"),
+                            materials.getItemWeight()
+                    ));
+                }
+            } else {
+                list.set(i, EnumChatFormatting.GRAY + (String) list.get(i));
+            }
+        }
+
+        FontRenderer font = stack.getItem().getFontRenderer(stack);
+        this.drawHoveringText(list, x, y, (font == null ? fontRenderer : font));
+    }
 }

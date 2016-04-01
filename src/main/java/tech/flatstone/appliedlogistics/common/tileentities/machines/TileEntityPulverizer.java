@@ -264,6 +264,18 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
         }
     }
 
+    public int getTicksRemaining() {
+        return ticksRemaining;
+    }
+
+    public int getTotalProcessTime() {
+        if (ticksRemaining == 0)
+            return 0;
+
+        //todo: check itemstack in slot 1 with registry of time
+        return 200;
+    }
+
     @Override
     public List<String> getWailaBodyToolTip(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
         return currentTip;

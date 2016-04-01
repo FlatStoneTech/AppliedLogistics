@@ -215,7 +215,7 @@ public class GuiBuilder extends GuiBase {
         if (planDetails != null) {
             List<PlanRequiredMaterials> requiredMaterials = planDetails.getRequiredMaterialsList();
             if (slot instanceof SlotBuilderInventory && slot.getSlotIndex() > 0 && slot.getSlotIndex() <= requiredMaterials.size() && !slot.getHasStack()) {
-                renderToolTip(requiredMaterials.get(slot.getSlotIndex() - 1), mouse_x, mouse_y);
+                guiHelper.renderItemStackToolTip(requiredMaterials.get(slot.getSlotIndex() - 1), mouse_x, mouse_y);
             }
         }
     }
@@ -236,76 +236,4 @@ public class GuiBuilder extends GuiBase {
         PacketButtonClick packetButtonClick = new PacketButtonClick(button.id, tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ(), playerUUID);
         PacketHandler.INSTANCE.sendToServer(packetButtonClick);
     }
-
-    protected void renderToolTip(PlanRequiredMaterials materials, int x, int y) {
-        ItemStack stack = materials.getRequiredMaterials().get(0);
-
-        List<String> list = stack.getTooltip(this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips);
-
-        for (int i = 0; i < list.size(); ++i) {
-            if (i == 0) {
-                list.set(i, stack.getRarity().rarityColor + (String) list.get(i));
-
-                /*
-                 * Add Material Information
-                 */
-                int j = 1;
-
-                // Add Description
-                if (!materials.getDescription().isEmpty()) {
-                    for (String message : Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(materials.getDescription(), 150)) {
-                        list.add(i + j, String.format("%s%s%s",
-                                EnumChatFormatting.YELLOW,
-                                EnumChatFormatting.ITALIC,
-                                message
-                        ));
-                        j++;
-                    }
-                }
-
-                // Add Min / Max
-                if (materials.getMinCount() == materials.getMaxCount()) {
-                    list.add(i + j, String.format("%s%s%s: %s",
-                            EnumChatFormatting.GRAY,
-                            EnumChatFormatting.ITALIC,
-                            LanguageHelper.LABEL.translateMessage("required"),
-                            materials.getMinCount()
-                    ));
-                } else {
-                    list.add(i + j, String.format("%s%s%s: %s / %s %s",
-                            EnumChatFormatting.GRAY,
-                            EnumChatFormatting.ITALIC,
-                            LanguageHelper.LABEL.translateMessage("min"),
-                            materials.getMinCount(),
-                            LanguageHelper.LABEL.translateMessage("max"),
-                            materials.getMaxCount()
-                    ));
-                }
-                j++;
-
-                // Add Weight Information
-                if (materials.getMinCount() == materials.getMaxCount()) {
-                    list.add(i + j, String.format("%s%s%s: %skg",
-                            EnumChatFormatting.GRAY,
-                            EnumChatFormatting.ITALIC,
-                            LanguageHelper.LABEL.translateMessage("weight_added"),
-                            materials.getItemWeight() * materials.getMaxCount()
-                    ));
-                } else {
-                    list.add(i + j, String.format("%s%s%s: %skg",
-                            EnumChatFormatting.GRAY,
-                            EnumChatFormatting.ITALIC,
-                            LanguageHelper.LABEL.translateMessage("weight_per_item"),
-                            materials.getItemWeight()
-                    ));
-                }
-            } else {
-                list.set(i, EnumChatFormatting.GRAY + (String) list.get(i));
-            }
-        }
-
-        FontRenderer font = stack.getItem().getFontRenderer(stack);
-        this.drawHoveringText(list, x, y, (font == null ? fontRendererObj : font));
-    }
-
 }

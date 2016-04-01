@@ -21,12 +21,19 @@
 package tech.flatstone.appliedlogistics.client.gui.machines;
 
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.client.gui.GuiBase;
 import tech.flatstone.appliedlogistics.common.container.machines.ContainerPulverizer;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotBuilderInventory;
+import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityPulverizer;
-import tech.flatstone.appliedlogistics.common.util.GuiHelper;
-import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
+import tech.flatstone.appliedlogistics.common.util.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GuiPulverizer extends GuiBase {
     TileEntityPulverizer tileEntity;
@@ -47,12 +54,42 @@ public class GuiPulverizer extends GuiBase {
 
     @Override
     public void drawFG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
+        this.fontRendererObj.drawString(tileEntity.hasCustomName() ? tileEntity.getCustomName() : LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()), 8, 6, 4210752);
+        this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage("container.inventory"), 8, 58, 4210752);
 
+        /**
+         * Draw Machine Details
+         */
+        GL11.glPushMatrix();
 
-        int secondsLeft = 1000;
-        int timePercent = 50;
+        //todo: think of how to do a mouse over for help? some sort of reg? string, x1, x2, y1, y2...
+        //^^ should do that in guiHelper, since it would be useful on all gui windows...
 
-        guiHelper.drawHorzProgressBar(40, 26, 126, 8, 50, colorBackground, colorBorder, colorProgressBackground);
+        // Bronze Gear :: number of ore that can be processed at one time
+        guiHelper.drawItemStack(new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.BRONZE.getMeta()), 190, 20);  // x = 190 to 206 // y = 20 to 36
+        guiHelper.drawCenteredString(190, 38, 16, "x1", 4210752);
+
+        // Stone Gear :: Chance Percent
+        guiHelper.drawItemStack(new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.COBBLESTONE.getMeta()), 190, 49); // x = 190 to 206 // y = 49 to 65
+        guiHelper.drawCenteredString(190, 67, 16, "160%", 4210752);
+
+        // Wood Gear :: Speed Percent
+        guiHelper.drawItemStack(new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.WOOD.getMeta()), 190, 78); // x = 190 to 206 // y = 78 to 94
+        guiHelper.drawCenteredString(190, 96, 16, "0%", 4210752);
+
+        GL11.glPopMatrix();
+
+        /**
+         * Draw Progress Bar
+         */
+        int timeTotal = tileEntity.getTotalProcessTime();
+        int timeCurrent = tileEntity.getTicksRemaining();
+
+        float timePercent = ((((float) timeTotal - (float) timeCurrent) / (float) timeTotal)) * 100;
+
+        int secondsLeft = (timeCurrent / 20) * 1000;
+
+        guiHelper.drawHorzProgressBar(40, 26, 126, 8, Math.round(timePercent), colorBackground, colorBorder, colorProgressBackground);
         String progressLabel = String.format("%s: %s (%d%%)",
                 LanguageHelper.LABEL.translateMessage("time_left"),
                 DurationFormatUtils.formatDuration(secondsLeft, "mm:ss"),
@@ -60,4 +97,18 @@ public class GuiPulverizer extends GuiBase {
         );
         guiHelper.drawCenteredStringWithShadow(40, 26, 126, progressLabel, colorFont);
     }
+
+    @Override
+    public void drawScreen(int mouse_x, int mouse_y, float btn) {
+        super.drawScreen(mouse_x, mouse_y, btn);
+
+        // todo: draw tooltip for overlay icon...
+
+        ArrayList<String> messages = new ArrayList<String>();
+        messages.add("Testing tooltip...");
+        messages.add("hopefully this works...");
+        guiHelper.renderToolTip(messages, mouse_x, mouse_y);
+    }
+
+
 }
