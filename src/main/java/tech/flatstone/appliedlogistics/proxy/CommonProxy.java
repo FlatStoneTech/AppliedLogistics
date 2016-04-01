@@ -119,6 +119,23 @@ public abstract class CommonProxy implements IProxy {
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.lit_redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 6), 1.0f, 0.5f);
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.lit_redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 4), 0.1f, 0.1f);
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.lit_redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 2), 0.0f, 0.5f);
+
+        // Stone
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.stone), new ItemStack(net.minecraft.init.Blocks.cobblestone), 1.0f, false);
+
+        // Cobblestone
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.cobblestone), new ItemStack(net.minecraft.init.Blocks.gravel), 1.0f, false);
+
+        // Gravel
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.gravel), new ItemStack(net.minecraft.init.Blocks.sand), 1.0f, false);
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.gravel), new ItemStack(net.minecraft.init.Items.flint), 0.1f, true);
+
+        // Sand
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.sand), new ItemStack(net.minecraft.init.Blocks.clay), 1.0f, false);
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.sandstone), new ItemStack(net.minecraft.init.Blocks.sand), 4.0f, false);
+
+        // Clay
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.clay), new ItemStack(net.minecraft.init.Items.clay_ball), 4.0f, true);
     }
 
     @Override

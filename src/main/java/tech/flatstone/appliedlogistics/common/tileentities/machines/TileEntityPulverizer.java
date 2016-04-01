@@ -38,7 +38,7 @@ import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInv
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.ICrankable;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
+import tech.flatstone.appliedlogistics.common.util.InventoryHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +52,14 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
     private int ticksRemaining = 0;
     private boolean machineWorking = false;
     private int badCrankCount = 0;
+    private int crushIndex = 0;
+    private float crushRNG = 0;
+    private boolean crushPaused = false;
+    private Random rnd = new Random();
+
+    public boolean isCrushPaused() {
+        return crushPaused;
+    }
 
     @Override
     public void initMachineData() {
@@ -89,6 +97,9 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
         ticksRemaining = nbtTagCompound.getInteger("ticksRemaining");
         machineWorking = nbtTagCompound.getBoolean("machineWorking");
         maxProcessCount = nbtTagCompound.getInteger("maxProcessCount");
+        crushIndex = nbtTagCompound.getInteger("crushIndex");
+        crushPaused = nbtTagCompound.getBoolean("crushPaused");
+        crushRNG = nbtTagCompound.getFloat("crushRNG");
     }
 
     @Override
@@ -100,6 +111,9 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
         nbtTagCompound.setInteger("ticksRemaining", ticksRemaining);
         nbtTagCompound.setBoolean("machineWorking", machineWorking);
         nbtTagCompound.setInteger("maxProcessCount", maxProcessCount);
+        nbtTagCompound.setInteger("crushIndex", crushIndex);
+        nbtTagCompound.setBoolean("crushPaused", crushPaused);
+        nbtTagCompound.setFloat("crushRNG", crushRNG);
     }
 
     @Override
@@ -109,7 +123,7 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
 
     @Override
     public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
-
+        if (slot >= 2 && this.crushPaused) crushPaused = false;
     }
 
     @Override
@@ -175,7 +189,8 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
             inventory.setInventorySlotContents(0, itemIn);
             inventory.setInventorySlotContents(1, itemOut);
 
-            ticksRemaining = 0;   // todo: time registry for pulverizer
+            ticksRemaining = 200;   // todo: time registry for pulverizer
+
             machineWorking = true;
 
             this.markForUpdate();
@@ -186,46 +201,66 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
             ticksRemaining = 0;
 
         if (ticksRemaining <= 0 && machineWorking) {
-            machineWorking = false;
             ticksRemaining = 0;
-            // Machine is done...
+            // Machine Done...
 
             if (worldObj.isRemote)
                 return;
 
-            //todo: actually crash the game if bad things happened
             ItemStack processItem = inventory.getStackInSlot(1);
             if (processItem == null) {
-                //LogHelper.fatal("Bad things have happened...");
                 return;
             }
 
-            // todo: pulverize code here... RNG, etc...
             ArrayList<Crushable> drops = PulverizerRegistry.getDrops(processItem);
 
             if (drops.isEmpty()) {
-                //LogHelper.fatal("Bad things have happened...");
                 return;
             }
 
-            Random rnd = new Random();
+            if (this.crushPaused) return;
 
-            for (Crushable crushable : drops) {
-                ItemStack outItem = crushable.outItemStack;
+            for (int i = this.crushIndex; i < drops.size(); i++) {
+                this.crushIndex = i;
+                Crushable crushable = drops.get(this.crushIndex);
+
+                ItemStack outItem = crushable.outItemStack.copy();
                 float itemChance = crushable.chance;
                 boolean itemFortune = crushable.luckMultiplier == 1.0f;
-                float rng = rnd.nextFloat();
+                if (crushRNG == -1) crushRNG = this.rnd.nextFloat();
 
-                int itemCount = (int) Math.floor((itemChance + rng + outItem.stackSize) * fortuneMultiplier);
-                LogHelper.info(">>> Item Chance: (" + outItem.getUnlocalizedName() + ") " + itemCount);
+                int itemCount = (int) Math.floor((itemChance + crushRNG + outItem.stackSize) * fortuneMultiplier);
+                //LogHelper.info(">>> Item Chance: (" + outItem.getUnlocalizedName() + ") " + itemCount);
 
+                outItem.stackSize = itemCount;
+
+                // Simulate placing into output slot...
+                if (InventoryHelper.addItemStackToInventory(outItem, inventory, 2, 10, true) != null) {
+                    this.crushPaused = true;
+                    return;
+                }
+
+                InventoryHelper.addItemStackToInventory(outItem, inventory, 2, 10);
+                this.crushRNG = -1;
             }
 
+            this.crushIndex = 0;
             inventory.setInventorySlotContents(1, null);
+
             badCrankCount = 0;
+            machineWorking = false;
 
             this.markForUpdate();
             this.markDirty();
+
+
+            /**
+             * 1. Get a crushable return
+             * 2. Generate RNG Item
+             * 3. Simulate output
+             * 4. if failure -> pause until simuation = true
+             * 5. output
+             */
         }
     }
 

@@ -21,12 +21,16 @@
 package tech.flatstone.appliedlogistics.client.gui.machines;
 
 import net.minecraft.entity.player.InventoryPlayer;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import tech.flatstone.appliedlogistics.client.gui.GuiBase;
 import tech.flatstone.appliedlogistics.common.container.machines.ContainerPulverizer;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityPulverizer;
+import tech.flatstone.appliedlogistics.common.util.GuiHelper;
+import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 
 public class GuiPulverizer extends GuiBase {
     TileEntityPulverizer tileEntity;
+    GuiHelper guiHelper = new GuiHelper();
 
     public GuiPulverizer(InventoryPlayer inventoryPlayer, TileEntityPulverizer tileEntity) {
         super(new ContainerPulverizer(inventoryPlayer, tileEntity));
@@ -44,5 +48,16 @@ public class GuiPulverizer extends GuiBase {
     @Override
     public void drawFG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
 
+
+        int secondsLeft = 1000;
+        int timePercent = 50;
+
+        guiHelper.drawHorzProgressBar(40, 26, 126, 8, 50, colorBackground, colorBorder, colorProgressBackground);
+        String progressLabel = String.format("%s: %s (%d%%)",
+                LanguageHelper.LABEL.translateMessage("time_left"),
+                DurationFormatUtils.formatDuration(secondsLeft, "mm:ss"),
+                Math.round(timePercent)
+        );
+        guiHelper.drawCenteredStringWithShadow(40, 26, 126, progressLabel, colorFont);
     }
 }

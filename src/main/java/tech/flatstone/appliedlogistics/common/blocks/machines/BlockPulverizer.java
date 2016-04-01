@@ -66,4 +66,16 @@ public class BlockPulverizer extends BlockMachineBase implements IBlockRenderer 
     public void registerBlockRenderer() {
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(ModInfo.MOD_ID + ":machines/machine_pulverizer", "inventory"));
     }
+
+    @Override
+    public void breakBlock(World world, BlockPos blockPos, IBlockState blockState) {
+        TileEntityPulverizer tileEntity = TileHelper.getTileEntity(world, blockPos, TileEntityPulverizer.class);
+        if (tileEntity != null && !tileEntity.isCrushPaused()) {
+            super.breakBlock(world, blockPos, blockState);
+            return;
+        }
+
+        TileHelper.DropItems(tileEntity, 0, 0);
+        TileHelper.DropItems(tileEntity, 2, 10);
+    }
 }
