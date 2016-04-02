@@ -26,6 +26,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -49,13 +50,14 @@ import java.util.UUID;
 
 public class GuiBuilder extends GuiBase {
     TileEntityBuilder tileEntity;
-    GuiHelper guiHelper = new GuiHelper();
+    GuiHelper guiHelper;
     private GuiButton btnStartBuilder;
     private GuiButton btnPrevTechLevel;
     private GuiButton btnNextTechLevel;
 
     public GuiBuilder(InventoryPlayer inventoryPlayer, TileEntityBuilder tileEntity) {
         super(new ContainerBuilder(inventoryPlayer, tileEntity));
+        guiHelper = new GuiHelper();
         this.xSize = 256;
         this.ySize = 222;
         this.tileEntity = tileEntity;
@@ -215,7 +217,7 @@ public class GuiBuilder extends GuiBase {
         if (planDetails != null) {
             List<PlanRequiredMaterials> requiredMaterials = planDetails.getRequiredMaterialsList();
             if (slot instanceof SlotBuilderInventory && slot.getSlotIndex() > 0 && slot.getSlotIndex() <= requiredMaterials.size() && !slot.getHasStack()) {
-                guiHelper.renderItemStackToolTip(requiredMaterials.get(slot.getSlotIndex() - 1), mouse_x, mouse_y);
+                renderItemStackToolTip(requiredMaterials.get(slot.getSlotIndex() - 1), mouse_x, mouse_y);
             }
         }
     }

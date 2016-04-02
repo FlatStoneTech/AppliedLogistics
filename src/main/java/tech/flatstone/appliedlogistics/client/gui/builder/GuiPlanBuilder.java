@@ -39,12 +39,13 @@ import java.util.UUID;
 
 public class GuiPlanBuilder extends GuiBase {
     TileEntityPlanBuilder tileEntity;
-    GuiHelper guiHelper = new GuiHelper();
+    GuiHelper guiHelper;
     private GuiButton btnNextPlan;
     private GuiButton btnPrevPlan;
 
     public GuiPlanBuilder(InventoryPlayer inventoryPlayer, TileEntityPlanBuilder tileEntity) {
         super(new ContainerPlanBuilder(inventoryPlayer, tileEntity));
+        guiHelper = new GuiHelper();
         this.xSize = 218;
         this.ySize = 183;
         this.tileEntity = tileEntity;

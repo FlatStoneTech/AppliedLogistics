@@ -107,7 +107,7 @@ public class GuiPulverizer extends GuiBase {
         ArrayList<String> messages = new ArrayList<String>();
         messages.add("Testing tooltip...");
         messages.add("hopefully this works...");
-        guiHelper.renderToolTip(messages, mouse_x, mouse_y);
+        //renderToolTip(messages, mouse_x, mouse_y);
     }
 
 
