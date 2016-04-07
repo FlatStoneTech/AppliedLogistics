@@ -1,0 +1,51 @@
+package tech.flatstone.appliedlogistics.common.grid;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.UUID;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+public class FilteredEdgeTest {
+    FilteredEdge<UUID> filteredEdge;
+    UUID uuid;
+    ArrayList<String> list;
+
+    @Before
+    public void setUp() throws Exception {
+        uuid = UUID.randomUUID();
+        filteredEdge = new FilteredEdge<UUID>(null, null, uuid);
+
+        list = new ArrayList<String>();
+        list.add("This");
+        list.add("is");
+        list.add("a");
+        list.add("whitelist");
+    }
+
+    @Test
+    public void testWhitelist() {
+        filteredEdge.setWhitelist(list);
+        assertTrue(filteredEdge.canRoute("whitelist"));
+        assertFalse(filteredEdge.canRoute("blacklist"));
+        assertFalse(filteredEdge.canRoute(""));
+    }
+
+    @Test
+    public void testBlacklist() {
+        filteredEdge.setBlacklist(list);
+        assertFalse(filteredEdge.canRoute("whitelist"));
+        assertTrue(filteredEdge.canRoute("blacklist"));
+        assertTrue(filteredEdge.canRoute(""));
+    }
+
+    @After
+    public void tearDown() throws Exception {
+
+    }
+
+}

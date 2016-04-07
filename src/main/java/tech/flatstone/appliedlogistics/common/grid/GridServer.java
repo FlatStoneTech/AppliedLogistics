@@ -110,7 +110,7 @@ class GridServer implements Runnable {
         }
     }
 
-    private void gridTick() {
+    protected void gridTick() {
 
         //ingest vertex queue
         for (UUID id : vertexQueue) {
