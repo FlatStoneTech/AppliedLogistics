@@ -41,10 +41,7 @@ public class TransportContainer {
     }
 
     public TransportContainer(UUID source, String unlocalizedName, Object cargo) {
-        this.cargo = cargo;
-        this.source = source;
-        this.unlocalizedName = unlocalizedName;
-        this.searchRange = Double.POSITIVE_INFINITY;
+        this(source,unlocalizedName,cargo, Double.POSITIVE_INFINITY);
     }
 
     public LinkedList<FilteredEdge> getPath() {
@@ -59,19 +56,19 @@ public class TransportContainer {
     }
 
     public double getSearchRange() {
-        return searchRange;
+        return this.searchRange;
     }
 
     public Object getCargo() {
-        return cargo;
+        return this.cargo;
     }
 
     public int getTimeOnNode() {
-        return timeOnNode;
+        return this.timeOnNode;
     }
 
     public UUID getCurrentNode() {
-        return currentNode;
+        return this.currentNode;
     }
 
     public void setCurrentNode(UUID currentNode) {
@@ -79,11 +76,11 @@ public class TransportContainer {
     }
 
     public String getUnlocalizedName() {
-        return unlocalizedName;
+        return this.unlocalizedName;
     }
 
     public UUID getDestination() {
-        return destination;
+        return this.destination;
     }
 
     public void setDestination(UUID destination) {
@@ -91,6 +88,6 @@ public class TransportContainer {
     }
 
     public UUID getSource() {
-        return source;
+        return this.source;
     }
 }

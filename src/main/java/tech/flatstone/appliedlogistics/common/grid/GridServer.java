@@ -21,6 +21,7 @@
 package tech.flatstone.appliedlogistics.common.grid;
 
 
+import org.jgrapht.DirectedGraph;
 import org.jgrapht.experimental.dag.DirectedAcyclicGraph;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.traverse.ClosestFirstIterator;
@@ -37,7 +38,7 @@ import java.util.concurrent.CyclicBarrier;
 
 class GridServer implements Runnable {
     private ArrayList<UUIDPair> vertexCache; // Caches vertices that cannot currently be added
-    private DirectedAcyclicGraph<UUID, FilteredEdge> graph;
+    private DirectedGraph<UUID, FilteredEdge> graph;
     private ConcurrentLinkedQueue<UUID> vertexQueue;
     private ConcurrentLinkedQueue<UUIDPair> edgeQueue;
     private ConcurrentLinkedQueue<UUIDPair> exitQueue;
@@ -115,6 +116,7 @@ class GridServer implements Runnable {
         //ingest vertex queue
         for (UUID id : vertexQueue) {
             graph.addVertex(id);
+            vertexQueue.remove(id);
         }
 
         //handle a hopefully rare situation where a vertex and edge are added between ingest vertex and ingest edge
@@ -131,16 +133,20 @@ class GridServer implements Runnable {
                 vertexCache.add(pair);
                 LogHelper.debug("A vertex for edge:" + pair.getUUID1() + " -> " + pair.getUUID2() + " does not exist");
             }
+            edgeQueue.remove(pair);
         }
 
         for (UUIDPair pair : exitQueue) {
             FilteredEdge edge = graph.getEdge(pair.getUUID1(), pair.getUUID2());
+            if(edge == null) break;
             edge.setExit(true);
+            exitQueue.remove(pair);
         }
 
         //update grid objects
         for (TransportContainer container : activeCargo) {
             outgoingCargo.put(container.getDestination(), container);
+            activeCargo.remove(container);
         }
 
         //ingest new objects
@@ -150,9 +156,13 @@ class GridServer implements Runnable {
                             graph, container.getSource(), container.getSearchRange()
                     );
 
+            UUID last = container.getSource();
             while (closestFirstIterator.hasNext()) {
                 UUID uuid = closestFirstIterator.next();
-                FilteredEdge edge = closestFirstIterator.getSpanningTreeEdge(uuid);
+                if (uuid == last) continue;
+
+                FilteredEdge edge = graph.getEdge(last,uuid);
+                last = uuid;
                 if ((edge.isExit()) && (edge.canRoute(container.getUnlocalizedName()))) {
                     container.setDestination(uuid);
                     container.setPath(GraphHelper.findPathBetween(closestFirstIterator, container.getSource(), uuid));
@@ -160,6 +170,7 @@ class GridServer implements Runnable {
             }
 
             activeCargo.add(container);
+            incomingCargo.remove(container);
         }
     }
 

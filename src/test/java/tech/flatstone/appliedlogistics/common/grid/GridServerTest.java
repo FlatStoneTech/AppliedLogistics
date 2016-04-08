@@ -5,11 +5,10 @@ import org.junit.Test;
 
 import java.util.UUID;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 
 public class GridServerTest {
-    GridServer gridServer;
+    private GridServer gridServer;
 
     @Before
     public void setUp() throws Exception {
@@ -20,19 +19,32 @@ public class GridServerTest {
     @Test
     public void testCargo() throws Exception {
         String cargo = "hello";
+        Object obj;
 
         UUID start = UUID.randomUUID();
         UUID end = UUID.randomUUID();
+        UUID pivet = UUID.randomUUID();
+
         gridServer.addVertex(start);
         gridServer.addVertex(end);
-        gridServer.addEdge(start, end);
-        gridServer.markEdgeExit(start, end);
-        gridServer.addCargo(new TransportContainer(start, "name", cargo));
-        gridServer.gridTick();
-        Object obj = gridServer.getCargo(end);
+        gridServer.addVertex(pivet);
 
+        gridServer.addEdge(start, pivet);
+        gridServer.addEdge(pivet, end);
+        gridServer.markEdgeExit(pivet, end);
+
+        gridServer.addCargo(new TransportContainer(start, "name", cargo));
+
+        assertNull(gridServer.getCargo(end));
+        gridServer.gridTick();
+
+        assertNull(gridServer.getCargo(end));
+        gridServer.gridTick();
+
+        obj = gridServer.getCargo(end);
         assertNotNull(obj);
-        assertSame(obj, cargo);
+        TransportContainer container = (TransportContainer) obj;
+        assertSame(container.getCargo(), cargo);
 
     }
 

@@ -43,6 +43,12 @@ public class FilteredEdgeTest {
         assertTrue(filteredEdge.canRoute(""));
     }
 
+    @Test
+    public void testDefaultList() {
+        assertTrue(filteredEdge.canRoute(""));
+        assertTrue(filteredEdge.canRoute("anything"));
+    }
+
     @After
     public void tearDown() throws Exception {
 
