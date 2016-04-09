@@ -22,7 +22,6 @@ package tech.flatstone.appliedlogistics.client.gui;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -35,7 +34,7 @@ import tech.flatstone.appliedlogistics.common.util.OpenGLHelper;
 import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
 
 public abstract class GuiBase extends GuiContainer {
     protected int colorBackground = new Color(56, 55, 69, 224).hashCode();

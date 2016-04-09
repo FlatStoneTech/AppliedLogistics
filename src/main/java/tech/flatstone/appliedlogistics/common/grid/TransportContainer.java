@@ -41,7 +41,7 @@ public class TransportContainer {
     }
 
     public TransportContainer(UUID source, String unlocalizedName, Object cargo) {
-        this(source,unlocalizedName,cargo, Double.POSITIVE_INFINITY);
+        this(source, unlocalizedName, cargo, Double.POSITIVE_INFINITY);
     }
 
     public LinkedList<FilteredEdge> getPath() {

@@ -20,7 +20,6 @@
 
 package tech.flatstone.appliedlogistics.common.util;
 
-import com.sun.tools.javac.code.Attribute;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.FMLCommonHandler;

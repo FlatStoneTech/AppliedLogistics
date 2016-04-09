@@ -138,7 +138,7 @@ class GridServer implements Runnable {
 
         for (UUIDPair pair : exitQueue) {
             FilteredEdge edge = graph.getEdge(pair.getUUID1(), pair.getUUID2());
-            if(edge == null) break;
+            if (edge == null) break;
             edge.setExit(true);
             exitQueue.remove(pair);
         }
@@ -161,7 +161,7 @@ class GridServer implements Runnable {
                 UUID uuid = closestFirstIterator.next();
                 if (uuid == last) continue;
 
-                FilteredEdge edge = graph.getEdge(last,uuid);
+                FilteredEdge edge = graph.getEdge(last, uuid);
                 last = uuid;
                 if ((edge.isExit()) && (edge.canRoute(container.getUnlocalizedName()))) {
                     container.setDestination(uuid);

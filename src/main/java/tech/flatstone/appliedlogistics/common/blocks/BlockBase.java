@@ -20,23 +20,17 @@
 
 package tech.flatstone.appliedlogistics.common.blocks;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
 import tech.flatstone.appliedlogistics.common.util.IOrientable;
@@ -48,9 +42,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BlockBase extends Block {
+    public static final PropertyEnum AXIS_ORIENTATION = PropertyEnum.create("axis", EnumFacing.Axis.class);
     protected boolean isInventory = false;
     protected boolean hasSubtypes = false;
-    public static final PropertyEnum AXIS_ORIENTATION = PropertyEnum.create("axis", EnumFacing.Axis.class);
 
     protected BlockBase(Material material) {
         super(material);
@@ -144,7 +138,7 @@ public abstract class BlockBase extends Block {
 
     public IOrientable getOrientable(final IBlockAccess world, final BlockPos pos) {
         if (this instanceof IOrientableBlock)
-            return ((IOrientableBlock)this).getOrientable(world, pos);
+            return ((IOrientableBlock) this).getOrientable(world, pos);
         return null;
     }
 

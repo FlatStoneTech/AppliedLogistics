@@ -36,7 +36,7 @@ public class FilteredEdge<V> extends DefaultEdge {
     private boolean isWhiteList;
     private boolean isExit;
 
-    public FilteredEdge(){
+    public FilteredEdge() {
         this.list = Collections.synchronizedList(new ArrayList<String>());
         this.isWhiteList = false;
         this.start = (V) getSource();

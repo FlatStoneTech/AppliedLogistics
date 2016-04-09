@@ -28,7 +28,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaBodyMessage;
-import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaHeadMessage;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
 import tech.flatstone.appliedlogistics.common.util.ICrankable;
 import tech.flatstone.appliedlogistics.common.util.IRotatable;
@@ -122,7 +121,7 @@ public class TileEntityCrank extends TileEntityBase implements ITickable, IWaila
         TileEntity tileEntity = TileHelper.getTileEntity(this.worldObj, this.pos.down(), TileEntity.class);
 
         if (tileEntity != null && tileEntity instanceof IWailaBodyMessage)
-            return ((IWailaBodyMessage)tileEntity).getWailaBodyToolTip(itemStack, currentTip, accessor, config);
+            return ((IWailaBodyMessage) tileEntity).getWailaBodyToolTip(itemStack, currentTip, accessor, config);
 
         return currentTip;
     }
