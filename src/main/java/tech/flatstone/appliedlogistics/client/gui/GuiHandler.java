@@ -41,13 +41,13 @@ import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityPu
 public class GuiHandler implements IGuiHandler {
 
     @Override
-    public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+    public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
         TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
 
         if (tileEntity == null)
             return null;
 
-        switch (ID) {
+        switch (id) {
             case 0: // Builder GUI
                 return new ContainerBuilder(player.inventory, tileEntity);
             case 1: // Plan Builder GUI
@@ -56,19 +56,19 @@ public class GuiHandler implements IGuiHandler {
                 return new ContainerPlanLibrary(player.inventory, tileEntity);
             case 3: // Pulverizer
                 return new ContainerPulverizer(player.inventory, tileEntity);
+            default:
+                return null;
         }
-
-        return null;
     }
 
     @Override
-    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+    public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
         TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
 
         if (tileEntity == null)
             return null;
 
-        switch (ID) {
+        switch (id) {
             case 0: // Builder GUI
                 return new GuiBuilder(player.inventory, (TileEntityBuilder) tileEntity);
             case 1: // Plan Builder GUI
@@ -77,8 +77,8 @@ public class GuiHandler implements IGuiHandler {
                 return new GuiPlanLibrary(player.inventory, (TileEntityPlanLibrary) tileEntity);
             case 3: // Pulverizer
                 return new GuiPulverizer(player.inventory, (TileEntityPulverizer) tileEntity);
+            default:
+                return null;
         }
-
-        return null;
     }
 }
