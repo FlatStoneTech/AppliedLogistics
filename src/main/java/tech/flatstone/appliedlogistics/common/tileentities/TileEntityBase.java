@@ -36,6 +36,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.EnumFacing;
 import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaHeadMessage;
 import tech.flatstone.appliedlogistics.common.util.IOrientable;
+import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 import java.util.List;
 
@@ -50,6 +51,7 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
     public Packet getDescriptionPacket() {
         NBTTagCompound data = new NBTTagCompound();
         writeToNBT(data);
+        initMachineData();
         return new S35PacketUpdateTileEntity(this.pos, 1, data);
     }
 
@@ -58,6 +60,10 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
         readFromNBT(s35PacketUpdateTileEntity.getNbtCompound());
         worldObj.markBlockRangeForRenderUpdate(this.pos, this.pos);
         markForUpdate();
+    }
+
+    public void initMachineData() {
+
     }
 
     public void markForUpdate() {
@@ -194,5 +200,9 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
         this.up = up;
         markDirty();
         markForUpdate();
+    }
+
+    public void dropItems() {
+        TileHelper.DropItems(this);
     }
 }

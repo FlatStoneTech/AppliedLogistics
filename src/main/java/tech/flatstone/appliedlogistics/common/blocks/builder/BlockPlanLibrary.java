@@ -33,14 +33,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.ModInfo;
-import tech.flatstone.appliedlogistics.common.blocks.BlockMachineBase;
+import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanLibrary;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-public class BlockPlanLibrary extends BlockMachineBase implements IBlockRenderer {
+public class BlockPlanLibrary extends BlockTileBase implements IBlockRenderer {
     public BlockPlanLibrary() {
         super(Material.rock);
         this.setTileEntity(TileEntityPlanLibrary.class);

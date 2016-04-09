@@ -30,6 +30,7 @@ public abstract class TileEntityMachineBase extends TileEntityInventoryBase {
     private boolean craftingEnabled = false;
     private boolean redstoneEnabled = false;
 
+    @Override
     public void initMachineData() {
         NBTTagCompound machineItemData = this.getMachineItemData();
         if (machineItemData != null) {

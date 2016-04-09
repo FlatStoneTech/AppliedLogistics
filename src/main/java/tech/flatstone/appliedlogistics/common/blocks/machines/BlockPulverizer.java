@@ -32,13 +32,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.ModInfo;
-import tech.flatstone.appliedlogistics.common.blocks.BlockMachineBase;
+import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityPulverizer;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-public class BlockPulverizer extends BlockMachineBase implements IBlockRenderer {
+public class BlockPulverizer extends BlockTileBase implements IBlockRenderer {
     public BlockPulverizer() {
         super(Material.rock);
         this.setTileEntity(TileEntityPulverizer.class);
