@@ -64,12 +64,16 @@ public class GuiBuilder extends GuiBase {
     @Override
     public void initGui() {
         super.initGui();
+        this.btnStartBuilder = new GuiButton(0, guiLeft + 183, guiTop + 117, 68, 20, LanguageHelper.LABEL.translateMessage("build"));
+        this.btnPrevTechLevel = new GuiButton(1, guiLeft + 183, guiTop + 139, 10, 20, "<");
+        this.btnNextTechLevel = new GuiButton(2, guiLeft + 241, guiTop + 139, 10, 20, ">");
+
         this.buttonList.clear();
-        this.buttonList.add(this.btnStartBuilder = new GuiButton(0, guiLeft + 183, guiTop + 117, 68, 20, LanguageHelper.LABEL.translateMessage("build")));
+        this.buttonList.add(btnStartBuilder);
 
         if (tileEntity.getBlockMetadata() > 0) {
-            this.buttonList.add(this.btnPrevTechLevel = new GuiButton(1, guiLeft + 183, guiTop + 139, 10, 20, "<"));
-            this.buttonList.add(this.btnNextTechLevel = new GuiButton(2, guiLeft + 241, guiTop + 139, 10, 20, ">"));
+            this.buttonList.add(btnPrevTechLevel);
+            this.buttonList.add(btnNextTechLevel);
         }
 
         this.btnStartBuilder.enabled = false;
@@ -95,8 +99,6 @@ public class GuiBuilder extends GuiBase {
 
     @Override
     public void drawFG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
-        //PlanDetails planDetails = tileEntity.getPlanDetails();
-
         /**
          * Titles
          */
@@ -138,7 +140,7 @@ public class GuiBuilder extends GuiBase {
             int weightTotal = tileEntity.getTotalWeight();
             int weightProgressColor = colorProgressBackground;
 
-            float weightPercent = ((((float) weightTotal) / (float) weightMax)) * 100;
+            float weightPercent = (((float) weightTotal) / (float) weightMax) * 100;
 
             if (tileEntity.isMeetingBuildRequirements())
                 weightProgressColor = colorProgressBackgroundGood;
@@ -161,7 +163,7 @@ public class GuiBuilder extends GuiBase {
             int timeCurrent = tileEntity.getTicksRemaining();
             int timeProgressColor = colorProgressBackground;
 
-            float timePercent = ((((float) timeMax - (float) timeCurrent) / (float) timeMax)) * 100;
+            float timePercent = (((float) timeMax - (float) timeCurrent) / (float) timeMax) * 100;
 
             int secondsLeft = (timeCurrent / 20) * 1000;
 
@@ -204,8 +206,8 @@ public class GuiBuilder extends GuiBase {
     }
 
     @Override
-    public void drawScreen(int mouse_x, int mouse_y, float btn) {
-        super.drawScreen(mouse_x, mouse_y, btn);
+    public void drawScreen(int mouseX, int mouseY, float btn) {
+        super.drawScreen(mouseX, mouseY, btn);
 
         Slot slot = getSlotUnderMouse();
         if (slot == null)
@@ -215,19 +217,9 @@ public class GuiBuilder extends GuiBase {
         if (planDetails != null) {
             List<PlanRequiredMaterials> requiredMaterials = planDetails.getRequiredMaterialsList();
             if (slot instanceof SlotBuilderInventory && slot.getSlotIndex() > 0 && slot.getSlotIndex() <= requiredMaterials.size() && !slot.getHasStack()) {
-                renderItemStackToolTip(requiredMaterials.get(slot.getSlotIndex() - 1), mouse_x, mouse_y);
+                renderItemStackToolTip(requiredMaterials.get(slot.getSlotIndex() - 1), mouseX, mouseY);
             }
         }
-    }
-
-    public boolean equalLists(List<PlanRequiredMaterials> a, List<PlanRequiredMaterials> b) {
-        if ((a.size() != b.size()) || (a == null && b != null) || (a != null && b == null))
-            return false;
-
-        if (a == null && b == null)
-            return true;
-
-        return a.equals(b);
     }
 
     @Override

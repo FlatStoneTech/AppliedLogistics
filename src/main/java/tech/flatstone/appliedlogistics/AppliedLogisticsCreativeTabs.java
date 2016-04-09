@@ -25,6 +25,10 @@ import net.minecraft.item.Item;
 import tech.flatstone.appliedlogistics.common.items.Items;
 
 public class AppliedLogisticsCreativeTabs {
+    private AppliedLogisticsCreativeTabs() {
+
+    }
+
     public static final CreativeTabs tabGeneral = new CreativeTabs(ModInfo.MOD_ID) {
         @Override
         public Item getTabIconItem() {

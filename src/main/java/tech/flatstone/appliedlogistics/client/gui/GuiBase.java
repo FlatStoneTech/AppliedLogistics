@@ -35,7 +35,7 @@ import tech.flatstone.appliedlogistics.common.util.OpenGLHelper;
 import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.List;
 
 public abstract class GuiBase extends GuiContainer {
     protected int colorBackground = new Color(56, 55, 69, 224).hashCode();
@@ -54,25 +54,15 @@ public abstract class GuiBase extends GuiContainer {
         guiHelper = new GuiHelper();
     }
 
-    @Override
-    public void initGui() {
-        super.initGui();
-    }
-
-    @Override
-    public void drawScreen(int mouse_x, int mouse_y, float btn) {
-        super.drawScreen(mouse_x, mouse_y, btn);
-    }
-
-    public void drawTooltip(int mouse_x, int mouse_y, int forceWidth, String Msg) {
+    public void drawTooltip(int mouseX, int mouseY, int forceWidth, String message) {
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         int[][] savedGLState = OpenGLHelper.saveGLState(new int[]{GL11.GL_ALPHA_TEST, GL11.GL_LIGHTING});
 
         GL11.glPushMatrix();
 
 
-        guiHelper.drawWindowWithBorder(mouse_x, mouse_y, forceWidth, 10, colorBackground, colorBorder);
-        guiHelper.drawCenteredStringWithShadow(mouse_x, mouse_y, forceWidth, "Hello World", colorFont);
+        guiHelper.drawWindowWithBorder(mouseX, mouseY, forceWidth, 10, colorBackground, colorBorder);
+        guiHelper.drawCenteredStringWithShadow(mouseX, mouseY, forceWidth, "Hello World", colorFont);
 
         GL11.glPopMatrix();
 
@@ -148,7 +138,7 @@ public abstract class GuiBase extends GuiContainer {
         guiHelper.drawItemStack(itemStack, slot.xDisplayPosition + guiLeft, slot.yDisplayPosition + guiTop, this.itemRender, false);
     }
 
-    public void renderToolTip(ArrayList<String> messages, int x, int y) {
+    public void renderToolTip(List<String> messages, int x, int y) {
         this.drawHoveringText(messages, x, y, fontRendererObj);
     }
 
@@ -159,64 +149,63 @@ public abstract class GuiBase extends GuiContainer {
         java.util.List<String> list = stack.getTooltip(this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips);
 
         for (int i = 0; i < list.size(); ++i) {
-            if (i == 0) {
-                list.set(i, stack.getRarity().rarityColor + (String) list.get(i));
+            if (i != 0) {
+                list.set(i, EnumChatFormatting.GRAY + list.get(i));
+                continue;
+            }
 
-                /*
-                 * Add Material Information
-                 */
-                int j = 1;
+            list.set(i, stack.getRarity().rarityColor + list.get(i));
 
-                // Add Description
-                if (!materials.getDescription().isEmpty()) {
-                    for (String message : font.listFormattedStringToWidth(materials.getDescription(), 150)) {
-                        list.add(i + j, String.format("%s%s%s",
-                                EnumChatFormatting.YELLOW,
-                                EnumChatFormatting.ITALIC,
-                                message
-                        ));
-                        j++;
-                    }
+
+            int j = 1;
+
+            // Add Description
+            if (!materials.getDescription().isEmpty()) {
+                for (String message : font.listFormattedStringToWidth(materials.getDescription(), 150)) {
+                    list.add(i + j, String.format("%s%s%s",
+                            EnumChatFormatting.YELLOW,
+                            EnumChatFormatting.ITALIC,
+                            message
+                    ));
+                    j++;
                 }
+            }
 
-                // Add Min / Max
-                if (materials.getMinCount() == materials.getMaxCount()) {
-                    list.add(i + j, String.format("%s%s%s: %s",
-                            EnumChatFormatting.GRAY,
-                            EnumChatFormatting.ITALIC,
-                            LanguageHelper.LABEL.translateMessage("required"),
-                            materials.getMinCount()
-                    ));
-                } else {
-                    list.add(i + j, String.format("%s%s%s: %s / %s %s",
-                            EnumChatFormatting.GRAY,
-                            EnumChatFormatting.ITALIC,
-                            LanguageHelper.LABEL.translateMessage("min"),
-                            materials.getMinCount(),
-                            LanguageHelper.LABEL.translateMessage("max"),
-                            materials.getMaxCount()
-                    ));
-                }
-                j++;
-
-                // Add Weight Information
-                if (materials.getMinCount() == materials.getMaxCount()) {
-                    list.add(i + j, String.format("%s%s%s: %skg",
-                            EnumChatFormatting.GRAY,
-                            EnumChatFormatting.ITALIC,
-                            LanguageHelper.LABEL.translateMessage("weight_added"),
-                            materials.getItemWeight() * materials.getMaxCount()
-                    ));
-                } else {
-                    list.add(i + j, String.format("%s%s%s: %skg",
-                            EnumChatFormatting.GRAY,
-                            EnumChatFormatting.ITALIC,
-                            LanguageHelper.LABEL.translateMessage("weight_per_item"),
-                            materials.getItemWeight()
-                    ));
-                }
+            // Add Min / Max
+            if (materials.getMinCount() == materials.getMaxCount()) {
+                list.add(i + j, String.format("%s%s%s: %s",
+                        EnumChatFormatting.GRAY,
+                        EnumChatFormatting.ITALIC,
+                        LanguageHelper.LABEL.translateMessage("required"),
+                        materials.getMinCount()
+                ));
             } else {
-                list.set(i, EnumChatFormatting.GRAY + (String) list.get(i));
+                list.add(i + j, String.format("%s%s%s: %s / %s %s",
+                        EnumChatFormatting.GRAY,
+                        EnumChatFormatting.ITALIC,
+                        LanguageHelper.LABEL.translateMessage("min"),
+                        materials.getMinCount(),
+                        LanguageHelper.LABEL.translateMessage("max"),
+                        materials.getMaxCount()
+                ));
+            }
+            j++;
+
+            // Add Weight Information
+            if (materials.getMinCount() == materials.getMaxCount()) {
+                list.add(i + j, String.format("%s%s%s: %skg",
+                        EnumChatFormatting.GRAY,
+                        EnumChatFormatting.ITALIC,
+                        LanguageHelper.LABEL.translateMessage("weight_added"),
+                        materials.getItemWeight() * materials.getMaxCount()
+                ));
+            } else {
+                list.add(i + j, String.format("%s%s%s: %skg",
+                        EnumChatFormatting.GRAY,
+                        EnumChatFormatting.ITALIC,
+                        LanguageHelper.LABEL.translateMessage("weight_per_item"),
+                        materials.getItemWeight()
+                ));
             }
         }
 
