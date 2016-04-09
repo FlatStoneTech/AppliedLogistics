@@ -71,6 +71,9 @@ tile.appliedlogistics.plan_library.name=Plan Library
 ## Machines #############################
 tile.appliedlogistics.machine_pulverizer.name=Pulverizer
 
+## Misc #################################
+tile.appliedlogistics.misc_crank.name=Machine Crank
+
 #########################################
 ###              Items                ###
 #########################################

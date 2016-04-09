@@ -29,9 +29,11 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.Random;
 
 public class TileHelper {
+    @Nullable
     public static <T> T getTileEntity(IBlockAccess world, BlockPos blockPos, Class<T> tClass) {
         TileEntity tileEntity = world.getTileEntity(blockPos);
         return !tClass.isInstance(tileEntity) ? null : (T) tileEntity;

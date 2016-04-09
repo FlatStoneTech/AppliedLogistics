@@ -37,12 +37,13 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
+import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanBuilder;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-public class BlockPlanBuilder extends BlockBase implements IProvideRecipe, IBlockRenderer {
+public class BlockPlanBuilder extends BlockTileBase implements IProvideRecipe, IBlockRenderer {
     public BlockPlanBuilder() {
         super(Material.rock);
         this.setTileEntity(TileEntityPlanBuilder.class);

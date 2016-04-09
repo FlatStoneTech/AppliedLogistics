@@ -35,7 +35,7 @@ import tech.flatstone.appliedlogistics.common.util.TileHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BlockMachineBase extends BlockBase {
+public abstract class BlockMachineBase extends BlockTileBase {
 
     protected BlockMachineBase(Material material) {
         super(material);

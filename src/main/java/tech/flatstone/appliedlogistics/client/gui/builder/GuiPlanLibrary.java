@@ -31,8 +31,8 @@ import tech.flatstone.appliedlogistics.common.util.GuiHelper;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 
 public class GuiPlanLibrary extends GuiBase {
-    TileEntityPlanLibrary tileEntity;
-    GuiHelper guiHelper = new GuiHelper();
+    private TileEntityPlanLibrary tileEntity;
+    private GuiHelper guiHelper = new GuiHelper();
 
     public GuiPlanLibrary(InventoryPlayer inventoryPlayer, TileEntityPlanLibrary tileEntity) {
         super(new ContainerPlanLibrary(inventoryPlayer, tileEntity));

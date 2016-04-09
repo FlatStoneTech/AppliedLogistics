@@ -88,9 +88,9 @@ public class BlockBuilder extends BlockMachineBase implements IProvideRecipe, IB
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
-        if (tileEntity != null) {
-            return state.withProperty(FACING, tileEntity.getDirectionFacing());
-        }
+//        if (tileEntity != null) {
+//            return state.withProperty(FACING, tileEntity.getDirectionFacing());
+//        }
         return state.withProperty(FACING, EnumFacing.NORTH);
     }
 
@@ -104,7 +104,7 @@ public class BlockBuilder extends BlockMachineBase implements IProvideRecipe, IB
     public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState state, EntityLivingBase placer, ItemStack itemStack) {
         TileEntityBuilder tileEntity = TileHelper.getTileEntity(world, blockPos, TileEntityBuilder.class);
         if (tileEntity != null) {
-            tileEntity.setDirectionFacing(placer.getHorizontalFacing().getOpposite());
+            //tileEntity.setDirectionFacing(placer.getHorizontalFacing().getOpposite());
         }
 
         super.onBlockPlacedBy(world, blockPos, state, placer, itemStack);

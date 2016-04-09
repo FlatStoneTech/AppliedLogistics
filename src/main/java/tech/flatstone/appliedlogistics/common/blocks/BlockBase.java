@@ -20,9 +20,11 @@
 
 package tech.flatstone.appliedlogistics.common.blocks;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,22 +32,25 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
-import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
+import tech.flatstone.appliedlogistics.common.util.IOrientable;
+import tech.flatstone.appliedlogistics.common.util.IOrientableBlock;
+import tech.flatstone.appliedlogistics.common.util.Platform;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockBase extends BlockContainer {
+public abstract class BlockBase extends Block {
     protected boolean isInventory = false;
     protected boolean hasSubtypes = false;
-    private Class<? extends TileEntity> tileEntityType = null;
+    public static final PropertyEnum AXIS_ORIENTATION = PropertyEnum.create("axis", EnumFacing.Axis.class);
 
     protected BlockBase(Material material) {
         super(material);
@@ -54,46 +59,6 @@ public class BlockBase extends BlockContainer {
         setHardness(2.2F);
         setResistance(5.0F);
         setHarvestLevel("pickaxe", 0);
-    }
-
-    @Override
-    public TileEntity createNewTileEntity(World var1, int var2) {
-        if (hasBlockTileEntity()) {
-            try {
-                return (TileEntity) this.tileEntityType.newInstance();
-            } catch (Throwable e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return null;
-    }
-
-    private boolean hasBlockTileEntity() {
-        return this.tileEntityType != null;
-    }
-
-    protected void setTileEntity(Class<? extends TileEntity> c) {
-        String tileName = "tileentities." + ModInfo.MOD_ID + "." + c.getSimpleName();
-
-        GameRegistry.registerTileEntity(this.tileEntityType = c, tileName);
-        this.isInventory = IInventory.class.isAssignableFrom(c);
-        setTileProvider(hasBlockTileEntity());
-    }
-
-    private void setTileProvider(boolean b) {
-        ReflectionHelper.setPrivateValue(Block.class, this, Boolean.valueOf(b), new String[]{"isTileProvider"});
-    }
-
-    public Class<? extends TileEntity> getTileEntityClass() {
-        return this.tileEntityType;
-    }
-
-    @Override
-    public void breakBlock(World world, BlockPos blockPos, IBlockState blockState) {
-        TileEntity tileEntity = world.getTileEntity(blockPos);
-        TileHelper.DropItems(tileEntity);
-
-        super.breakBlock(world, blockPos, blockState);
     }
 
     @Override
@@ -106,23 +71,6 @@ public class BlockBase extends BlockContainer {
 
     protected String getUnwrappedUnlocalizedName(String unlocalizedName) {
         return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
-    }
-
-    @Override
-    public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState state, EntityLivingBase placer, ItemStack itemStack) {
-        super.onBlockPlacedBy(world, blockPos, state, placer, itemStack);
-        TileEntityBase tileEntityBase = TileHelper.getTileEntity(world, blockPos, TileEntityBase.class);
-
-        if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("MachineItemData")) {
-            tileEntityBase.setMachineItemData(itemStack.getTagCompound().getCompoundTag("MachineItemData"));
-        }
-
-        if (itemStack.hasDisplayName()) {
-            tileEntityBase.setCustomName(itemStack.getDisplayName());
-        }
-
-        if (tileEntityBase instanceof TileEntityMachineBase)
-            ((TileEntityMachineBase) tileEntityBase).initMachineData();
     }
 
     @Override
@@ -141,7 +89,7 @@ public class BlockBase extends BlockContainer {
         world.setBlockToAir(pos);
     }
 
-    @Override
+    @Override //todo move
     public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
         TileEntityBase tileEntity = TileHelper.getTileEntity(world, pos, TileEntityBase.class);
         if (tileEntity != null && tileEntity.hasCustomName()) {
@@ -154,5 +102,95 @@ public class BlockBase extends BlockContainer {
             return drops;
         }
         return super.getDrops(world, pos, state, fortune);
+    }
+
+    @Override
+    public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis) {
+        final IOrientable rotatable = this.getOrientable(world, pos);
+        if (rotatable != null && rotatable.canBeRotated()) {
+            if (this.hasCustomRotation()) {
+                this.customRotateBlock(rotatable, axis);
+                return true;
+            } else {
+                EnumFacing forward = rotatable.getForward();
+                EnumFacing up = rotatable.getUp();
+
+                for (int rs = 0; rs < 4; rs++) {
+                    forward = Platform.rotateAround(forward, axis);
+                    up = Platform.rotateAround(up, axis);
+
+                    if (this.isValidOrientation(world, pos, forward, up)) {
+                        rotatable.setOrientation(forward, up);
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return super.rotateBlock(world, pos, axis);
+    }
+
+    protected boolean hasCustomRotation() {
+        return false;
+    }
+
+    protected void customRotateBlock(final IOrientable rotatable, final EnumFacing axis) {
+
+    }
+
+    public boolean isValidOrientation(final World world, final BlockPos pos, final EnumFacing forward, final EnumFacing up) {
+        return true;
+    }
+
+    public IOrientable getOrientable(final IBlockAccess world, final BlockPos pos) {
+        if (this instanceof IOrientableBlock)
+            return ((IOrientableBlock)this).getOrientable(world, pos);
+        return null;
+    }
+
+    @Override
+    public EnumFacing[] getValidRotations(World world, BlockPos pos) {
+        return new EnumFacing[0];
+    }
+
+    public EnumFacing mapRotation(final IOrientable orientable, final EnumFacing direction) {
+        final EnumFacing forward = orientable.getForward();
+        final EnumFacing up = orientable.getUp();
+
+        if (forward == null || up == null)
+            return direction;
+
+        final int west_x = forward.getFrontOffsetY() * up.getFrontOffsetZ() - forward.getFrontOffsetZ() * up.getFrontOffsetY();
+        final int west_y = forward.getFrontOffsetZ() * up.getFrontOffsetX() - forward.getFrontOffsetX() * up.getFrontOffsetZ();
+        final int west_z = forward.getFrontOffsetX() * up.getFrontOffsetY() - forward.getFrontOffsetY() * up.getFrontOffsetX();
+
+        EnumFacing west = null;
+        for (final EnumFacing dir : EnumFacing.values()) {
+            if (dir.getFrontOffsetX() == west_x && dir.getFrontOffsetY() == west_y && dir.getFrontOffsetZ() == west_z)
+                west = dir;
+        }
+
+        if (west == null)
+            return direction;
+
+        if (direction == forward)
+            return EnumFacing.SOUTH;
+
+        if (direction == forward.getOpposite())
+            return EnumFacing.NORTH;
+
+        if (direction == up)
+            return EnumFacing.UP;
+
+        if (direction == up.getOpposite())
+            return EnumFacing.DOWN;
+
+        if (direction == west)
+            return EnumFacing.WEST;
+
+        if (direction == west.getOpposite())
+            return EnumFacing.EAST;
+
+        return null;
     }
 }

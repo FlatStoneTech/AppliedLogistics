@@ -495,6 +495,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
 
     @Override
     public EnumFacing getDirection() {
-        return this.getDirectionFacing();
+        //return this.getDirectionFacing();
+        return EnumFacing.UP;
     }
 }

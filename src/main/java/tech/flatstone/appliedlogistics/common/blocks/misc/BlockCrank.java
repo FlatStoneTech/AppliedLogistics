@@ -43,13 +43,14 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
+import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCrank;
 import tech.flatstone.appliedlogistics.common.util.*;
 
 import java.util.List;
 
-public class BlockCrank extends BlockBase implements IProvideRecipe, IBlockRenderer, IProvideEvent {
+public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockRenderer, IProvideEvent {
     public BlockCrank() {
         super(Material.wood);
         this.setTileEntity(TileEntityCrank.class);

@@ -29,6 +29,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.util.EnumHelper;
@@ -44,6 +45,7 @@ import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 import tech.flatstone.appliedlogistics.common.util.IProvideEvent;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
+import tech.flatstone.appliedlogistics.common.util.Platform;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -166,5 +168,27 @@ public class ItemHammer extends ItemBaseTool implements IItemRenderer, IProvideR
 
             canHarvest = HammerRegistry.containsBlock(blockToCheck);
         }
+    }
+
+    @Override
+    public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
+        Block block = world.getBlockState(pos).getBlock();
+
+        if (block != null && !player.isSneaking()) {
+            if (Platform.isClient())
+                return !world.isRemote;
+
+            if (block.rotateBlock(world, pos, side)) {
+                player.swingItem();
+                return !world.isRemote;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean doesSneakBypassUse(World world, BlockPos pos, EntityPlayer player) {
+        return true;
     }
 }

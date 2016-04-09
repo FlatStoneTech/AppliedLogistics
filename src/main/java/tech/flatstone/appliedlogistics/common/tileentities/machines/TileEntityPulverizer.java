@@ -27,6 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.api.registries.PulverizerRegistry;
 import tech.flatstone.appliedlogistics.api.registries.helpers.Crushable;
@@ -39,6 +40,7 @@ import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOp
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.ICrankable;
 import tech.flatstone.appliedlogistics.common.util.InventoryHelper;
+import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +61,10 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
 
     public boolean isCrushPaused() {
         return crushPaused;
+    }
+
+    public int getMaxProcessCount() {
+        return maxProcessCount;
     }
 
     @Override
@@ -278,6 +284,18 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
 
     @Override
     public List<String> getWailaBodyToolTip(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        if (ticksRemaining == 0)
+            return currentTip;
+
+        float timePercent = ((((float) getTotalProcessTime() - (float) ticksRemaining) / (float) getTotalProcessTime())) * 100;
+        int secondsLeft = (ticksRemaining / 20) * 1000;
+
+        currentTip.add(String.format("%s: %s (%d%%)",
+                LanguageHelper.LABEL.translateMessage("time_left"),
+                DurationFormatUtils.formatDuration(secondsLeft, "mm:ss"),
+                Math.round(timePercent)
+        ));
+
         return currentTip;
     }
 

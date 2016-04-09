@@ -20,16 +20,23 @@
 
 package tech.flatstone.appliedlogistics.common.tileentities.misc;
 
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaBodyMessage;
+import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaHeadMessage;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
 import tech.flatstone.appliedlogistics.common.util.ICrankable;
 import tech.flatstone.appliedlogistics.common.util.IRotatable;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-public class TileEntityCrank extends TileEntityBase implements ITickable {
+import java.util.List;
+
+public class TileEntityCrank extends TileEntityBase implements ITickable, IWailaBodyMessage {
     private int rotation = 0;
     private boolean rotating = false;
 
@@ -108,5 +115,15 @@ public class TileEntityCrank extends TileEntityBase implements ITickable {
         super.readFromNBT(nbtTagCompound);
 
         this.rotating = nbtTagCompound.getBoolean("rotating");
+    }
+
+    @Override
+    public List<String> getWailaBodyToolTip(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        TileEntity tileEntity = TileHelper.getTileEntity(this.worldObj, this.pos.down(), TileEntity.class);
+
+        if (tileEntity != null && tileEntity instanceof IWailaBodyMessage)
+            return ((IWailaBodyMessage)tileEntity).getWailaBodyToolTip(itemStack, currentTip, accessor, config);
+
+        return currentTip;
     }
 }

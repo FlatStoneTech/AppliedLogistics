@@ -32,18 +32,29 @@ import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityPulverizer;
 import tech.flatstone.appliedlogistics.common.util.*;
 
-import java.util.ArrayList;
+import java.awt.*;
+import java.util.*;
 import java.util.List;
 
 public class GuiPulverizer extends GuiBase {
-    TileEntityPulverizer tileEntity;
-    GuiHelper guiHelper = new GuiHelper();
+    private TileEntityPulverizer tileEntity;
+    private GuiHelper guiHelper = new GuiHelper();
+    private HashMap<Rectangle, List<String>> tooltips = new HashMap<Rectangle, List<String>>();
 
     public GuiPulverizer(InventoryPlayer inventoryPlayer, TileEntityPulverizer tileEntity) {
         super(new ContainerPulverizer(inventoryPlayer, tileEntity));
         this.xSize = 218;
         this.ySize = 186;
         this.tileEntity = tileEntity;
+    }
+
+    @Override
+    public void initGui() {
+        super.initGui();
+
+        tooltips.put(new Rectangle(190, 20, 16, 16), Collections.singletonList("Simultaneous processing"));
+        tooltips.put(new Rectangle(190, 49, 16, 16), Collections.singletonList("Speed"));
+        tooltips.put(new Rectangle(190, 78, 16, 16), Collections.singletonList("test"));
     }
 
     @Override
@@ -62,12 +73,9 @@ public class GuiPulverizer extends GuiBase {
          */
         GL11.glPushMatrix();
 
-        //todo: think of how to do a mouse over for help? some sort of reg? string, x1, x2, y1, y2...
-        //^^ should do that in guiHelper, since it would be useful on all gui windows...
-
         // Bronze Gear :: number of ore that can be processed at one time
         guiHelper.drawItemStack(new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.BRONZE.getMeta()), 190, 20);  // x = 190 to 206 // y = 20 to 36
-        guiHelper.drawCenteredString(190, 38, 16, "x1", 4210752);
+        guiHelper.drawCenteredString(190, 38, 16, tileEntity.getMaxProcessCount() + "x", 4210752);
 
         // Stone Gear :: Chance Percent
         guiHelper.drawItemStack(new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.COBBLESTONE.getMeta()), 190, 49); // x = 190 to 206 // y = 49 to 65
@@ -82,33 +90,34 @@ public class GuiPulverizer extends GuiBase {
         /**
          * Draw Progress Bar
          */
-        int timeTotal = tileEntity.getTotalProcessTime();
-        int timeCurrent = tileEntity.getTicksRemaining();
+        if (tileEntity.getTicksRemaining() > 0) {
+            int timeTotal = tileEntity.getTotalProcessTime();
+            int timeCurrent = tileEntity.getTicksRemaining();
 
-        float timePercent = ((((float) timeTotal - (float) timeCurrent) / (float) timeTotal)) * 100;
+            float timePercent = ((((float) timeTotal - (float) timeCurrent) / (float) timeTotal)) * 100;
 
-        int secondsLeft = (timeCurrent / 20) * 1000;
+            int secondsLeft = (timeCurrent / 20) * 1000;
 
-        guiHelper.drawHorzProgressBar(40, 26, 126, 8, Math.round(timePercent), colorBackground, colorBorder, colorProgressBackground);
-        String progressLabel = String.format("%s: %s (%d%%)",
-                LanguageHelper.LABEL.translateMessage("time_left"),
-                DurationFormatUtils.formatDuration(secondsLeft, "mm:ss"),
-                Math.round(timePercent)
-        );
-        guiHelper.drawCenteredStringWithShadow(40, 26, 126, progressLabel, colorFont);
+            guiHelper.drawHorzProgressBar(40, 26, 126, 8, Math.round(timePercent), colorBackground, colorBorder, colorProgressBackground);
+            String progressLabel = String.format("%s: %s (%d%%)",
+                    LanguageHelper.LABEL.translateMessage("time_left"),
+                    DurationFormatUtils.formatDuration(secondsLeft, "mm:ss"),
+                    Math.round(timePercent)
+            );
+            guiHelper.drawCenteredStringWithShadow(40, 26, 126, progressLabel, colorFont);
+        }
     }
 
     @Override
     public void drawScreen(int mouse_x, int mouse_y, float btn) {
         super.drawScreen(mouse_x, mouse_y, btn);
 
-        // todo: draw tooltip for overlay icon...
-
-        ArrayList<String> messages = new ArrayList<String>();
-        messages.add("Testing tooltip...");
-        messages.add("hopefully this works...");
-        //renderToolTip(messages, mouse_x, mouse_y);
+        Point currentMouse = new Point(mouse_x - guiLeft, mouse_y - guiTop);
+        for (Rectangle rectangle : tooltips.keySet()) {
+            if (rectangle.contains(currentMouse)) {
+                ArrayList<String> messages = new ArrayList<String>(tooltips.get(rectangle));
+                renderToolTip(messages, mouse_x, mouse_y);
+            }
+        }
     }
-
-
 }

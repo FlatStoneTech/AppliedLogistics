@@ -35,22 +35,16 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.EnumFacing;
 import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaHeadMessage;
+import tech.flatstone.appliedlogistics.common.util.IOrientable;
 
 import java.util.List;
 
-public class TileEntityBase extends TileEntity implements IWailaHeadMessage {
+public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOrientable {
     private String customName;
     private int renderedFragment = 0;
     private NBTTagCompound machineItemData;
-    private EnumFacing directionFacing = null;
-
-    public EnumFacing getDirectionFacing() {
-        return directionFacing;
-    }
-
-    public void setDirectionFacing(EnumFacing directionFacing) {
-        this.directionFacing = directionFacing;
-    }
+    private EnumFacing forward = EnumFacing.SOUTH;
+    private EnumFacing up = EnumFacing.UP;
 
     @Override
     public Packet getDescriptionPacket() {
@@ -137,8 +131,10 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage {
         if (this.machineItemData != null)
             nbtTagCompound.setTag("MachineItemData", machineItemData);
 
-        if (this.directionFacing != null)
-            nbtTagCompound.setString("directionFacing", directionFacing.getName());
+        if (canBeRotated()) {
+            nbtTagCompound.setString("forward", this.forward.name());
+            nbtTagCompound.setString("up", this.up.name());
+        }
     }
 
     @Override
@@ -147,7 +143,11 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage {
 
         this.customName = nbtTagCompound.hasKey("CustomName") ? nbtTagCompound.getString("CustomName") : null;
         this.machineItemData = nbtTagCompound.hasKey("MachineItemData") ? nbtTagCompound.getCompoundTag("MachineItemData") : null;
-        this.directionFacing = nbtTagCompound.hasKey("directionFacing") ? EnumFacing.byName(nbtTagCompound.getString("directionFacing")) : null;
+
+        if (canBeRotated()) {
+            this.forward = EnumFacing.valueOf(nbtTagCompound.getString("forward"));
+            this.up = EnumFacing.valueOf(nbtTagCompound.getString("up"));
+        }
     }
 
     public NBTTagCompound getMachineItemData() {
@@ -171,5 +171,28 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage {
             currentTip.add(String.format("%s%s%s", EnumChatFormatting.BLUE, EnumChatFormatting.ITALIC, customName));
 
         return currentTip;
+    }
+
+    @Override
+    public boolean canBeRotated() {
+        return true;
+    }
+
+    @Override
+    public EnumFacing getForward() {
+        return forward;
+    }
+
+    @Override
+    public EnumFacing getUp() {
+        return up;
+    }
+
+    @Override
+    public void setOrientation(EnumFacing forward, EnumFacing up) {
+        this.forward = forward;
+        this.up = up;
+        markDirty();
+        markForUpdate();
     }
 }
