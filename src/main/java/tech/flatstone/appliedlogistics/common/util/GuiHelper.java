@@ -31,14 +31,11 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-import tech.flatstone.appliedlogistics.client.gui.GuiBase;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class GuiHelper extends GuiScreen {

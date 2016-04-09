@@ -15,7 +15,6 @@
       "model": "appliedlogistics:builder/builder_stone",
       "y": 270
     },
-
     "facing=north,tech=bronze": {
       "model": "appliedlogistics:builder/builder_bronze"
     },
@@ -31,7 +30,6 @@
       "model": "appliedlogistics:builder/builder_bronze",
       "y": 270
     },
-
     "facing=north,tech=steel": {
       "model": "appliedlogistics:builder/builder_steel"
     },
@@ -47,7 +45,6 @@
       "model": "appliedlogistics:builder/builder_steel",
       "y": 270
     },
-
     "facing=north,tech=industrial": {
       "model": "appliedlogistics:builder/builder_industrial"
     },
@@ -63,7 +60,6 @@
       "model": "appliedlogistics:builder/builder_industrial",
       "y": 270
     },
-
     "facing=north,tech=digital": {
       "model": "appliedlogistics:builder/builder_digital"
     },
@@ -79,7 +75,6 @@
       "model": "appliedlogistics:builder/builder_digital",
       "y": 270
     },
-
     "facing=north,tech=creative": {
       "model": "appliedlogistics:builder/builder_creative"
     },
