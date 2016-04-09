@@ -33,10 +33,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
-import tech.flatstone.appliedlogistics.common.util.IOrientable;
-import tech.flatstone.appliedlogistics.common.util.IOrientableBlock;
-import tech.flatstone.appliedlogistics.common.util.Platform;
-import tech.flatstone.appliedlogistics.common.util.TileHelper;
+import tech.flatstone.appliedlogistics.common.util.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +80,7 @@ public abstract class BlockBase extends Block {
         world.setBlockToAir(pos);
     }
 
-    @Override //todo move
+    @Override
     public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
         TileEntityBase tileEntity = TileHelper.getTileEntity(world, pos, TileEntityBase.class);
         if (tileEntity != null && tileEntity.hasCustomName()) {
@@ -112,6 +109,9 @@ public abstract class BlockBase extends Block {
                 for (int rs = 0; rs < 4; rs++) {
                     forward = Platform.rotateAround(forward, axis);
                     up = Platform.rotateAround(up, axis);
+
+                    LogHelper.info(">>> Up: " + up.getName());
+                    LogHelper.info(">>> Forward: " + forward.getName());
 
                     if (this.isValidOrientation(world, pos, forward, up)) {
                         rotatable.setOrientation(forward, up);

@@ -5,8 +5,10 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -20,6 +22,8 @@ import tech.flatstone.appliedlogistics.common.util.IOrientable;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class BlockTileBase extends BlockBase implements ITileEntityProvider {
 
@@ -62,7 +66,7 @@ public abstract class BlockTileBase extends BlockBase implements ITileEntityProv
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
         final TileEntityBase tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBase.class);
         if (tileEntity != null) {
-            //todo: ask tile entity for drops?
+            tileEntity.dropItems();
         }
     }
 
@@ -90,10 +94,54 @@ public abstract class BlockTileBase extends BlockBase implements ITileEntityProv
 
         if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("MachineItemData")) {
             tileEntity.setMachineItemData(itemStack.getTagCompound().getCompoundTag("MachineItemData"));
+            tileEntity.initMachineData();
         }
 
         if (itemStack.hasDisplayName()) {
             tileEntity.setCustomName(itemStack.getDisplayName());
         }
+    }
+
+    @Override
+    public boolean removedByPlayer(World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
+        return willHarvest || super.removedByPlayer(world, pos, player, false);
+    }
+
+    @Override
+    public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity te) {
+        super.harvestBlock(world, player, pos, state, te);
+        world.setBlockToAir(pos);
+    }
+
+    /**
+     * Add machineItemData to item that drops
+     * @param world
+     * @param pos
+     * @param state
+     * @param fortune
+     * @return
+     */
+    @Override
+    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+        TileEntityBase tileEntityBase = TileHelper.getTileEntity(world, pos, TileEntityBase.class);
+        if (tileEntityBase != null) {
+            final ItemStack itemStack = new ItemStack(this);
+
+            NBTTagCompound machineItemData = tileEntityBase.getMachineItemData();
+            if (machineItemData != null) {
+                NBTTagCompound itemTag = new NBTTagCompound();
+                itemTag.setTag("MachineItemData", machineItemData);
+                itemStack.setTagCompound(itemTag);
+            }
+
+            if (tileEntityBase.hasCustomName()) {
+                itemStack.setStackDisplayName(tileEntityBase.getCustomName());
+            }
+
+            ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
+            drops.add(itemStack);
+            return drops;
+        }
+        return super.getDrops(world, pos, state, fortune);
     }
 }

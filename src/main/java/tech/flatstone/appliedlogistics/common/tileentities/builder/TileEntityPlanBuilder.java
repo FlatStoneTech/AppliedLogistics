@@ -32,6 +32,7 @@ import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
 import tech.flatstone.appliedlogistics.common.util.INetworkButton;
+import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 import java.util.UUID;
 
@@ -147,5 +148,10 @@ public class TileEntityPlanBuilder extends TileEntityMachineBase implements INet
 
     public IMachinePlan getSelectedPlan() {
         return (IMachinePlan) PlanRegistry.getPlanItems().toArray()[selectedPlan];
+    }
+
+    @Override
+    public void dropItems() {
+        TileHelper.DropItems(this, 0, 0);
     }
 }
