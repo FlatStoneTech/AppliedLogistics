@@ -7,10 +7,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
-
 public class TransportGridTest {
-    TransportGrid transportGrid;
+    private TransportGrid transportGrid;
 
     @Before
     public void setUp() throws Exception {
@@ -41,14 +39,14 @@ public class TransportGridTest {
     public void createDirectionalNodeConnection() throws Exception {
         UUID node1 = transportGrid.createTransportNode();
         UUID node2 = transportGrid.createTransportNode();
-        transportGrid.createDirectionalNodeConnection(node1,node2);
+        transportGrid.createDirectionalNodeConnection(node1, node2);
     }
 
     @Test
     public void createNodeConnection() throws Exception {
         UUID node1 = transportGrid.createTransportNode();
         UUID node2 = transportGrid.createTransportNode();
-        transportGrid.createNodeConnection(node1,node2);
+        transportGrid.createNodeConnection(node1, node2);
     }
 
     @Test
@@ -58,7 +56,7 @@ public class TransportGridTest {
         ArrayList<String> list = new ArrayList<String>();
         list.add("whitelist");
 
-        transportGrid.applyWhitelistToNode(node2,list);
+        transportGrid.applyWhitelistToNode(node2, list);
     }
 
     @Test
@@ -68,7 +66,7 @@ public class TransportGridTest {
         ArrayList<String> list = new ArrayList<String>();
         list.add("blacklist");
 
-        transportGrid.applyBlacklistToNode(node2,list);
+        transportGrid.applyBlacklistToNode(node2, list);
     }
 
     @Test

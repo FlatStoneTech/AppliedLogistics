@@ -48,5 +48,26 @@ public class GridServerTest {
 
     }
 
+    @Test
+    public void testEdgeLinking() throws Exception {
+        UUID start = UUID.randomUUID();
+        UUID midNode1 = UUID.randomUUID();
+        UUID modNode2 = UUID.randomUUID();
+        UUID end = UUID.randomUUID();
+
+        gridServer.addVertex(start);
+        gridServer.addVertex(midNode1);
+        gridServer.addVertex(modNode2);
+        gridServer.addVertex(end);
+
+        gridServer.addEdge(start, midNode1);
+        gridServer.addEdge(midNode1, modNode2);
+        gridServer.addEdge(modNode2, midNode1);
+        gridServer.addEdge(modNode2, end);
+
+        gridServer.gridTick();
+
+    }
+
 
 }

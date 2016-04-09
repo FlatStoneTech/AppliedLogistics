@@ -11,13 +11,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class FilteredEdgeTest {
-    FilteredEdge<UUID> filteredEdge;
-    UUID uuid;
-    ArrayList<String> list;
+    private FilteredEdge<UUID> filteredEdge;
+    private ArrayList<String> list;
 
     @Before
     public void setUp() throws Exception {
-        uuid = UUID.randomUUID();
+        UUID uuid = UUID.randomUUID();
         filteredEdge = new FilteredEdge<UUID>(null, null, uuid);
 
         list = new ArrayList<String>();
@@ -28,7 +27,7 @@ public class FilteredEdgeTest {
     }
 
     @Test
-    public void testWhitelist() {
+    public void testWhitelist() throws Exception {
         filteredEdge.setWhitelist(list);
         assertTrue(filteredEdge.canRoute("whitelist"));
         assertFalse(filteredEdge.canRoute("blacklist"));
@@ -36,7 +35,7 @@ public class FilteredEdgeTest {
     }
 
     @Test
-    public void testBlacklist() {
+    public void testBlacklist() throws Exception {
         filteredEdge.setBlacklist(list);
         assertFalse(filteredEdge.canRoute("whitelist"));
         assertTrue(filteredEdge.canRoute("blacklist"));
@@ -44,7 +43,7 @@ public class FilteredEdgeTest {
     }
 
     @Test
-    public void testDefaultList() {
+    public void testDefaultList() throws Exception {
         assertTrue(filteredEdge.canRoute(""));
         assertTrue(filteredEdge.canRoute("anything"));
     }

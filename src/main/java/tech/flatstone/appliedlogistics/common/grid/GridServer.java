@@ -22,8 +22,8 @@ package tech.flatstone.appliedlogistics.common.grid;
 
 
 import org.jgrapht.DirectedGraph;
-import org.jgrapht.experimental.dag.DirectedAcyclicGraph;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
+import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 import org.jgrapht.traverse.ClosestFirstIterator;
 import tech.flatstone.appliedlogistics.common.util.GraphHelper;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
@@ -51,7 +51,7 @@ class GridServer implements Runnable {
     private AtomicBoolean running;
 
     public GridServer() {
-        graph = new DirectedAcyclicGraph<UUID, FilteredEdge>(
+        graph = new SimpleDirectedWeightedGraph<UUID, FilteredEdge>(
                 new ClassBasedEdgeFactory<UUID, FilteredEdge>(FilteredEdge.class)
         );
 
