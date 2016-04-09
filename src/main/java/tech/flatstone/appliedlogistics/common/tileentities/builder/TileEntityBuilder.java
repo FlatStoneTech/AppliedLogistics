@@ -241,24 +241,28 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
     }
 
     private void planChange2() {
-        if (planItem == null && Platform.isServer()) {
-            TileHelper.DropItems(this, 1, 27);
-        }
-
-        if (planItem == null) {
-            selectedTechLevel = -1;
-            return;
-        }
-
-        if (selectedTechLevel == -1) {
-            for (TechLevel techLevel : planDetails.keySet()) {
-                if (techLevel.getMeta() > selectedTechLevel)
-                    selectedTechLevel = techLevel.getMeta();
+        try {
+            if (planItem == null && Platform.isServer()) {
+                TileHelper.DropItems(this, 1, 27);
             }
-        }
 
-        this.markForUpdate();
-        this.markDirty();
+            if (planItem == null) {
+                selectedTechLevel = -1;
+                return;
+            }
+
+            if (selectedTechLevel == -1) {
+                for (TechLevel techLevel : planDetails.keySet()) {
+                    if (techLevel.getMeta() > selectedTechLevel)
+                        selectedTechLevel = techLevel.getMeta();
+                }
+            }
+
+            this.markForUpdate();
+            this.markDirty();
+        } catch (Exception e) {
+
+        }
     }
 
     @Override
