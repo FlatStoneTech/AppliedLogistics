@@ -29,7 +29,6 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -218,7 +217,7 @@ public class GuiHelper extends GuiScreen {
     }
 
     public void drawPlayerHead(int x, int y) {
-        ResourceLocation playerSkin = ((AbstractClientPlayer) mc.getMinecraft().thePlayer).getLocationSkin();
+        ResourceLocation playerSkin = Minecraft.getMinecraft().thePlayer.getLocationSkin();
         mc.getTextureManager().bindTexture(playerSkin);
 
         int[][] savedGLState = OpenGLHelper.saveGLState(new int[]{GL11.GL_ALPHA_TEST, GL11.GL_LIGHTING});

@@ -117,15 +117,15 @@ public class ModelTransformer {
         return new UnpackedBakedQuad(vfTransformer.remap(original, newData), quad.getTintIndex(), quad.getFace(), format);
     }
 
-    public static interface IVertexTransformer {
+    public interface IVertexTransformer {
 
-        public float[] transform(EnumType type, EnumUsage usage, float... data);
+        float[] transform(EnumType type, EnumUsage usage, float... data);
 
     }
 
-    public static interface IVertexFormatTransformer {
+    public interface IVertexFormatTransformer {
 
-        public static final IVertexFormatTransformer NONE = new IVertexFormatTransformer() {
+        IVertexFormatTransformer NONE = new IVertexFormatTransformer() {
 
             @Override
             public VertexFormat getNewFormat(VertexFormat original) {
@@ -141,7 +141,7 @@ public class ModelTransformer {
 
         };
 
-        public static final IVertexFormatTransformer COMPUTE_NORMALS = new IVertexFormatTransformer() {
+        IVertexFormatTransformer COMPUTE_NORMALS = new IVertexFormatTransformer() {
 
             private final WeakHashMap<VertexFormat, VertexFormat> formats = new WeakHashMap<VertexFormat, VertexFormat>();
 
@@ -182,9 +182,9 @@ public class ModelTransformer {
 
         };
 
-        public VertexFormat getNewFormat(VertexFormat original);
+        VertexFormat getNewFormat(VertexFormat original);
 
-        public float[][][] remap(VertexFormat original, float[][][] data);
+        float[][][] remap(VertexFormat original, float[][][] data);
 
     }
 

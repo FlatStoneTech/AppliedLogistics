@@ -25,6 +25,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
@@ -186,8 +187,8 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
         GlStateManager.disableTexture2D();
         GlStateManager.depthMask(false);
 
-        event.context.drawSelectionBoundingBox(crankTop);
-        event.context.drawSelectionBoundingBox(crankShaft);
+        RenderGlobal.drawSelectionBoundingBox(crankTop);
+        RenderGlobal.drawSelectionBoundingBox(crankShaft);
 
         GlStateManager.depthMask(true);
         GlStateManager.enableTexture2D();

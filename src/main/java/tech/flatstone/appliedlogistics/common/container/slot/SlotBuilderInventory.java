@@ -45,10 +45,8 @@ public class SlotBuilderInventory extends SlotBase {
             return false;
 
         List<PlanRequiredMaterials> planRequiredMaterialsList = planDetails.getRequiredMaterialsList();
-        if (planRequiredMaterialsList.size() < slotID)
-            return false;
+        return planRequiredMaterialsList.size() >= slotID;
 
-        return true;
     }
 
     @Override

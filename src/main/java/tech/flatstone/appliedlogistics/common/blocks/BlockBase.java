@@ -138,7 +138,7 @@ public abstract class BlockBase extends Block {
 
     public IOrientable getOrientable(final IBlockAccess world, final BlockPos pos) {
         if (this instanceof IOrientableBlock)
-            return ((IOrientableBlock) this).getOrientable(world, pos);
+            return this.getOrientable(world, pos);
         return null;
     }
 

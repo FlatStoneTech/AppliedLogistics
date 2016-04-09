@@ -59,7 +59,7 @@ public class BlockOre extends BlockBase implements IBlockRenderer {
 
     @Override
     protected BlockState createBlockState() {
-        return new BlockState(this, new IProperty[]{ORES});
+        return new BlockState(this, ORES);
     }
 
     @Override

@@ -113,6 +113,6 @@ public class SlotBase extends Slot {
     }
 
     public boolean renderIconWithItem() {
-        return overlayIcon == null ? false : true;
+        return overlayIcon != null;
     }
 }

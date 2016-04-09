@@ -106,10 +106,8 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
             invSlot++;
         }
 
-        if (planDetails != null && getTotalWeight() > getPlanDetails().getTotalWeight())
-            return false;
+        return !(planDetails != null && getTotalWeight() > getPlanDetails().getTotalWeight());
 
-        return true;
     }
 
     public int getSelectedTechLevel() {

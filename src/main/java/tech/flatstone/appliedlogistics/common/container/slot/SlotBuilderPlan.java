@@ -37,25 +37,19 @@ public class SlotBuilderPlan extends SlotBase {
 
     @Override
     public boolean canBeHovered() {
-        if (tileEntity.getTicksRemaining() > 0)
-            return false;
+        return tileEntity.getTicksRemaining() <= 0;
 
-        return true;
     }
 
     @Override
     public boolean isItemValid(ItemStack stack) {
-        if (tileEntity.getTicksRemaining() > 0)
-            return false;
+        return tileEntity.getTicksRemaining() <= 0;
 
-        return true;
     }
 
     @Override
     public boolean canTakeStack(EntityPlayer playerIn) {
-        if (tileEntity.getTicksRemaining() > 0)
-            return false;
+        return tileEntity.getTicksRemaining() <= 0;
 
-        return true;
     }
 }
