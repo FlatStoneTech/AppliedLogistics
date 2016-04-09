@@ -240,6 +240,27 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
         this.markDirty();
     }
 
+    private void planChange2() {
+        if (planItem == null && Platform.isServer()) {
+            TileHelper.DropItems(this, 1, 27);
+        }
+
+        if (planItem == null) {
+            selectedTechLevel = -1;
+            return;
+        }
+
+        if (selectedTechLevel == -1) {
+            for (TechLevel techLevel : planDetails.keySet()) {
+                if (techLevel.getMeta() > selectedTechLevel)
+                    selectedTechLevel = techLevel.getMeta();
+            }
+        }
+
+        this.markForUpdate();
+        this.markDirty();
+    }
+
     @Override
     public IInventory getInternalInventory() {
         return inventory;
