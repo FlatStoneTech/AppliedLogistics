@@ -21,6 +21,7 @@
 package tech.flatstone.appliedlogistics.common.grid;
 
 import tech.flatstone.appliedlogistics.api.features.ITransport;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,11 +29,15 @@ import java.util.Map;
 import java.util.UUID;
 
 public class TransportGrid implements ITransport {
-    private GridServer graphServer;
+    protected GridServer graphServer;
+    private Thread graphServerThread;
     private Map<UUID, UUID> exitNodeMap;
 
     public TransportGrid() {
         exitNodeMap = new HashMap<UUID, UUID>();
+        graphServer = new GridServer();
+        graphServerThread = new Thread(graphServer);
+        graphServerThread.start();
     }
 
     /**
@@ -125,7 +130,7 @@ public class TransportGrid implements ITransport {
     @Override
     public boolean applyWhitelistToNode(UUID exitNode, ArrayList<String> unlocalizedNameList) {
         UUID parentNode = exitNodeMap.get(exitNode);
-        graphServer.getEdge(parentNode, exitNode).setWhitelist(unlocalizedNameList);
+        graphServer.applyFilter(true, parentNode, exitNode, unlocalizedNameList);
         return true;
     }
 
@@ -142,7 +147,7 @@ public class TransportGrid implements ITransport {
     @Override
     public boolean applyBlacklistToNode(UUID exitNode, ArrayList<String> unlocalizedNameList) {
         UUID parentNode = exitNodeMap.get(exitNode);
-        graphServer.getEdge(parentNode, exitNode).setBlacklist(unlocalizedNameList);
+        graphServer.applyFilter(false, parentNode, exitNode, unlocalizedNameList);
         return true;
     }
 
@@ -172,4 +177,18 @@ public class TransportGrid implements ITransport {
         return graphServer.getCargo(exitNode);
     }
 
+
+    /**
+     * Shutdown the graph server
+     */
+    protected void Shutdown() {
+        graphServer.stop();
+
+        try {
+            graphServerThread.join(500);
+        } catch (InterruptedException e) {
+            LogHelper.fatal(e.getLocalizedMessage());
+            e.printStackTrace();
+        }
+    }
 }

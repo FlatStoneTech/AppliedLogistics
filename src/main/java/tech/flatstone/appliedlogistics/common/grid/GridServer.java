@@ -35,6 +35,7 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 class GridServer implements Runnable {
     private ArrayList<UUIDPair> vertexCache; // Caches vertices that cannot currently be added
@@ -42,10 +43,12 @@ class GridServer implements Runnable {
     private ConcurrentLinkedQueue<UUID> vertexQueue;
     private ConcurrentLinkedQueue<UUIDPair> edgeQueue;
     private ConcurrentLinkedQueue<UUIDPair> exitQueue;
+    private ConcurrentLinkedQueue<WhitelistData> whitelistDataQueue;
     private CyclicBarrier barrier;
     private LinkedList<TransportContainer> activeCargo;
     private ConcurrentLinkedQueue<TransportContainer> incomingCargo;
     private ConcurrentHashMap<UUID, TransportContainer> outgoingCargo;
+    private AtomicBoolean running;
 
     public GridServer() {
         graph = new DirectedAcyclicGraph<UUID, FilteredEdge>(
@@ -55,6 +58,7 @@ class GridServer implements Runnable {
         vertexQueue = new ConcurrentLinkedQueue<UUID>();
         edgeQueue = new ConcurrentLinkedQueue<UUIDPair>();
         exitQueue = new ConcurrentLinkedQueue<UUIDPair>();
+        whitelistDataQueue = new ConcurrentLinkedQueue<WhitelistData>();
 
         incomingCargo = new ConcurrentLinkedQueue<TransportContainer>();
         activeCargo = new LinkedList<TransportContainer>();
@@ -69,6 +73,10 @@ class GridServer implements Runnable {
         barrier = new CyclicBarrier(2);
 
         vertexCache = new ArrayList<UUIDPair>();
+
+        running = new AtomicBoolean();
+
+
     }
 
     void addCargo(TransportContainer objectContainer) {
@@ -81,19 +89,23 @@ class GridServer implements Runnable {
 
     @Override
     public void run() {
-        //sync with world server
-        try {
-            barrier.await();
-        } catch (InterruptedException e) {
-            LogHelper.fatal(e.getLocalizedMessage());
-            e.printStackTrace();
-        } catch (BrokenBarrierException e) {
-            LogHelper.fatal(e.getLocalizedMessage());
-            e.printStackTrace();
-        }
+        running.set(true);
 
-        //step the transport simulation
-        this.gridTick();
+        while (running.get()) {
+            //sync with world server
+            try {
+                barrier.await();
+            } catch (InterruptedException e) {
+                LogHelper.fatal(e.getLocalizedMessage());
+                e.printStackTrace();
+            } catch (BrokenBarrierException e) {
+                LogHelper.fatal(e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+
+            //step the transport simulation
+            this.gridTick();
+        }
     }
 
     /**
@@ -138,7 +150,7 @@ class GridServer implements Runnable {
 
         for (UUIDPair pair : exitQueue) {
             FilteredEdge edge = graph.getEdge(pair.getUUID1(), pair.getUUID2());
-            if(edge == null) break;
+            if (edge == null) break;
             edge.setExit(true);
             exitQueue.remove(pair);
         }
@@ -147,6 +159,18 @@ class GridServer implements Runnable {
         for (TransportContainer container : activeCargo) {
             outgoingCargo.put(container.getDestination(), container);
             activeCargo.remove(container);
+        }
+
+        //apply whitelist/blacklists
+        for (WhitelistData whitelistData : whitelistDataQueue) {
+            FilteredEdge edge = graph.getEdge(whitelistData.getParent(), whitelistData.getEnd());
+            if (edge == null) break;
+            if (whitelistData.isWhitelist()) {
+                edge.setWhitelist(whitelistData.getList());
+            } else {
+                edge.setBlacklist(whitelistData.getList());
+            }
+            whitelistDataQueue.remove(whitelistData);
         }
 
         //ingest new objects
@@ -161,7 +185,7 @@ class GridServer implements Runnable {
                 UUID uuid = closestFirstIterator.next();
                 if (uuid == last) continue;
 
-                FilteredEdge edge = graph.getEdge(last,uuid);
+                FilteredEdge edge = graph.getEdge(last, uuid);
                 last = uuid;
                 if ((edge.isExit()) && (edge.canRoute(container.getUnlocalizedName()))) {
                     container.setDestination(uuid);
@@ -186,7 +210,12 @@ class GridServer implements Runnable {
         return source != null && exitQueue.offer(new UUIDPair(source, destination));
     }
 
-    FilteredEdge getEdge(UUID source, UUID destination) {
-        return graph.getEdge(source, destination);
+    boolean applyFilter(boolean isWhitelist, UUID parent, UUID end, ArrayList<String> list) {
+        return whitelistDataQueue.offer(new WhitelistData(isWhitelist, parent, end, list));
+    }
+
+    void stop() {
+        running.set(false);
+        sync();
     }
 }

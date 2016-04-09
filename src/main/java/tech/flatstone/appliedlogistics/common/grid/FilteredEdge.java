@@ -36,7 +36,7 @@ public class FilteredEdge<V> extends DefaultEdge {
     private boolean isWhiteList;
     private boolean isExit;
 
-    public FilteredEdge(){
+    public FilteredEdge() {
         this.list = Collections.synchronizedList(new ArrayList<String>());
         this.isWhiteList = false;
         this.start = (V) getSource();
@@ -50,12 +50,12 @@ public class FilteredEdge<V> extends DefaultEdge {
         this.uuid = uuid;
     }
 
-    public void setWhitelist(ArrayList<String> whitelist) {
+    public void setWhitelist(List<String> whitelist) {
         list = Collections.synchronizedList(whitelist);
         isWhiteList = true;
     }
 
-    public void setBlacklist(ArrayList<String> blacklist) {
+    public void setBlacklist(List<String> blacklist) {
         list = Collections.synchronizedList(blacklist);
         isWhiteList = false;
     }
