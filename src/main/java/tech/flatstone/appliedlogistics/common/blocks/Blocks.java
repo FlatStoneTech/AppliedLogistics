@@ -24,7 +24,6 @@ import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockBuilder;
@@ -34,7 +33,7 @@ import tech.flatstone.appliedlogistics.common.blocks.machines.BlockPulverizer;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCrank;
 import tech.flatstone.appliedlogistics.common.blocks.ore.BlockOre;
 import tech.flatstone.appliedlogistics.common.blocks.ore.BlockOreBlock;
-import tech.flatstone.appliedlogistics.common.items.builder.ItemBuilder;
+import tech.flatstone.appliedlogistics.common.items.misc.ItemBuilder;
 import tech.flatstone.appliedlogistics.common.items.misc.ItemCrank;
 import tech.flatstone.appliedlogistics.common.items.ore.ItemOre;
 import tech.flatstone.appliedlogistics.common.items.ore.ItemOreBlock;
@@ -49,7 +48,7 @@ public enum Blocks {
     BLOCK_ORE("ore", new BlockOre(), ItemOre.class, AppliedLogisticsCreativeTabs.tabOres),
     BLOCK_ORE_BLOCK("ore_block", new BlockOreBlock(), ItemOreBlock.class, AppliedLogisticsCreativeTabs.tabOres),
 
-    BLOCK_BUILDER("misc", new BlockBuilder(), ItemBuilder.class, AppliedLogisticsCreativeTabs.tabMachines),
+    BLOCK_BUILDER("builder", new BlockBuilder(), ItemBuilder.class, AppliedLogisticsCreativeTabs.tabMachines),
     BLOCK_PLAN_LIBRARY("plan_library", new BlockPlanLibrary(), AppliedLogisticsCreativeTabs.tabMachines),
     BLOCK_PLAN_CHEST("plan_chest", new BlockPlanChest(), AppliedLogisticsCreativeTabs.tabMachines),
 

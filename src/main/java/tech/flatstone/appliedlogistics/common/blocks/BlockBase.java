@@ -39,9 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BlockBase extends Block {
-    public static final PropertyEnum AXIS_ORIENTATION = PropertyEnum.create("axis", EnumFacing.Axis.class);
+    protected static final PropertyEnum AXIS_ORIENTATION = PropertyEnum.create("axis", EnumFacing.Axis.class);
     protected boolean isInventory = false;
-    protected boolean hasSubtypes = false;
 
     protected BlockBase(Material material) {
         super(material);
@@ -56,11 +55,10 @@ public abstract class BlockBase extends Block {
     public String getUnlocalizedName() {
         String blockName = getUnwrappedUnlocalizedName(super.getUnlocalizedName());
 
-        String test = String.format("tile.%s.%s", ModInfo.MOD_ID, blockName);
-        return test;
+        return String.format("tile.%s.%s", ModInfo.MOD_ID, blockName);
     }
 
-    protected String getUnwrappedUnlocalizedName(String unlocalizedName) {
+    private String getUnwrappedUnlocalizedName(String unlocalizedName) {
         return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
     }
 
