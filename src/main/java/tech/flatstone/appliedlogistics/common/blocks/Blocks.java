@@ -23,12 +23,13 @@ package tech.flatstone.appliedlogistics.common.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
-import tech.flatstone.appliedlogistics.common.blocks.builder.BlockBuilder;
-import tech.flatstone.appliedlogistics.common.blocks.builder.BlockPlanBuilder;
-import tech.flatstone.appliedlogistics.common.blocks.builder.BlockPlanLibrary;
+import tech.flatstone.appliedlogistics.common.blocks.misc.BlockBuilder;
+import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPlanLibrary;
+import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPlanChest;
 import tech.flatstone.appliedlogistics.common.blocks.machines.BlockPulverizer;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCrank;
 import tech.flatstone.appliedlogistics.common.blocks.ore.BlockOre;
@@ -48,9 +49,9 @@ public enum Blocks {
     BLOCK_ORE("ore", new BlockOre(), ItemOre.class, AppliedLogisticsCreativeTabs.tabOres),
     BLOCK_ORE_BLOCK("ore_block", new BlockOreBlock(), ItemOreBlock.class, AppliedLogisticsCreativeTabs.tabOres),
 
-    BLOCK_BUILDER("builder", new BlockBuilder(), ItemBuilder.class, AppliedLogisticsCreativeTabs.tabMachines),
-    BLOCK_PLAN_BUILDER("plan_builder", new BlockPlanBuilder(), AppliedLogisticsCreativeTabs.tabMachines),
+    BLOCK_BUILDER("misc", new BlockBuilder(), ItemBuilder.class, AppliedLogisticsCreativeTabs.tabMachines),
     BLOCK_PLAN_LIBRARY("plan_library", new BlockPlanLibrary(), AppliedLogisticsCreativeTabs.tabMachines),
+    BLOCK_PLAN_CHEST("plan_chest", new BlockPlanChest(), AppliedLogisticsCreativeTabs.tabMachines),
 
     BLOCK_MISC_CRANK("misc_crank", new BlockCrank(), ItemCrank.class, AppliedLogisticsCreativeTabs.tabGeneral),
 
@@ -60,45 +61,42 @@ public enum Blocks {
     private final String internalName;
     private final Class<? extends ItemBlock> itemBlockClass;
     private final CreativeTabs creativeTabs;
-    private final boolean defaultRenderer;
 
     Blocks(String internalName, Block block) {
-        this(internalName, block, ItemBlock.class, null, true);
+        this(internalName, block, ItemBlock.class, null);
     }
 
     Blocks(String internalName, Block block, CreativeTabs creativeTabs) {
-        this(internalName, block, ItemBlock.class, creativeTabs, true);
+        this(internalName, block, ItemBlock.class, creativeTabs);
     }
 
     Blocks(String internalName, Block block, Class<? extends ItemBlock> itemBlockClass) {
-        this(internalName, block, itemBlockClass, null, true);
+        this(internalName, block, itemBlockClass, null);
     }
 
     Blocks(String internalName, Block block, Class<? extends ItemBlock> itemBlockClass, CreativeTabs creativeTabs) {
-        this(internalName, block, itemBlockClass, creativeTabs, true);
-    }
-
-    Blocks(String internalName, Block block, Class<? extends ItemBlock> itemBlockClass, CreativeTabs creativeTabs, boolean useDefaultRenderer) {
         this.internalName = internalName;
         this.block = block;
         this.itemBlockClass = itemBlockClass;
         this.creativeTabs = creativeTabs;
-        this.defaultRenderer = useDefaultRenderer;
+    }
+
+    public ItemStack getStack() {
+        return new ItemStack(block);
+    }
+
+    public ItemStack getStack(int size) {
+        return new ItemStack(block, size);
+    }
+
+    public ItemStack getStack(int size, int meta) {
+        return new ItemStack(block, size, meta);
     }
 
     public static void registerBlocks() {
         for (Blocks b : Blocks.values()) {
             b.registerBlock();
         }
-    }
-
-
-    public String getInternalName() {
-        return internalName;
-    }
-
-    public String getStatName() {
-        return StatCollector.translateToLocal(block.getUnlocalizedName().replace("tileentities.", "blocks."));
     }
 
     private void registerBlock() {

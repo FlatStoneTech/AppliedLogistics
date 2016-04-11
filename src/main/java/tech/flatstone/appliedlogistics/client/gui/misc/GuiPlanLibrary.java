@@ -18,108 +18,105 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.client.gui.machines;
+package tech.flatstone.appliedlogistics.client.gui.misc;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
-import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.lwjgl.opengl.GL11;
+import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.client.gui.GuiBase;
-import tech.flatstone.appliedlogistics.common.container.machines.ContainerPulverizer;
-import tech.flatstone.appliedlogistics.common.items.Items;
-import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityPulverizer;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
+import tech.flatstone.appliedlogistics.common.container.misc.ContainerPlanLibrary;
+import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
+import tech.flatstone.appliedlogistics.common.network.PacketHandler;
+import tech.flatstone.appliedlogistics.common.network.messages.PacketButtonClick;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPlanLibrary;
 import tech.flatstone.appliedlogistics.common.util.GuiHelper;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.io.IOException;
+import java.util.UUID;
 
-public class GuiPulverizer extends GuiBase {
-    private TileEntityPulverizer tileEntity;
-    private GuiHelper guiHelper = new GuiHelper();
-    private HashMap<Rectangle, List<String>> tooltips = new HashMap<Rectangle, List<String>>();
+public class GuiPlanLibrary extends GuiBase {
+    TileEntityPlanLibrary tileEntity;
+    GuiHelper guiHelper;
+    private GuiButton btnNextPlan;
+    private GuiButton btnPrevPlan;
 
-    public GuiPulverizer(InventoryPlayer inventoryPlayer, TileEntityPulverizer tileEntity) {
-        super(new ContainerPulverizer(inventoryPlayer, tileEntity));
+    public GuiPlanLibrary(InventoryPlayer inventoryPlayer, TileEntityPlanLibrary tileEntity) {
+        super(new ContainerPlanLibrary(inventoryPlayer, tileEntity));
+        guiHelper = new GuiHelper();
         this.xSize = 218;
-        this.ySize = 186;
+        this.ySize = 183;
         this.tileEntity = tileEntity;
     }
 
     @Override
     public void initGui() {
         super.initGui();
+        this.buttonList.clear();
 
-        tooltips.put(new Rectangle(190, 20, 16, 16), Collections.singletonList("Simultaneous processing"));
-        tooltips.put(new Rectangle(190, 49, 16, 16), Collections.singletonList("Speed"));
-        tooltips.put(new Rectangle(190, 78, 16, 16), Collections.singletonList("test"));
+        this.buttonList.add(this.btnPrevPlan = new GuiButton(0, guiLeft + 7, guiTop + 16, 10, 20, "<"));
+        this.buttonList.add(this.btnNextPlan = new GuiButton(1, guiLeft + 159, guiTop + 16, 10, 20, ">"));
     }
 
     @Override
     public void drawBG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
-        bindTexture("gui/machines/pulverizer.png");
+        bindTexture("gui/machines/plan_builder.png");
         drawTexturedModalRect(paramInt1, paramInt2, 0, 0, this.xSize, this.ySize);
+
+        IMachinePlan plan = tileEntity.getSelectedPlan();
+        if (plan == null)
+            return;
+
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        int playerXP = player.experienceLevel;
+
+        if (plan.getPlanRequiredXP() > playerXP && !player.capabilities.isCreativeMode) {
+            drawTexturedModalRect(paramInt1 + 188, paramInt2 + 117, 218, 0, 21, 28);
+        }
+
+        if (plan.getPlanRequiredXP() > 0) {
+            drawTexturedModalRect(paramInt1 + 173, paramInt2 + 21, 218, 28, 9, 9);
+            guiHelper.drawStringWithShadow(paramInt1 + 183, paramInt2 + 22, String.format("%s", plan.getPlanRequiredXP()), colorXPGreen);
+        }
     }
 
     @Override
     public void drawFG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
-        this.fontRendererObj.drawString(tileEntity.hasCustomName() ? tileEntity.getCustomName() : LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()), 8, 6, 4210752);
-        this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage("container.inventory"), 8, 58, 4210752);
+        this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()), 8, 6, 4210752);
+        this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage("container.inventory"), 8, 90, 4210752);
 
-        /**
-         * Draw Machine Details
-         */
-        GL11.glPushMatrix();
+        IMachinePlan plan = tileEntity.getSelectedPlan();
+        if (plan == null)
+            return;
 
-        // Bronze Gear :: number of ore that can be processed at one time
-        guiHelper.drawItemStack(new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.BRONZE.getMeta()), 190, 20);  // x = 190 to 206 // y = 20 to 36
-        guiHelper.drawCenteredString(190, 38, 16, tileEntity.getMaxProcessCount() + "x", 4210752);
+        String planName = LanguageHelper.NONE.translateMessage(((ItemPlanBase) plan).getUnlocalizedName() + ".name");
+        guiHelper.drawCenteredString(22, 22, 133, planName, 4210752);
 
-        // Stone Gear :: Chance Percent
-        guiHelper.drawItemStack(new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.COBBLESTONE.getMeta()), 190, 49); // x = 190 to 206 // y = 49 to 65
-        guiHelper.drawCenteredString(190, 67, 16, "160%", 4210752);
+        String planDescription = plan.getLocalizedPlanDescription(); //198px Wide
+        guiHelper.renderSplitString(planDescription, 10, 40, 198, colorFont);
+    }
 
-        // Wood Gear :: Speed Percent
-        guiHelper.drawItemStack(new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.WOOD.getMeta()), 190, 78); // x = 190 to 206 // y = 78 to 94
-        guiHelper.drawCenteredString(190, 96, 16, "0%", 4210752);
+    @Override
+    public void updateScreen() {
+        super.updateScreen();
 
-        GL11.glPopMatrix();
-
-        /**
-         * Draw Progress Bar
-         */
-        if (tileEntity.getTicksRemaining() > 0) {
-            int timeTotal = tileEntity.getTotalProcessTime();
-            int timeCurrent = tileEntity.getTicksRemaining();
-
-            float timePercent = ((((float) timeTotal - (float) timeCurrent) / (float) timeTotal)) * 100;
-
-            int secondsLeft = (timeCurrent / 20) * 1000;
-
-            guiHelper.drawHorizontalProgressBar(40, 26, 126, 8, Math.round(timePercent), colorBackground, colorBorder, colorProgressBackground);
-            String progressLabel = String.format("%s: %s (%d%%)",
-                    LanguageHelper.LABEL.translateMessage("time_left"),
-                    DurationFormatUtils.formatDuration(secondsLeft, "mm:ss"),
-                    Math.round(timePercent)
-            );
-            guiHelper.drawCenteredStringWithShadow(40, 26, 126, progressLabel, colorFont);
-        }
+        btnNextPlan.enabled = tileEntity.hasNextPlan();
+        btnPrevPlan.enabled = tileEntity.hasPrevPlan();
     }
 
     @Override
     public void drawScreen(int mouse_x, int mouse_y, float btn) {
         super.drawScreen(mouse_x, mouse_y, btn);
-
-        Point currentMouse = new Point(mouse_x - guiLeft, mouse_y - guiTop);
-        for (Rectangle rectangle : tooltips.keySet()) {
-            if (rectangle.contains(currentMouse)) {
-                ArrayList<String> messages = new ArrayList<String>(tooltips.get(rectangle));
-                renderToolTip(messages, mouse_x, mouse_y);
-            }
-        }
     }
+
+    @Override
+    protected void actionPerformed(GuiButton button) throws IOException {
+        UUID playerUUID = Minecraft.getMinecraft().thePlayer.getUniqueID();
+        PacketButtonClick packetButtonClick = new PacketButtonClick(button.id, tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ(), playerUUID);
+        PacketHandler.INSTANCE.sendToServer(packetButtonClick);
+    }
+
+
 }

@@ -37,12 +37,12 @@ import java.util.List;
 
 public class PlanPlanBuilder extends ItemPlanBase implements IMachinePlan {
     public PlanPlanBuilder() {
-        this.setUnlocalizedName(String.format("%s:%s", ModInfo.MOD_ID, "plan.builder"));
+        this.setUnlocalizedName(String.format("%s:%s", ModInfo.MOD_ID, "plan.misc"));
     }
 
     @Override
     public String getLocalizedPlanDescription() {
-        return LanguageHelper.DESCRIPTION.translateMessage("plan.builder");
+        return LanguageHelper.DESCRIPTION.translateMessage("plan.misc");
     }
 
     @Override

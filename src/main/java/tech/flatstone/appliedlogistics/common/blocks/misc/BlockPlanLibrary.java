@@ -18,108 +18,66 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.client.gui.machines;
+package tech.flatstone.appliedlogistics.common.blocks.misc;
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.lwjgl.opengl.GL11;
-import tech.flatstone.appliedlogistics.client.gui.GuiBase;
-import tech.flatstone.appliedlogistics.common.container.machines.ContainerPulverizer;
-import tech.flatstone.appliedlogistics.common.items.Items;
-import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityPulverizer;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
-import tech.flatstone.appliedlogistics.common.util.GuiHelper;
-import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import tech.flatstone.appliedlogistics.AppliedLogistics;
+import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPlanLibrary;
+import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
+import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
+import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
-public class GuiPulverizer extends GuiBase {
-    private TileEntityPulverizer tileEntity;
-    private GuiHelper guiHelper = new GuiHelper();
-    private HashMap<Rectangle, List<String>> tooltips = new HashMap<Rectangle, List<String>>();
-
-    public GuiPulverizer(InventoryPlayer inventoryPlayer, TileEntityPulverizer tileEntity) {
-        super(new ContainerPulverizer(inventoryPlayer, tileEntity));
-        this.xSize = 218;
-        this.ySize = 186;
-        this.tileEntity = tileEntity;
+public class BlockPlanLibrary extends BlockTileBase implements IProvideRecipe, IBlockRenderer {
+    public BlockPlanLibrary() {
+        super(Material.rock);
+        this.setTileEntity(TileEntityPlanLibrary.class);
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if (worldIn.isRemote)
+            return true;
 
-        tooltips.put(new Rectangle(190, 20, 16, 16), Collections.singletonList("Simultaneous processing"));
-        tooltips.put(new Rectangle(190, 49, 16, 16), Collections.singletonList("Speed"));
-        tooltips.put(new Rectangle(190, 78, 16, 16), Collections.singletonList("test"));
+        playerIn.openGui(AppliedLogistics.instance, 1, worldIn, pos.getX(), pos.getY(), pos.getZ());
+        return true;
     }
 
     @Override
-    public void drawBG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
-        bindTexture("gui/machines/pulverizer.png");
-        drawTexturedModalRect(paramInt1, paramInt2, 0, 0, this.xSize, this.ySize);
+    public void RegisterRecipes() {
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(this),
+                "cxc",
+                "wgw",
+                "cxc",
+                'c', OreDictionary.getOres("craftingTableWood").size() == 0 ? new ItemStack(net.minecraft.init.Blocks.crafting_table) : "craftingTableWood",
+                'w', "logWood",
+                'g', "gearStone",
+                'x', "chestWood"
+        ));
     }
 
     @Override
-    public void drawFG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
-        this.fontRendererObj.drawString(tileEntity.hasCustomName() ? tileEntity.getCustomName() : LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()), 8, 6, 4210752);
-        this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage("container.inventory"), 8, 58, 4210752);
-
-        /**
-         * Draw Machine Details
-         */
-        GL11.glPushMatrix();
-
-        // Bronze Gear :: number of ore that can be processed at one time
-        guiHelper.drawItemStack(new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.BRONZE.getMeta()), 190, 20);  // x = 190 to 206 // y = 20 to 36
-        guiHelper.drawCenteredString(190, 38, 16, tileEntity.getMaxProcessCount() + "x", 4210752);
-
-        // Stone Gear :: Chance Percent
-        guiHelper.drawItemStack(new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.COBBLESTONE.getMeta()), 190, 49); // x = 190 to 206 // y = 49 to 65
-        guiHelper.drawCenteredString(190, 67, 16, "160%", 4210752);
-
-        // Wood Gear :: Speed Percent
-        guiHelper.drawItemStack(new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.WOOD.getMeta()), 190, 78); // x = 190 to 206 // y = 78 to 94
-        guiHelper.drawCenteredString(190, 96, 16, "0%", 4210752);
-
-        GL11.glPopMatrix();
-
-        /**
-         * Draw Progress Bar
-         */
-        if (tileEntity.getTicksRemaining() > 0) {
-            int timeTotal = tileEntity.getTotalProcessTime();
-            int timeCurrent = tileEntity.getTicksRemaining();
-
-            float timePercent = ((((float) timeTotal - (float) timeCurrent) / (float) timeTotal)) * 100;
-
-            int secondsLeft = (timeCurrent / 20) * 1000;
-
-            guiHelper.drawHorizontalProgressBar(40, 26, 126, 8, Math.round(timePercent), colorBackground, colorBorder, colorProgressBackground);
-            String progressLabel = String.format("%s: %s (%d%%)",
-                    LanguageHelper.LABEL.translateMessage("time_left"),
-                    DurationFormatUtils.formatDuration(secondsLeft, "mm:ss"),
-                    Math.round(timePercent)
-            );
-            guiHelper.drawCenteredStringWithShadow(40, 26, 126, progressLabel, colorFont);
-        }
+    public void breakBlock(World world, BlockPos blockPos, IBlockState blockState) {
+        TileEntity tileEntity = world.getTileEntity(blockPos);
+        TileHelper.DropItems(tileEntity, 0, 0);
     }
 
     @Override
-    public void drawScreen(int mouse_x, int mouse_y, float btn) {
-        super.drawScreen(mouse_x, mouse_y, btn);
-
-        Point currentMouse = new Point(mouse_x - guiLeft, mouse_y - guiTop);
-        for (Rectangle rectangle : tooltips.keySet()) {
-            if (rectangle.contains(currentMouse)) {
-                ArrayList<String> messages = new ArrayList<String>(tooltips.get(rectangle));
-                renderToolTip(messages, mouse_x, mouse_y);
-            }
-        }
+    public void registerBlockRenderer() {
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(ModInfo.MOD_ID + ":misc/plan_builder", "inventory"));
     }
 }

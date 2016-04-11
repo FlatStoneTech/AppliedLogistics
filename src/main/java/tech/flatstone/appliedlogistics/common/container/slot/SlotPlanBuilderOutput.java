@@ -24,13 +24,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
-import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanBuilder;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPlanLibrary;
 
 public class SlotPlanBuilderOutput extends SlotOutput {
-    TileEntityPlanBuilder tileEntity;
+    TileEntityPlanLibrary tileEntity;
     int slotID;
 
-    public SlotPlanBuilderOutput(IInventory inventory, int idx, int x, int y, TileEntityPlanBuilder tileEntity) {
+    public SlotPlanBuilderOutput(IInventory inventory, int idx, int x, int y, TileEntityPlanLibrary tileEntity) {
         super(inventory, idx, x, y);
         this.tileEntity = tileEntity;
         this.slotID = idx;

@@ -90,16 +90,16 @@ public enum Items {
         }
     }
 
-    public String getStatName() {
-        return StatCollector.translateToLocal(item.getUnlocalizedName());
+    public ItemStack getStack() {
+        return new ItemStack(item);
     }
 
-    public ItemStack getStack(int damage, int size) {
+    public ItemStack getStack(int size) {
+        return new ItemStack(item, size);
+    }
+
+    public ItemStack getStack(int size, int damage) {
         return new ItemStack(item, size, damage);
-    }
-
-    public String getInternalName() {
-        return this.internalName;
     }
 
     public Item getItem() {
