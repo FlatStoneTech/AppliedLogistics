@@ -26,6 +26,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
+import tech.flatstone.appliedlogistics.common.blocks.machines.BlockFurnace;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockBuilder;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPlanLibrary;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPlanChest;
@@ -54,7 +55,8 @@ public enum Blocks {
 
     BLOCK_MISC_CRANK("misc_crank", new BlockCrank(), ItemCrank.class, AppliedLogisticsCreativeTabs.tabGeneral),
 
-    BLOCK_MACHINE_PULVERIZER("machine_pulverizer", new BlockPulverizer(), AppliedLogisticsCreativeTabs.tabMachines);
+    BLOCK_MACHINE_PULVERIZER("machine_pulverizer", new BlockPulverizer(), AppliedLogisticsCreativeTabs.tabMachines),
+    BLOCK_MACHINE_FURNACE("machine_furnace", new BlockFurnace(), AppliedLogisticsCreativeTabs.tabMachines);
 
     private final Block block;
     private final String internalName;

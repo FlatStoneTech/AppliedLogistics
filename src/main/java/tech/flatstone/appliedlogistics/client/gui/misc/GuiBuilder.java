@@ -79,7 +79,7 @@ public class GuiBuilder extends GuiBase {
 
     @Override
     public void drawBG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
-        bindTexture("gui/machines/misc.png");
+        bindTexture("gui/machines/builder.png");
         drawTexturedModalRect(paramInt1, paramInt2, 0, 0, this.xSize, this.ySize);
 
         PlanDetails planDetails = tileEntity.getPlanDetails();
