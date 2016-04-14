@@ -30,6 +30,7 @@ import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,7 +51,7 @@ class GridServer implements Runnable {
     private ConcurrentHashMap<UUID, TransportContainer> outgoingCargo;
     private AtomicBoolean running;
 
-    public GridServer() {
+    GridServer() {
         graph = new SimpleDirectedWeightedGraph<UUID, FilteredEdge>(
                 new ClassBasedEdgeFactory<UUID, FilteredEdge>(FilteredEdge.class)
         );
@@ -97,10 +98,8 @@ class GridServer implements Runnable {
                 barrier.await();
             } catch (InterruptedException e) {
                 LogHelper.fatal(e.getLocalizedMessage());
-                e.printStackTrace();
             } catch (BrokenBarrierException e) {
                 LogHelper.fatal(e.getLocalizedMessage());
-                e.printStackTrace();
             }
 
             //step the transport simulation
@@ -116,14 +115,12 @@ class GridServer implements Runnable {
             barrier.await();
         } catch (InterruptedException e) {
             LogHelper.fatal(e.getLocalizedMessage());
-            e.printStackTrace();
         } catch (BrokenBarrierException e) {
             LogHelper.fatal(e.getLocalizedMessage());
-            e.printStackTrace();
         }
     }
 
-    protected void gridTick() {
+    void gridTick() {
 
         //ingest vertex queue
         for (UUID id : vertexQueue) {
@@ -138,19 +135,13 @@ class GridServer implements Runnable {
         }
 
         //ingest edge queue
-        for (UUIDPair pair : edgeQueue) {
-            if ((graph.containsVertex(pair.getUUID1())) && (graph.containsVertex(pair.getUUID2()))) {
-                graph.addEdge(pair.getUUID1(), pair.getUUID2());
-            } else {
-                vertexCache.add(pair);
-                LogHelper.debug("A vertex for edge:" + pair.getUUID1() + " -> " + pair.getUUID2() + " does not exist");
-            }
-            edgeQueue.remove(pair);
-        }
+        ingestEdgeQueue();
 
         for (UUIDPair pair : exitQueue) {
             FilteredEdge edge = graph.getEdge(pair.getUUID1(), pair.getUUID2());
-            if (edge == null) break;
+            if (edge == null)
+                break;
+
             edge.setExit(true);
             exitQueue.remove(pair);
         }
@@ -162,9 +153,30 @@ class GridServer implements Runnable {
         }
 
         //apply whitelist/blacklists
+        applyWhitelistBlacklist();
+
+        //ingest objects
+        ingestObjects();
+    }
+
+    private void ingestEdgeQueue() {
+        for (UUIDPair pair : edgeQueue) {
+            if ((graph.containsVertex(pair.getUUID1())) && (graph.containsVertex(pair.getUUID2()))) {
+                graph.addEdge(pair.getUUID1(), pair.getUUID2());
+            } else {
+                vertexCache.add(pair);
+                LogHelper.debug("A vertex for edge:" + pair.getUUID1() + " -> " + pair.getUUID2() + " does not exist");
+            }
+            edgeQueue.remove(pair);
+        }
+    }
+
+    private void applyWhitelistBlacklist() {
         for (WhitelistData whitelistData : whitelistDataQueue) {
             FilteredEdge edge = graph.getEdge(whitelistData.getParent(), whitelistData.getEnd());
-            if (edge == null) break;
+            if (edge == null)
+                break;
+
             if (whitelistData.isWhitelist()) {
                 edge.setWhitelist(whitelistData.getList());
             } else {
@@ -172,8 +184,9 @@ class GridServer implements Runnable {
             }
             whitelistDataQueue.remove(whitelistData);
         }
+    }
 
-        //ingest new objects
+    private void ingestObjects() {
         for (TransportContainer container : incomingCargo) {
             ClosestFirstIterator<UUID, FilteredEdge> closestFirstIterator =
                     new ClosestFirstIterator<UUID, FilteredEdge>(
@@ -183,7 +196,8 @@ class GridServer implements Runnable {
             UUID last = container.getSource();
             while (closestFirstIterator.hasNext()) {
                 UUID uuid = closestFirstIterator.next();
-                if (uuid == last) continue;
+                if (uuid == last)
+                    continue;
 
                 FilteredEdge edge = graph.getEdge(last, uuid);
                 last = uuid;
@@ -210,12 +224,28 @@ class GridServer implements Runnable {
         return source != null && exitQueue.offer(new UUIDPair(source, destination));
     }
 
-    boolean applyFilter(boolean isWhitelist, UUID parent, UUID end, ArrayList<String> list) {
+    boolean applyFilter(boolean isWhitelist, UUID parent, UUID end, List<String> list) {
         return whitelistDataQueue.offer(new WhitelistData(isWhitelist, parent, end, list));
     }
 
     void stop() {
         running.set(false);
         sync();
+    }
+
+    String serializeGraph() {
+        if (running.get()) {
+            return null;
+        } else {
+            return graph.toString();
+        }
+    }
+
+    String serializeCargo() {
+        if (running.get()) {
+            return null;
+        } else {
+            return "this will be the cargo";
+        }
     }
 }

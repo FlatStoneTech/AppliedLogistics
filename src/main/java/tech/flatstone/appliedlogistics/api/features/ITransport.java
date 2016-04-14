@@ -20,7 +20,7 @@
 
 package tech.flatstone.appliedlogistics.api.features;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public interface ITransport {
@@ -46,7 +46,7 @@ public interface ITransport {
      * can only connect to one other node
      *
      * @param parentNode existing transport node
-     * @return
+     * @return id of created node
      */
     UUID createExitNode(UUID parentNode);
 
@@ -78,7 +78,7 @@ public interface ITransport {
      * @param unlocalizedNameList array of names to allow
      * @return
      */
-    boolean applyWhitelistToNode(UUID exitNode, ArrayList<String> unlocalizedNameList);
+    boolean applyWhitelistToNode(UUID exitNode, List<String> unlocalizedNameList);
 
     /**
      * List of objects that the exit node will reject
@@ -90,7 +90,7 @@ public interface ITransport {
      * @param unlocalizedNameList array of names to reject
      * @return
      */
-    boolean applyBlacklistToNode(UUID exitNode, ArrayList<String> unlocalizedNameList);
+    boolean applyBlacklistToNode(UUID exitNode, List<String> unlocalizedNameList);
 
     /**
      * inserts an object into the routing network

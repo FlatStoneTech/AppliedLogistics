@@ -23,8 +23,8 @@ package tech.flatstone.appliedlogistics.common.grid;
 import tech.flatstone.appliedlogistics.api.features.ITransport;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -44,7 +44,7 @@ public class TransportGrid implements ITransport {
      * Creates routing node
      * no limit on how may nodes this node can connect to
      *
-     * @return
+     * @return id of created node
      */
     @Override
     public UUID createTransportNode() {
@@ -57,7 +57,7 @@ public class TransportGrid implements ITransport {
      * Creates a node that accepts input into the routing network
      * can only connect to one other node
      *
-     * @param parentNode
+     * @param parentNode existing transport node
      * @return
      */
     @Override
@@ -72,8 +72,8 @@ public class TransportGrid implements ITransport {
      * Creates a node that receives routed objects from the network
      * can only connect to one other node
      *
-     * @param parentNode
-     * @return
+     * @param parentNode existing transport node
+     * @return id of created node
      */
     @Override
     public UUID createExitNode(UUID parentNode) {
@@ -88,15 +88,15 @@ public class TransportGrid implements ITransport {
      * Connects two nodes allowing objects to flow in one direction
      *
      * @param startNode
-     * @param destNode
+     * @param endNode
      * @return
      */
     @Override
-    public boolean createDirectionalNodeConnection(UUID startNode, UUID destNode) {
-        if ((exitNodeMap.containsKey(destNode)) || (exitNodeMap.containsKey(startNode))) {
+    public boolean createDirectionalNodeConnection(UUID startNode, UUID endNode) {
+        if ((exitNodeMap.containsKey(endNode)) || (exitNodeMap.containsKey(startNode))) {
             return false;
         }
-        graphServer.addEdge(startNode, destNode);
+        graphServer.addEdge(startNode, endNode);
         return true;
     }
 
@@ -123,12 +123,12 @@ public class TransportGrid implements ITransport {
      * empty whitelist will cause node to accept no objects
      * Strings in list can be regular expression
      *
-     * @param exitNode
-     * @param unlocalizedNameList
+     * @param exitNode            node to filter
+     * @param unlocalizedNameList array of names to allow
      * @return
      */
     @Override
-    public boolean applyWhitelistToNode(UUID exitNode, ArrayList<String> unlocalizedNameList) {
+    public boolean applyWhitelistToNode(UUID exitNode, List<String> unlocalizedNameList) {
         UUID parentNode = exitNodeMap.get(exitNode);
         graphServer.applyFilter(true, parentNode, exitNode, unlocalizedNameList);
         return true;
@@ -140,12 +140,12 @@ public class TransportGrid implements ITransport {
      * empty blacklist will cause node to accept all objects
      * Strings in list can be regular expression
      *
-     * @param exitNode
-     * @param unlocalizedNameList
+     * @param exitNode            node to filter
+     * @param unlocalizedNameList array of names to reject
      * @return
      */
     @Override
-    public boolean applyBlacklistToNode(UUID exitNode, ArrayList<String> unlocalizedNameList) {
+    public boolean applyBlacklistToNode(UUID exitNode, List<String> unlocalizedNameList) {
         UUID parentNode = exitNodeMap.get(exitNode);
         graphServer.applyFilter(false, parentNode, exitNode, unlocalizedNameList);
         return true;
@@ -155,9 +155,9 @@ public class TransportGrid implements ITransport {
      * inserts an object into the routing network
      * the network will use the unlocalized name to find an exit node that will accept it
      *
-     * @param entryNode
-     * @param unlocalizedName
-     * @param object
+     * @param entryNode       where this cargo enters the network
+     * @param unlocalizedName name identifying cargo, used to route
+     * @param object          the cargo
      * @return
      */
     @Override
@@ -168,9 +168,9 @@ public class TransportGrid implements ITransport {
 
     /**
      * Gets an object from the routing network if available
-     * returns null if no object
      *
-     * @param exitNode
+     * @param exitNode node to get cargo for
+     * @return null if no object
      */
     @Override
     public Object getObjectFromGrid(UUID exitNode) {
@@ -226,7 +226,6 @@ public class TransportGrid implements ITransport {
             graphServerThread.join(500);
         } catch (InterruptedException e) {
             LogHelper.fatal(e.getLocalizedMessage());
-            e.printStackTrace();
         }
     }
 }
