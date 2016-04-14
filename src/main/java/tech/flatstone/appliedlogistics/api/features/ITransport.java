@@ -37,7 +37,7 @@ public interface ITransport {
      * can only connect to one other node
      *
      * @param parentNode existing transport node
-     * @return
+     * @return id of created node
      */
     UUID createEntryNode(UUID parentNode);
 

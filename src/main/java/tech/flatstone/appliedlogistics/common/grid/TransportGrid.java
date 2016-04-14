@@ -130,8 +130,7 @@ public class TransportGrid implements ITransport {
     @Override
     public boolean applyWhitelistToNode(UUID exitNode, List<String> unlocalizedNameList) {
         UUID parentNode = exitNodeMap.get(exitNode);
-        graphServer.applyFilter(true, parentNode, exitNode, unlocalizedNameList);
-        return true;
+        return graphServer.applyFilter(true, parentNode, exitNode, unlocalizedNameList);
     }
 
     /**
@@ -147,8 +146,7 @@ public class TransportGrid implements ITransport {
     @Override
     public boolean applyBlacklistToNode(UUID exitNode, List<String> unlocalizedNameList) {
         UUID parentNode = exitNodeMap.get(exitNode);
-        graphServer.applyFilter(false, parentNode, exitNode, unlocalizedNameList);
-        return true;
+        return graphServer.applyFilter(false, parentNode, exitNode, unlocalizedNameList);
     }
 
     /**
@@ -186,7 +184,7 @@ public class TransportGrid implements ITransport {
      */
     @Override
     public boolean removeNode(UUID node) {
-        return false;
+        return graphServer.removeVertex(node);
     }
 
     /**
@@ -199,7 +197,7 @@ public class TransportGrid implements ITransport {
      */
     @Override
     public boolean removeDirectionalNodeConnection(UUID startNode, UUID endNode) {
-        return false;
+        return graphServer.removeEdge(startNode,endNode);
     }
 
     /**
@@ -212,7 +210,7 @@ public class TransportGrid implements ITransport {
      */
     @Override
     public boolean removeNodeConnection(UUID Node1, UUID Node2) {
-        return false;
+        return (graphServer.removeEdge(Node1,Node2)) || (graphServer.removeEdge(Node2, Node1));
     }
 
 

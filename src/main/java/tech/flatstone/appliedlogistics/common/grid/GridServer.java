@@ -41,10 +41,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 class GridServer implements Runnable {
     private ArrayList<UUIDPair> vertexCache; // Caches vertices that cannot currently be added
     private DirectedGraph<UUID, FilteredEdge> graph;
-    private ConcurrentLinkedQueue<UUID> vertexQueue;
-    private ConcurrentLinkedQueue<UUIDPair> edgeQueue;
-    private ConcurrentLinkedQueue<UUIDPair> exitQueue;
+    private ConcurrentLinkedQueue<UUID> vertexIngestQueue;
+    private ConcurrentLinkedQueue<UUIDPair> edgeIngestQueue;
+    private ConcurrentLinkedQueue<UUIDPair> exitIngestQueue;
     private ConcurrentLinkedQueue<WhitelistData> whitelistDataQueue;
+    private ConcurrentLinkedQueue<UUID> vertexEliminationQueue;
+    private ConcurrentLinkedQueue<UUIDPair> edgeEliminationQueue;
+    private ConcurrentLinkedQueue<UUIDPair> exitEliminationQueue;
     private CyclicBarrier barrier;
     private LinkedList<TransportContainer> activeCargo;
     private ConcurrentLinkedQueue<TransportContainer> incomingCargo;
@@ -56,19 +59,23 @@ class GridServer implements Runnable {
                 new ClassBasedEdgeFactory<UUID, FilteredEdge>(FilteredEdge.class)
         );
 
-        vertexQueue = new ConcurrentLinkedQueue<UUID>();
-        edgeQueue = new ConcurrentLinkedQueue<UUIDPair>();
-        exitQueue = new ConcurrentLinkedQueue<UUIDPair>();
+        vertexIngestQueue = new ConcurrentLinkedQueue<UUID>();
+        edgeIngestQueue = new ConcurrentLinkedQueue<UUIDPair>();
+        exitIngestQueue = new ConcurrentLinkedQueue<UUIDPair>();
         whitelistDataQueue = new ConcurrentLinkedQueue<WhitelistData>();
+
+        vertexEliminationQueue = new ConcurrentLinkedQueue<UUID>();
+        edgeEliminationQueue = new ConcurrentLinkedQueue<UUIDPair>();
+        exitEliminationQueue = new ConcurrentLinkedQueue<UUIDPair>();
 
         incomingCargo = new ConcurrentLinkedQueue<TransportContainer>();
         activeCargo = new LinkedList<TransportContainer>();
         outgoingCargo = new ConcurrentHashMap<UUID, TransportContainer>();
 
-        if (vertexQueue == null)
+        if (vertexIngestQueue == null)
             throw new NullPointerException();
 
-        if (edgeQueue == null)
+        if (edgeIngestQueue == null)
             throw new NullPointerException();
 
         barrier = new CyclicBarrier(2);
@@ -123,27 +130,27 @@ class GridServer implements Runnable {
     void gridTick() {
 
         //ingest vertex queue
-        for (UUID id : vertexQueue) {
+        for (UUID id : vertexIngestQueue) {
             graph.addVertex(id);
-            vertexQueue.remove(id);
+            vertexIngestQueue.remove(id);
         }
 
         //handle a hopefully rare situation where a vertex and edge are added between ingest vertex and ingest edge
         if (!vertexCache.isEmpty()) {
-            edgeQueue.addAll(vertexCache);
+            edgeIngestQueue.addAll(vertexCache);
             vertexCache.clear();
         }
 
         //ingest edge queue
         ingestEdgeQueue();
 
-        for (UUIDPair pair : exitQueue) {
+        for (UUIDPair pair : exitIngestQueue) {
             FilteredEdge edge = graph.getEdge(pair.getUUID1(), pair.getUUID2());
             if (edge == null)
                 break;
 
             edge.setExit(true);
-            exitQueue.remove(pair);
+            exitIngestQueue.remove(pair);
         }
 
         //update grid objects
@@ -156,18 +163,24 @@ class GridServer implements Runnable {
         applyWhitelistBlacklist();
 
         //ingest objects
-        ingestObjects();
+        precessObjects();
+
+        //remove old edges
+        trimEdges();
+
+        //remove old vertex
+        trimVertex();
     }
 
     private void ingestEdgeQueue() {
-        for (UUIDPair pair : edgeQueue) {
+        for (UUIDPair pair : edgeIngestQueue) {
             if ((graph.containsVertex(pair.getUUID1())) && (graph.containsVertex(pair.getUUID2()))) {
                 graph.addEdge(pair.getUUID1(), pair.getUUID2());
             } else {
                 vertexCache.add(pair);
                 LogHelper.debug("A vertex for edge:" + pair.getUUID1() + " -> " + pair.getUUID2() + " does not exist");
             }
-            edgeQueue.remove(pair);
+            edgeIngestQueue.remove(pair);
         }
     }
 
@@ -186,7 +199,7 @@ class GridServer implements Runnable {
         }
     }
 
-    private void ingestObjects() {
+    private void precessObjects() {
         for (TransportContainer container : incomingCargo) {
             ClosestFirstIterator<UUID, FilteredEdge> closestFirstIterator =
                     new ClosestFirstIterator<UUID, FilteredEdge>(
@@ -212,16 +225,46 @@ class GridServer implements Runnable {
         }
     }
 
+    private void trimEdges() {
+        for (UUIDPair pair : edgeEliminationQueue){
+            if ((graph.containsVertex(pair.getUUID1())) && (graph.containsVertex(pair.getUUID2()))) {
+                graph.removeAllEdges(pair.getUUID1(),pair.getUUID2());
+            } else if (edgeIngestQueue.contains(pair)) {
+                edgeIngestQueue.remove(pair);
+            }
+            edgeEliminationQueue.remove(pair);
+        }
+    }
+
+    private void trimVertex() {
+        for (UUID vertex : vertexEliminationQueue) {
+            if (graph.containsVertex(vertex)){
+                graph.removeVertex(vertex);
+            } else if (vertexIngestQueue.contains(vertex)) {
+                vertexIngestQueue.remove(vertex);
+            }
+            vertexEliminationQueue.remove(vertex);
+        }
+    }
+
     boolean addVertex(UUID uuid) {
-        return uuid != null && vertexQueue.offer(uuid);
+        return uuid != null && vertexIngestQueue.offer(uuid);
+    }
+
+    boolean removeVertex(UUID uuid) {
+        return uuid != null && vertexEliminationQueue.offer(uuid);
     }
 
     boolean addEdge(UUID source, UUID destination) {
-        return !((source == null) || (destination == null)) && edgeQueue.offer(new UUIDPair(source, destination));
+        return !((source == null) || (destination == null)) && edgeIngestQueue.offer(new UUIDPair(source, destination));
+    }
+
+    boolean removeEdge(UUID source, UUID destination) {
+        return !((source == null) || (destination == null)) && exitEliminationQueue.offer(new UUIDPair(source, destination));
     }
 
     boolean markEdgeExit(UUID source, UUID destination) {
-        return source != null && exitQueue.offer(new UUIDPair(source, destination));
+        return source != null && exitIngestQueue.offer(new UUIDPair(source, destination));
     }
 
     boolean applyFilter(boolean isWhitelist, UUID parent, UUID end, List<String> list) {
