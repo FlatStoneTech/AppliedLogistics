@@ -177,6 +177,44 @@ public class TransportGrid implements ITransport {
         return graphServer.getCargo(exitNode);
     }
 
+    /**
+     * Removes a Node and any connections that node has
+     * node can be a transport, entry or exit
+     *
+     * @param node node to be removed
+     * @return
+     */
+    @Override
+    public boolean removeNode(UUID node) {
+        return false;
+    }
+
+    /**
+     * Removes a connection between two nodes
+     * preventing routing of cargo in that direction
+     *
+     * @param startNode
+     * @param endNode
+     * @return
+     */
+    @Override
+    public boolean removeDirectionalNodeConnection(UUID startNode, UUID endNode) {
+        return false;
+    }
+
+    /**
+     * Removes all connections between two nodes
+     * does not depend on direction
+     *
+     * @param Node1
+     * @param Node2
+     * @return
+     */
+    @Override
+    public boolean removeNodeConnection(UUID Node1, UUID Node2) {
+        return false;
+    }
+
 
     /**
      * Shutdown the graph server

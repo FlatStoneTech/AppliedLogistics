@@ -28,7 +28,7 @@ public interface ITransport {
      * Creates routing node
      * no limit on how may nodes this node can connect to
      *
-     * @return
+     * @return id of created node
      */
     UUID createTransportNode();
 
@@ -36,7 +36,7 @@ public interface ITransport {
      * Creates a node that accepts input into the routing network
      * can only connect to one other node
      *
-     * @param parentNode
+     * @param parentNode existing transport node
      * @return
      */
     UUID createEntryNode(UUID parentNode);
@@ -45,7 +45,7 @@ public interface ITransport {
      * Creates a node that receives routed objects from the network
      * can only connect to one other node
      *
-     * @param parentNode
+     * @param parentNode existing transport node
      * @return
      */
     UUID createExitNode(UUID parentNode);
@@ -54,10 +54,10 @@ public interface ITransport {
      * Connects two nodes allowing objects to flow in one direction
      *
      * @param startNode
-     * @param destNode
+     * @param endNode
      * @return
      */
-    boolean createDirectionalNodeConnection(UUID startNode, UUID destNode);
+    boolean createDirectionalNodeConnection(UUID startNode, UUID endNode);
 
     /**
      * Connects two nodes allowing objects to flow in both directions
@@ -74,8 +74,8 @@ public interface ITransport {
      * empty whitelist will cause node to accept no objects
      * Strings in list can be regular expression
      *
-     * @param exitNode
-     * @param unlocalizedNameList
+     * @param exitNode node to filter
+     * @param unlocalizedNameList array of names to allow
      * @return
      */
     boolean applyWhitelistToNode(UUID exitNode, ArrayList<String> unlocalizedNameList);
@@ -86,8 +86,8 @@ public interface ITransport {
      * empty blacklist will cause node to accept all objects
      * Strings in list can be regular expression
      *
-     * @param exitNode
-     * @param unlocalizedNameList
+     * @param exitNode node to filter
+     * @param unlocalizedNameList array of names to reject
      * @return
      */
     boolean applyBlacklistToNode(UUID exitNode, ArrayList<String> unlocalizedNameList);
@@ -96,16 +96,49 @@ public interface ITransport {
      * inserts an object into the routing network
      * the network will use the unlocalized name to find an exit node that will accept it
      *
-     * @param entryNode
-     * @param unlocalizedName
-     * @param object
+     * @param entryNode where this cargo enters the network
+     * @param unlocalizedName name identifying cargo, used to route
+     * @param object the cargo
      * @return
      */
     boolean insertObjectToGrid(UUID entryNode, String unlocalizedName, Object object);
 
     /**
      * Gets an object from the routing network if available
-     * returns null if no object
+     *
+     * @param exitNode node to get cargo for
+     * @return null if no object
      */
     Object getObjectFromGrid(UUID exitNode);
+
+
+    /**
+     * Removes a Node and any connections that node has
+     * node can be a transport, entry or exit
+     *
+     * @param node node to be removed
+     * @return
+     */
+    boolean removeNode(UUID node);
+
+    /**
+     * Removes a connection between two nodes
+     * preventing routing of cargo in that direction
+     *
+     * @param startNode
+     * @param endNode
+     * @return
+     */
+    boolean removeDirectionalNodeConnection(UUID startNode, UUID endNode);
+
+    /**
+     * Removes all connections between two nodes
+     * does not depend on direction
+     *
+     * @param Node1
+     * @param Node2
+     * @return
+     */
+    boolean removeNodeConnection(UUID Node1, UUID Node2);
+
 }
