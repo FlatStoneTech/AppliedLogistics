@@ -58,7 +58,7 @@ public class TransportGrid implements ITransport {
      * can only connect to one other node
      *
      * @param parentNode existing transport node
-     * @return
+     * @return id of created node
      */
     @Override
     public UUID createEntryNode(UUID parentNode) {
@@ -197,7 +197,7 @@ public class TransportGrid implements ITransport {
      */
     @Override
     public boolean removeDirectionalNodeConnection(UUID startNode, UUID endNode) {
-        return graphServer.removeEdge(startNode,endNode);
+        return graphServer.removeEdge(startNode, endNode);
     }
 
     /**
@@ -210,7 +210,7 @@ public class TransportGrid implements ITransport {
      */
     @Override
     public boolean removeNodeConnection(UUID Node1, UUID Node2) {
-        return (graphServer.removeEdge(Node1,Node2)) || (graphServer.removeEdge(Node2, Node1));
+        return (graphServer.removeEdge(Node1, Node2)) || (graphServer.removeEdge(Node2, Node1));
     }
 
 

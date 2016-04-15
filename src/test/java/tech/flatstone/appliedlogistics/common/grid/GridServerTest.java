@@ -69,5 +69,40 @@ public class GridServerTest {
 
     }
 
+    @Test
+    public void testRemoveVertex() throws Exception {
+        UUID vertex = UUID.randomUUID();
+
+        gridServer.removeVertex(vertex);
+        gridServer.gridTick();
+
+        gridServer.addVertex(vertex);
+        assertTrue(gridServer.removeVertex(vertex));
+        gridServer.gridTick();
+
+        gridServer.addVertex(vertex);
+        gridServer.addVertex(vertex);
+        gridServer.gridTick();
+
+    }
+
+    @Test
+    public void testRemoveEdge() throws Exception {
+        UUID vertex1 = UUID.randomUUID();
+        UUID vertex2 = UUID.randomUUID();
+
+        gridServer.addVertex(vertex1);
+        gridServer.addVertex(vertex2);
+        assertTrue(gridServer.addEdge(vertex1, vertex2));
+
+        gridServer.gridTick();
+
+        assertTrue(gridServer.removeEdge(vertex1, vertex2));
+        assertTrue(gridServer.removeEdge(vertex2, vertex1));
+
+        gridServer.gridTick();
+
+        assertFalse(gridServer.removeEdge(null,vertex1));
+    }
 
 }

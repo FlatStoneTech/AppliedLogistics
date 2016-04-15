@@ -226,9 +226,9 @@ class GridServer implements Runnable {
     }
 
     private void trimEdges() {
-        for (UUIDPair pair : edgeEliminationQueue){
+        for (UUIDPair pair : edgeEliminationQueue) {
             if ((graph.containsVertex(pair.getUUID1())) && (graph.containsVertex(pair.getUUID2()))) {
-                graph.removeAllEdges(pair.getUUID1(),pair.getUUID2());
+                graph.removeAllEdges(pair.getUUID1(), pair.getUUID2());
             } else if (edgeIngestQueue.contains(pair)) {
                 edgeIngestQueue.remove(pair);
             }
@@ -238,7 +238,7 @@ class GridServer implements Runnable {
 
     private void trimVertex() {
         for (UUID vertex : vertexEliminationQueue) {
-            if (graph.containsVertex(vertex)){
+            if (graph.containsVertex(vertex)) {
                 graph.removeVertex(vertex);
             } else if (vertexIngestQueue.contains(vertex)) {
                 vertexIngestQueue.remove(vertex);
