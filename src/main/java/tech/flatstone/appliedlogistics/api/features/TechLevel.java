@@ -26,8 +26,8 @@ import tech.flatstone.appliedlogistics.ModInfo;
 public enum TechLevel implements IStringSerializable {
     STONE_AGE("stone"),             // Only cobblestone machines, hand cranked
     BRONZE_AGE("bronze"),           //
-    STEEL_AGE("steel"),             //
-    INDUSTRIAL_AGE("industrial"),   // Steam powered power system, machines can use power
+    INDUSTRIAL_AGE("industrial"),   // Steam powered power system, machines can use power (Steel)
+    MECHANICAL_AGE("mechanical"),   //
     DIGITAL_AGE("digital"),         //
     CREATIVE("creative"),;          // N/A
 

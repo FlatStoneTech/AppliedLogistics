@@ -23,7 +23,6 @@ package tech.flatstone.appliedlogistics.common.items;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.ModInfo;
@@ -48,6 +47,7 @@ public enum Items {
     ITEM_MATERIAL_GEAR("material_gear", new ItemGear(), AppliedLogisticsCreativeTabs.tabGeneral),
 
     ITEM_CARD_BLANK("card_blank", new ItemKitCard(), AppliedLogisticsCreativeTabs.tabGeneral),
+    ITEM_CARD_BLANK_ADVANCED("card_blank_advanced", new ItemKitCardAdvanced(), AppliedLogisticsCreativeTabs.tabGeneral),
     ITEM_KIT_AUTOMATION("kit_automation", new ItemKitAutomation(), AppliedLogisticsCreativeTabs.tabGeneral),
     ITEM_KIT_CRAFTING("kit_crafting", new ItemKitCrafting(), AppliedLogisticsCreativeTabs.tabGeneral),
     ITEM_KIT_REDSTONE_INPUT("kit_redstone_input", new ItemKitRedstoneInput(), AppliedLogisticsCreativeTabs.tabGeneral),

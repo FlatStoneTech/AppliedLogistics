@@ -26,11 +26,12 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
-import tech.flatstone.appliedlogistics.common.blocks.misc.BlockBuilder;
-import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPlanLibrary;
-import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPlanChest;
+import tech.flatstone.appliedlogistics.common.blocks.machines.BlockFurnace;
 import tech.flatstone.appliedlogistics.common.blocks.machines.BlockPulverizer;
+import tech.flatstone.appliedlogistics.common.blocks.misc.BlockBuilder;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCrank;
+import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPlanChest;
+import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPlanLibrary;
 import tech.flatstone.appliedlogistics.common.blocks.ore.BlockOre;
 import tech.flatstone.appliedlogistics.common.blocks.ore.BlockOreBlock;
 import tech.flatstone.appliedlogistics.common.items.misc.ItemBuilder;
@@ -54,7 +55,8 @@ public enum Blocks {
 
     BLOCK_MISC_CRANK("misc_crank", new BlockCrank(), ItemCrank.class, AppliedLogisticsCreativeTabs.tabGeneral),
 
-    BLOCK_MACHINE_PULVERIZER("machine_pulverizer", new BlockPulverizer(), AppliedLogisticsCreativeTabs.tabMachines);
+    BLOCK_MACHINE_PULVERIZER("machine_pulverizer", new BlockPulverizer(), AppliedLogisticsCreativeTabs.tabMachines),
+    BLOCK_MACHINE_FURNACE("machine_furnace", new BlockFurnace(), AppliedLogisticsCreativeTabs.tabMachines);
 
     private final Block block;
     private final String internalName;
@@ -80,6 +82,12 @@ public enum Blocks {
         this.creativeTabs = creativeTabs;
     }
 
+    public static void registerBlocks() {
+        for (Blocks b : Blocks.values()) {
+            b.registerBlock();
+        }
+    }
+
     public ItemStack getStack() {
         return new ItemStack(block);
     }
@@ -90,12 +98,6 @@ public enum Blocks {
 
     public ItemStack getStack(int size, int meta) {
         return new ItemStack(block, size, meta);
-    }
-
-    public static void registerBlocks() {
-        for (Blocks b : Blocks.values()) {
-            b.registerBlock();
-        }
     }
 
     private void registerBlock() {
