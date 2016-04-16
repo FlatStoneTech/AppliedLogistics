@@ -2,6 +2,7 @@ package tech.flatstone.appliedlogistics.common.tileentities.machines;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -9,9 +10,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaBodyMessage;
+import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
+import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.InventoryHelper;
 
 import java.util.List;
@@ -23,13 +26,44 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
     private double intTemperature = 0;
     private int fuelTempTick = 0;
     private int maxTemp = 200;
-    private int furnaceRows = 3;
-    private boolean upgradeExtraSlots = true;
-    private int[] smeltProgress = new int[furnaceRows];
+    private int furnaceRows = 1;
+    private boolean upgradeExtraSlots = false;
+    private int[] smeltProgress = new int[9];
+    private int maxProcessItems = 1;
 
     @Override
     public ItemStack removeStackFromSlot(int index) {
         return null;
+    }
+
+    @Override
+    public void initMachineData() {
+        super.initMachineData();
+
+        int furnaceCount = 1;
+        int gearCount = 0;
+
+        NBTTagCompound machineItemData = this.getMachineItemData();
+        if (machineItemData != null) {
+            for (int i = 0; i < 27; i++) {
+                if (machineItemData.hasKey("item_" + i)) {
+                    ItemStack item = ItemStack.loadItemStackFromNBT(machineItemData.getCompoundTag("item_" + i));
+
+                    if (ItemStack.areItemsEqual(item, Items.ITEM_MATERIAL_GEAR.getStack(1, EnumOres.IRON.getMeta())))
+                        gearCount = item.stackSize;
+
+                    if (ItemStack.areItemsEqual(item, new ItemStack(Blocks.furnace)))
+                        furnaceCount = item.stackSize;
+
+                    if (ItemStack.areItemsEqual(item, new ItemStack(Blocks.chest)))
+                        upgradeExtraSlots = true;
+                }
+            }
+        }
+
+        furnaceCount--;
+        if (furnaceCount == 1 && gearCount == 1)
+            furnaceRows = 2;
     }
 
     @Override
@@ -78,11 +112,11 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
                 }
 
                 if (input1 == null) {
-                    inventory.setInventorySlotContents(i * 7 + 3, inventory.decrStackSize(i * 7 + 2, 3));
+                    inventory.setInventorySlotContents(i * 7 + 3, inventory.decrStackSize(i * 7 + 2, maxProcessItems));
                     this.markForUpdate();
                     this.markDirty();
                 } else {
-                    inventory.setInventorySlotContents(i * 7 + 3, inventory.decrStackSize(i * 7 + 1, 3));
+                    inventory.setInventorySlotContents(i * 7 + 3, inventory.decrStackSize(i * 7 + 1, maxProcessItems));
                     this.markForUpdate();
                     this.markDirty();
                 }
@@ -176,6 +210,7 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
         furnaceRows = nbtTagCompound.getInteger("furnaceRows");
         upgradeExtraSlots = nbtTagCompound.getBoolean("upgradeExtraSlots");
         smeltProgress = nbtTagCompound.getIntArray("smeltProgress");
+        maxProcessItems = nbtTagCompound.getInteger("maxProcessItems");
     }
 
     @Override
@@ -189,6 +224,7 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
         nbtTagCompound.setInteger("furnaceRows", furnaceRows);
         nbtTagCompound.setBoolean("upgradeExtraSlots", upgradeExtraSlots);
         nbtTagCompound.setIntArray("smeltProgress", smeltProgress);
+        nbtTagCompound.setInteger("maxProcessItems", maxProcessItems);
     }
 
     /**

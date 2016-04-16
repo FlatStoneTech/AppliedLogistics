@@ -37,12 +37,12 @@ import java.util.List;
 
 public class PlanPlanBuilder extends ItemPlanBase implements IMachinePlan {
     public PlanPlanBuilder() {
-        this.setUnlocalizedName(String.format("%s:%s", ModInfo.MOD_ID, "plan.misc"));
+        this.setUnlocalizedName(String.format("%s:%s", ModInfo.MOD_ID, "plan.builder"));
     }
 
     @Override
     public String getLocalizedPlanDescription() {
-        return LanguageHelper.DESCRIPTION.translateMessage("plan.misc");
+        return LanguageHelper.DESCRIPTION.translateMessage("plan.builder");
     }
 
     @Override
@@ -71,17 +71,6 @@ public class PlanPlanBuilder extends ItemPlanBase implements IMachinePlan {
                 requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_CRAFTING.getItem()), 0, 1, 10, 200, 200, "Adds crafting grid to machine"));
 
                 planDetails = new PlanDetails(1000, requiredMaterialsList, new ItemStack(Blocks.BLOCK_BUILDER.getBlock(), 1, 2));
-                break;
-
-            case STEEL_AGE:
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("ingotTitanium"), 8, 8, 15, 100, 100));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Blocks.BLOCK_BUILDER.getBlock()), 1, 1, 10, 100, 100));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_REDSTONE_OUTPUT.getItem()), 0, 1, 10, 200, 200, "Adds comparator output"));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_REDSTONE_INPUT.getItem()), 0, 1, 10, 200, 200, "Adds redstone input to launch build"));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_AUTOMATION.getItem()), 0, 1, 10, 200, 200, "Adds support to adding / removing items with pipes and hoppers"));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_CRAFTING.getItem()), 0, 1, 10, 200, 200, "Adds crafting grid to machine"));
-
-                planDetails = new PlanDetails(1000, requiredMaterialsList, new ItemStack(Blocks.BLOCK_BUILDER.getBlock(), 1, 3));
                 break;
 
             case INDUSTRIAL_AGE:

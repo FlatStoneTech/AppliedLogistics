@@ -188,10 +188,6 @@ public abstract class CommonProxy implements IProxy {
             if (block.getBlock() instanceof IProvideRecipe)
                 ((IProvideRecipe) block.getBlock()).RegisterRecipes();
         }
-
-        ItemStack testInput = new ItemStack(net.minecraft.init.Blocks.dirt);
-        ItemStack testOutput = new ItemStack(net.minecraft.init.Items.diamond, 3);
-        GameRegistry.addSmelting(testInput, testOutput, 0);
     }
 
     @Override
