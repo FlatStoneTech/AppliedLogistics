@@ -25,8 +25,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderGlobal;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,6 +36,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
@@ -160,7 +163,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
 
     @SubscribeEvent
     public void drawBlockHighlight(DrawBlockHighlightEvent event) {
-        if (!(ItemStack.areItemsEqual(new ItemStack(event.player.worldObj.getBlockState(event.target.getBlockPos()).getBlock()), new ItemStack(Blocks.BLOCK_MISC_CRANK.getBlock()))))
+        if (!(event.target.typeOfHit == MovingObjectType.BLOCK && ItemStack.areItemsEqual(new ItemStack(event.player.worldObj.getBlockState(event.target.getBlockPos()).getBlock()), new ItemStack(Blocks.BLOCK_MISC_CRANK.getBlock()))))
             return;
 
         event.setCanceled(true);
@@ -187,8 +190,63 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
         GlStateManager.disableTexture2D();
         GlStateManager.depthMask(false);
 
-        RenderGlobal.drawSelectionBoundingBox(crankTop);
-        RenderGlobal.drawSelectionBoundingBox(crankShaft);
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        worldrenderer.begin(3, DefaultVertexFormats.POSITION);
+        worldrenderer.pos(crankShaft.maxX, crankShaft.maxY, crankShaft.maxZ).endVertex();
+        worldrenderer.pos(crankTop.maxX, crankTop.minY, crankTop.maxZ).endVertex();
+        worldrenderer.pos(crankTop.minX, crankTop.minY, crankTop.maxZ).endVertex();
+        worldrenderer.pos(crankShaft.minX, crankShaft.maxY, crankShaft.maxZ).endVertex();
+        tessellator.draw();
+        worldrenderer.begin(3, DefaultVertexFormats.POSITION);
+        worldrenderer.pos(crankShaft.minX, crankShaft.maxY, crankShaft.minZ).endVertex();
+        worldrenderer.pos(crankTop.minX, crankTop.minY, crankTop.minZ).endVertex();
+        worldrenderer.pos(crankTop.maxX, crankTop.minY, crankTop.minZ).endVertex();
+        worldrenderer.pos(crankShaft.maxX, crankShaft.maxY, crankShaft.minZ).endVertex();
+        tessellator.draw();
+        worldrenderer.begin(3, DefaultVertexFormats.POSITION);
+        worldrenderer.pos(crankTop.minX, crankTop.maxY, crankTop.minZ).endVertex();
+        worldrenderer.pos(crankTop.maxX, crankTop.maxY, crankTop.minZ).endVertex();
+        worldrenderer.pos(crankTop.maxX, crankTop.maxY, crankTop.maxZ).endVertex();
+        worldrenderer.pos(crankTop.minX, crankTop.maxY, crankTop.maxZ).endVertex();
+        worldrenderer.pos(crankTop.minX, crankTop.maxY, crankTop.minZ).endVertex();
+        tessellator.draw();
+        worldrenderer.begin(1, DefaultVertexFormats.POSITION);
+        worldrenderer.pos(crankTop.minX, crankTop.minY, crankTop.minZ).endVertex();
+        worldrenderer.pos(crankTop.minX, crankTop.maxY, crankTop.minZ).endVertex();
+        worldrenderer.pos(crankTop.maxX, crankTop.minY, crankTop.minZ).endVertex();
+        worldrenderer.pos(crankTop.maxX, crankTop.maxY, crankTop.minZ).endVertex();
+        worldrenderer.pos(crankTop.maxX, crankTop.minY, crankTop.maxZ).endVertex();
+        worldrenderer.pos(crankTop.maxX, crankTop.maxY, crankTop.maxZ).endVertex();
+        worldrenderer.pos(crankTop.minX, crankTop.minY, crankTop.maxZ).endVertex();
+        worldrenderer.pos(crankTop.minX, crankTop.maxY, crankTop.maxZ).endVertex();
+        tessellator.draw();
+
+        worldrenderer.begin(3, DefaultVertexFormats.POSITION);
+        worldrenderer.pos(crankShaft.minX, crankShaft.minY, crankShaft.minZ).endVertex();
+        worldrenderer.pos(crankShaft.maxX, crankShaft.minY, crankShaft.minZ).endVertex();
+        worldrenderer.pos(crankShaft.maxX, crankShaft.minY, crankShaft.maxZ).endVertex();
+        worldrenderer.pos(crankShaft.minX, crankShaft.minY, crankShaft.maxZ).endVertex();
+        worldrenderer.pos(crankShaft.minX, crankShaft.minY, crankShaft.minZ).endVertex();
+        tessellator.draw();
+        worldrenderer.begin(3, DefaultVertexFormats.POSITION);
+        worldrenderer.pos(crankShaft.minX, crankShaft.maxY, crankShaft.minZ).endVertex();
+        worldrenderer.pos(crankShaft.maxX, crankShaft.maxY, crankShaft.minZ).endVertex();
+        tessellator.draw();
+        worldrenderer.begin(3, DefaultVertexFormats.POSITION);
+        worldrenderer.pos(crankShaft.maxX, crankShaft.maxY, crankShaft.maxZ).endVertex();
+        worldrenderer.pos(crankShaft.minX, crankShaft.maxY, crankShaft.maxZ).endVertex();
+        tessellator.draw();
+        worldrenderer.begin(1, DefaultVertexFormats.POSITION);
+        worldrenderer.pos(crankShaft.minX, crankShaft.minY, crankShaft.minZ).endVertex();
+        worldrenderer.pos(crankShaft.minX, crankShaft.maxY, crankShaft.minZ).endVertex();
+        worldrenderer.pos(crankShaft.maxX, crankShaft.minY, crankShaft.minZ).endVertex();
+        worldrenderer.pos(crankShaft.maxX, crankShaft.maxY, crankShaft.minZ).endVertex();
+        worldrenderer.pos(crankShaft.maxX, crankShaft.minY, crankShaft.maxZ).endVertex();
+        worldrenderer.pos(crankShaft.maxX, crankShaft.maxY, crankShaft.maxZ).endVertex();
+        worldrenderer.pos(crankShaft.minX, crankShaft.minY, crankShaft.maxZ).endVertex();
+        worldrenderer.pos(crankShaft.minX, crankShaft.maxY, crankShaft.maxZ).endVertex();
+        tessellator.draw();
 
         GlStateManager.depthMask(true);
         GlStateManager.enableTexture2D();
