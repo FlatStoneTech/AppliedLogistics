@@ -36,6 +36,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
@@ -162,7 +163,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
 
     @SubscribeEvent
     public void drawBlockHighlight(DrawBlockHighlightEvent event) {
-        if (!(ItemStack.areItemsEqual(new ItemStack(event.player.worldObj.getBlockState(event.target.getBlockPos()).getBlock()), new ItemStack(Blocks.BLOCK_MISC_CRANK.getBlock()))))
+        if (!(event.target.typeOfHit == MovingObjectType.BLOCK && ItemStack.areItemsEqual(new ItemStack(event.player.worldObj.getBlockState(event.target.getBlockPos()).getBlock()), new ItemStack(Blocks.BLOCK_MISC_CRANK.getBlock()))))
             return;
 
         event.setCanceled(true);
