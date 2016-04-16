@@ -26,20 +26,20 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import tech.flatstone.appliedlogistics.client.gui.machines.GuiFurnace;
-import tech.flatstone.appliedlogistics.client.gui.misc.GuiBuilder;
-import tech.flatstone.appliedlogistics.client.gui.misc.GuiPlanLibrary;
-import tech.flatstone.appliedlogistics.client.gui.misc.GuiPlanChest;
 import tech.flatstone.appliedlogistics.client.gui.machines.GuiPulverizer;
+import tech.flatstone.appliedlogistics.client.gui.misc.GuiBuilder;
+import tech.flatstone.appliedlogistics.client.gui.misc.GuiPlanChest;
+import tech.flatstone.appliedlogistics.client.gui.misc.GuiPlanLibrary;
 import tech.flatstone.appliedlogistics.common.container.machines.ContainerFurnace;
-import tech.flatstone.appliedlogistics.common.container.misc.ContainerBuilder;
-import tech.flatstone.appliedlogistics.common.container.misc.ContainerPlanLibrary;
-import tech.flatstone.appliedlogistics.common.container.misc.ContainerPlanChest;
 import tech.flatstone.appliedlogistics.common.container.machines.ContainerPulverizer;
+import tech.flatstone.appliedlogistics.common.container.misc.ContainerBuilder;
+import tech.flatstone.appliedlogistics.common.container.misc.ContainerPlanChest;
+import tech.flatstone.appliedlogistics.common.container.misc.ContainerPlanLibrary;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityFurnace;
-import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityBuilder;
-import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPlanLibrary;
-import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPlanChest;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityPulverizer;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityBuilder;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPlanChest;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPlanLibrary;
 
 public class GuiHandler implements IGuiHandler {
 

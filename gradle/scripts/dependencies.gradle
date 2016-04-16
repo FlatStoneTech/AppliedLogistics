@@ -37,7 +37,7 @@ configurations {
 dependencies {
     // installable
     mods "net.darkhax.wawla:Wawla:1.8.9-1.1.4.171"
-    mods "com.fireball1725.devworld:devworld:1.8.9-b7-universal"
+    mods "com.fireball1725.devworld:devworld:1.8.9-b8-universal"
 
     // provided apis
     compile "mcp.mobius.waila:Waila:1.6.0-B3_1.8.8"

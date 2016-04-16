@@ -23,7 +23,6 @@ package tech.flatstone.appliedlogistics.common.items;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.ModInfo;

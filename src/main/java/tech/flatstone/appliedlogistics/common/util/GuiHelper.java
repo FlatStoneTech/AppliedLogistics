@@ -21,13 +21,11 @@
 package tech.flatstone.appliedlogistics.common.util;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -62,6 +60,20 @@ public class GuiHelper extends GuiScreen {
         drawGradientRect(x - 3, y + h + 2, x + w + 3, y + h + 3, frameColor, frameFade);
     }
 
+    public void drawLineOnVerticalProgressBar(int x, int y, int w, int h, int p, int pMax, int lineColor) {
+        x -= 2;
+        y -= 2;
+        w += 4;
+        h += 4;
+
+        //int lineY = Math.round(((float) h / 100) * p);
+
+        //int lineY = Math.round(((((float)p) / ((float)(pMax - 20)))) * h);
+        int lineY = Math.round((float) p / (float) pMax * h);
+
+        drawRect(x, y + h - lineY, w + x, y + h - lineY + 1, lineColor);
+    }
+
     public void drawVerticalProgressBar(int x, int y, int w, int h, int p, int bgColor, int frameColor, int progressColor) {
         drawProgressBar(x, y, w, h, p, bgColor, frameColor, progressColor, 1);
     }
@@ -74,9 +86,12 @@ public class GuiHelper extends GuiScreen {
         drawWindowWithBorder(x, y, w, h, bgColor, frameColor);
 
         // Adjust x, y, w, h to fit progress bar inside window...
-        x -= 2; y -= 2; w += 4; h += 4;
+        x -= 2;
+        y -= 2;
+        w += 4;
+        h += 4;
 
-        switch(hv) {
+        switch (hv) {
             case 0:
                 float pWf = ((float) w / 100) * p;
                 int pW = Math.round(pWf);

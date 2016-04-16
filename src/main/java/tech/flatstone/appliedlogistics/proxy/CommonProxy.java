@@ -25,6 +25,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
@@ -187,6 +188,10 @@ public abstract class CommonProxy implements IProxy {
             if (block.getBlock() instanceof IProvideRecipe)
                 ((IProvideRecipe) block.getBlock()).RegisterRecipes();
         }
+
+        ItemStack testInput = new ItemStack(net.minecraft.init.Blocks.dirt);
+        ItemStack testOutput = new ItemStack(net.minecraft.init.Items.diamond, 3);
+        GameRegistry.addSmelting(testInput, testOutput, 0);
     }
 
     @Override
