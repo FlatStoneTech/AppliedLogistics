@@ -32,9 +32,7 @@ public class ContainerFurnace extends ContainerBase {
                 addSlotToContainer(new SlotFurnaceInput(inventory, slotNumber, 8, 18 + i * 18, null));
             slotNumber++;
             addSlotToContainer(new SlotFurnaceInput(inventory, slotNumber, 26, 18 + i * 18, null));
-            slotNumber++;
-            addSlotToContainer(new SlotNormal(inventory, slotNumber, -30, i * 18));
-            slotNumber++;
+            slotNumber += 2;
 
             addSlotToContainer(new SlotOutput(inventory, slotNumber, 98, 18 + i * 18));
             slotNumber++;
