@@ -23,17 +23,18 @@ package tech.flatstone.appliedlogistics.common.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.util.StatCollector;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
-import tech.flatstone.appliedlogistics.common.blocks.builder.BlockBuilder;
-import tech.flatstone.appliedlogistics.common.blocks.builder.BlockPlanBuilder;
-import tech.flatstone.appliedlogistics.common.blocks.builder.BlockPlanLibrary;
+import tech.flatstone.appliedlogistics.common.blocks.machines.BlockFurnace;
 import tech.flatstone.appliedlogistics.common.blocks.machines.BlockPulverizer;
+import tech.flatstone.appliedlogistics.common.blocks.misc.BlockBuilder;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCrank;
+import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPlanChest;
+import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPlanLibrary;
 import tech.flatstone.appliedlogistics.common.blocks.ore.BlockOre;
 import tech.flatstone.appliedlogistics.common.blocks.ore.BlockOreBlock;
-import tech.flatstone.appliedlogistics.common.items.builder.ItemBuilder;
+import tech.flatstone.appliedlogistics.common.items.misc.ItemBuilder;
 import tech.flatstone.appliedlogistics.common.items.misc.ItemCrank;
 import tech.flatstone.appliedlogistics.common.items.ore.ItemOre;
 import tech.flatstone.appliedlogistics.common.items.ore.ItemOreBlock;
@@ -49,41 +50,36 @@ public enum Blocks {
     BLOCK_ORE_BLOCK("ore_block", new BlockOreBlock(), ItemOreBlock.class, AppliedLogisticsCreativeTabs.tabOres),
 
     BLOCK_BUILDER("builder", new BlockBuilder(), ItemBuilder.class, AppliedLogisticsCreativeTabs.tabMachines),
-    BLOCK_PLAN_BUILDER("plan_builder", new BlockPlanBuilder(), AppliedLogisticsCreativeTabs.tabMachines),
     BLOCK_PLAN_LIBRARY("plan_library", new BlockPlanLibrary(), AppliedLogisticsCreativeTabs.tabMachines),
+    BLOCK_PLAN_CHEST("plan_chest", new BlockPlanChest(), AppliedLogisticsCreativeTabs.tabMachines),
 
     BLOCK_MISC_CRANK("misc_crank", new BlockCrank(), ItemCrank.class, AppliedLogisticsCreativeTabs.tabGeneral),
 
-    BLOCK_MACHINE_PULVERIZER("machine_pulverizer", new BlockPulverizer(), AppliedLogisticsCreativeTabs.tabMachines);
+    BLOCK_MACHINE_PULVERIZER("machine_pulverizer", new BlockPulverizer(), AppliedLogisticsCreativeTabs.tabMachines),
+    BLOCK_MACHINE_FURNACE("machine_furnace", new BlockFurnace(), AppliedLogisticsCreativeTabs.tabMachines);
 
     private final Block block;
     private final String internalName;
     private final Class<? extends ItemBlock> itemBlockClass;
     private final CreativeTabs creativeTabs;
-    private final boolean defaultRenderer;
 
     Blocks(String internalName, Block block) {
-        this(internalName, block, ItemBlock.class, null, true);
+        this(internalName, block, ItemBlock.class, null);
     }
 
     Blocks(String internalName, Block block, CreativeTabs creativeTabs) {
-        this(internalName, block, ItemBlock.class, creativeTabs, true);
+        this(internalName, block, ItemBlock.class, creativeTabs);
     }
 
     Blocks(String internalName, Block block, Class<? extends ItemBlock> itemBlockClass) {
-        this(internalName, block, itemBlockClass, null, true);
+        this(internalName, block, itemBlockClass, null);
     }
 
     Blocks(String internalName, Block block, Class<? extends ItemBlock> itemBlockClass, CreativeTabs creativeTabs) {
-        this(internalName, block, itemBlockClass, creativeTabs, true);
-    }
-
-    Blocks(String internalName, Block block, Class<? extends ItemBlock> itemBlockClass, CreativeTabs creativeTabs, boolean useDefaultRenderer) {
         this.internalName = internalName;
         this.block = block;
         this.itemBlockClass = itemBlockClass;
         this.creativeTabs = creativeTabs;
-        this.defaultRenderer = useDefaultRenderer;
     }
 
     public static void registerBlocks() {
@@ -92,13 +88,16 @@ public enum Blocks {
         }
     }
 
-
-    public String getInternalName() {
-        return internalName;
+    public ItemStack getStack() {
+        return new ItemStack(block);
     }
 
-    public String getStatName() {
-        return StatCollector.translateToLocal(block.getUnlocalizedName().replace("tileentities.", "blocks."));
+    public ItemStack getStack(int size) {
+        return new ItemStack(block, size);
+    }
+
+    public ItemStack getStack(int size, int meta) {
+        return new ItemStack(block, size, meta);
     }
 
     private void registerBlock() {

@@ -18,13 +18,11 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.client.gui.builder;
+package tech.flatstone.appliedlogistics.client.gui.misc;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -32,11 +30,11 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.client.gui.GuiBase;
-import tech.flatstone.appliedlogistics.common.container.builder.ContainerBuilder;
+import tech.flatstone.appliedlogistics.common.container.misc.ContainerBuilder;
 import tech.flatstone.appliedlogistics.common.container.slot.SlotBuilderInventory;
 import tech.flatstone.appliedlogistics.common.network.PacketHandler;
 import tech.flatstone.appliedlogistics.common.network.messages.PacketButtonClick;
-import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityBuilder;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityBuilder;
 import tech.flatstone.appliedlogistics.common.util.GuiHelper;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 import tech.flatstone.appliedlogistics.common.util.PlanDetails;
@@ -150,7 +148,7 @@ public class GuiBuilder extends GuiBase {
                 weightProgressColor = colorProgressBackgroundBad;
             }
 
-            guiHelper.drawHorzProgressBar(40, 26, 126, 8, Math.round(weightPercent), colorBackground, colorBorder, weightProgressColor);
+            guiHelper.drawHorizontalProgressBar(40, 26, 126, 8, Math.round(weightPercent), colorBackground, colorBorder, weightProgressColor);
             String weightLabel = String.format("%s: %dkg",
                     LanguageHelper.LABEL.translateMessage("weight_left"),
                     weightMax - weightTotal
@@ -167,7 +165,7 @@ public class GuiBuilder extends GuiBase {
 
             int secondsLeft = (timeCurrent / 20) * 1000;
 
-            guiHelper.drawHorzProgressBar(40, 26, 126, 8, Math.round(timePercent), colorBackground, colorBorder, timeProgressColor);
+            guiHelper.drawHorizontalProgressBar(40, 26, 126, 8, Math.round(timePercent), colorBackground, colorBorder, timeProgressColor);
             String timeLabel = String.format("%s: %s (%d%%)",
                     LanguageHelper.LABEL.translateMessage("time_left"),
                     DurationFormatUtils.formatDuration(secondsLeft, "mm:ss"),
@@ -176,21 +174,7 @@ public class GuiBuilder extends GuiBase {
             guiHelper.drawCenteredStringWithShadow(40, 26, 126, timeLabel, colorFont);
         }
 
-        int iconX = 322;
-        if (tileEntity.isComparatorEnabled()) {
-            guiHelper.drawMiniItemStack(new ItemStack(Items.comparator), iconX, 12);
-            iconX = iconX - 18;
-        }
-
-        if (tileEntity.isRedstoneEnabled()) {
-            guiHelper.drawMiniItemStack(new ItemStack(Items.redstone), iconX, 12);
-            iconX = iconX - 18;
-        }
-
-        if (tileEntity.isSidedEnabled()) {
-            guiHelper.drawMiniItemStack(new ItemStack(Blocks.hopper), iconX, 12);
-            iconX = iconX - 18;
-        }
+        guiHelper.drawMachineUpgradeIcons(322, 12, tileEntity);
     }
 
     @Override

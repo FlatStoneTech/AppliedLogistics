@@ -28,7 +28,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
 
 import javax.annotation.Nullable;
 import java.util.Random;

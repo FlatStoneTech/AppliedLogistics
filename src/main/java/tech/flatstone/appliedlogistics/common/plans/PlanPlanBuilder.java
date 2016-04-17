@@ -73,17 +73,6 @@ public class PlanPlanBuilder extends ItemPlanBase implements IMachinePlan {
                 planDetails = new PlanDetails(1000, requiredMaterialsList, new ItemStack(Blocks.BLOCK_BUILDER.getBlock(), 1, 2));
                 break;
 
-            case STEEL_AGE:
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("ingotTitanium"), 8, 8, 15, 100, 100));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Blocks.BLOCK_BUILDER.getBlock()), 1, 1, 10, 100, 100));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_REDSTONE_OUTPUT.getItem()), 0, 1, 10, 200, 200, "Adds comparator output"));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_REDSTONE_INPUT.getItem()), 0, 1, 10, 200, 200, "Adds redstone input to launch build"));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_AUTOMATION.getItem()), 0, 1, 10, 200, 200, "Adds support to adding / removing items with pipes and hoppers"));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_CRAFTING.getItem()), 0, 1, 10, 200, 200, "Adds crafting grid to machine"));
-
-                planDetails = new PlanDetails(1000, requiredMaterialsList, new ItemStack(Blocks.BLOCK_BUILDER.getBlock(), 1, 3));
-                break;
-
             case INDUSTRIAL_AGE:
                 requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("ingotElectrum"), 8, 8, 15, 100, 100));
                 requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Blocks.BLOCK_BUILDER.getBlock()), 1, 1, 10, 100, 100));

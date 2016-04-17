@@ -22,11 +22,11 @@ package tech.flatstone.appliedlogistics.client.gui;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.inventory.Container;
 import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.util.GuiHelper;
@@ -100,7 +100,7 @@ public abstract class GuiBase extends GuiContainer {
 
     protected Slot getSlot(int mouseX, int mouseY) {
         for (int j1 = 0; j1 < this.inventorySlots.inventorySlots.size(); j1++) {
-            Slot slot = (Slot) this.inventorySlots.inventorySlots.get(j1);
+            Slot slot = this.inventorySlots.inventorySlots.get(j1);
             if (isPointInRegion(slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY)) {
                 return slot;
             }

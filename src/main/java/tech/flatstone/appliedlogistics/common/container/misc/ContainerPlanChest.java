@@ -18,67 +18,47 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.blocks.builder;
+package tech.flatstone.appliedlogistics.common.container.misc;
 
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
-import tech.flatstone.appliedlogistics.AppliedLogistics;
-import tech.flatstone.appliedlogistics.ModInfo;
-import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
-import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanLibrary;
-import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
-import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
-import tech.flatstone.appliedlogistics.common.util.TileHelper;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import tech.flatstone.appliedlogistics.common.container.ContainerBase;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotRestrictedInput;
+import tech.flatstone.appliedlogistics.common.items.Items;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPlanChest;
 
-public class BlockPlanLibrary extends BlockTileBase implements IBlockRenderer {
-    public BlockPlanLibrary() {
-        super(Material.rock);
-        this.setTileEntity(TileEntityPlanLibrary.class);
+import java.util.Arrays;
+
+public class ContainerPlanChest extends ContainerBase {
+    private IInventory inventory;
+    private TileEntityPlanChest tileEntity;
+    private InventoryPlayer inventoryPlayer;
+
+    public ContainerPlanChest(InventoryPlayer inventoryPlayer, TileEntity tileEntity) {
+        super(inventoryPlayer, tileEntity);
+        this.tileEntity = (TileEntityPlanChest) tileEntity;
+        this.inventory = (IInventory) tileEntity;
+        this.inventoryPlayer = inventoryPlayer;
+
+        drawSlots();
     }
 
-    @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
-        TileEntityPlanLibrary tileEntityPlanLibrary = TileHelper.getTileEntity(worldIn, pos, TileEntityPlanLibrary.class);
-        if (tileEntityPlanLibrary != null)
-            LogHelper.info(">>> Rows: " + tileEntityPlanLibrary.getSlotRows());
+    private void drawSlots() {
+        //addSlotToContainer(new SlotRestrictedInput(inventory, 0, 190, 95, Arrays.asList(new ItemStack(Items.ITEM_PLAN_BLANK.getItem())), new ItemStack(Items.ITEM_PLAN_BLANK.getItem())));
+        //addSlotToContainer(new SlotPlanBuilderOutput(inventory, 1, 190, 155, tileEntity));
+        int slotRows = tileEntity.getSlotRows();
 
-        if (worldIn.isRemote)
-            return true;
-
-        playerIn.openGui(AppliedLogistics.instance, 2, worldIn, pos.getX(), pos.getY(), pos.getZ());
-        return true;
-    }
-
-    @Override
-    public boolean hasComparatorInputOverride() {
-        return true;
-    }
-
-    @Override
-    public int getComparatorInputOverride(World worldIn, BlockPos pos) {
-        TileEntityPlanLibrary tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityPlanLibrary.class);
-        if (tileEntity == null || !tileEntity.isComparatorEnabled())
-            return 0;
-
-        IInventory inventory = new InternalInventory(tileEntity, tileEntity.getSlotRows() * 9);
-        for (int i = 0; i < inventory.getSizeInventory(); i++) {
-            inventory.setInventorySlotContents(i, tileEntity.getStackInSlot(i));
+        int slotY = 18;
+        int slotNumber = 0;
+        for (int i = 0; i < slotRows; i++) {
+            for (int j = 0; j < 9; j++) {
+                addSlotToContainer(new SlotRestrictedInput(inventory, slotNumber, j * 18 + 8, i * 18 + 18, Arrays.asList(new ItemStack(Items.ITEM_PLAN.getItem())), new ItemStack(Items.ITEM_PLAN.getItem())));
+                slotNumber++;
+            }
         }
-        return Container.calcRedstoneFromInventory(inventory);
-    }
 
-    @Override
-    public void registerBlockRenderer() {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(ModInfo.MOD_ID + ":builder/plan_library", "inventory"));
+        bindPlayerInventory(inventoryPlayer, 0, 44 + (18 * slotRows));
     }
 }

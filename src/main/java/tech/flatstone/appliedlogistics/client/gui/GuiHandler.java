@@ -25,18 +25,21 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
-import tech.flatstone.appliedlogistics.client.gui.builder.GuiBuilder;
-import tech.flatstone.appliedlogistics.client.gui.builder.GuiPlanBuilder;
-import tech.flatstone.appliedlogistics.client.gui.builder.GuiPlanLibrary;
+import tech.flatstone.appliedlogistics.client.gui.machines.GuiFurnace;
 import tech.flatstone.appliedlogistics.client.gui.machines.GuiPulverizer;
-import tech.flatstone.appliedlogistics.common.container.builder.ContainerBuilder;
-import tech.flatstone.appliedlogistics.common.container.builder.ContainerPlanBuilder;
-import tech.flatstone.appliedlogistics.common.container.builder.ContainerPlanLibrary;
+import tech.flatstone.appliedlogistics.client.gui.misc.GuiBuilder;
+import tech.flatstone.appliedlogistics.client.gui.misc.GuiPlanChest;
+import tech.flatstone.appliedlogistics.client.gui.misc.GuiPlanLibrary;
+import tech.flatstone.appliedlogistics.common.container.machines.ContainerFurnace;
 import tech.flatstone.appliedlogistics.common.container.machines.ContainerPulverizer;
-import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityBuilder;
-import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanBuilder;
-import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanLibrary;
+import tech.flatstone.appliedlogistics.common.container.misc.ContainerBuilder;
+import tech.flatstone.appliedlogistics.common.container.misc.ContainerPlanChest;
+import tech.flatstone.appliedlogistics.common.container.misc.ContainerPlanLibrary;
+import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityFurnace;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityPulverizer;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityBuilder;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPlanChest;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPlanLibrary;
 
 public class GuiHandler implements IGuiHandler {
 
@@ -51,11 +54,13 @@ public class GuiHandler implements IGuiHandler {
             case 0: // Builder GUI
                 return new ContainerBuilder(player.inventory, tileEntity);
             case 1: // Plan Builder GUI
-                return new ContainerPlanBuilder(player.inventory, tileEntity);
-            case 2: // Plan Library GUI
                 return new ContainerPlanLibrary(player.inventory, tileEntity);
+            case 2: // Plan Library GUI
+                return new ContainerPlanChest(player.inventory, tileEntity);
             case 3: // Pulverizer
                 return new ContainerPulverizer(player.inventory, tileEntity);
+            case 4: // Furnace
+                return new ContainerFurnace(player.inventory, tileEntity);
             default:
                 return null;
         }
@@ -72,11 +77,13 @@ public class GuiHandler implements IGuiHandler {
             case 0: // Builder GUI
                 return new GuiBuilder(player.inventory, (TileEntityBuilder) tileEntity);
             case 1: // Plan Builder GUI
-                return new GuiPlanBuilder(player.inventory, (TileEntityPlanBuilder) tileEntity);
-            case 2: // Plan Library GUI
                 return new GuiPlanLibrary(player.inventory, (TileEntityPlanLibrary) tileEntity);
+            case 2: // Plan Library GUI
+                return new GuiPlanChest(player.inventory, (TileEntityPlanChest) tileEntity);
             case 3: // Pulverizer
                 return new GuiPulverizer(player.inventory, (TileEntityPulverizer) tileEntity);
+            case 4: // Furnace
+                return new GuiFurnace(player.inventory, (TileEntityFurnace) tileEntity);
             default:
                 return null;
         }

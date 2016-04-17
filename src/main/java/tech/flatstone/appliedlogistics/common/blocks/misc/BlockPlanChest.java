@@ -18,140 +18,67 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.tileentities.builder;
+package tech.flatstone.appliedlogistics.common.blocks.misc;
 
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.Item;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
-import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
-import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
-import tech.flatstone.appliedlogistics.common.items.Items;
-import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
+import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
+import tech.flatstone.appliedlogistics.AppliedLogistics;
+import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
-import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
-import tech.flatstone.appliedlogistics.common.util.INetworkButton;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPlanChest;
+import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-import java.util.UUID;
-
-public class TileEntityPlanBuilder extends TileEntityMachineBase implements INetworkButton {
-    InternalInventory inventory = new InternalInventory(this, 2);
-    private int selectedPlan = 0;
-
-    @Override
-    public void initMachineData() {
-
+public class BlockPlanChest extends BlockTileBase implements IBlockRenderer {
+    public BlockPlanChest() {
+        super(Material.rock);
+        this.setTileEntity(TileEntityPlanChest.class);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound) {
-        super.readFromNBT(nbtTagCompound);
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+        TileEntityPlanChest tileEntityPlanChest = TileHelper.getTileEntity(worldIn, pos, TileEntityPlanChest.class);
+        if (tileEntityPlanChest != null)
+            LogHelper.info(">>> Rows: " + tileEntityPlanChest.getSlotRows());
 
-        selectedPlan = nbtTagCompound.getInteger("selectedPlan");
+        if (worldIn.isRemote)
+            return true;
+
+        playerIn.openGui(AppliedLogistics.instance, 2, worldIn, pos.getX(), pos.getY(), pos.getZ());
+        return true;
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound) {
-        super.writeToNBT(nbtTagCompound);
-
-        nbtTagCompound.setInteger("selectedPlan", selectedPlan);
+    public boolean hasComparatorInputOverride() {
+        return true;
     }
 
     @Override
-    public IInventory getInternalInventory() {
-        return inventory;
-    }
+    public int getComparatorInputOverride(World worldIn, BlockPos pos) {
+        TileEntityPlanChest tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityPlanChest.class);
+        if (tileEntity == null || !tileEntity.isComparatorEnabled())
+            return 0;
 
-    @Override
-    public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
-        ItemStack inputSlot = inventory.getStackInSlot(0);
-        ItemStack outputSlot = inventory.getStackInSlot(1);
-
-        if (slot == 0) {
-            if (inputSlot == null && outputSlot != null) {
-                inventory.setInventorySlotContents(1, null);
-                inventory.markDirty();
-                updateOutputItemNBT();
-            }
-
-            if (ItemStack.areItemsEqual(inputSlot, new ItemStack(Items.ITEM_PLAN_BLANK.getItem())) && outputSlot == null) {
-                inventory.setInventorySlotContents(1, new ItemStack(Items.ITEM_PLAN.getItem()));
-                inventory.markDirty();
-                updateOutputItemNBT();
-            }
+        IInventory inventory = new InternalInventory(tileEntity, tileEntity.getSlotRows() * 9);
+        for (int i = 0; i < inventory.getSizeInventory(); i++) {
+            inventory.setInventorySlotContents(i, tileEntity.getStackInSlot(i));
         }
-
-        if (slot == 1) {
-            if (ItemStack.areItemsEqual(inputSlot, new ItemStack(Items.ITEM_PLAN_BLANK.getItem())) && outputSlot == null) {
-                inventory.setInventorySlotContents(1, new ItemStack(Items.ITEM_PLAN.getItem()));
-                inventory.markDirty();
-                updateOutputItemNBT();
-            }
-        }
+        return Container.calcRedstoneFromInventory(inventory);
     }
 
     @Override
-    public int[] getAccessibleSlotsBySide(EnumFacing side) {
-        return new int[0];
-    }
-
-    @Override
-    public ItemStack removeStackFromSlot(int index) {
-        return null;
-    }
-
-    @Override
-    public void actionPerformed(int buttonID, UUID playerUUID) {
-        switch (buttonID) {
-            case 0: // Previous
-                if (hasPrevPlan())
-                    selectedPlan--;
-                updateOutputItemNBT();
-                break;
-
-            case 1: // Next
-                if (hasNextPlan())
-                    selectedPlan++;
-                updateOutputItemNBT();
-                break;
-        }
-    }
-
-    public boolean hasNextPlan() {
-        return selectedPlan != PlanRegistry.getPlanItems().size() - 1;
-    }
-
-    public boolean hasPrevPlan() {
-        return selectedPlan != 0;
-    }
-
-    private void updateOutputItemNBT() {
-        ItemStack itemStack = inventory.getStackInSlot(1);
-        this.markForUpdate();
-        this.markDirty();
-
-        if (itemStack == null)
-            return;
-
-        IMachinePlan selectedPlan = getSelectedPlan();
-
-        if (selectedPlan == null)
-            return;
-
-        NBTTagCompound nbtTagCompound = new NBTTagCompound();
-        nbtTagCompound.setString("PlanType", ((ItemPlanBase) selectedPlan).getUnlocalizedName());
-
-        itemStack.setTagCompound(nbtTagCompound);
-    }
-
-    public IMachinePlan getSelectedPlan() {
-        return (IMachinePlan) PlanRegistry.getPlanItems().toArray()[selectedPlan];
-    }
-
-    @Override
-    public void dropItems() {
-        TileHelper.DropItems(this, 0, 0);
+    public void registerBlockRenderer() {
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(ModInfo.MOD_ID + ":misc/plan_library", "inventory"));
     }
 }

@@ -18,44 +18,66 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.container.builder;
+package tech.flatstone.appliedlogistics.common.blocks.misc;
 
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import tech.flatstone.appliedlogistics.common.container.ContainerBase;
-import tech.flatstone.appliedlogistics.common.container.slot.SlotBuilderInventory;
-import tech.flatstone.appliedlogistics.common.container.slot.SlotBuilderPlan;
-import tech.flatstone.appliedlogistics.common.container.slot.SlotOutput;
-import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityBuilder;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import tech.flatstone.appliedlogistics.AppliedLogistics;
+import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPlanLibrary;
+import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
+import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
+import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-public class ContainerBuilder extends ContainerBase {
-    private IInventory inventory;
-    private TileEntityBuilder tileEntity;
-    private InventoryPlayer inventoryPlayer;
-
-    public ContainerBuilder(InventoryPlayer inventoryPlayer, TileEntity tileEntity) {
-        super(inventoryPlayer, tileEntity);
-        this.tileEntity = (TileEntityBuilder) tileEntity;
-        this.inventory = (IInventory) tileEntity;
-        this.inventoryPlayer = inventoryPlayer;
-
-        drawSlots();
+public class BlockPlanLibrary extends BlockTileBase implements IProvideRecipe, IBlockRenderer {
+    public BlockPlanLibrary() {
+        super(Material.rock);
+        this.setTileEntity(TileEntityPlanLibrary.class);
     }
 
-    private void drawSlots() {
-        int offsetX = 8;
-        int offsetY = 60;
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if (worldIn.isRemote)
+            return true;
 
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 9; j++) {
-                addSlotToContainer(new SlotBuilderInventory(inventory, j + (i * 9) + 1, j * 18 + offsetX, offsetY + i * 18, tileEntity));
-            }
-        }
+        playerIn.openGui(AppliedLogistics.instance, 1, worldIn, pos.getX(), pos.getY(), pos.getZ());
+        return true;
+    }
 
-        addSlotToContainer(new SlotBuilderPlan(inventory, 0, 12, 22, tileEntity));
-        addSlotToContainer(new SlotOutput(inventory, 28, 227, 194));
+    @Override
+    public void RegisterRecipes() {
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(this),
+                "cxc",
+                "wgw",
+                "cxc",
+                'c', OreDictionary.getOres("craftingTableWood").size() == 0 ? new ItemStack(net.minecraft.init.Blocks.crafting_table) : "craftingTableWood",
+                'w', "logWood",
+                'g', "gearStone",
+                'x', "chestWood"
+        ));
+    }
 
-        bindPlayerInventory(inventoryPlayer, 0, 140);
+    @Override
+    public void breakBlock(World world, BlockPos blockPos, IBlockState blockState) {
+        TileEntity tileEntity = world.getTileEntity(blockPos);
+        TileHelper.DropItems(tileEntity, 0, 0);
+    }
+
+    @Override
+    public void registerBlockRenderer() {
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(ModInfo.MOD_ID + ":misc/plan_builder", "inventory"));
     }
 }

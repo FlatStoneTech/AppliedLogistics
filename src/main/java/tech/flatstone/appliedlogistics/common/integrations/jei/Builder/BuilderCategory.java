@@ -36,10 +36,10 @@ import javax.annotation.Nonnull;
 
 public class BuilderCategory implements IRecipeCategory {
     @Nonnull
-    private final String localizedName = LanguageHelper.JEI.translateMessage("category.builder");
+    private final String localizedName = LanguageHelper.JEI.translateMessage("category.misc");
 
     @Nonnull
-    private final IDrawable background = AppliedLogisticsPlugin.jeiHelper.getGuiHelper().createDrawable(new ResourceLocation(ModInfo.MOD_ID + ":textures/gui/jei/builder.png"), 0, 0, 162, 85);
+    private final IDrawable background = AppliedLogisticsPlugin.jeiHelper.getGuiHelper().createDrawable(new ResourceLocation(ModInfo.MOD_ID + ":textures/gui/jei/misc.png"), 0, 0, 162, 85);
 
     @Nonnull
     @Override

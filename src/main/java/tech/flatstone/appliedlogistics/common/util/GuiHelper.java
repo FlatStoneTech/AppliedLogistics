@@ -21,29 +21,27 @@
 package tech.flatstone.appliedlogistics.common.util;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.*;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 
 import java.awt.*;
 import java.util.List;
 
 public class GuiHelper extends GuiScreen {
-    protected Minecraft mc = Minecraft.getMinecraft();
-    protected TextureManager textureManager = mc.renderEngine;
-    protected FontRenderer fontRenderer = mc.fontRendererObj;
+    private Minecraft mc = Minecraft.getMinecraft();
+    private FontRenderer fontRenderer = mc.fontRendererObj;
 
-    public void drawWindow(int x, int y, int w, int h, int bgColor) {
+    private void drawWindow(int x, int y, int w, int h, int bgColor) {
         drawRect(x - 3, y - 4, x + w + 3, y - 3, bgColor);
         drawRect(x - 3, y + h + 3, x + w + 3, y + h + 4, bgColor);
         drawRect(x - 3, y - 3, x + w + 3, y + h + 3, bgColor);
@@ -62,27 +60,51 @@ public class GuiHelper extends GuiScreen {
         drawGradientRect(x - 3, y + h + 2, x + w + 3, y + h + 3, frameColor, frameFade);
     }
 
-    public void drawVertProgressBar(int x, int y, int w, int h, int p, int bgColor, int frameColor, int progressColor) {
-        drawProgressBar(x, y, w, h, p, bgColor, frameColor, progressColor, progressColor, 1);
+    public void drawLineOnVerticalProgressBar(int x, int y, int w, int h, int p, int pMax, int lineColor) {
+        x -= 2;
+        y -= 2;
+        w += 4;
+        h += 4;
+
+        //int lineY = Math.round(((float) h / 100) * p);
+
+        //int lineY = Math.round(((((float)p) / ((float)(pMax - 20)))) * h);
+        int lineY = Math.round((float) p / (float) pMax * h);
+
+        drawRect(x, y + h - lineY, w + x, y + h - lineY + 1, lineColor);
     }
 
-    public void drawHorzProgressBar(int x, int y, int w, int h, int p, int bgColor, int frameColor, int progressColor) {
-        drawProgressBar(x, y, w, h, p, bgColor, frameColor, progressColor, progressColor, 0);
+    public void drawVerticalProgressBar(int x, int y, int w, int h, int p, int bgColor, int frameColor, int progressColor) {
+        drawProgressBar(x, y, w, h, p, bgColor, frameColor, progressColor, 1);
     }
 
-    protected void drawProgressBar(int x, int y, int w, int h, int p, int bgColor, int frameColor, int progressColor, int progressColor2, int hv) {
+    public void drawHorizontalProgressBar(int x, int y, int w, int h, int p, int bgColor, int frameColor, int progressColor) {
+        drawProgressBar(x, y, w, h, p, bgColor, frameColor, progressColor, 0);
+    }
+
+    private void drawProgressBar(int x, int y, int w, int h, int p, int bgColor, int frameColor, int progressColor, int hv) {
         drawWindowWithBorder(x, y, w, h, bgColor, frameColor);
 
-        if (hv == 0) {
-            float pWf = ((float) w / 100) * p;
-            int pW = Math.round(pWf);
-            drawWindow(x + 2, y + 2, pW - 4, h - 4, progressColor);
-        } else {
-            float pHf = ((float) h / 100) * p;
-            int pH = Math.round(pHf);
-            drawWindow(x + 2, y + h - pH + 2, w - 4, pH - 4, progressColor);
-        }
+        // Adjust x, y, w, h to fit progress bar inside window...
+        x -= 2;
+        y -= 2;
+        w += 4;
+        h += 4;
 
+        switch (hv) {
+            case 0:
+                float pWf = ((float) w / 100) * p;
+                int pW = Math.round(pWf);
+                drawRect(x, y, x + pW, y + h, progressColor);
+                break;
+            case 1:
+                float pHf = ((float) h / 100) * p;
+                int pH = Math.round(pHf);
+                drawRect(x, y + h - pH, w + x, h + y, progressColor);
+                break;
+            default:
+                break;
+        }
     }
 
     public void drawItemStack(ItemStack itemStack, int x, int y) {
@@ -177,17 +199,6 @@ public class GuiHelper extends GuiScreen {
         renderItem.zLevel = 0.0f;
     }
 
-//    public void drawCenteredStrings(int x, int y, int w, int offset, ArrayList<ColorString> messages) {
-//        for (int i = 0; i < messages.size(); i++) {
-//            ColorString messages = messages.get(i);
-//            int messageWidth = fontRenderer.getStringWidth(messages.getMessage());
-//            int messageX = x + ((w >> 1) - (messageWidth >> 1));
-//            int messageY = y + (1 + offset * i);
-//
-//            fontRenderer.drawStringWithShadow(messages.getMessage(), messageX, messageY, messages.getColor());
-//        }
-//    }
-
     public void drawCenteredStringWithShadow(int x, int y, int w, String message, int color) {
         int messageWidth = fontRenderer.getStringWidth(message);
         int messageX = x + ((w >> 1) - (messageWidth >> 1));
@@ -207,9 +218,10 @@ public class GuiHelper extends GuiScreen {
     }
 
     public void renderSplitString(String str, int x, int y, int wrapWidth, int textColor) {
+        int posY = y;
         for (String s : fontRenderer.listFormattedStringToWidth(str, wrapWidth)) {
-            drawStringWithShadow(x, y, s, textColor);
-            y += fontRenderer.FONT_HEIGHT;
+            drawStringWithShadow(x, posY, s, textColor);
+            posY += fontRenderer.FONT_HEIGHT;
         }
     }
 
@@ -218,7 +230,7 @@ public class GuiHelper extends GuiScreen {
     }
 
     public void drawPlayerHead(int x, int y) {
-        ResourceLocation playerSkin = ((AbstractClientPlayer) mc.getMinecraft().thePlayer).getLocationSkin();
+        ResourceLocation playerSkin = Minecraft.getMinecraft().thePlayer.getLocationSkin();
         mc.getTextureManager().bindTexture(playerSkin);
 
         int[][] savedGLState = OpenGLHelper.saveGLState(new int[]{GL11.GL_ALPHA_TEST, GL11.GL_LIGHTING});
@@ -245,5 +257,23 @@ public class GuiHelper extends GuiScreen {
     public void drawResource(ResourceLocation resource, int x, int y, int x1, int y1, int w, int h) {
         Minecraft.getMinecraft().getTextureManager().bindTexture(resource);
         drawTexturedModalRect(0, 0, 0, 0, 128, 128);
+    }
+
+    public void drawMachineUpgradeIcons(int x, int y, TileEntityMachineBase tileEntity) {
+        int iconX = x;
+
+        if (tileEntity.isComparatorEnabled()) {
+            drawMiniItemStack(new ItemStack(Items.comparator), iconX, y);
+            iconX = iconX - 18;
+        }
+
+        if (tileEntity.isRedstoneEnabled()) {
+            drawMiniItemStack(new ItemStack(Items.redstone), iconX, y);
+            iconX = iconX - 18;
+        }
+
+        if (tileEntity.isSidedEnabled()) {
+            drawMiniItemStack(new ItemStack(Blocks.hopper), iconX, y);
+        }
     }
 }

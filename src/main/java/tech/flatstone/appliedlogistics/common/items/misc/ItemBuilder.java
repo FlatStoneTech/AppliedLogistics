@@ -18,105 +18,35 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.client.gui.builder;
+package tech.flatstone.appliedlogistics.common.items.misc;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
-import tech.flatstone.appliedlogistics.client.gui.GuiBase;
-import tech.flatstone.appliedlogistics.common.container.builder.ContainerPlanBuilder;
-import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
-import tech.flatstone.appliedlogistics.common.network.PacketHandler;
-import tech.flatstone.appliedlogistics.common.network.messages.PacketButtonClick;
-import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanBuilder;
-import tech.flatstone.appliedlogistics.common.util.GuiHelper;
-import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ITickable;
+import tech.flatstone.appliedlogistics.api.features.TechLevel;
 
-import java.io.IOException;
-import java.util.UUID;
-
-public class GuiPlanBuilder extends GuiBase {
-    TileEntityPlanBuilder tileEntity;
-    GuiHelper guiHelper;
-    private GuiButton btnNextPlan;
-    private GuiButton btnPrevPlan;
-
-    public GuiPlanBuilder(InventoryPlayer inventoryPlayer, TileEntityPlanBuilder tileEntity) {
-        super(new ContainerPlanBuilder(inventoryPlayer, tileEntity));
-        guiHelper = new GuiHelper();
-        this.xSize = 218;
-        this.ySize = 183;
-        this.tileEntity = tileEntity;
+public class ItemBuilder extends ItemBlock implements ITickable {
+    public ItemBuilder(Block block) {
+        super(block);
+        this.setHasSubtypes(true);
+        this.setMaxDamage(0);
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
-        this.buttonList.clear();
-
-        this.buttonList.add(this.btnPrevPlan = new GuiButton(0, guiLeft + 7, guiTop + 16, 10, 20, "<"));
-        this.buttonList.add(this.btnNextPlan = new GuiButton(1, guiLeft + 159, guiTop + 16, 10, 20, ">"));
+    public int getMetadata(int damage) {
+        return damage;
     }
 
     @Override
-    public void drawBG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
-        bindTexture("gui/machines/plan_builder.png");
-        drawTexturedModalRect(paramInt1, paramInt2, 0, 0, this.xSize, this.ySize);
-
-        IMachinePlan plan = tileEntity.getSelectedPlan();
-        if (plan == null)
-            return;
-
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-        int playerXP = player.experienceLevel;
-
-        if (plan.getPlanRequiredXP() > playerXP && !player.capabilities.isCreativeMode) {
-            drawTexturedModalRect(paramInt1 + 188, paramInt2 + 117, 218, 0, 21, 28);
-        }
-
-        if (plan.getPlanRequiredXP() > 0) {
-            drawTexturedModalRect(paramInt1 + 173, paramInt2 + 21, 218, 28, 9, 9);
-            guiHelper.drawStringWithShadow(paramInt1 + 183, paramInt2 + 22, String.format("%s", plan.getPlanRequiredXP()), colorXPGreen);
-        }
+    public String getUnlocalizedName(ItemStack stack) {
+        String name = super.getUnlocalizedName();
+        String techName = TechLevel.values()[stack.getItemDamage()].getName();
+        return name + "." + techName;
     }
 
     @Override
-    public void drawFG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
-        this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()), 8, 6, 4210752);
-        this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage("container.inventory"), 8, 90, 4210752);
+    public void update() {
 
-        IMachinePlan plan = tileEntity.getSelectedPlan();
-        if (plan == null)
-            return;
-
-        String planName = LanguageHelper.NONE.translateMessage(((ItemPlanBase) plan).getUnlocalizedName() + ".name");
-        guiHelper.drawCenteredString(22, 22, 133, planName, 4210752);
-
-        String planDescription = plan.getLocalizedPlanDescription(); //198px Wide
-        guiHelper.renderSplitString(planDescription, 10, 40, 198, colorFont);
     }
-
-    @Override
-    public void updateScreen() {
-        super.updateScreen();
-
-        btnNextPlan.enabled = tileEntity.hasNextPlan();
-        btnPrevPlan.enabled = tileEntity.hasPrevPlan();
-    }
-
-    @Override
-    public void drawScreen(int mouse_x, int mouse_y, float btn) {
-        super.drawScreen(mouse_x, mouse_y, btn);
-    }
-
-    @Override
-    protected void actionPerformed(GuiButton button) throws IOException {
-        UUID playerUUID = Minecraft.getMinecraft().thePlayer.getUniqueID();
-        PacketButtonClick packetButtonClick = new PacketButtonClick(button.id, tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ(), playerUUID);
-        PacketHandler.INSTANCE.sendToServer(packetButtonClick);
-    }
-
-
 }

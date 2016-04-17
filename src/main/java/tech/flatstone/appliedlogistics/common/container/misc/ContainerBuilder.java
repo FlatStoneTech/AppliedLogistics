@@ -18,101 +18,44 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.container.slot;
+package tech.flatstone.appliedlogistics.common.container.misc;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import tech.flatstone.appliedlogistics.common.container.ContainerBase;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotBuilderInventory;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotBuilderPlan;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotOutput;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityBuilder;
 
-public class SlotBase extends Slot {
-    protected ItemStack overlayIcon = null;
-    protected boolean isPlayerSide = false;
-    protected boolean isDisplay = false;
-    protected boolean isEnabled = true;
-    private int defX;
-    private int defY;
+public class ContainerBuilder extends ContainerBase {
+    private IInventory inventory;
+    private TileEntityBuilder tileEntity;
+    private InventoryPlayer inventoryPlayer;
 
-    public SlotBase(IInventory inventory, int idx, int x, int y) {
-        super(inventory, idx, x, y);
-        this.defX = x;
-        this.defY = y;
+    public ContainerBuilder(InventoryPlayer inventoryPlayer, TileEntity tileEntity) {
+        super(inventoryPlayer, tileEntity);
+        this.tileEntity = (TileEntityBuilder) tileEntity;
+        this.inventory = (IInventory) tileEntity;
+        this.inventoryPlayer = inventoryPlayer;
+
+        drawSlots();
     }
 
-    public boolean isPlayerSide() {
-        return isPlayerSide;
-    }
+    private void drawSlots() {
+        int offsetX = 8;
+        int offsetY = 60;
 
-    public int getDefX() {
-        return defX;
-    }
-
-    public int getDefY() {
-        return defY;
-    }
-
-    public ItemStack getOverlayIcon() {
-        return overlayIcon;
-    }
-
-    public void setDisplay(boolean display) {
-        isDisplay = display;
-    }
-
-    @Override
-    public boolean canBeHovered() {
-        return isEnabled;
-    }
-
-    @Override
-    public ItemStack getStack() {
-        //if (!isEnabled)
-        //    return null;
-
-        if (this.inventory.getSizeInventory() <= getSlotIndex())
-            return null;
-
-        if (this.isDisplay) {
-            this.isDisplay = false;
-            return getDisplayStack();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 9; j++) {
+                addSlotToContainer(new SlotBuilderInventory(inventory, j + (i * 9) + 1, j * 18 + offsetX, offsetY + i * 18, tileEntity));
+            }
         }
 
-        return super.getStack();
-    }
+        addSlotToContainer(new SlotBuilderPlan(inventory, 0, 12, 22, tileEntity));
+        addSlotToContainer(new SlotOutput(inventory, 28, 227, 194));
 
-    @Override
-    public void putStack(ItemStack stack) {
-        if (!isEnabled)
-            return;
-
-        super.putStack(stack);
-    }
-
-    public void clearStack() {
-        super.putStack(null);
-    }
-
-    @Override
-    public boolean canTakeStack(EntityPlayer playerIn) {
-        if (!isEnabled)
-            return false;
-
-        return super.canTakeStack(playerIn);
-    }
-
-    @Override
-    public boolean isItemValid(ItemStack stack) {
-        if (!isEnabled)
-            return false;
-
-        return super.isItemValid(stack);
-    }
-
-    public ItemStack getDisplayStack() {
-        return super.getStack();
-    }
-
-    public boolean renderIconWithItem() {
-        return overlayIcon != null;
+        bindPlayerInventory(inventoryPlayer, 0, 140);
     }
 }

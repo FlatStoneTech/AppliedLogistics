@@ -24,7 +24,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import tech.flatstone.appliedlogistics.common.items.Items;
-import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityBuilder;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityBuilder;
 
 public class SlotBuilderPlan extends SlotBase {
     TileEntityBuilder tileEntity;
@@ -37,25 +37,19 @@ public class SlotBuilderPlan extends SlotBase {
 
     @Override
     public boolean canBeHovered() {
-        if (tileEntity.getTicksRemaining() > 0)
-            return false;
+        return tileEntity.getTicksRemaining() <= 0;
 
-        return true;
     }
 
     @Override
     public boolean isItemValid(ItemStack stack) {
-        if (tileEntity.getTicksRemaining() > 0)
-            return false;
+        return tileEntity.getTicksRemaining() <= 0;
 
-        return true;
     }
 
     @Override
     public boolean canTakeStack(EntityPlayer playerIn) {
-        if (tileEntity.getTicksRemaining() > 0)
-            return false;
+        return tileEntity.getTicksRemaining() <= 0;
 
-        return true;
     }
 }

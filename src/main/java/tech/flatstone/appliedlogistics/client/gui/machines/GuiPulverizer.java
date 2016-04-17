@@ -100,7 +100,7 @@ public class GuiPulverizer extends GuiBase {
 
             int secondsLeft = (timeCurrent / 20) * 1000;
 
-            guiHelper.drawHorzProgressBar(40, 26, 126, 8, Math.round(timePercent), colorBackground, colorBorder, colorProgressBackground);
+            guiHelper.drawHorizontalProgressBar(40, 26, 126, 8, Math.round(timePercent), colorBackground, colorBorder, colorProgressBackground);
             String progressLabel = String.format("%s: %s (%d%%)",
                     LanguageHelper.LABEL.translateMessage("time_left"),
                     DurationFormatUtils.formatDuration(secondsLeft, "mm:ss"),

@@ -18,35 +18,97 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.items.builder;
+package tech.flatstone.appliedlogistics.common.tileentities.misc;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ITickable;
-import tech.flatstone.appliedlogistics.api.features.TechLevel;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
+import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
+import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
 
-public class ItemBuilder extends ItemBlock implements ITickable {
-    public ItemBuilder(Block block) {
-        super(block);
-        this.setHasSubtypes(true);
-        this.setMaxDamage(0);
+public class TileEntityPlanChest extends TileEntityMachineBase {
+    private InternalInventory inventory = new InternalInventory(this, 100);
+    private int slotRows = 0;
+
+    @Override
+    public void initMachineData() {
+        super.initMachineData();
+
+        NBTTagCompound machineItemData = this.getMachineItemData();
+        if (machineItemData != null) {
+            for (int i = 0; i < 27; i++) {
+                if (machineItemData.hasKey("item_" + i)) {
+                    ItemStack item = ItemStack.loadItemStackFromNBT(machineItemData.getCompoundTag("item_" + i));
+
+                    if (ItemStack.areItemsEqual(item, new ItemStack(net.minecraft.init.Blocks.chest)))
+                        slotRows = item.stackSize;
+                }
+            }
+        }
+
+        if (machineItemData == null) {
+            // Load Default Details for the machine...
+            slotRows = 1;
+        }
+    }
+
+    public int getSlotRows() {
+        return slotRows;
     }
 
     @Override
-    public int getMetadata(int damage) {
-        return damage;
+    public IInventory getInternalInventory() {
+        return inventory;
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack) {
-        String name = super.getUnlocalizedName();
-        String techName = TechLevel.values()[stack.getItemDamage()].getName();
-        return name + "." + techName;
+    public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
+
     }
 
     @Override
-    public void update() {
+    public int[] getAccessibleSlotsBySide(EnumFacing side) {
+        if (isSidedEnabled()) {
+            int[] slots = new int[slotRows * 9];
 
+            for (int i = 0; i < slotRows * 9; i++) {
+                slots[i] = i;
+            }
+
+            return slots;
+        }
+
+        return new int[0];
+    }
+
+    @Override
+    public ItemStack removeStackFromSlot(int index) {
+        return null;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTagCompound) {
+        super.readFromNBT(nbtTagCompound);
+
+        slotRows = nbtTagCompound.getInteger("slotRows");
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound nbtTagCompound) {
+        super.writeToNBT(nbtTagCompound);
+
+        nbtTagCompound.setInteger("slotRows", slotRows);
+    }
+
+    @Override
+    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
+        return this.isItemValidForSlot(index, itemStackIn);
+    }
+
+    @Override
+    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
+        return true;
     }
 }

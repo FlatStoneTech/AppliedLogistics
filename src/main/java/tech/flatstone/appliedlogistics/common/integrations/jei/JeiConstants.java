@@ -24,5 +24,5 @@ import tech.flatstone.appliedlogistics.ModInfo;
 
 public class JeiConstants {
     public final static String PLAN_BUILDER_CATEGORY = ModInfo.MOD_ID + ":plan_builder";
-    public final static String BUILDER_CATEGORY = ModInfo.MOD_ID + ":builder";
+    public final static String BUILDER_CATEGORY = ModInfo.MOD_ID + ":misc";
 }

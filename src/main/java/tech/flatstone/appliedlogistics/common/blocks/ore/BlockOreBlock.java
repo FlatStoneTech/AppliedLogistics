@@ -21,7 +21,6 @@
 package tech.flatstone.appliedlogistics.common.blocks.ore;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
@@ -43,7 +42,7 @@ import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import java.util.List;
 
 public class BlockOreBlock extends BlockBase implements IBlockRenderer, IProvideRecipe {
-    public static final PropertyEnum<EnumOres> ORES = PropertyEnum.<EnumOres>create("name", EnumOres.class);
+    public static final PropertyEnum<EnumOres> ORES = PropertyEnum.create("name", EnumOres.class);
 
     public BlockOreBlock() {
         super(Material.rock);
@@ -62,7 +61,7 @@ public class BlockOreBlock extends BlockBase implements IBlockRenderer, IProvide
 
     @Override
     protected BlockState createBlockState() {
-        return new BlockState(this, new IProperty[]{ORES});
+        return new BlockState(this, ORES);
     }
 
     @Override

@@ -37,6 +37,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
+import tech.flatstone.appliedlogistics.common.util.WorldInfoHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,7 @@ public class WorldGen implements IWorldGenerator {
     protected static ArrayList<OreGen> oreSpawnList = new ArrayList();
     protected static ArrayList<Integer> oreDimBlackList = new ArrayList();
     protected static ArrayListMultimap<Integer, ChunkCoordIntPair> retrogenChunks = ArrayListMultimap.create();
+    private int numChunks = 2;
 
     public static OreGen addOreGen(String name, IBlockState block, int maxVeinSize, int minY, int maxY, int chunkOccurrence, int weight) {
         OreGen oreGen = new OreGen(name, block, maxVeinSize, Blocks.stone, minY, maxY, chunkOccurrence, weight);
@@ -109,8 +111,13 @@ public class WorldGen implements IWorldGenerator {
         List<ChunkCoordIntPair> chunks = retrogenChunks.get(dimID);
 
         if ((chunks != null) && (!chunks.isEmpty())) {
-            //todo: regen more chunks per tick if tick-rate is good
-            for (int i = 1; i <= 2; i++) {
+            if (WorldInfoHelper.getTps() >= 20){
+                numChunks++;
+            } else {
+                numChunks = Math.max(2,numChunks-1);
+            }
+
+            for (int i = 1; i <= numChunks; i++) {
                 int index = chunks.size() - i;
                 if (index < 0)
                     return;

@@ -22,7 +22,7 @@ package tech.flatstone.appliedlogistics.common.container.slot;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityBuilder;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityBuilder;
 import tech.flatstone.appliedlogistics.common.util.PlanDetails;
 import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 
@@ -45,10 +45,8 @@ public class SlotBuilderInventory extends SlotBase {
             return false;
 
         List<PlanRequiredMaterials> planRequiredMaterialsList = planDetails.getRequiredMaterialsList();
-        if (planRequiredMaterialsList.size() < slotID)
-            return false;
+        return planRequiredMaterialsList.size() >= slotID;
 
-        return true;
     }
 
     @Override

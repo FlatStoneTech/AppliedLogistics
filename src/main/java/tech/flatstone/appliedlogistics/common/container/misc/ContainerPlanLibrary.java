@@ -18,62 +18,37 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.client.gui.builder;
+package tech.flatstone.appliedlogistics.common.container.misc;
 
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import tech.flatstone.appliedlogistics.client.gui.GuiBase;
-import tech.flatstone.appliedlogistics.common.container.builder.ContainerPlanLibrary;
-import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanLibrary;
-import tech.flatstone.appliedlogistics.common.util.GuiHelper;
-import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
+import net.minecraft.tileentity.TileEntity;
+import tech.flatstone.appliedlogistics.common.container.ContainerBase;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotPlanBuilderOutput;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotRestrictedInput;
+import tech.flatstone.appliedlogistics.common.items.Items;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPlanLibrary;
 
-public class GuiPlanLibrary extends GuiBase {
+import java.util.Arrays;
+
+public class ContainerPlanLibrary extends ContainerBase {
+    private IInventory inventory;
     private TileEntityPlanLibrary tileEntity;
-    private GuiHelper guiHelper = new GuiHelper();
+    private InventoryPlayer inventoryPlayer;
 
-    public GuiPlanLibrary(InventoryPlayer inventoryPlayer, TileEntityPlanLibrary tileEntity) {
-        super(new ContainerPlanLibrary(inventoryPlayer, tileEntity));
-        int slotRows = tileEntity.getSlotRows();
-        this.xSize = 176;
-        this.ySize = 126 + (18 * slotRows);
-        this.tileEntity = tileEntity;
+    public ContainerPlanLibrary(InventoryPlayer inventoryPlayer, TileEntity tileEntity) {
+        super(inventoryPlayer, tileEntity);
+        this.tileEntity = (TileEntityPlanLibrary) tileEntity;
+        this.inventory = (IInventory) tileEntity;
+        this.inventoryPlayer = inventoryPlayer;
+
+        drawSlots();
     }
 
-    @Override
-    public void drawBG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
-        bindTexture("gui/machines/plan_library.png");
-        int slotRows = tileEntity.getSlotRows();
-        // Draw the top...
-        drawTexturedModalRect(paramInt1, paramInt2, 0, 0, this.xSize, 35);
-        int y = 35;
-        for (int i = 1; i < slotRows; i++) {
-            drawTexturedModalRect(paramInt1, paramInt2 + y, 0, 17, this.xSize, 18);
-            y = y + 18;
-        }
-        drawTexturedModalRect(paramInt1, paramInt2 + y, 0, 35, this.xSize, 109);
+    private void drawSlots() {
+        addSlotToContainer(new SlotRestrictedInput(inventory, 0, 190, 95, Arrays.asList(new ItemStack(Items.ITEM_PLAN_BLANK.getItem())), new ItemStack(Items.ITEM_PLAN_BLANK.getItem())));
+        addSlotToContainer(new SlotPlanBuilderOutput(inventory, 1, 190, 155, tileEntity));
+        bindPlayerInventory(inventoryPlayer, 0, 101);
     }
-
-    @Override
-    public void drawFG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
-        int slotRows = tileEntity.getSlotRows();
-
-        this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()), 8, 6, 4210752);
-        this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage("container.inventory"), 8, 33 + (slotRows * 18), 4210752);
-
-        int iconX = 322;
-        if (tileEntity.isComparatorEnabled()) {
-            guiHelper.drawMiniItemStack(new ItemStack(Items.comparator), iconX, 12);
-            iconX = iconX - 18;
-        }
-
-        if (tileEntity.isSidedEnabled()) {
-            guiHelper.drawMiniItemStack(new ItemStack(Blocks.hopper), iconX, 12);
-            iconX = iconX - 18;
-        }
-    }
-
-
 }

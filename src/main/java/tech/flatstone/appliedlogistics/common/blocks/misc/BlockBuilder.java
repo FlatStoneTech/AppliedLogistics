@@ -18,17 +18,23 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.blocks.builder;
+package tech.flatstone.appliedlogistics.common.blocks.misc;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -36,31 +42,95 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
-import tech.flatstone.appliedlogistics.common.tileentities.builder.TileEntityPlanBuilder;
+import tech.flatstone.appliedlogistics.common.blocks.Blocks;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityBuilder;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-public class BlockPlanBuilder extends BlockTileBase implements IProvideRecipe, IBlockRenderer {
-    public BlockPlanBuilder() {
+import java.util.List;
+
+public class BlockBuilder extends BlockTileBase implements IProvideRecipe, IBlockRenderer {
+    public static final PropertyEnum TECHLEVEL = PropertyEnum.create("tech", TechLevel.class);
+    public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+
+    public BlockBuilder() {
         super(Material.rock);
-        this.setTileEntity(TileEntityPlanBuilder.class);
+        this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE).withProperty(FACING, EnumFacing.NORTH));
+        this.setTileEntity(TileEntityBuilder.class);
     }
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+        TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
+        if (hitY == 1 &&
+                tileEntity != null &&
+                tileEntity.canAttachCrank() &&
+                ItemStack.areItemsEqual(playerIn.getCurrentEquippedItem(), new ItemStack(Blocks.BLOCK_MISC_CRANK.getBlock())) &&
+                !(ItemStack.areItemsEqual(new ItemStack(worldIn.getBlockState(pos.up()).getBlock()), new ItemStack(Blocks.BLOCK_MISC_CRANK.getBlock())))
+                )
+            return false;
+
         if (worldIn.isRemote)
             return true;
 
-        playerIn.openGui(AppliedLogistics.instance, 1, worldIn, pos.getX(), pos.getY(), pos.getZ());
+        playerIn.openGui(AppliedLogistics.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
 
     @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return this.getDefaultState().withProperty(TECHLEVEL, TechLevel.byMeta(meta));
+    }
+
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
+//        if (tileEntity != null) {
+//            return state.withProperty(FACING, tileEntity.getDirectionFacing());
+//        }
+        return state.withProperty(FACING, EnumFacing.NORTH);
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        TechLevel tier = (TechLevel) state.getValue(TECHLEVEL);
+        return (tier.getMeta());
+    }
+
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState state, EntityLivingBase placer, ItemStack itemStack) {
+        TileEntityBuilder tileEntity = TileHelper.getTileEntity(world, blockPos, TileEntityBuilder.class);
+        if (tileEntity != null) {
+            //tileEntity.setDirectionFacing(placer.getHorizontalFacing().getOpposite());
+        }
+
+        super.onBlockPlacedBy(world, blockPos, state, placer, itemStack);
+    }
+
+    @Override
+    protected BlockState createBlockState() {
+        return new BlockState(this, TECHLEVEL, FACING);
+    }
+
+    @Override
+    public int damageDropped(IBlockState state) {
+        return getMetaFromState(state);
+    }
+
+    @Override
+    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
+        for (int i = 0; i < TechLevel.values().length; i++) {
+            list.add(new ItemStack(itemIn, 1, i));
+        }
+    }
+
+    @Override
     public void RegisterRecipes() {
-        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(this),
-                "cxc",
+        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(this, 1, 0),
+                "cwc",
                 "wgw",
                 "cxc",
                 'c', OreDictionary.getOres("craftingTableWood").size() == 0 ? new ItemStack(net.minecraft.init.Blocks.crafting_table) : "craftingTableWood",
@@ -71,13 +141,30 @@ public class BlockPlanBuilder extends BlockTileBase implements IProvideRecipe, I
     }
 
     @Override
-    public void breakBlock(World world, BlockPos blockPos, IBlockState blockState) {
-        TileEntity tileEntity = world.getTileEntity(blockPos);
-        TileHelper.DropItems(tileEntity, 0, 0);
+    public boolean hasComparatorInputOverride() {
+        return true;
+    }
+
+    @Override
+    public int getComparatorInputOverride(World worldIn, BlockPos pos) {
+        TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
+
+        return tileEntity.getComparatorOutput();
     }
 
     @Override
     public void registerBlockRenderer() {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(ModInfo.MOD_ID + ":builder/plan_builder", "inventory"));
+        for (int i = 0; i < TechLevel.values().length; i++) {
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), i, new ModelResourceLocation(ModInfo.MOD_ID + ":misc/builder_" + TechLevel.byMeta(i).getName(), "inventory"));
+        }
+    }
+
+    @Override
+    public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
+        TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
+        if (tileEntity == null)
+            return;
+
+        tileEntity.setBadCrankCount(0);
     }
 }

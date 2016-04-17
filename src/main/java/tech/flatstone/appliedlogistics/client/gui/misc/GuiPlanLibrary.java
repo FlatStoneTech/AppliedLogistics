@@ -18,97 +18,105 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.tileentities.builder;
+package tech.flatstone.appliedlogistics.client.gui.misc;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
-import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
-import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
+import tech.flatstone.appliedlogistics.client.gui.GuiBase;
+import tech.flatstone.appliedlogistics.common.container.misc.ContainerPlanLibrary;
+import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
+import tech.flatstone.appliedlogistics.common.network.PacketHandler;
+import tech.flatstone.appliedlogistics.common.network.messages.PacketButtonClick;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPlanLibrary;
+import tech.flatstone.appliedlogistics.common.util.GuiHelper;
+import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 
-public class TileEntityPlanLibrary extends TileEntityMachineBase {
-    private InternalInventory inventory = new InternalInventory(this, 100);
-    private int slotRows = 0;
+import java.io.IOException;
+import java.util.UUID;
+
+public class GuiPlanLibrary extends GuiBase {
+    TileEntityPlanLibrary tileEntity;
+    GuiHelper guiHelper;
+    private GuiButton btnNextPlan;
+    private GuiButton btnPrevPlan;
+
+    public GuiPlanLibrary(InventoryPlayer inventoryPlayer, TileEntityPlanLibrary tileEntity) {
+        super(new ContainerPlanLibrary(inventoryPlayer, tileEntity));
+        guiHelper = new GuiHelper();
+        this.xSize = 218;
+        this.ySize = 183;
+        this.tileEntity = tileEntity;
+    }
 
     @Override
-    public void initMachineData() {
-        super.initMachineData();
+    public void initGui() {
+        super.initGui();
+        this.buttonList.clear();
 
-        NBTTagCompound machineItemData = this.getMachineItemData();
-        if (machineItemData != null) {
-            for (int i = 0; i < 27; i++) {
-                if (machineItemData.hasKey("item_" + i)) {
-                    ItemStack item = ItemStack.loadItemStackFromNBT(machineItemData.getCompoundTag("item_" + i));
+        this.buttonList.add(this.btnPrevPlan = new GuiButton(0, guiLeft + 7, guiTop + 16, 10, 20, "<"));
+        this.buttonList.add(this.btnNextPlan = new GuiButton(1, guiLeft + 159, guiTop + 16, 10, 20, ">"));
+    }
 
-                    if (ItemStack.areItemsEqual(item, new ItemStack(net.minecraft.init.Blocks.chest)))
-                        slotRows = item.stackSize;
-                }
-            }
+    @Override
+    public void drawBG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
+        bindTexture("gui/machines/plan_builder.png");
+        drawTexturedModalRect(paramInt1, paramInt2, 0, 0, this.xSize, this.ySize);
+
+        IMachinePlan plan = tileEntity.getSelectedPlan();
+        if (plan == null)
+            return;
+
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        int playerXP = player.experienceLevel;
+
+        if (plan.getPlanRequiredXP() > playerXP && !player.capabilities.isCreativeMode) {
+            drawTexturedModalRect(paramInt1 + 188, paramInt2 + 117, 218, 0, 21, 28);
         }
 
-        if (machineItemData == null) {
-            // Load Default Details for the machine...
-            slotRows = 1;
+        if (plan.getPlanRequiredXP() > 0) {
+            drawTexturedModalRect(paramInt1 + 173, paramInt2 + 21, 218, 28, 9, 9);
+            guiHelper.drawStringWithShadow(paramInt1 + 183, paramInt2 + 22, String.format("%s", plan.getPlanRequiredXP()), colorXPGreen);
         }
     }
 
-    public int getSlotRows() {
-        return slotRows;
+    @Override
+    public void drawFG(int paramInt1, int paramInt2, int paramInt3, int paramInt4) {
+        this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()), 8, 6, 4210752);
+        this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage("container.inventory"), 8, 90, 4210752);
+
+        IMachinePlan plan = tileEntity.getSelectedPlan();
+        if (plan == null)
+            return;
+
+        String planName = LanguageHelper.NONE.translateMessage(((ItemPlanBase) plan).getUnlocalizedName() + ".name");
+        guiHelper.drawCenteredString(22, 22, 133, planName, 4210752);
+
+        String planDescription = plan.getLocalizedPlanDescription(); //198px Wide
+        guiHelper.renderSplitString(planDescription, 10, 40, 198, colorFont);
     }
 
     @Override
-    public IInventory getInternalInventory() {
-        return inventory;
+    public void updateScreen() {
+        super.updateScreen();
+
+        btnNextPlan.enabled = tileEntity.hasNextPlan();
+        btnPrevPlan.enabled = tileEntity.hasPrevPlan();
     }
 
     @Override
-    public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
-
+    public void drawScreen(int mouse_x, int mouse_y, float btn) {
+        super.drawScreen(mouse_x, mouse_y, btn);
     }
 
     @Override
-    public int[] getAccessibleSlotsBySide(EnumFacing side) {
-        if (isSidedEnabled()) {
-            int[] slots = new int[slotRows * 9];
-
-            for (int i = 0; i < slotRows * 9; i++) {
-                slots[i] = i;
-            }
-
-            return slots;
-        }
-
-        return new int[0];
+    protected void actionPerformed(GuiButton button) throws IOException {
+        UUID playerUUID = Minecraft.getMinecraft().thePlayer.getUniqueID();
+        PacketButtonClick packetButtonClick = new PacketButtonClick(button.id, tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ(), playerUUID);
+        PacketHandler.INSTANCE.sendToServer(packetButtonClick);
     }
 
-    @Override
-    public ItemStack removeStackFromSlot(int index) {
-        return null;
-    }
 
-    @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound) {
-        super.readFromNBT(nbtTagCompound);
-
-        slotRows = nbtTagCompound.getInteger("slotRows");
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound) {
-        super.writeToNBT(nbtTagCompound);
-
-        nbtTagCompound.setInteger("slotRows", slotRows);
-    }
-
-    @Override
-    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
-        return this.isItemValidForSlot(index, itemStackIn);
-    }
-
-    @Override
-    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
-        return true;
-    }
 }
