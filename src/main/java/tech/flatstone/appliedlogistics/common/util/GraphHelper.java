@@ -4,10 +4,11 @@ import org.jgrapht.Graphs;
 import org.jgrapht.traverse.ClosestFirstIterator;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class GraphHelper {
 
-    public static <V, E> LinkedList findPathBetween(ClosestFirstIterator<V, E> iterator, V startVertex, V endVertex) {
+    public static <V, E> List findPathBetween(ClosestFirstIterator<V, E> iterator, V startVertex, V endVertex) {
         LinkedList<E> path = new LinkedList<E>();
 
         V currentVertex = endVertex;
