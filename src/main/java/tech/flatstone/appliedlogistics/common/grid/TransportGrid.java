@@ -21,12 +21,13 @@
 package tech.flatstone.appliedlogistics.common.grid;
 
 import tech.flatstone.appliedlogistics.api.features.ITransport;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.TimeoutException;
 
 public class TransportGrid implements ITransport {
     protected GridServer graphServer;
@@ -44,7 +45,7 @@ public class TransportGrid implements ITransport {
      * Creates routing node
      * no limit on how may nodes this node can connect to
      *
-     * @return
+     * @return id of created node
      */
     @Override
     public UUID createTransportNode() {
@@ -57,8 +58,8 @@ public class TransportGrid implements ITransport {
      * Creates a node that accepts input into the routing network
      * can only connect to one other node
      *
-     * @param parentNode
-     * @return
+     * @param parentNode existing transport node
+     * @return id of created node
      */
     @Override
     public UUID createEntryNode(UUID parentNode) {
@@ -72,8 +73,8 @@ public class TransportGrid implements ITransport {
      * Creates a node that receives routed objects from the network
      * can only connect to one other node
      *
-     * @param parentNode
-     * @return
+     * @param parentNode existing transport node
+     * @return id of created node
      */
     @Override
     public UUID createExitNode(UUID parentNode) {
@@ -88,15 +89,15 @@ public class TransportGrid implements ITransport {
      * Connects two nodes allowing objects to flow in one direction
      *
      * @param startNode
-     * @param destNode
+     * @param endNode
      * @return
      */
     @Override
-    public boolean createDirectionalNodeConnection(UUID startNode, UUID destNode) {
-        if ((exitNodeMap.containsKey(destNode)) || (exitNodeMap.containsKey(startNode))) {
+    public boolean createDirectionalNodeConnection(UUID startNode, UUID endNode) {
+        if ((exitNodeMap.containsKey(endNode)) || (exitNodeMap.containsKey(startNode))) {
             return false;
         }
-        graphServer.addEdge(startNode, destNode);
+        graphServer.addEdge(startNode, endNode);
         return true;
     }
 
@@ -123,15 +124,14 @@ public class TransportGrid implements ITransport {
      * empty whitelist will cause node to accept no objects
      * Strings in list can be regular expression
      *
-     * @param exitNode
-     * @param unlocalizedNameList
+     * @param exitNode            node to filter
+     * @param unlocalizedNameList array of names to allow
      * @return
      */
     @Override
-    public boolean applyWhitelistToNode(UUID exitNode, ArrayList<String> unlocalizedNameList) {
+    public boolean applyWhitelistToNode(UUID exitNode, List<String> unlocalizedNameList) {
         UUID parentNode = exitNodeMap.get(exitNode);
-        graphServer.applyFilter(true, parentNode, exitNode, unlocalizedNameList);
-        return true;
+        return graphServer.applyFilter(true, parentNode, exitNode, unlocalizedNameList);
     }
 
     /**
@@ -140,24 +140,23 @@ public class TransportGrid implements ITransport {
      * empty blacklist will cause node to accept all objects
      * Strings in list can be regular expression
      *
-     * @param exitNode
-     * @param unlocalizedNameList
+     * @param exitNode            node to filter
+     * @param unlocalizedNameList array of names to reject
      * @return
      */
     @Override
-    public boolean applyBlacklistToNode(UUID exitNode, ArrayList<String> unlocalizedNameList) {
+    public boolean applyBlacklistToNode(UUID exitNode, List<String> unlocalizedNameList) {
         UUID parentNode = exitNodeMap.get(exitNode);
-        graphServer.applyFilter(false, parentNode, exitNode, unlocalizedNameList);
-        return true;
+        return graphServer.applyFilter(false, parentNode, exitNode, unlocalizedNameList);
     }
 
     /**
      * inserts an object into the routing network
      * the network will use the unlocalized name to find an exit node that will accept it
      *
-     * @param entryNode
-     * @param unlocalizedName
-     * @param object
+     * @param entryNode       where this cargo enters the network
+     * @param unlocalizedName name identifying cargo, used to route
+     * @param object          the cargo
      * @return
      */
     @Override
@@ -168,27 +167,59 @@ public class TransportGrid implements ITransport {
 
     /**
      * Gets an object from the routing network if available
-     * returns null if no object
      *
-     * @param exitNode
+     * @param exitNode node to get cargo for
+     * @return null if no object
      */
     @Override
     public Object getObjectFromGrid(UUID exitNode) {
         return graphServer.getCargo(exitNode);
     }
 
+    /**
+     * Removes a Node and any connections that node has
+     * node can be a transport, entry or exit
+     *
+     * @param node node to be removed
+     * @return
+     */
+    @Override
+    public boolean removeNode(UUID node) {
+        return graphServer.removeVertex(node);
+    }
+
+    /**
+     * Removes a connection between two nodes
+     * preventing routing of cargo in that direction
+     *
+     * @param startNode
+     * @param endNode
+     * @return
+     */
+    @Override
+    public boolean removeDirectionalNodeConnection(UUID startNode, UUID endNode) {
+        return graphServer.removeEdge(startNode, endNode);
+    }
+
+    /**
+     * Removes all connections between two nodes
+     * does not depend on direction
+     *
+     * @param Node1
+     * @param Node2
+     * @return
+     */
+    @Override
+    public boolean removeNodeConnection(UUID Node1, UUID Node2) {
+        return (graphServer.removeEdge(Node1, Node2)) || (graphServer.removeEdge(Node2, Node1));
+    }
+
 
     /**
      * Shutdown the graph server
      */
-    protected void Shutdown() {
+    protected void Shutdown() throws InterruptedException, TimeoutException, BrokenBarrierException {
         graphServer.stop();
-
-        try {
-            graphServerThread.join(500);
-        } catch (InterruptedException e) {
-            LogHelper.fatal(e.getLocalizedMessage());
-            e.printStackTrace();
-        }
+        graphServerThread.join(500);
     }
 }

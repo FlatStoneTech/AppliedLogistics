@@ -26,12 +26,8 @@ import org.jgrapht.graph.DefaultEdge;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 public class FilteredEdge<V> extends DefaultEdge {
-    private V start;
-    private V end;
-    private UUID uuid;
     private List<String> list;
     private boolean isWhiteList;
     private boolean isExit;
@@ -39,15 +35,6 @@ public class FilteredEdge<V> extends DefaultEdge {
     public FilteredEdge() {
         this.list = Collections.synchronizedList(new ArrayList<String>());
         this.isWhiteList = false;
-        this.start = (V) getSource();
-        this.end = (V) getTarget();
-    }
-
-    public FilteredEdge(V start, V end, UUID uuid) {
-        this();
-        this.end = end;
-        this.start = start;
-        this.uuid = uuid;
     }
 
     public void setWhitelist(List<String> whitelist) {
@@ -83,11 +70,6 @@ public class FilteredEdge<V> extends DefaultEdge {
     public V getEnd() {
         return (V) getTarget();
     }
-
-    public UUID getUUID() {
-        return uuid;
-    }
-
 
     public boolean isExit() {
         return isExit;
