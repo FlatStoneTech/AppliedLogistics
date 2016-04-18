@@ -46,19 +46,8 @@ public class SlotPlanBuilderOutput extends SlotOutput {
             return false;
 
         if (playerIn.capabilities.isCreativeMode || plan.getPlanRequiredXP() == 0 || playerIn.experienceLevel >= plan.getPlanRequiredXP()) {
-            if (!playerIn.capabilities.isCreativeMode) {
+            if (!playerIn.capabilities.isCreativeMode)
                 playerIn.removeExperienceLevel(plan.getPlanRequiredXP());
-            }
-
-            if (inputSlot != null) {
-                ItemStack newInputSlot = inputSlot.copy();
-                newInputSlot.stackSize--;
-                if (newInputSlot.stackSize == 0)
-                    newInputSlot = null;
-
-                tileEntity.setInventorySlotContents(0, newInputSlot);
-            }
-            tileEntity.markDirty();
 
             return true;
         }
