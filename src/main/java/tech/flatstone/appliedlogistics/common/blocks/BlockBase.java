@@ -31,6 +31,8 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
 import tech.flatstone.appliedlogistics.common.util.*;
@@ -39,7 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BlockBase extends Block {
-    protected static final PropertyEnum AXIS_ORIENTATION = PropertyEnum.create("axis", EnumFacing.Axis.class);
     protected boolean isInventory = false;
 
     protected BlockBase(Material material) {
@@ -143,46 +144,5 @@ public abstract class BlockBase extends Block {
     @Override
     public EnumFacing[] getValidRotations(World world, BlockPos pos) {
         return new EnumFacing[0];
-    }
-
-    public EnumFacing mapRotation(final IOrientable orientable, final EnumFacing direction) {
-        final EnumFacing forward = orientable.getForward();
-        final EnumFacing up = orientable.getUp();
-
-        if (forward == null || up == null)
-            return direction;
-
-        final int west_x = forward.getFrontOffsetY() * up.getFrontOffsetZ() - forward.getFrontOffsetZ() * up.getFrontOffsetY();
-        final int west_y = forward.getFrontOffsetZ() * up.getFrontOffsetX() - forward.getFrontOffsetX() * up.getFrontOffsetZ();
-        final int west_z = forward.getFrontOffsetX() * up.getFrontOffsetY() - forward.getFrontOffsetY() * up.getFrontOffsetX();
-
-        EnumFacing west = null;
-        for (final EnumFacing dir : EnumFacing.values()) {
-            if (dir.getFrontOffsetX() == west_x && dir.getFrontOffsetY() == west_y && dir.getFrontOffsetZ() == west_z)
-                west = dir;
-        }
-
-        if (west == null)
-            return direction;
-
-        if (direction == forward)
-            return EnumFacing.SOUTH;
-
-        if (direction == forward.getOpposite())
-            return EnumFacing.NORTH;
-
-        if (direction == up)
-            return EnumFacing.UP;
-
-        if (direction == up.getOpposite())
-            return EnumFacing.DOWN;
-
-        if (direction == west)
-            return EnumFacing.WEST;
-
-        if (direction == west.getOpposite())
-            return EnumFacing.EAST;
-
-        return null;
     }
 }

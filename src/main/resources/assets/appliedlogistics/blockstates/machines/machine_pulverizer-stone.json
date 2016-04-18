@@ -1,0 +1,57 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "up": "appliedlogistics:blocks/temp/TopTexture",
+      "down": "appliedlogistics:blocks/temp/BottomTexture",
+      "north": "appliedlogistics:blocks/temp/FrontTexture",
+      "east": "appliedlogistics:blocks/temp/SideTexture",
+      "west": "appliedlogistics:blocks/temp/SideTexture",
+      "south": "appliedlogistics:blocks/temp/SideTexture",
+      "particle": "appliedlogistics:blocks/temp/FrontTexture"
+    },
+    "model": "minecraft:cube",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": [
+      {}
+    ],
+    "axis_x": {
+      "0": {},
+      "1": {
+        "x": 90
+      },
+      "2": {
+        "x": 180
+      },
+      "3": {
+        "x": 270
+      }
+    },
+    "axis_y": {
+      "0": {},
+      "1": {
+        "y": 90
+      },
+      "2": {
+        "y": 180
+      },
+      "3": {
+        "y": 270
+      }
+    },
+    "axis_z": {
+      "0": {},
+      "1": {
+        "z": 90
+      },
+      "2": {
+        "z": 180
+      },
+      "3": {
+        "z": 270
+      }
+    }
+  }
+}

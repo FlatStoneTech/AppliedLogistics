@@ -20,28 +20,77 @@
 
 package tech.flatstone.appliedlogistics.common.blocks.machines;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
+import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
+import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityPulverizer;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+
 public class BlockPulverizer extends BlockTileBase implements IBlockRenderer {
+    public static final PropertyEnum TECHLEVEL = PropertyEnum.create("tech", TechLevel.class);
+    public static final PropertyInteger AXIS_X = PropertyInteger.create("axis_x", 0, 3);
+    public static final PropertyInteger AXIS_Y = PropertyInteger.create("axis_y", 0, 3);
+    public static final PropertyInteger AXIS_Z = PropertyInteger.create("axis_z", 0, 3);
+
     public BlockPulverizer() {
         super(Material.rock);
+        this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE).withProperty(AXIS_X, 0).withProperty(AXIS_Y, 0).withProperty(AXIS_Z, 0));
         this.setTileEntity(TileEntityPulverizer.class);
+    }
+
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        TileEntityBase tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBase.class);
+        if (tileEntity != null) {
+            return state.withProperty(AXIS_X, 0).withProperty(AXIS_Y, tileEntity.getForward().getIndex()).withProperty(AXIS_Z, 0);
+        }
+        return state.withProperty(AXIS_X, 0).withProperty(AXIS_Y, 0).withProperty(AXIS_Z, 0);
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return this.getDefaultState().withProperty(TECHLEVEL, TechLevel.byMeta(meta));
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        TechLevel tier = (TechLevel)state.getValue(TECHLEVEL);
+        return tier.getMeta();
+    }
+
+    @Override
+    protected BlockState createBlockState() {
+        return new BlockState(this, TECHLEVEL, AXIS_X, AXIS_Y, AXIS_Z);
     }
 
     @Override
@@ -63,11 +112,6 @@ public class BlockPulverizer extends BlockTileBase implements IBlockRenderer {
     }
 
     @Override
-    public void registerBlockRenderer() {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(ModInfo.MOD_ID + ":machines/machine_pulverizer", "inventory"));
-    }
-
-    @Override
     public void breakBlock(World world, BlockPos blockPos, IBlockState blockState) {
         TileEntityPulverizer tileEntity = TileHelper.getTileEntity(world, blockPos, TileEntityPulverizer.class);
         if (tileEntity != null && !tileEntity.isCrushPaused()) {
@@ -77,5 +121,25 @@ public class BlockPulverizer extends BlockTileBase implements IBlockRenderer {
 
         TileHelper.DropItems(tileEntity, 0, 0);
         TileHelper.DropItems(tileEntity, 2, 10);
+    }
+
+    @Override
+    public void registerBlockRenderer() {
+        for (TechLevel techLevel : TechLevel.values()) {
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), techLevel.getMeta(), new ModelResourceLocation(ModInfo.MOD_ID + ":" + "machines/machine_pulverizer-" + techLevel.getName(), "inventory"));
+        }
+
+        ModelLoader.setCustomStateMapper(this, new DefaultStateMapper() {
+            @Override
+            protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+                Map<IProperty, Comparable> blockStates = Maps.newLinkedHashMap(state.getProperties());
+
+                if (blockStates.containsKey(TECHLEVEL))
+                    blockStates.remove(TECHLEVEL);
+
+                LogHelper.info(">>> " + getPropertyString(blockStates));
+                return new ModelResourceLocation(ModInfo.MOD_ID + ":machines/machine_pulverizer-" + ((TechLevel)state.getValue(TECHLEVEL)).getName(), getPropertyString(blockStates));
+            }
+        });
     }
 }
