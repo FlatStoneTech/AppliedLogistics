@@ -32,11 +32,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 class GridServer implements Runnable {
     private ArrayList<UUIDPair> vertexCache; // Caches vertices that cannot currently be added
@@ -271,9 +270,20 @@ class GridServer implements Runnable {
         return whitelistDataQueue.offer(new WhitelistData(isWhitelist, parent, end, list));
     }
 
-    void stop() {
+    void stop() throws InterruptedException, BrokenBarrierException, TimeoutException {
         running.set(false);
-        sync();
+        try {
+            barrier.await(500, MILLISECONDS);
+        } catch (InterruptedException e) {
+            LogHelper.fatal(e.getLocalizedMessage());
+            throw e;
+        } catch (BrokenBarrierException e) {
+            LogHelper.fatal((e.getLocalizedMessage()));
+            throw e;
+        } catch (TimeoutException e) {
+            LogHelper.fatal(e.getLocalizedMessage());
+            throw e;
+        }
     }
 
     String serializeGraph() {

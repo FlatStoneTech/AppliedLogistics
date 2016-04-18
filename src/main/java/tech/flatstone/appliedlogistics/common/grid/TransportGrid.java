@@ -21,12 +21,13 @@
 package tech.flatstone.appliedlogistics.common.grid;
 
 import tech.flatstone.appliedlogistics.api.features.ITransport;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.TimeoutException;
 
 public class TransportGrid implements ITransport {
     protected GridServer graphServer;
@@ -217,13 +218,8 @@ public class TransportGrid implements ITransport {
     /**
      * Shutdown the graph server
      */
-    protected void Shutdown() {
+    protected void Shutdown() throws InterruptedException, TimeoutException, BrokenBarrierException {
         graphServer.stop();
-
-        try {
-            graphServerThread.join(500);
-        } catch (InterruptedException e) {
-            LogHelper.fatal(e.getLocalizedMessage());
-        }
+        graphServerThread.join(500);
     }
 }

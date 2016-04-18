@@ -90,6 +90,7 @@ public class TransportGridTest {
         transportGrid.removeNode(node1);
         transportGrid.removeNode(entry);
         transportGrid.removeNode(exit);
+        transportGrid.graphServer.sync();
     }
 
     @Test
@@ -105,5 +106,6 @@ public class TransportGridTest {
         transportGrid.createNodeConnection(node1,node2);
         transportGrid.graphServer.sync();
         transportGrid.removeNodeConnection(node1,node2);
+        transportGrid.graphServer.sync();
     }
 }
