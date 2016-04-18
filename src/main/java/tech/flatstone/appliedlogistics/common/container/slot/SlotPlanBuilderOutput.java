@@ -22,7 +22,6 @@ package tech.flatstone.appliedlogistics.common.container.slot;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPlanLibrary;
 
