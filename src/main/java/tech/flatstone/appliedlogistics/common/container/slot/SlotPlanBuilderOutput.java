@@ -40,8 +40,6 @@ public class SlotPlanBuilderOutput extends SlotOutput {
     public boolean canTakeStack(EntityPlayer playerIn) {
         IMachinePlan plan = tileEntity.getSelectedPlan();
 
-        ItemStack inputSlot = tileEntity.getStackInSlot(0);
-
         if (plan == null)
             return false;
 
