@@ -35,7 +35,7 @@ public class TransportGrid implements ITransport {
     private Map<UUID, UUID> exitNodeMap;
 
     public TransportGrid() {
-        exitNodeMap = new HashMap<UUID, UUID>();
+        exitNodeMap = new HashMap<>();
         graphServer = new GridServer();
         graphServerThread = new Thread(graphServer);
         graphServerThread.start();
