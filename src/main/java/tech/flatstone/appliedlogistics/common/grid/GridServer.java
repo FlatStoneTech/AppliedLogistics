@@ -54,22 +54,22 @@ class GridServer implements Runnable {
     private AtomicBoolean running;
 
     GridServer() {
-        graph = new SimpleDirectedWeightedGraph<UUID, FilteredEdge>(
+        graph = new SimpleDirectedWeightedGraph<>(
                 new ClassBasedEdgeFactory<UUID, FilteredEdge>(FilteredEdge.class)
         );
 
-        vertexIngestQueue = new ConcurrentLinkedQueue<UUID>();
-        edgeIngestQueue = new ConcurrentLinkedQueue<UUIDPair>();
-        exitIngestQueue = new ConcurrentLinkedQueue<UUIDPair>();
-        whitelistDataQueue = new ConcurrentLinkedQueue<WhitelistData>();
+        vertexIngestQueue = new ConcurrentLinkedQueue<>();
+        edgeIngestQueue = new ConcurrentLinkedQueue<>();
+        exitIngestQueue = new ConcurrentLinkedQueue<>();
+        whitelistDataQueue = new ConcurrentLinkedQueue<>();
 
-        vertexEliminationQueue = new ConcurrentLinkedQueue<UUID>();
-        edgeEliminationQueue = new ConcurrentLinkedQueue<UUIDPair>();
-        exitEliminationQueue = new ConcurrentLinkedQueue<UUIDPair>();
+        vertexEliminationQueue = new ConcurrentLinkedQueue<>();
+        edgeEliminationQueue = new ConcurrentLinkedQueue<>();
+        exitEliminationQueue = new ConcurrentLinkedQueue<>();
 
-        incomingCargo = new ConcurrentLinkedQueue<TransportContainer>();
-        activeCargo = new LinkedList<TransportContainer>();
-        outgoingCargo = new ConcurrentHashMap<UUID, TransportContainer>();
+        incomingCargo = new ConcurrentLinkedQueue<>();
+        activeCargo = new LinkedList<>();
+        outgoingCargo = new ConcurrentHashMap<>();
 
         if (vertexIngestQueue == null)
             throw new NullPointerException();
@@ -79,7 +79,7 @@ class GridServer implements Runnable {
 
         barrier = new CyclicBarrier(2);
 
-        vertexCache = new ArrayList<UUIDPair>();
+        vertexCache = new ArrayList<>();
 
         running = new AtomicBoolean();
 
@@ -102,9 +102,7 @@ class GridServer implements Runnable {
             //sync with world server
             try {
                 barrier.await();
-            } catch (InterruptedException e) {
-                LogHelper.fatal(e.getLocalizedMessage());
-            } catch (BrokenBarrierException e) {
+            } catch (InterruptedException | BrokenBarrierException e) {
                 LogHelper.fatal(e.getLocalizedMessage());
             }
 
@@ -119,9 +117,7 @@ class GridServer implements Runnable {
     public void sync() {
         try {
             barrier.await();
-        } catch (InterruptedException e) {
-            LogHelper.fatal(e.getLocalizedMessage());
-        } catch (BrokenBarrierException e) {
+        } catch (InterruptedException | BrokenBarrierException e) {
             LogHelper.fatal(e.getLocalizedMessage());
         }
     }
@@ -274,14 +270,11 @@ class GridServer implements Runnable {
         running.set(false);
         try {
             barrier.await(500, MILLISECONDS);
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | TimeoutException e) {
             LogHelper.fatal(e.getLocalizedMessage());
             throw e;
         } catch (BrokenBarrierException e) {
             LogHelper.fatal((e.getLocalizedMessage()));
-            throw e;
-        } catch (TimeoutException e) {
-            LogHelper.fatal(e.getLocalizedMessage());
             throw e;
         }
     }
