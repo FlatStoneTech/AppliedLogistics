@@ -22,7 +22,6 @@ package tech.flatstone.appliedlogistics.common.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -31,11 +30,12 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
-import tech.flatstone.appliedlogistics.common.util.*;
+import tech.flatstone.appliedlogistics.common.util.IOrientable;
+import tech.flatstone.appliedlogistics.common.util.IOrientableBlock;
+import tech.flatstone.appliedlogistics.common.util.Platform;
+import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,17 +103,12 @@ public abstract class BlockBase extends Block {
                 return true;
             } else {
                 EnumFacing forward = rotatable.getForward();
-                EnumFacing up = rotatable.getUp();
 
                 for (int rs = 0; rs < 4; rs++) {
                     forward = Platform.rotateAround(forward, axis);
-                    up = Platform.rotateAround(up, axis);
 
-                    LogHelper.info(">>> Up: " + up.getName());
-                    LogHelper.info(">>> Forward: " + forward.getName());
-
-                    if (this.isValidOrientation(world, pos, forward, up)) {
-                        rotatable.setOrientation(forward, up);
+                    if (this.isValidOrientation(world, pos, forward)) {
+                        rotatable.setOrientation(forward);
                         return true;
                     }
                 }
@@ -131,7 +126,7 @@ public abstract class BlockBase extends Block {
 
     }
 
-    public boolean isValidOrientation(final World world, final BlockPos pos, final EnumFacing forward, final EnumFacing up) {
+    public boolean isValidOrientation(final World world, final BlockPos pos, final EnumFacing forward) {
         return true;
     }
 

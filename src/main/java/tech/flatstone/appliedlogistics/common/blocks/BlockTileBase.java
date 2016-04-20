@@ -3,6 +3,7 @@ package tech.flatstone.appliedlogistics.common.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BlockTileBase extends BlockBase implements ITileEntityProvider {
+    protected static final PropertyDirection FACING = PropertyDirection.create("facing");
 
     @Nonnull
     private Class<? extends TileEntity> tileEntityClass;
@@ -74,7 +76,7 @@ public abstract class BlockTileBase extends BlockBase implements ITileEntityProv
     public EnumFacing[] getValidRotations(World world, BlockPos pos) {
         final TileEntityBase tileEntity = TileHelper.getTileEntity(world, pos, TileEntityBase.class);
         if (tileEntity != null && tileEntity.canBeRotated())
-            return EnumFacing.values();
+            return EnumFacing.HORIZONTALS;
 
         return super.getValidRotations(world, pos);
     }
@@ -84,6 +86,14 @@ public abstract class BlockTileBase extends BlockBase implements ITileEntityProv
         return TileHelper.getTileEntity(world, pos, TileEntityBase.class);
     }
 
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        TileEntityBase tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBase.class);
+        if (tileEntity != null && tileEntity.canBeRotated()) {
+            return state.withProperty(FACING, tileEntity.getForward());
+        }
+        return state.withProperty(FACING, EnumFacing.NORTH);
+    }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState state, EntityLivingBase placer, ItemStack itemStack) {
@@ -99,6 +109,15 @@ public abstract class BlockTileBase extends BlockBase implements ITileEntityProv
 
         if (itemStack.hasDisplayName()) {
             tileEntity.setCustomName(itemStack.getDisplayName());
+        }
+
+        if (tileEntity.canBeRotated()) {
+            //todo: make client side configuration for this option...
+            if (placer.isSneaking()) {
+                tileEntity.setOrientation(placer.getHorizontalFacing());
+            } else {
+                tileEntity.setOrientation(placer.getHorizontalFacing().getOpposite());
+            }
         }
     }
 

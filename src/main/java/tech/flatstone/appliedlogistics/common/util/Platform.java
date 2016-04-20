@@ -56,122 +56,18 @@ public class Platform {
         return itemStack1 != null && itemStack2 != null && itemStack1.isItemEqual(itemStack2);
     }
 
-    public static EnumFacing crossProduct(final EnumFacing forward, final EnumFacing up) {
-        final int west_x = forward.getFrontOffsetY() * up.getFrontOffsetZ() - forward.getFrontOffsetZ() * up.getFrontOffsetY();
-        final int west_y = forward.getFrontOffsetZ() * up.getFrontOffsetX() - forward.getFrontOffsetX() * up.getFrontOffsetZ();
-        final int west_z = forward.getFrontOffsetX() * up.getFrontOffsetY() - forward.getFrontOffsetY() * up.getFrontOffsetX();
-
-        switch (west_x + west_y * 2 + west_z * 3) {
-            case 1:
-                return EnumFacing.EAST;
-            case -1:
-                return EnumFacing.WEST;
-            case 2:
-                return EnumFacing.UP;
-            case -2:
-                return EnumFacing.DOWN;
-            case 3:
-                return EnumFacing.SOUTH;
-            case -3:
-                return EnumFacing.NORTH;
-        }
-
-        return EnumFacing.NORTH;
-    }
-
     public static EnumFacing rotateAround(final EnumFacing forward, final EnumFacing axis) {
         switch (forward) {
-            case DOWN:
-                switch (axis) {
-                    case DOWN:
-                        return forward;
-                    case UP:
-                        return forward;
-                    case NORTH:
-                        return EnumFacing.EAST;
-                    case SOUTH:
-                        return EnumFacing.WEST;
-                    case EAST:
-                        return EnumFacing.NORTH;
-                    case WEST:
-                        return EnumFacing.SOUTH;
-                    default:
-                        break;
-                }
-                break;
-            case UP:
-                switch (axis) {
-                    case NORTH:
-                        return EnumFacing.WEST;
-                    case SOUTH:
-                        return EnumFacing.EAST;
-                    case EAST:
-                        return EnumFacing.SOUTH;
-                    case WEST:
-                        return EnumFacing.NORTH;
-                    default:
-                        break;
-                }
-                break;
             case NORTH:
-                switch (axis) {
-                    case UP:
-                        return EnumFacing.WEST;
-                    case DOWN:
-                        return EnumFacing.EAST;
-                    case EAST:
-                        return EnumFacing.UP;
-                    case WEST:
-                        return EnumFacing.DOWN;
-                    default:
-                        break;
-                }
-                break;
-            case SOUTH:
-                switch (axis) {
-                    case UP:
-                        return EnumFacing.EAST;
-                    case DOWN:
-                        return EnumFacing.WEST;
-                    case NORTH:
-                        return EnumFacing.UP;
-                    case SOUTH:
-                        return EnumFacing.DOWN;
-                    default:
-                        break;
-                }
-                break;
+                return EnumFacing.EAST;
             case EAST:
-                switch (axis) {
-                    case UP:
-                        return EnumFacing.NORTH;
-                    case DOWN:
-                        return EnumFacing.SOUTH;
-                    case NORTH:
-                        return EnumFacing.UP;
-                    case SOUTH:
-                        return EnumFacing.DOWN;
-                    default:
-                        break;
-                }
-                break;
+                return EnumFacing.SOUTH;
+            case SOUTH:
+                return EnumFacing.WEST;
             case WEST:
-                switch (axis) {
-                    case UP:
-                        return EnumFacing.SOUTH;
-                    case DOWN:
-                        return EnumFacing.NORTH;
-                    case NORTH:
-                        return EnumFacing.DOWN;
-                    case SOUTH:
-                        return EnumFacing.UP;
-                    default:
-                        break;
-                }
-                break;
+                return EnumFacing.NORTH;
             default:
-                break;
+                return forward;
         }
-        return forward;
     }
 }

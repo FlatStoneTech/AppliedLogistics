@@ -11,7 +11,5 @@ public interface IOrientable {
 
     EnumFacing getForward();
 
-    EnumFacing getUp();
-
-    void setOrientation(EnumFacing forward, EnumFacing up);
+    void setOrientation(EnumFacing forward);
 }

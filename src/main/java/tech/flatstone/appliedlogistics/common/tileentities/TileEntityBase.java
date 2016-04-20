@@ -36,16 +36,16 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.EnumFacing;
 import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaHeadMessage;
 import tech.flatstone.appliedlogistics.common.util.IOrientable;
+import tech.flatstone.appliedlogistics.common.util.IRotatable;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 import java.util.List;
 
-public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOrientable {
+public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOrientable, IRotatable {
     private String customName;
     private int renderedFragment = 0;
     private NBTTagCompound machineItemData;
-    private EnumFacing forward = EnumFacing.SOUTH;
-    private EnumFacing up = EnumFacing.UP;
+    private EnumFacing forward = EnumFacing.NORTH;
 
     @Override
     public Packet getDescriptionPacket() {
@@ -138,8 +138,7 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
             nbtTagCompound.setTag("MachineItemData", machineItemData);
 
         if (canBeRotated()) {
-            nbtTagCompound.setString("forward", this.forward.name());
-            nbtTagCompound.setString("up", this.up.name());
+            nbtTagCompound.setInteger("forward", this.forward.ordinal());
         }
     }
 
@@ -151,8 +150,7 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
         this.machineItemData = nbtTagCompound.hasKey("MachineItemData") ? nbtTagCompound.getCompoundTag("MachineItemData") : null;
 
         if (canBeRotated()) {
-            this.forward = EnumFacing.valueOf(nbtTagCompound.getString("forward"));
-            this.up = EnumFacing.valueOf(nbtTagCompound.getString("up"));
+            this.forward = EnumFacing.values()[nbtTagCompound.getInteger("forward")];
         }
     }
 
@@ -181,7 +179,7 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
 
     @Override
     public boolean canBeRotated() {
-        return true;
+        return false;
     }
 
     @Override
@@ -190,19 +188,18 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
     }
 
     @Override
-    public EnumFacing getUp() {
-        return up;
-    }
-
-    @Override
-    public void setOrientation(EnumFacing forward, EnumFacing up) {
+    public void setOrientation(EnumFacing forward) {
         this.forward = forward;
-        this.up = up;
         markDirty();
         markForUpdate();
     }
 
     public void dropItems() {
         TileHelper.DropItems(this);
+    }
+
+    @Override
+    public EnumFacing getDirection() {
+        return getForward();
     }
 }

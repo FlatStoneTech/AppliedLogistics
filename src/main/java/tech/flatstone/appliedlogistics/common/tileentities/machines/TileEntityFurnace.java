@@ -32,6 +32,11 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
     private int maxProcessItems = 1;
 
     @Override
+    public boolean canBeRotated() {
+        return true;
+    }
+
+    @Override
     public ItemStack removeStackFromSlot(int index) {
         return null;
     }

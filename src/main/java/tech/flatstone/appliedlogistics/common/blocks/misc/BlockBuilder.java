@@ -22,13 +22,10 @@ package tech.flatstone.appliedlogistics.common.blocks.misc;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -36,28 +33,24 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
-import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
-import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
+import tech.flatstone.appliedlogistics.common.blocks.BlockTechBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityBuilder;
-import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 import java.util.List;
 
-public class BlockBuilder extends BlockTileBase implements IProvideRecipe, IBlockRenderer {
+public class BlockBuilder extends BlockTechBase implements IProvideRecipe {
     public static final PropertyEnum TECHLEVEL = PropertyEnum.create("tech", TechLevel.class);
-    public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
     public BlockBuilder() {
-        super(Material.rock);
+        super(Material.rock, "misc/builder", TechLevel.all());
         this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE).withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityBuilder.class);
     }
@@ -88,9 +81,9 @@ public class BlockBuilder extends BlockTileBase implements IProvideRecipe, IBloc
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
-//        if (tileEntity != null) {
-//            return state.withProperty(FACING, tileEntity.getDirectionFacing());
-//        }
+        if (tileEntity != null) {
+            return state.withProperty(FACING, tileEntity.getForward());
+        }
         return state.withProperty(FACING, EnumFacing.NORTH);
     }
 
@@ -98,16 +91,6 @@ public class BlockBuilder extends BlockTileBase implements IProvideRecipe, IBloc
     public int getMetaFromState(IBlockState state) {
         TechLevel tier = (TechLevel) state.getValue(TECHLEVEL);
         return (tier.getMeta());
-    }
-
-    @Override
-    public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState state, EntityLivingBase placer, ItemStack itemStack) {
-        TileEntityBuilder tileEntity = TileHelper.getTileEntity(world, blockPos, TileEntityBuilder.class);
-        if (tileEntity != null) {
-            //tileEntity.setDirectionFacing(placer.getHorizontalFacing().getOpposite());
-        }
-
-        super.onBlockPlacedBy(world, blockPos, state, placer, itemStack);
     }
 
     @Override
@@ -150,13 +133,6 @@ public class BlockBuilder extends BlockTileBase implements IProvideRecipe, IBloc
         TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
 
         return tileEntity.getComparatorOutput();
-    }
-
-    @Override
-    public void registerBlockRenderer() {
-        for (int i = 0; i < TechLevel.values().length; i++) {
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), i, new ModelResourceLocation(ModInfo.MOD_ID + ":misc/builder_" + TechLevel.byMeta(i).getName(), "inventory"));
-        }
     }
 
     @Override
