@@ -22,34 +22,42 @@ package tech.flatstone.appliedlogistics.common.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
-import tech.flatstone.appliedlogistics.common.util.IOrientable;
-import tech.flatstone.appliedlogistics.common.util.IOrientableBlock;
-import tech.flatstone.appliedlogistics.common.util.Platform;
-import tech.flatstone.appliedlogistics.common.util.TileHelper;
+import tech.flatstone.appliedlogistics.common.util.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public abstract class BlockBase extends Block {
+public abstract class BlockBase extends Block implements IBlockRenderer {
     protected boolean isInventory = false;
+    protected String resourcePath = "";
 
-    protected BlockBase(Material material) {
+    protected BlockBase(Material material, String resourcePath) {
         super(material);
 
         setStepSound(Block.soundTypeStone);
         setHardness(2.2F);
         setResistance(5.0F);
         setHarvestLevel("pickaxe", 0);
+        this.resourcePath = resourcePath;
     }
 
     @Override
@@ -139,5 +147,33 @@ public abstract class BlockBase extends Block {
     @Override
     public EnumFacing[] getValidRotations(World world, BlockPos pos) {
         return new EnumFacing[0];
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void registerBlockRenderer() {
+        final String resourcePath = String.format("%s:%s", ModInfo.MOD_ID, this.resourcePath);
+
+        ModelLoader.setCustomStateMapper(this, new DefaultStateMapper() {
+            @Override
+            protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+                return new ModelResourceLocation(resourcePath, getPropertyString(state.getProperties()));
+            }
+        });
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void registerBlockItemRenderer() {
+        final String resourcePath = String.format("%s:%s", ModInfo.MOD_ID, this.resourcePath);
+
+        List<ItemStack> subBlocks = new ArrayList<ItemStack>();
+        getSubBlocks(Item.getItemFromBlock(this), null, subBlocks);
+
+        for (ItemStack itemStack : subBlocks) {
+            IBlockState blockState = this.getStateFromMeta(itemStack.getItemDamage());
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), itemStack.getItemDamage(), new ModelResourceLocation(resourcePath, Platform.getPropertyString(blockState.getProperties())));
+            LogHelper.info(">>> " + this.getUnlocalizedName());
+        }
     }
 }

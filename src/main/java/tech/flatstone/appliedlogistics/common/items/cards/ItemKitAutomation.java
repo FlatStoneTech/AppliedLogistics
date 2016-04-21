@@ -38,7 +38,7 @@ public class ItemKitAutomation extends ItemBase implements IProvideRecipe, IItem
 
     @Override
     public void registerItemRenderer() {
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":cards/kit_automation", "inventory"));
+        //ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":cards/kit_automation", "inventory"));
     }
 
     @Override

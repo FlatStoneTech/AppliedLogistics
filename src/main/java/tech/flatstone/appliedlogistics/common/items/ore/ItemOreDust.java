@@ -63,7 +63,7 @@ public class ItemOreDust extends ItemBase implements IItemRenderer {
     public void registerItemRenderer() {
         for (int i = 0; i < EnumOres.values().length; i++) {
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.DUST)) {
-                ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(ModInfo.MOD_ID + ":materials/dust/" + EnumOres.byMeta(i).getUnlocalizedName(), "inventory"));
+                //ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(ModInfo.MOD_ID + ":materials/dust/" + EnumOres.byMeta(i).getUnlocalizedName(), "inventory"));
             }
         }
     }

@@ -20,11 +20,13 @@
 
 package tech.flatstone.appliedlogistics.common.util;
 
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 
 public class Platform {
     /**
@@ -69,5 +71,37 @@ public class Platform {
             default:
                 return forward;
         }
+    }
+
+    public static String getPropertyString(Map<IProperty, Comparable> p_178131_1_, String... extrasArgs)
+    {
+        StringBuilder stringbuilder = new StringBuilder();
+
+        for (Map.Entry<IProperty, Comparable> entry : p_178131_1_.entrySet())
+        {
+            if (stringbuilder.length() != 0)
+            {
+                stringbuilder.append(",");
+            }
+
+            IProperty iproperty = (IProperty)entry.getKey();
+            Comparable comparable = (Comparable)entry.getValue();
+            stringbuilder.append(iproperty.getName());
+            stringbuilder.append("=");
+            stringbuilder.append(iproperty.getName(comparable));
+        }
+
+        if (stringbuilder.length() == 0)
+        {
+            stringbuilder.append("inventory");
+        }
+
+        for (String args : extrasArgs) {
+            if (stringbuilder.length() != 0)
+                stringbuilder.append(",");
+            stringbuilder.append(args);
+        }
+
+        return stringbuilder.toString();
     }
 }

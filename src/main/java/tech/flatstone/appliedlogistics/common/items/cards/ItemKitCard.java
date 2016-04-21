@@ -38,7 +38,7 @@ public class ItemKitCard extends ItemBase implements IProvideRecipe, IItemRender
 
     @Override
     public void registerItemRenderer() {
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":cards/card_base", "inventory"));
+        //ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":cards/card_base", "inventory"));
     }
 
     @Override

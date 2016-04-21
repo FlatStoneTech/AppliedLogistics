@@ -19,31 +19,19 @@ import java.util.Arrays;
 import java.util.Map;
 
 public abstract class BlockTechBase extends BlockTileBase implements IBlockRenderer {
-    //todo: why u no work?
-
     protected static final PropertyEnum TECHLEVEL = PropertyEnum.create("tech", TechLevel.class);
     private TechLevel[] techLevels;
-    private String jsonPath;
 
-    public BlockTechBase(Material material, String jsonPath, TechLevel... techLevels) {
-        super(material);
-        this.jsonPath = jsonPath;
+    public BlockTechBase(Material material, String resourcePath, TechLevel... techLevels) {
+        super(material, resourcePath);
         this.techLevels = techLevels;
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public void registerBlockRenderer() {
-        final String resourcePath = String.format("%s:%s-", ModInfo.MOD_ID, jsonPath);
+        final String resourcePath = String.format("%s:%s-", ModInfo.MOD_ID, this.resourcePath);
         final String badPath = String.format("%s:badblock", ModInfo.MOD_ID);
-
-        for (TechLevel techLevel : TechLevel.values()) {
-            if (!Arrays.asList(techLevels).contains(techLevel)) {
-                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), techLevel.getMeta(), new ModelResourceLocation(badPath, "inventory"));
-            } else {
-                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), techLevel.getMeta(), new ModelResourceLocation(resourcePath + techLevel.getName(), "inventory"));
-            }
-        }
 
         ModelLoader.setCustomStateMapper(this, new DefaultStateMapper() {
             @Override
@@ -59,5 +47,20 @@ public abstract class BlockTechBase extends BlockTileBase implements IBlockRende
                 return new ModelResourceLocation(resourcePath + ((TechLevel) state.getValue(TECHLEVEL)).getName(), getPropertyString(blockStates));
             }
         });
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void registerBlockItemRenderer() {
+        final String resourcePath = String.format("%s:%s-", ModInfo.MOD_ID, this.resourcePath);
+        final String badPath = String.format("%s:badblock", ModInfo.MOD_ID);
+
+        for (TechLevel techLevel : TechLevel.values()) {
+            if (!Arrays.asList(techLevels).contains(techLevel)) {
+                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), techLevel.getMeta(), new ModelResourceLocation(badPath, "inventory"));
+            } else {
+                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), techLevel.getMeta(), new ModelResourceLocation(resourcePath + techLevel.getName(), "inventory"));
+            }
+        }
     }
 }

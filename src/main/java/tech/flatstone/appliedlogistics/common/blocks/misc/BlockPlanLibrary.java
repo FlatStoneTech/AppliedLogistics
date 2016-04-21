@@ -42,9 +42,9 @@ import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-public class BlockPlanLibrary extends BlockTileBase implements IProvideRecipe, IBlockRenderer {
+public class BlockPlanLibrary extends BlockTileBase implements IProvideRecipe {
     public BlockPlanLibrary() {
-        super(Material.rock);
+        super(Material.rock, "misc/planLibrary");
         this.setTileEntity(TileEntityPlanLibrary.class);
     }
 
@@ -74,10 +74,5 @@ public class BlockPlanLibrary extends BlockTileBase implements IProvideRecipe, I
     public void breakBlock(World world, BlockPos blockPos, IBlockState blockState) {
         TileEntity tileEntity = world.getTileEntity(blockPos);
         TileHelper.DropItems(tileEntity, 0, 0);
-    }
-
-    @Override
-    public void registerBlockRenderer() {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(ModInfo.MOD_ID + ":misc/plan_builder", "inventory"));
     }
 }

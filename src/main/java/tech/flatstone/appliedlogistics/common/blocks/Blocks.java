@@ -25,6 +25,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import sun.rmi.runtime.Log;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.common.blocks.machines.BlockFurnace;
 import tech.flatstone.appliedlogistics.common.blocks.machines.BlockPulverizer;
@@ -111,6 +112,7 @@ public enum Blocks {
         // If bock has Render Info, Register Renderer
         if (block instanceof IBlockRenderer && Platform.isClient()) {
             ((IBlockRenderer) block).registerBlockRenderer();
+            ((IBlockRenderer) block).registerBlockItemRenderer();
         }
 
         LogHelper.info("Registered Block: " + internalName);

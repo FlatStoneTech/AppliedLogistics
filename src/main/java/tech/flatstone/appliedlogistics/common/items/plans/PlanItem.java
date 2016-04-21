@@ -106,6 +106,6 @@ public class PlanItem extends ItemPlanBase implements IItemRenderer {
 
     @Override
     public void registerItemRenderer() {
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":plans/item_plan", "inventory"));
+        //ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":plans/item_plan", "inventory"));
     }
 }

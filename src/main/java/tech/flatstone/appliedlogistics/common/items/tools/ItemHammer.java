@@ -128,7 +128,7 @@ public class ItemHammer extends ItemBaseTool implements IItemRenderer, IProvideR
 
     @Override
     public void registerItemRenderer() {
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":tools/toolHammer", "inventory"));
+        //ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":tools/toolHammer", "inventory"));
     }
 
     @Override

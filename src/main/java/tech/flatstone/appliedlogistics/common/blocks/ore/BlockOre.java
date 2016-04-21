@@ -20,10 +20,13 @@
 
 package tech.flatstone.appliedlogistics.common.blocks.ore;
 
+import com.google.common.collect.Maps;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -34,14 +37,16 @@ import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
+import tech.flatstone.appliedlogistics.common.util.Platform;
 
 import java.util.List;
+import java.util.Map;
 
-public class BlockOre extends BlockBase implements IBlockRenderer {
-    public static final PropertyEnum ORES = PropertyEnum.create("type", EnumOres.class);
+public class BlockOre extends BlockBase {
+    public static final PropertyEnum ORES = PropertyEnum.create("oreType", EnumOres.class);
 
     public BlockOre() {
-        super(Material.rock);
+        super(Material.rock, "ores/ore");
         this.setDefaultState(this.blockState.getBaseState().withProperty(ORES, EnumOres.IRON));
     }
 
@@ -71,15 +76,6 @@ public class BlockOre extends BlockBase implements IBlockRenderer {
         for (int i = 0; i < EnumOres.values().length; i++) {
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE)) {
                 list.add(new ItemStack(itemIn, 1, i));
-            }
-        }
-    }
-
-    @Override
-    public void registerBlockRenderer() {
-        for (int i = 0; i < EnumOres.values().length; i++) {
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE)) {
-                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), i, new ModelResourceLocation(ModInfo.MOD_ID + ":materials/ore/" + EnumOres.byMeta(i).getUnlocalizedName(), "inventory"));
             }
         }
     }

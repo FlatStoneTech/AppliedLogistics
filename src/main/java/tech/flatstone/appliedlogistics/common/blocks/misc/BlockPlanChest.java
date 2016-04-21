@@ -40,9 +40,9 @@ import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-public class BlockPlanChest extends BlockTileBase implements IBlockRenderer {
+public class BlockPlanChest extends BlockTileBase {
     public BlockPlanChest() {
-        super(Material.rock);
+        super(Material.rock, "misc/planChest");
         this.setTileEntity(TileEntityPlanChest.class);
     }
 
@@ -75,10 +75,5 @@ public class BlockPlanChest extends BlockTileBase implements IBlockRenderer {
             inventory.setInventorySlotContents(i, tileEntity.getStackInSlot(i));
         }
         return Container.calcRedstoneFromInventory(inventory);
-    }
-
-    @Override
-    public void registerBlockRenderer() {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(ModInfo.MOD_ID + ":misc/plan_library", "inventory"));
     }
 }

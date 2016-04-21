@@ -38,7 +38,7 @@ public class ItemKitRedstoneOutput extends ItemBase implements IProvideRecipe, I
 
     @Override
     public void registerItemRenderer() {
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":cards/kit_redstone_output", "inventory"));
+        //ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":cards/kit_redstone_output", "inventory"));
     }
 
     @Override

@@ -38,7 +38,7 @@ public class PlanBlank extends ItemPlanBase implements IProvideRecipe, IItemRend
 
     @Override
     public void registerItemRenderer() {
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":plans/item_plan", "inventory"));
+        //ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":plans/item_plan", "inventory"));
     }
 
     @Override

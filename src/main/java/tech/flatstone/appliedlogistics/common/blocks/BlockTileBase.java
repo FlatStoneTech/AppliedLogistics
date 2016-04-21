@@ -19,6 +19,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
+import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.IOrientable;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
@@ -26,14 +27,14 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BlockTileBase extends BlockBase implements ITileEntityProvider {
+public abstract class BlockTileBase extends BlockBase implements ITileEntityProvider, IBlockRenderer {
     protected static final PropertyDirection FACING = PropertyDirection.create("facing");
 
     @Nonnull
     private Class<? extends TileEntity> tileEntityClass;
 
-    public BlockTileBase(Material material) {
-        super(material);
+    public BlockTileBase(Material material, String resourcePath) {
+        super(material, resourcePath);
     }
 
     protected void setTileEntity(final Class<? extends TileEntity> clazz) {
@@ -163,5 +164,15 @@ public abstract class BlockTileBase extends BlockBase implements ITileEntityProv
             return drops;
         }
         return super.getDrops(world, pos, state, fortune);
+    }
+
+    @Override
+    public void registerBlockRenderer() {
+        super.registerBlockRenderer();
+    }
+
+    @Override
+    public void registerBlockItemRenderer() {
+        super.registerBlockItemRenderer();
     }
 }

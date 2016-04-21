@@ -33,6 +33,11 @@ public class TileEntityPlanChest extends TileEntityMachineBase {
     private int slotRows = 0;
 
     @Override
+    public boolean canBeRotated() {
+        return true;
+    }
+
+    @Override
     public void initMachineData() {
         super.initMachineData();
 

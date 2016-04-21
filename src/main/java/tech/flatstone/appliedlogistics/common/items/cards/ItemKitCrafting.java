@@ -39,7 +39,7 @@ public class ItemKitCrafting extends ItemBase implements IProvideRecipe, IItemRe
 
     @Override
     public void registerItemRenderer() {
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":cards/kit_crafting", "inventory"));
+        //ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":cards/kit_crafting", "inventory"));
     }
 
     @Override

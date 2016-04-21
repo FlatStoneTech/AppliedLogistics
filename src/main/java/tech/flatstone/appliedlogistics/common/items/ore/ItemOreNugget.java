@@ -67,7 +67,7 @@ public class ItemOreNugget extends ItemBase implements IItemRenderer, IProvideRe
     public void registerItemRenderer() {
         for (int i = 0; i < EnumOres.values().length; i++) {
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.NUGGET)) {
-                ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(ModInfo.MOD_ID + ":materials/nugget/" + EnumOres.byMeta(i).getUnlocalizedName(), "inventory"));
+                //ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(ModInfo.MOD_ID + ":materials/nugget/" + EnumOres.byMeta(i).getUnlocalizedName(), "inventory"));
             }
         }
     }
