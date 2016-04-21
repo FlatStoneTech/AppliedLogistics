@@ -74,7 +74,7 @@ public interface ITransport {
      * empty whitelist will cause node to accept no objects
      * Strings in list can be regular expression
      *
-     * @param exitNode node to filter
+     * @param exitNode            node to filter
      * @param unlocalizedNameList array of names to allow
      * @return
      */
@@ -86,7 +86,7 @@ public interface ITransport {
      * empty blacklist will cause node to accept all objects
      * Strings in list can be regular expression
      *
-     * @param exitNode node to filter
+     * @param exitNode            node to filter
      * @param unlocalizedNameList array of names to reject
      * @return
      */
@@ -96,9 +96,9 @@ public interface ITransport {
      * inserts an object into the routing network
      * the network will use the unlocalized name to find an exit node that will accept it
      *
-     * @param entryNode where this cargo enters the network
+     * @param entryNode       where this cargo enters the network
      * @param unlocalizedName name identifying cargo, used to route
-     * @param object the cargo
+     * @param object          the cargo
      * @return
      */
     boolean insertObjectToGrid(UUID entryNode, String unlocalizedName, Object object);

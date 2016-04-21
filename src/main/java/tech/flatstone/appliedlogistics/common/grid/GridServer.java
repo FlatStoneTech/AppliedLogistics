@@ -197,7 +197,7 @@ class GridServer implements Runnable {
     private void precessObjects() {
         for (TransportContainer container : incomingCargo) {
             ClosestFirstIterator<UUID, FilteredEdge> closestFirstIterator =
-                    new ClosestFirstIterator<UUID, FilteredEdge>(
+                    new ClosestFirstIterator<>(
                             graph, container.getSource(), container.getSearchRange()
                     );
 
