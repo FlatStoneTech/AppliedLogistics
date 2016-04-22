@@ -97,8 +97,7 @@ public class TransportGrid implements ITransport {
         if ((exitNodeMap.containsKey(endNode)) || (exitNodeMap.containsKey(startNode))) {
             return false;
         }
-        graphServer.addEdge(startNode, endNode);
-        return true;
+        return graphServer.addEdge(startNode, endNode);
     }
 
     /**
@@ -113,9 +112,7 @@ public class TransportGrid implements ITransport {
         if ((exitNodeMap.containsKey(node1)) || (exitNodeMap.containsKey(node2))) {
             return false;
         }
-        graphServer.addEdge(node1, node2);
-        graphServer.addEdge(node2, node1);
-        return true;
+        return graphServer.addEdge(node1, node2) && graphServer.addEdge(node2, node1);
     }
 
     /**
@@ -211,7 +208,7 @@ public class TransportGrid implements ITransport {
      */
     @Override
     public boolean removeNodeConnection(UUID Node1, UUID Node2) {
-        return (graphServer.removeEdge(Node1, Node2)) || (graphServer.removeEdge(Node2, Node1));
+        return (graphServer.removeEdge(Node1, Node2)) && (graphServer.removeEdge(Node2, Node1));
     }
 
 
