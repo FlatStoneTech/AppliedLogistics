@@ -22,7 +22,6 @@ package tech.flatstone.appliedlogistics.common.container.slot;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPlanLibrary;
 
@@ -40,25 +39,12 @@ public class SlotPlanBuilderOutput extends SlotOutput {
     public boolean canTakeStack(EntityPlayer playerIn) {
         IMachinePlan plan = tileEntity.getSelectedPlan();
 
-        ItemStack inputSlot = tileEntity.getStackInSlot(0);
-
         if (plan == null)
             return false;
 
         if (playerIn.capabilities.isCreativeMode || plan.getPlanRequiredXP() == 0 || playerIn.experienceLevel >= plan.getPlanRequiredXP()) {
-            if (!playerIn.capabilities.isCreativeMode) {
+            if (!playerIn.capabilities.isCreativeMode)
                 playerIn.removeExperienceLevel(plan.getPlanRequiredXP());
-            }
-
-            if (inputSlot != null) {
-                ItemStack newInputSlot = inputSlot.copy();
-                newInputSlot.stackSize--;
-                if (newInputSlot.stackSize == 0)
-                    newInputSlot = null;
-
-                tileEntity.setInventorySlotContents(0, newInputSlot);
-            }
-            tileEntity.markDirty();
 
             return true;
         }

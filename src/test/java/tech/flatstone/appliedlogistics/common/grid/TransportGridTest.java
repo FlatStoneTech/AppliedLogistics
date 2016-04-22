@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class TransportGridTest {
+
     private TransportGrid transportGrid;
 
     @Before
@@ -17,6 +18,7 @@ public class TransportGridTest {
 
     @After
     public void tearDown() throws Exception {
+        transportGrid.graphServer.sync();
         transportGrid.Shutdown();
     }
 
@@ -79,4 +81,38 @@ public class TransportGridTest {
 
     }
 
+    @Test
+    public void removeNode() throws Exception {
+        UUID node1 = transportGrid.createTransportNode();
+        UUID exit = transportGrid.createExitNode(node1);
+        UUID entry = transportGrid.createEntryNode(node1);
+
+        transportGrid.graphServer.sync();
+        transportGrid.removeNode(node1);
+        transportGrid.removeNode(entry);
+        transportGrid.removeNode(exit);
+        transportGrid.graphServer.sync();
+    }
+
+    @Test
+    public void removeDirectionalNodeConnection() throws Exception {
+        UUID node1 = transportGrid.createTransportNode();
+        UUID node2 = transportGrid.createTransportNode();
+
+        transportGrid.createDirectionalNodeConnection(node1,node2);
+        transportGrid.graphServer.sync();
+        transportGrid.removeDirectionalNodeConnection(node2,node1);
+        transportGrid.graphServer.sync();
+    }
+
+    @Test
+    public void removeNodeConnection() throws Exception {
+        UUID node1 = transportGrid.createTransportNode();
+        UUID node2 = transportGrid.createTransportNode();
+
+        transportGrid.createNodeConnection(node1,node2);
+        transportGrid.graphServer.sync();
+        transportGrid.removeNodeConnection(node1,node2);
+        transportGrid.graphServer.sync();
+    }
 }

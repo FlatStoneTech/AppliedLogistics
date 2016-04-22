@@ -28,6 +28,9 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import org.apache.commons.lang3.JavaVersion;
+import org.apache.commons.lang3.SystemUtils;
+import tech.flatstone.appliedlogistics.api.exceptions.OutdatedJavaException;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.integrations.IntegrationsManager;
@@ -51,6 +54,12 @@ public class AppliedLogistics {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+
+        //Make sure we are running on java 7 or newer
+        if (!SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_1_7)) {
+            throw new OutdatedJavaException("Applied Logistics requires Java 7 or newer, Please update your java");
+        }
+
         PacketHandler.init();
 
         // Register Blocks
