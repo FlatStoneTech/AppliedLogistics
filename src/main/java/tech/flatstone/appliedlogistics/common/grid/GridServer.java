@@ -46,12 +46,12 @@ class GridServer implements Runnable {
     private ConcurrentLinkedQueue<WhitelistData> whitelistDataQueue;
     private ConcurrentLinkedQueue<UUID> vertexEliminationQueue;
     private ConcurrentLinkedQueue<UUIDPair> edgeEliminationQueue;
-    private ConcurrentLinkedQueue<UUIDPair> exitEliminationQueue;
     private CyclicBarrier barrier;
     private LinkedList<TransportContainer> activeCargo;
     private ConcurrentLinkedQueue<TransportContainer> incomingCargo;
     private ConcurrentHashMap<UUID, TransportContainer> outgoingCargo;
     private AtomicBoolean running;
+    private AtomicBoolean doTick;
 
     GridServer() {
         graph = new SimpleDirectedWeightedGraph<>(
@@ -65,7 +65,6 @@ class GridServer implements Runnable {
 
         vertexEliminationQueue = new ConcurrentLinkedQueue<>();
         edgeEliminationQueue = new ConcurrentLinkedQueue<>();
-        exitEliminationQueue = new ConcurrentLinkedQueue<>();
 
         incomingCargo = new ConcurrentLinkedQueue<>();
         activeCargo = new LinkedList<>();
@@ -82,7 +81,7 @@ class GridServer implements Runnable {
         vertexCache = new ArrayList<>();
 
         running = new AtomicBoolean();
-
+        doTick = new AtomicBoolean();
 
     }
 
@@ -97,6 +96,7 @@ class GridServer implements Runnable {
     @Override
     public void run() {
         running.set(true);
+        doTick.set(true);
 
         while (running.get()) {
             //sync with world server
@@ -104,10 +104,19 @@ class GridServer implements Runnable {
                 barrier.await();
             } catch (InterruptedException | BrokenBarrierException e) {
                 LogHelper.fatal(e.getLocalizedMessage());
+                return;
             }
 
             //step the transport simulation
-            this.gridTick();
+            if (doTick.get())
+                this.gridTick();
+            else {
+                try {
+                    Thread.sleep(60);
+                } catch (InterruptedException e) {
+                    LogHelper.error(e.getLocalizedMessage());
+                }
+            }
         }
     }
 
@@ -255,7 +264,7 @@ class GridServer implements Runnable {
     }
 
     boolean removeEdge(UUID source, UUID destination) {
-        return !((source == null) || (destination == null)) && exitEliminationQueue.offer(new UUIDPair(source, destination));
+        return ((source != null) && (destination != null) && edgeEliminationQueue.offer(new UUIDPair(source, destination)));
     }
 
     boolean markEdgeExit(UUID source, UUID destination) {
@@ -267,15 +276,26 @@ class GridServer implements Runnable {
     }
 
     void stop() throws InterruptedException, BrokenBarrierException, TimeoutException {
-        running.set(false);
+        doTick.set(false);
         try {
-            barrier.await(500, MILLISECONDS);
+            barrier.await(500,MILLISECONDS);
+            running.set(false);
         } catch (InterruptedException | TimeoutException e) {
             LogHelper.fatal(e.getLocalizedMessage());
             throw e;
         } catch (BrokenBarrierException e) {
             LogHelper.fatal((e.getLocalizedMessage()));
             throw e;
+        }
+    }
+
+    void pause() {
+        doTick.set(false);
+    }
+
+    void resume() {
+        if (running.get()){
+            doTick.set(true);
         }
     }
 

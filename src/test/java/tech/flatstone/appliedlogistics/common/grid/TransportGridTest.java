@@ -18,6 +18,7 @@ public class TransportGridTest {
 
     @After
     public void tearDown() throws Exception {
+        transportGrid.graphServer.sync();
         transportGrid.Shutdown();
     }
 
@@ -95,7 +96,13 @@ public class TransportGridTest {
 
     @Test
     public void removeDirectionalNodeConnection() throws Exception {
+        UUID node1 = transportGrid.createTransportNode();
+        UUID node2 = transportGrid.createTransportNode();
 
+        transportGrid.createDirectionalNodeConnection(node1,node2);
+        transportGrid.graphServer.sync();
+        transportGrid.removeDirectionalNodeConnection(node2,node1);
+        transportGrid.graphServer.sync();
     }
 
     @Test
