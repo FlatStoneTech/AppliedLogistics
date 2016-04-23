@@ -173,7 +173,6 @@ public abstract class BlockBase extends Block implements IBlockRenderer {
         for (ItemStack itemStack : subBlocks) {
             IBlockState blockState = this.getStateFromMeta(itemStack.getItemDamage());
             ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), itemStack.getItemDamage(), new ModelResourceLocation(resourcePath, Platform.getPropertyString(blockState.getProperties())));
-            LogHelper.info(">>> " + this.getUnlocalizedName());
         }
     }
 }

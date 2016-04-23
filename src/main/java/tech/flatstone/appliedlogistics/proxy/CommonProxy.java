@@ -61,7 +61,7 @@ public abstract class CommonProxy implements IProxy {
 
             // Register Ore
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE))
-                OreDictionary.registerOre("ore" + oreName, new ItemStack(Blocks.BLOCK_ORE.getBlock(), 1, i));
+                OreDictionary.registerOre("ores" + oreName, new ItemStack(Blocks.BLOCK_ORE.getBlock(), 1, i));
 
             // Register Ore Block
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.BLOCK))

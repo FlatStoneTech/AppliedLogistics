@@ -51,14 +51,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
-public class ItemHammer extends ItemBaseTool implements IItemRenderer, IProvideRecipe, IProvideEvent {
+public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvideEvent {
     public static Set blocksEffectiveAgainst = Sets.newHashSet(new Block[]{});
     public static boolean canHarvest = false;
     public static ToolMaterial toolMaterialHammer = EnumHelper.addToolMaterial("APPLIEDLOGISTICSHAMMER", 3, 100, 15.0F, 4.0F, 30);
     private static IBlockState blockHarvest = null;
 
     public ItemHammer() {
-        super(3.0F, toolMaterialHammer, blocksEffectiveAgainst);
+        super(3.0F, toolMaterialHammer, blocksEffectiveAgainst, "tools/toolHammer");
         this.setUnlocalizedName("tool_hammer");
     }
 
@@ -124,11 +124,6 @@ public class ItemHammer extends ItemBaseTool implements IItemRenderer, IProvideR
         }
 
         return valid;
-    }
-
-    @Override
-    public void registerItemRenderer() {
-        //ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":tools/toolHammer", "inventory"));
     }
 
     @Override

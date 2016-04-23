@@ -32,14 +32,10 @@ import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 
-public class ItemKitCrafting extends ItemBase implements IProvideRecipe, IItemRenderer {
+public class ItemKitCrafting extends ItemBase implements IProvideRecipe {
     public ItemKitCrafting() {
+        super("cards/kit_crafting");
         this.setMaxStackSize(8);
-    }
-
-    @Override
-    public void registerItemRenderer() {
-        //ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":cards/kit_crafting", "inventory"));
     }
 
     @Override

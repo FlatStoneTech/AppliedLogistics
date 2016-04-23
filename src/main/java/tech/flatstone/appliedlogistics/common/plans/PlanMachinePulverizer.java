@@ -51,7 +51,7 @@ public class PlanMachinePulverizer extends ItemPlanBase implements IMachinePlan 
 
         switch (techLevel) {
             case STONE_AGE:
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("cobblestone"), 12, 12, 2, 120, 200, "plan.pulverizer.material.cobblestone"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("cobblestone"), 12, 12, 2, 120, 200, "plan.pulverizer.materials.cobblestone"));
                 requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("plankWood"), 4, 4, 1, 40, 80, ""));
                 requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearWood"), 0, 1, 3, 60, 60, ""));
                 requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearStone"), 1, 2, 5, 80, 80, ""));

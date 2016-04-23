@@ -33,12 +33,8 @@ import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 
 public class ItemKitRedstoneOutput extends ItemBase implements IProvideRecipe, IItemRenderer {
     public ItemKitRedstoneOutput() {
+        super("cards/kit_redstone_output");
         this.setMaxStackSize(8);
-    }
-
-    @Override
-    public void registerItemRenderer() {
-        //ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":cards/kit_redstone_output", "inventory"));
     }
 
     @Override

@@ -39,7 +39,7 @@ import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 
 import java.util.List;
 
-public class PlanItem extends ItemPlanBase implements IItemRenderer {
+public class PlanItem extends ItemPlanBase {
     public PlanItem() {
         this.setHasSubtypes(true);
         this.maxStackSize = 1;
@@ -102,10 +102,5 @@ public class PlanItem extends ItemPlanBase implements IItemRenderer {
                 ));
             }
         }
-    }
-
-    @Override
-    public void registerItemRenderer() {
-        //ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":plans/item_plan", "inventory"));
     }
 }

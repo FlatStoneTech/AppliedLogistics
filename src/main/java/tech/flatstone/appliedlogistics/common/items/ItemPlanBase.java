@@ -21,5 +21,7 @@
 package tech.flatstone.appliedlogistics.common.items;
 
 public class ItemPlanBase extends ItemBase {
-
+    public ItemPlanBase() {
+        super("plans/item_plan");
+    }
 }

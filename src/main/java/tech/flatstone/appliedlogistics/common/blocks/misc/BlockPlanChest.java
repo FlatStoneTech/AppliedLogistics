@@ -21,6 +21,7 @@
 package tech.flatstone.appliedlogistics.common.blocks.misc;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,6 +30,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
@@ -43,6 +45,7 @@ import tech.flatstone.appliedlogistics.common.util.TileHelper;
 public class BlockPlanChest extends BlockTileBase {
     public BlockPlanChest() {
         super(Material.rock, "misc/planChest");
+        this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityPlanChest.class);
     }
 
@@ -62,6 +65,30 @@ public class BlockPlanChest extends BlockTileBase {
     @Override
     public boolean hasComparatorInputOverride() {
         return true;
+    }
+
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        TileEntityPlanChest tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityPlanChest.class);
+        if (tileEntity != null) {
+            return state.withProperty(FACING, tileEntity.getForward());
+        }
+        return state.withProperty(FACING, EnumFacing.NORTH);
+    }
+
+    @Override
+    protected BlockState createBlockState() {
+        return new BlockState(this, FACING);
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return this.getDefaultState();
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return 0;
     }
 
     @Override

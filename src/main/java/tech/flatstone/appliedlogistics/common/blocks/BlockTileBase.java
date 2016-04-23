@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BlockTileBase extends BlockBase implements ITileEntityProvider, IBlockRenderer {
-    protected static final PropertyDirection FACING = PropertyDirection.create("facing");
+    protected static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
     @Nonnull
     private Class<? extends TileEntity> tileEntityClass;
