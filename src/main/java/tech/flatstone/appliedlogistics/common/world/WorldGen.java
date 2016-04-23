@@ -111,10 +111,10 @@ public class WorldGen implements IWorldGenerator {
         List<ChunkCoordIntPair> chunks = retrogenChunks.get(dimID);
 
         if ((chunks != null) && (!chunks.isEmpty())) {
-            if (WorldInfoHelper.getTps() >= 20){
+            if (WorldInfoHelper.getTps() >= 20) {
                 numChunks++;
             } else {
-                numChunks = Math.max(2,numChunks-1);
+                numChunks = Math.max(2, numChunks - 1);
             }
 
             for (int i = 1; i <= numChunks; i++) {

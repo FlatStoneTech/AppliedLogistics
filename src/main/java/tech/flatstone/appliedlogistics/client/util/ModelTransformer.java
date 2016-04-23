@@ -20,13 +20,6 @@
 
 package tech.flatstone.appliedlogistics.client.util;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.WeakHashMap;
-
-import javax.vecmath.Vector3f;
-
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -43,7 +36,13 @@ import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
-@SuppressWarnings({ "deprecation", "unchecked" })
+import javax.vecmath.Vector3f;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.WeakHashMap;
+
+@SuppressWarnings({"deprecation", "unchecked"})
 public class ModelTransformer {
 
     public static IBakedModel transform(IBakedModel model, IVertexTransformer transformer, VertexFormat format) {
@@ -90,69 +89,6 @@ public class ModelTransformer {
             e.printStackTrace();
         }
         return unpackedQuad;
-    }
-
-    private static final class TransformedModel implements IBakedModel, IFlexibleBakedModel {
-
-        private final IBakedModel parent;
-        private final List<BakedQuad>[] quads;
-        private final VertexFormat format;
-
-        public TransformedModel(IBakedModel parent, List<BakedQuad>[] quads, VertexFormat format) {
-
-            this.parent = parent;
-            this.quads = quads;
-            this.format = format;
-        }
-
-        @Override
-        public List<BakedQuad> getFaceQuads(EnumFacing facing) {
-
-            return quads[facing.ordinal()];
-        }
-
-        @Override
-        public List<BakedQuad> getGeneralQuads() {
-
-            return quads[6];
-        }
-
-        @Override
-        public boolean isAmbientOcclusion() {
-
-            return parent.isAmbientOcclusion();
-        }
-
-        @Override
-        public boolean isGui3d() {
-
-            return parent.isGui3d();
-        }
-
-        @Override
-        public boolean isBuiltInRenderer() {
-
-            return parent.isBuiltInRenderer();
-        }
-
-        @Override
-        public TextureAtlasSprite getParticleTexture() {
-
-            return parent.getParticleTexture();
-        }
-
-        @Override
-        public ItemCameraTransforms getItemCameraTransforms() {
-
-            return parent.getItemCameraTransforms();
-        }
-
-        @Override
-        public VertexFormat getFormat() {
-
-            return format;
-        }
-
     }
 
     public static interface IVertexTransformer {
@@ -251,6 +187,69 @@ public class ModelTransformer {
         public VertexFormat getNewFormat(VertexFormat original);
 
         public float[][][] remap(VertexFormat original, float[][][] data);
+
+    }
+
+    private static final class TransformedModel implements IBakedModel, IFlexibleBakedModel {
+
+        private final IBakedModel parent;
+        private final List<BakedQuad>[] quads;
+        private final VertexFormat format;
+
+        public TransformedModel(IBakedModel parent, List<BakedQuad>[] quads, VertexFormat format) {
+
+            this.parent = parent;
+            this.quads = quads;
+            this.format = format;
+        }
+
+        @Override
+        public List<BakedQuad> getFaceQuads(EnumFacing facing) {
+
+            return quads[facing.ordinal()];
+        }
+
+        @Override
+        public List<BakedQuad> getGeneralQuads() {
+
+            return quads[6];
+        }
+
+        @Override
+        public boolean isAmbientOcclusion() {
+
+            return parent.isAmbientOcclusion();
+        }
+
+        @Override
+        public boolean isGui3d() {
+
+            return parent.isGui3d();
+        }
+
+        @Override
+        public boolean isBuiltInRenderer() {
+
+            return parent.isBuiltInRenderer();
+        }
+
+        @Override
+        public TextureAtlasSprite getParticleTexture() {
+
+            return parent.getParticleTexture();
+        }
+
+        @Override
+        public ItemCameraTransforms getItemCameraTransforms() {
+
+            return parent.getItemCameraTransforms();
+        }
+
+        @Override
+        public VertexFormat getFormat() {
+
+            return format;
+        }
 
     }
 

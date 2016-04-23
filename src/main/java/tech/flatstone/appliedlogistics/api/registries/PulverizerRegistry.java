@@ -58,7 +58,7 @@ public class PulverizerRegistry {
     }
 
     public static void registerOreDictOre(String oreName) {
-        List<ItemStack> itemOres = OreDictionary.getOres("ore" + oreName);
+        List<ItemStack> itemOres = OreDictionary.getOres("ores" + oreName);
         List<ItemStack> itemDusts = OreDictionary.getOres("dust" + oreName);
 
         if (itemOres.size() == 0 || itemDusts.size() == 0)

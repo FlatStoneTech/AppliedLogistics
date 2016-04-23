@@ -32,12 +32,12 @@ import tech.flatstone.appliedlogistics.common.blocks.misc.BlockBuilder;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCrank;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPlanChest;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPlanLibrary;
-import tech.flatstone.appliedlogistics.common.blocks.ore.BlockOre;
-import tech.flatstone.appliedlogistics.common.blocks.ore.BlockOreBlock;
+import tech.flatstone.appliedlogistics.common.blocks.ores.BlockOre;
+import tech.flatstone.appliedlogistics.common.blocks.ores.BlockOreBlock;
 import tech.flatstone.appliedlogistics.common.items.misc.ItemBuilder;
 import tech.flatstone.appliedlogistics.common.items.misc.ItemCrank;
-import tech.flatstone.appliedlogistics.common.items.ore.ItemOre;
-import tech.flatstone.appliedlogistics.common.items.ore.ItemOreBlock;
+import tech.flatstone.appliedlogistics.common.items.ores.ItemOre;
+import tech.flatstone.appliedlogistics.common.items.ores.ItemOreBlock;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 import tech.flatstone.appliedlogistics.common.util.Platform;
@@ -111,6 +111,7 @@ public enum Blocks {
         // If bock has Render Info, Register Renderer
         if (block instanceof IBlockRenderer && Platform.isClient()) {
             ((IBlockRenderer) block).registerBlockRenderer();
+            ((IBlockRenderer) block).registerBlockItemRenderer();
         }
 
         LogHelper.info("Registered Block: " + internalName);

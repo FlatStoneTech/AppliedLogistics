@@ -75,7 +75,7 @@ public class GuiPulverizer extends GuiBase {
          */
         GL11.glPushMatrix();
 
-        // Bronze Gear :: number of ore that can be processed at one time
+        // Bronze Gear :: number of ores that can be processed at one time
         guiHelper.drawItemStack(new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.BRONZE.getMeta()), 190, 20);  // x = 190 to 206 // y = 20 to 36
         guiHelper.drawCenteredString(190, 38, 16, tileEntity.getMaxProcessCount() + "x", 4210752);
 

@@ -68,6 +68,11 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
     }
 
     @Override
+    public boolean canBeRotated() {
+        return true;
+    }
+
+    @Override
     public void initMachineData() {
         super.initMachineData();
 

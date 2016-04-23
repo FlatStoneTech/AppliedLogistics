@@ -41,6 +41,11 @@ public class TileEntityPlanLibrary extends TileEntityMachineBase implements INet
     private int selectedPlan = 0;
 
     @Override
+    public boolean canBeRotated() {
+        return true;
+    }
+
+    @Override
     public void initMachineData() {
 
     }

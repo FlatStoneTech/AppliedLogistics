@@ -22,33 +22,42 @@ package tech.flatstone.appliedlogistics.common.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
 import tech.flatstone.appliedlogistics.common.util.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public abstract class BlockBase extends Block {
-    protected static final PropertyEnum AXIS_ORIENTATION = PropertyEnum.create("axis", EnumFacing.Axis.class);
+public abstract class BlockBase extends Block implements IBlockRenderer {
     protected boolean isInventory = false;
+    protected String resourcePath = "";
 
-    protected BlockBase(Material material) {
+    protected BlockBase(Material material, String resourcePath) {
         super(material);
 
         setStepSound(Block.soundTypeStone);
         setHardness(2.2F);
         setResistance(5.0F);
         setHarvestLevel("pickaxe", 0);
+        this.resourcePath = resourcePath;
     }
 
     @Override
@@ -102,17 +111,12 @@ public abstract class BlockBase extends Block {
                 return true;
             } else {
                 EnumFacing forward = rotatable.getForward();
-                EnumFacing up = rotatable.getUp();
 
                 for (int rs = 0; rs < 4; rs++) {
                     forward = Platform.rotateAround(forward, axis);
-                    up = Platform.rotateAround(up, axis);
 
-                    LogHelper.info(">>> Up: " + up.getName());
-                    LogHelper.info(">>> Forward: " + forward.getName());
-
-                    if (this.isValidOrientation(world, pos, forward, up)) {
-                        rotatable.setOrientation(forward, up);
+                    if (this.isValidOrientation(world, pos, forward)) {
+                        rotatable.setOrientation(forward);
                         return true;
                     }
                 }
@@ -130,7 +134,7 @@ public abstract class BlockBase extends Block {
 
     }
 
-    public boolean isValidOrientation(final World world, final BlockPos pos, final EnumFacing forward, final EnumFacing up) {
+    public boolean isValidOrientation(final World world, final BlockPos pos, final EnumFacing forward) {
         return true;
     }
 
@@ -145,44 +149,30 @@ public abstract class BlockBase extends Block {
         return new EnumFacing[0];
     }
 
-    public EnumFacing mapRotation(final IOrientable orientable, final EnumFacing direction) {
-        final EnumFacing forward = orientable.getForward();
-        final EnumFacing up = orientable.getUp();
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void registerBlockRenderer() {
+        final String resourcePath = String.format("%s:%s", ModInfo.MOD_ID, this.resourcePath);
 
-        if (forward == null || up == null)
-            return direction;
+        ModelLoader.setCustomStateMapper(this, new DefaultStateMapper() {
+            @Override
+            protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+                return new ModelResourceLocation(resourcePath, getPropertyString(state.getProperties()));
+            }
+        });
+    }
 
-        final int west_x = forward.getFrontOffsetY() * up.getFrontOffsetZ() - forward.getFrontOffsetZ() * up.getFrontOffsetY();
-        final int west_y = forward.getFrontOffsetZ() * up.getFrontOffsetX() - forward.getFrontOffsetX() * up.getFrontOffsetZ();
-        final int west_z = forward.getFrontOffsetX() * up.getFrontOffsetY() - forward.getFrontOffsetY() * up.getFrontOffsetX();
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void registerBlockItemRenderer() {
+        final String resourcePath = String.format("%s:%s", ModInfo.MOD_ID, this.resourcePath);
 
-        EnumFacing west = null;
-        for (final EnumFacing dir : EnumFacing.values()) {
-            if (dir.getFrontOffsetX() == west_x && dir.getFrontOffsetY() == west_y && dir.getFrontOffsetZ() == west_z)
-                west = dir;
+        List<ItemStack> subBlocks = new ArrayList<ItemStack>();
+        getSubBlocks(Item.getItemFromBlock(this), null, subBlocks);
+
+        for (ItemStack itemStack : subBlocks) {
+            IBlockState blockState = this.getStateFromMeta(itemStack.getItemDamage());
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), itemStack.getItemDamage(), new ModelResourceLocation(resourcePath, Platform.getPropertyString(blockState.getProperties())));
         }
-
-        if (west == null)
-            return direction;
-
-        if (direction == forward)
-            return EnumFacing.SOUTH;
-
-        if (direction == forward.getOpposite())
-            return EnumFacing.NORTH;
-
-        if (direction == up)
-            return EnumFacing.UP;
-
-        if (direction == up.getOpposite())
-            return EnumFacing.DOWN;
-
-        if (direction == west)
-            return EnumFacing.WEST;
-
-        if (direction == west.getOpposite())
-            return EnumFacing.EAST;
-
-        return null;
     }
 }

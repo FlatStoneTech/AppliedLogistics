@@ -35,7 +35,7 @@ public class OreDictHelper {
         for (int i = 0; i < idList.length; i++) {
             String oreDictName = OreDictionary.getOreName(idList[i]);
 
-            if (oreDictName.startsWith("ore")) {
+            if (oreDictName.startsWith("ores")) {
                 oreDictName = oreDictName.substring(3);
 
                 List<ItemStack> oreDusts = OreDictionary.getOres("dust" + oreDictName);

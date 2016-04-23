@@ -42,7 +42,7 @@ import tech.flatstone.appliedlogistics.common.util.*;
 import java.util.*;
 
 
-public class TileEntityBuilder extends TileEntityMachineBase implements ITickable, INetworkButton, IWailaBodyMessage, ICrankable, IRotatable {
+public class TileEntityBuilder extends TileEntityMachineBase implements ITickable, INetworkButton, IWailaBodyMessage, ICrankable {
     private InternalInventory inventory = new InternalInventory(this, 56);
     private HashMap<TechLevel, PlanDetails> planDetails = new HashMap<TechLevel, PlanDetails>();
     private String planName = "";
@@ -52,6 +52,11 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
     private int ticksRemaining = 0;
     private boolean machineWorking = false;
     private int badCrankCount = 0;
+
+    @Override
+    public boolean canBeRotated() {
+        return true;
+    }
 
     public int getTotalWeight() {
         int weight = 0;
@@ -489,11 +494,5 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
         }
 
         return false;
-    }
-
-    @Override
-    public EnumFacing getDirection() {
-        //return this.getDirectionFacing();
-        return EnumFacing.UP;
     }
 }

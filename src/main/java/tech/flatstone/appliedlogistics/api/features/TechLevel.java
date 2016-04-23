@@ -53,6 +53,10 @@ public enum TechLevel implements IStringSerializable {
         return META_LOOKUP[meta];
     }
 
+    public static TechLevel[] all() {
+        return TechLevel.values();
+    }
+
     public int getMeta() {
         return ordinal();
     }

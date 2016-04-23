@@ -31,14 +31,10 @@ import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 
-public class ItemKitRedstoneInput extends ItemBase implements IProvideRecipe, IItemRenderer {
+public class ItemKitRedstoneInput extends ItemBase implements IProvideRecipe {
     public ItemKitRedstoneInput() {
+        super("cards/kit_redstone_input");
         this.setMaxStackSize(8);
-    }
-
-    @Override
-    public void registerItemRenderer() {
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":cards/kit_redstone_input", "inventory"));
     }
 
     @Override

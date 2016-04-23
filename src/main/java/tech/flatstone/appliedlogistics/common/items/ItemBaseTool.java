@@ -38,7 +38,7 @@ import java.util.Set;
 public abstract class ItemBaseTool extends ItemBase {
     protected float efficiencyOnProperMaterial = 4.0F;
     /**
-     * The material this tool is made from.
+     * The materials this tool is made from.
      */
     protected Item.ToolMaterial toolMaterial;
     private Set<Block> effectiveBlocks;
@@ -49,7 +49,8 @@ public abstract class ItemBaseTool extends ItemBase {
     /*===================================== FORGE START =================================*/
     private String toolClass;
 
-    protected ItemBaseTool(float attackDamage, Item.ToolMaterial material, Set<Block> effectiveBlocks) {
+    protected ItemBaseTool(float attackDamage, Item.ToolMaterial material, Set<Block> effectiveBlocks, String resourcePath) {
+        super(resourcePath);
         this.toolMaterial = material;
         this.effectiveBlocks = effectiveBlocks;
         this.maxStackSize = 1;
@@ -97,14 +98,14 @@ public abstract class ItemBaseTool extends ItemBase {
     }
 
     /**
-     * Return the enchantability factor of the item, most of the time is based on material.
+     * Return the enchantability factor of the item, most of the time is based on materials.
      */
     public int getItemEnchantability() {
         return this.toolMaterial.getEnchantability();
     }
 
     /**
-     * Return the name for this tool's material.
+     * Return the name for this tool's materials.
      */
     public String getToolMaterialName() {
         return this.toolMaterial.toString();

@@ -21,27 +21,44 @@
 package tech.flatstone.appliedlogistics.common.blocks.machines;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
-import tech.flatstone.appliedlogistics.ModInfo;
-import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
+import tech.flatstone.appliedlogistics.api.features.TechLevel;
+import tech.flatstone.appliedlogistics.common.blocks.BlockTechBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityPulverizer;
-import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-public class BlockPulverizer extends BlockTileBase implements IBlockRenderer {
+public class BlockPulverizer extends BlockTechBase {
+    public static final PropertyEnum TECHLEVEL = PropertyEnum.create("tech", TechLevel.class);
+
     public BlockPulverizer() {
-        super(Material.rock);
+        super(Material.rock, "machines/pulverizer", TechLevel.STONE_AGE);
+        this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE).withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityPulverizer.class);
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return this.getDefaultState().withProperty(TECHLEVEL, TechLevel.byMeta(meta));
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        TechLevel tier = (TechLevel) state.getValue(TECHLEVEL);
+        return tier.getMeta();
+    }
+
+    @Override
+    protected BlockState createBlockState() {
+        return new BlockState(this, TECHLEVEL, FACING);
     }
 
     @Override
@@ -60,11 +77,6 @@ public class BlockPulverizer extends BlockTileBase implements IBlockRenderer {
 
         playerIn.openGui(AppliedLogistics.instance, 3, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
-    }
-
-    @Override
-    public void registerBlockRenderer() {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(ModInfo.MOD_ID + ":machines/machine_pulverizer", "inventory"));
     }
 
     @Override

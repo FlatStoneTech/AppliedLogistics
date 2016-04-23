@@ -6,7 +6,6 @@ import net.minecraft.tileentity.TileEntity;
 import tech.flatstone.appliedlogistics.common.container.ContainerBase;
 import tech.flatstone.appliedlogistics.common.container.slot.SlotFuelInput;
 import tech.flatstone.appliedlogistics.common.container.slot.SlotFurnaceInput;
-import tech.flatstone.appliedlogistics.common.container.slot.SlotNormal;
 import tech.flatstone.appliedlogistics.common.container.slot.SlotOutput;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityFurnace;
 

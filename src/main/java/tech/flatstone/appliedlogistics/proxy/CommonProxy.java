@@ -25,7 +25,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
@@ -62,7 +61,7 @@ public abstract class CommonProxy implements IProxy {
 
             // Register Ore
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE))
-                OreDictionary.registerOre("ore" + oreName, new ItemStack(Blocks.BLOCK_ORE.getBlock(), 1, i));
+                OreDictionary.registerOre("ores" + oreName, new ItemStack(Blocks.BLOCK_ORE.getBlock(), 1, i));
 
             // Register Ore Block
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.BLOCK))
