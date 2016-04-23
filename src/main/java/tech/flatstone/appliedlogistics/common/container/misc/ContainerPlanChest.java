@@ -47,7 +47,7 @@ public class ContainerPlanChest extends ContainerBase {
 
     private void drawSlots() {
         //addSlotToContainer(new SlotRestrictedInput(inventory, 0, 190, 95, Arrays.asList(new ItemStack(Items.ITEM_PLAN_BLANK.getItem())), new ItemStack(Items.ITEM_PLAN_BLANK.getItem())));
-        //addSlotToContainer(new SlotPlanBuilderOutput(inventory, 1, 190, 155, tileEntity));
+        //addSlotToContainer(new SlotPlanLibraryOutput(inventory, 1, 190, 155, tileEntity));
         int slotRows = tileEntity.getSlotRows();
 
         int slotY = 18;

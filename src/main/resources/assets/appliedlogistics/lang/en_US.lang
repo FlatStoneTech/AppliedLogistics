@@ -89,7 +89,7 @@ item.appliedlogistics.plan_blank.name=Blank Machine Plan
 item.appliedlogistics.plan.error.name=<<<ERROR>>>
 item.appliedlogistics.plan.pulverizer.name=Pulverizer Machine Plan
 item.appliedlogistics.plan.builder.name=Builder Machine Plan
-item.appliedlogistics.plan.library.name=Plan Library Plan
+item.appliedlogistics.plan.chest.name=Plan Chest Plan
 item.appliedlogistics.plan.furnace.name=Furnace Plan
 
 ## Gears ################################

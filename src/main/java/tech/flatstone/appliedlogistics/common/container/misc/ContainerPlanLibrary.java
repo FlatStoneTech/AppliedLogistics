@@ -25,7 +25,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import tech.flatstone.appliedlogistics.common.container.ContainerBase;
-import tech.flatstone.appliedlogistics.common.container.slot.SlotPlanBuilderOutput;
+import tech.flatstone.appliedlogistics.common.container.slot.SlotPlanLibraryOutput;
 import tech.flatstone.appliedlogistics.common.container.slot.SlotRestrictedInput;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPlanLibrary;
@@ -48,7 +48,7 @@ public class ContainerPlanLibrary extends ContainerBase {
 
     private void drawSlots() {
         addSlotToContainer(new SlotRestrictedInput(inventory, 0, 190, 95, Arrays.asList(new ItemStack(Items.ITEM_PLAN_BLANK.getItem())), new ItemStack(Items.ITEM_PLAN_BLANK.getItem())));
-        addSlotToContainer(new SlotPlanBuilderOutput(inventory, 1, 190, 155, tileEntity));
+        addSlotToContainer(new SlotPlanLibraryOutput(inventory, 1, 190, 155, tileEntity));
         bindPlayerInventory(inventoryPlayer, 0, 101);
     }
 }
