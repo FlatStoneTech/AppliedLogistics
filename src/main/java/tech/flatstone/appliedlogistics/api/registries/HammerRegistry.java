@@ -25,23 +25,19 @@ import net.minecraftforge.oredict.OreDictionary;
 import tech.flatstone.appliedlogistics.api.registries.helpers.Crushable;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class HammerRegistry {
-    private static ArrayList<Crushable> registry = new ArrayList<Crushable>();
+    private static ArrayList<Crushable> registry = new ArrayList<>();
 
     public static void register(ItemStack input, ItemStack output, float chance, float luckMultiplier) {
         registry.add(new Crushable(input, output, chance, luckMultiplier));
     }
 
     public static List<ItemStack> getBlocks() {
-        ArrayList<ItemStack> blocks = new ArrayList();
+        ArrayList<ItemStack> blocks = new ArrayList<>();
 
-        Iterator<Crushable> iterator = registry.iterator();
-        while (iterator.hasNext()) {
-            Crushable entry = iterator.next();
-
+        for (Crushable entry : registry) {
             if (!blocks.contains(entry.inItemStack))
                 blocks.add(entry.inItemStack);
         }
@@ -50,12 +46,9 @@ public class HammerRegistry {
     }
 
     public static ArrayList<Crushable> getDrops(ItemStack itemStack) {
-        ArrayList<Crushable> dropsList = new ArrayList();
+        ArrayList<Crushable> dropsList = new ArrayList<>();
 
-        Iterator<Crushable> it = registry.iterator();
-        while (it.hasNext()) {
-            Crushable drop = it.next();
-
+        for (Crushable drop : registry) {
             if (drop.inItemStack.isItemEqual(itemStack) && drop.outItemStack != null)
                 dropsList.add(drop);
         }
@@ -64,11 +57,7 @@ public class HammerRegistry {
     }
 
     public static boolean containsBlock(ItemStack itemStack) {
-        ArrayList<Crushable> blocks = new ArrayList();
-
-        Iterator<Crushable> it = registry.iterator();
-        while (it.hasNext()) {
-            Crushable block = it.next();
+        for (Crushable block : registry) {
             if (itemStack.isItemEqual(block.inItemStack)) {
                 return true;
             }
@@ -81,11 +70,10 @@ public class HammerRegistry {
         List<ItemStack> itemOres = OreDictionary.getOres("ores" + oreName);
         List<ItemStack> itemDusts = OreDictionary.getOres("dust" + oreName);
 
-        if (itemOres.size() == 0 || itemDusts.size() == 0)
+        if (itemOres.isEmpty() || itemDusts.isEmpty())
             return;
 
-        for (int i = 0; i < itemOres.size(); i++) {
-            ItemStack input = itemOres.get(i);
+        for (ItemStack input : itemOres) {
             ItemStack output = itemDusts.get(0);
             register(input, output, 1.0f, 0.0f);
             register(input, output, 0.5f, 0.0f);

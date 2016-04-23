@@ -44,9 +44,9 @@ import java.util.List;
 import java.util.Random;
 
 public class WorldGen implements IWorldGenerator {
-    protected static ArrayList<OreGen> oreSpawnList = new ArrayList();
-    protected static ArrayList<Integer> oreDimBlackList = new ArrayList();
-    protected static ArrayListMultimap<Integer, ChunkCoordIntPair> retrogenChunks = ArrayListMultimap.create();
+    private static ArrayList<OreGen> oreSpawnList = new ArrayList();
+    private static ArrayList<Integer> oreDimBlackList = new ArrayList();
+    private static ArrayListMultimap<Integer, ChunkCoordIntPair> retrogenChunks = ArrayListMultimap.create();
     private int numChunks = 2;
 
     public static OreGen addOreGen(String name, IBlockState block, int maxVeinSize, int minY, int maxY, int chunkOccurrence, int weight) {
@@ -133,10 +133,10 @@ public class WorldGen implements IWorldGenerator {
                 generateOres(fmlRandom, chunkCoordIntPair.chunkXPos, chunkCoordIntPair.chunkZPos, event.world, false);
                 chunks.remove(index);
             }
-        }
 
-        if (counter > 0)
-            LogHelper.info("Retrogen was performed on " + counter + " Chunks, " + Math.max(0, chunks.size()) + " chunks remaining");
+            if (counter > 0)
+                LogHelper.info("Retrogen was performed on " + counter + " Chunks, " + Math.max(0, chunks.size()) + " chunks remaining");
+        }
     }
 
     public static class OreGen {

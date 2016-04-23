@@ -16,8 +16,7 @@ public class FilteredEdgeTest {
 
     @Before
     public void setUp() throws Exception {
-        UUID uuid = UUID.randomUUID();
-        filteredEdge = new FilteredEdge<UUID>(null, null, uuid);
+        filteredEdge = new FilteredEdge<UUID>();
 
         list = new ArrayList<String>();
         list.add("This");

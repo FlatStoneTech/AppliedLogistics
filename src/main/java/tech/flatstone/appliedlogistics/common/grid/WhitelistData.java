@@ -1,6 +1,5 @@
 package tech.flatstone.appliedlogistics.common.grid;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -11,7 +10,7 @@ public class WhitelistData {
     private UUID end;
     private List<String> list;
 
-    public WhitelistData(boolean isWhitelist, UUID parent, UUID end, ArrayList<String> list) {
+    public WhitelistData(boolean isWhitelist, UUID parent, UUID end, List<String> list) {
         setWhitelist(isWhitelist);
         setParent(parent);
         setEnd(end);

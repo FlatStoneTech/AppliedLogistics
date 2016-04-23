@@ -20,7 +20,7 @@
 
 package tech.flatstone.appliedlogistics.common.grid;
 
-import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 public class TransportContainer {
@@ -31,7 +31,7 @@ public class TransportContainer {
     private UUID destination;
     private double searchRange;
     private int timeOnNode;
-    private LinkedList<FilteredEdge> path;
+    private List<FilteredEdge> path;
 
     public TransportContainer(UUID source, String unlocalizedName, Object cargo, double searchRange) {
         this.source = source;
@@ -44,11 +44,11 @@ public class TransportContainer {
         this(source, unlocalizedName, cargo, Double.POSITIVE_INFINITY);
     }
 
-    public LinkedList<FilteredEdge> getPath() {
+    public List<FilteredEdge> getPath() {
         return path;
     }
 
-    public void setPath(LinkedList<FilteredEdge> path) {
+    public void setPath(List<FilteredEdge> path) {
         if (path != null)
             this.path = path;
         else
