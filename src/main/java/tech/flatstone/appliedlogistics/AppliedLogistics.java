@@ -22,6 +22,7 @@ package tech.flatstone.appliedlogistics;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -39,7 +40,7 @@ import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.world.WorldGen;
 import tech.flatstone.appliedlogistics.proxy.IProxy;
 
-@Mod(modid = ModInfo.MOD_ID, name = ModInfo.MOD_NAME, certificateFingerprint = ModInfo.FINGERPRINT, dependencies = ModInfo.DEPENDENCIES, version = ModInfo.VERSION_BUILD)
+@Mod(modid = ModInfo.MOD_ID, name = ModInfo.MOD_NAME, certificateFingerprint = ModInfo.FINGERPRINT, dependencies = ModInfo.DEPENDENCIES, version = ModInfo.VERSION_BUILD, guiFactory = ModInfo.GUI_FACTORY)
 public class AppliedLogistics {
     @Mod.Instance(ModInfo.MOD_ID)
     public static AppliedLogistics instance;
@@ -47,18 +48,16 @@ public class AppliedLogistics {
     @SidedProxy(clientSide = ModInfo.CLIENT_PROXY_CLASS, serverSide = ModInfo.SERVER_PROXY_CLASS)
     public static IProxy proxy;
 
-    public static void addConfiguredWorldGen(IBlockState state, String config) {
-        //todo: need to get config in here like asap...
-        WorldGen.addOreGen(config, state, 4, 20, 85, 8, 100);
-    }
+    public static Configuration configuration;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-
         //Make sure we are running on java 7 or newer
         if (!SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_1_7)) {
-            throw new OutdatedJavaException("Applied Logistics requires Java 7 or newer, Please update your java");
+            throw new OutdatedJavaException(String.format("%s requires Java 7 or newer, Please update your java", ModInfo.MOD_NAME));
         }
+
+        proxy.registerConfiguration(event.getSuggestedConfigurationFile());
 
         PacketHandler.init();
 
@@ -78,17 +77,10 @@ public class AppliedLogistics {
 
         proxy.registerRenderers();
 
+        proxy.registerWorldGen();
+
         IntegrationsManager.instance().index();
-
-        for (int i = 0; i < EnumOres.values().length; i++) {
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE)) {
-                addConfiguredWorldGen(Blocks.BLOCK_ORE.getBlock().getStateFromMeta(i), EnumOres.byMeta(i).getUnlocalizedName());
-            }
-        }
-
         IntegrationsManager.instance().preInit();
-
-
     }
 
     @Mod.EventHandler

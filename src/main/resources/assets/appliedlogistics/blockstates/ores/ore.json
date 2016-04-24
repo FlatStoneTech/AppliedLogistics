@@ -11,32 +11,32 @@
     "oretype": {
       "copper": {
         "textures": {
-          "all": "appliedlogistics:blocks/ores/Copper"
+          "all": "appliedlogistics:blocks/ores/ores/Copper"
         }
       },
       "tin": {
         "textures": {
-          "all": "appliedlogistics:blocks/ores/Tin"
+          "all": "appliedlogistics:blocks/ores/ores/Tin"
         }
       },
       "silver": {
         "textures": {
-          "all": "appliedlogistics:blocks/ores/Silver"
+          "all": "appliedlogistics:blocks/ores/ores/Silver"
         }
       },
       "lead": {
         "textures": {
-          "all": "appliedlogistics:blocks/ores/Lead"
+          "all": "appliedlogistics:blocks/ores/ores/Lead"
         }
       },
       "nickel": {
         "textures": {
-          "all": "appliedlogistics:blocks/ores/Nickel"
+          "all": "appliedlogistics:blocks/ores/ores/Nickel"
         }
       },
       "rutile": {
         "textures": {
-          "all": "appliedlogistics:blocks/ores/Rutile"
+          "all": "appliedlogistics:blocks/ores/ores/Rutile"
         }
       }
     }

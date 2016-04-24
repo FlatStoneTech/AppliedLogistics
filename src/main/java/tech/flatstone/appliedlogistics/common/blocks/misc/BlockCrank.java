@@ -52,6 +52,7 @@ import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
+import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCrank;
 import tech.flatstone.appliedlogistics.common.util.*;
 
@@ -278,5 +279,10 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
 
         if (mask != null && crankShaft.intersectsWith(mask))
             list.add(crankShaft);
+    }
+
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        return this.getDefaultState();
     }
 }

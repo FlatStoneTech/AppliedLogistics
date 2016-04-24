@@ -135,7 +135,7 @@ item.appliedlogistics.ore_dust.steel.name=Steel Dust
 
 ## Nuggets ##############################
 item.appliedlogistics.ore_nugget.iron.name=Iron Nugget
-item.appliedlogistics.ore_nugget.diamond.name=Diamond Nugget
+item.appliedlogistics.ore_nugget.diamond.name=Diamond Shard
 item.appliedlogistics.ore_nugget.copper.name=Copper Nugget
 item.appliedlogistics.ore_nugget.tin.name=Tin Nugget
 item.appliedlogistics.ore_nugget.silver.name=Silver Nugget

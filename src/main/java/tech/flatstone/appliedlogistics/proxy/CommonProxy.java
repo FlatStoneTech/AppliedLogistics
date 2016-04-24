@@ -33,6 +33,7 @@ import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
 import tech.flatstone.appliedlogistics.api.registries.PulverizerRegistry;
 import tech.flatstone.appliedlogistics.client.gui.GuiHandler;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
+import tech.flatstone.appliedlogistics.common.config.Config;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.plans.PlanMachineFurnace;
 import tech.flatstone.appliedlogistics.common.plans.PlanMachinePulverizer;
@@ -42,6 +43,9 @@ import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.IProvideEvent;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.IProvideSmelting;
+import tech.flatstone.appliedlogistics.common.world.WorldGenInit;
+
+import java.io.File;
 
 public abstract class CommonProxy implements IProxy {
     @Override
@@ -61,7 +65,7 @@ public abstract class CommonProxy implements IProxy {
 
             // Register Ore
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE))
-                OreDictionary.registerOre("ores" + oreName, new ItemStack(Blocks.BLOCK_ORE.getBlock(), 1, i));
+                OreDictionary.registerOre("ore" + oreName, new ItemStack(Blocks.BLOCK_ORE.getBlock(), 1, i));
 
             // Register Ore Block
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.BLOCK))
@@ -205,5 +209,15 @@ public abstract class CommonProxy implements IProxy {
     @Override
     public void registerRenderers() {
 
+    }
+
+    @Override
+    public void registerWorldGen() {
+        WorldGenInit.init();
+    }
+
+    @Override
+    public void registerConfiguration(File configFile) {
+        AppliedLogistics.configuration = Config.initConfig(configFile);
     }
 }
