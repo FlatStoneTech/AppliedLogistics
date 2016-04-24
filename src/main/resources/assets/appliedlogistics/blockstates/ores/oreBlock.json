@@ -11,52 +11,52 @@
     "oretype": {
       "copper": {
         "textures": {
-          "all": "appliedlogistics:blocks/ores/CopperBlock"
+          "all": "appliedlogistics:blocks/ores/blocks/Copper"
         }
       },
       "tin": {
         "textures": {
-          "all": "appliedlogistics:blocks/ores/TinBlock"
+          "all": "appliedlogistics:blocks/ores/blocks/Tin"
         }
       },
       "silver": {
         "textures": {
-          "all": "appliedlogistics:blocks/ores/SilverBlock"
+          "all": "appliedlogistics:blocks/ores/blocks/Silver"
         }
       },
       "lead": {
         "textures": {
-          "all": "appliedlogistics:blocks/ores/LeadBlock"
+          "all": "appliedlogistics:blocks/ores/blocks/Lead"
         }
       },
       "nickel": {
         "textures": {
-          "all": "appliedlogistics:blocks/ores/NickelBlock"
+          "all": "appliedlogistics:blocks/ores/blocks/Nickel"
         }
       },
       "rutile": {
         "textures": {
-          "all": "appliedlogistics:blocks/ores/RutileBlock"
+          "all": "appliedlogistics:blocks/ores/blocks/Rutile"
         }
       },
       "titanium": {
         "textures": {
-          "all": "appliedlogistics:blocks/ores/TitaniumBlock"
+          "all": "appliedlogistics:blocks/ores/blocks/Titanium"
         }
       },
       "bronze": {
         "textures": {
-          "all": "appliedlogistics:blocks/ores/BronzeBlock"
+          "all": "appliedlogistics:blocks/ores/blocks/Bronze"
         }
       },
       "electrum": {
         "textures": {
-          "all": "appliedlogistics:blocks/ores/ElectrumBlock"
+          "all": "appliedlogistics:blocks/ores/blocks/Electrum"
         }
       },
       "steel": {
         "textures": {
-          "all": "appliedlogistics:blocks/ores/SteelBlock"
+          "all": "appliedlogistics:blocks/ores/blocks/Steel"
         }
       }
     }

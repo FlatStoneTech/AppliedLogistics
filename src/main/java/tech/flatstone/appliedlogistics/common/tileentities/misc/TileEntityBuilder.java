@@ -479,7 +479,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
 
     @Override
     public boolean canAttachCrank() {
-        return getBlockMetadata() == 0;
+        return getBlockMetadata() == 0 || getBlockMetadata() == 1;
     }
 
     @Override

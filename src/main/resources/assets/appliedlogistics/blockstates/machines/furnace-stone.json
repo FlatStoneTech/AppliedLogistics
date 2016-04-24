@@ -2,13 +2,13 @@
   "forge_marker": 1,
   "defaults": {
     "textures": {
-      "up": "appliedlogistics:blocks/temp/TopTexture",
-      "down": "appliedlogistics:blocks/temp/BottomTexture",
-      "north": "appliedlogistics:blocks/temp/FrontTexture",
-      "east": "appliedlogistics:blocks/temp/SideTexture",
-      "west": "appliedlogistics:blocks/temp/SideTexture",
-      "south": "appliedlogistics:blocks/temp/SideTexture",
-      "particle": "appliedlogistics:blocks/temp/FrontTexture"
+      "up": "appliedlogistics:blocks/machines/stone/FurnaceTop",
+      "down": "appliedlogistics:blocks/machines/stone/FurnaceBottom",
+      "north": "appliedlogistics:blocks/machines/stone/FurnaceFront",
+      "east": "appliedlogistics:blocks/machines/stone/FurnaceRight",
+      "west": "appliedlogistics:blocks/machines/stone/FurnaceLeft",
+      "south": "appliedlogistics:blocks/machines/stone/FurnaceBack",
+      "particle": "appliedlogistics:blocks/machines/stone/FurnaceFront"
     },
     "model": "minecraft:cube",
     "transform": "forge:default-block"
