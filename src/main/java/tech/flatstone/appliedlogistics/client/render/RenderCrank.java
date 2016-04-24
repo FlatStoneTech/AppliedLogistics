@@ -20,11 +20,18 @@
 
 package tech.flatstone.appliedlogistics.client.render;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.resources.model.SimpleBakedModel;
 import net.minecraftforge.client.model.animation.FastTESR;
 import tech.flatstone.appliedlogistics.client.util.ModelTransformer;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
@@ -32,6 +39,8 @@ import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCrank;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector4f;
+
+import org.lwjgl.opengl.GL11;
 
 public class RenderCrank extends FastTESR<TileEntityCrank> {
     @Override
@@ -62,5 +71,20 @@ public class RenderCrank extends FastTESR<TileEntityCrank> {
 
         BlockModelRenderer modelRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer();
         modelRenderer.renderModel(te.getWorld(), model, Blocks.BLOCK_MISC_CRANK.getBlock().getDefaultState(), te.getPos(), worldRenderer);
+
+        if (destroyStage >= 0) {
+        	bindTexture(TextureMap.locationBlocksTexture);
+        	TextureAtlasSprite damageTexture = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("minecraft:blocks/destroy_stage_" + destroyStage);
+    		GlStateManager.pushMatrix();
+    		GlStateManager.translate(-te.getPos().getX() + x, -te.getPos().getY() + y, -te.getPos().getZ() + z);
+    		Tessellator tessellator = Tessellator.getInstance();
+            WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+    		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+    		IBlockState state = Blocks.BLOCK_MISC_CRANK.getBlock().getActualState(Blocks.BLOCK_MISC_CRANK.getBlock().getDefaultState(), te.getWorld(), te.getPos());
+    		IBakedModel ibakedmodel1 = (new SimpleBakedModel.Builder(model, damageTexture)).makeBakedModel();
+    		modelRenderer.renderModel(te.getWorld(), ibakedmodel1, state, te.getPos(), Tessellator.getInstance().getWorldRenderer());
+    		tessellator.draw();
+    		GlStateManager.popMatrix();
+        }
     }
 }
