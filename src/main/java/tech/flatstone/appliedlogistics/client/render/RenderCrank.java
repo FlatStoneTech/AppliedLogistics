@@ -73,18 +73,18 @@ public class RenderCrank extends FastTESR<TileEntityCrank> {
         modelRenderer.renderModel(te.getWorld(), model, Blocks.BLOCK_MISC_CRANK.getBlock().getDefaultState(), te.getPos(), worldRenderer);
 
         if (destroyStage >= 0) {
-        	bindTexture(TextureMap.locationBlocksTexture);
-        	TextureAtlasSprite damageTexture = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("minecraft:blocks/destroy_stage_" + destroyStage);
-    		GlStateManager.pushMatrix();
-    		GlStateManager.translate(-te.getPos().getX() + x, -te.getPos().getY() + y, -te.getPos().getZ() + z);
-    		Tessellator tessellator = Tessellator.getInstance();
-        	WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-    		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-    		IBlockState state = Blocks.BLOCK_MISC_CRANK.getBlock().getActualState(Blocks.BLOCK_MISC_CRANK.getBlock().getDefaultState(), te.getWorld(), te.getPos());
-    		IBakedModel ibakedmodel1 = (new SimpleBakedModel.Builder(model, damageTexture)).makeBakedModel();
-    		modelRenderer.renderModel(te.getWorld(), ibakedmodel1, state, te.getPos(), Tessellator.getInstance().getWorldRenderer());
-    		tessellator.draw();
-    		GlStateManager.popMatrix();
+            bindTexture(TextureMap.locationBlocksTexture);
+            TextureAtlasSprite damageTexture = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("minecraft:blocks/destroy_stage_" + destroyStage);
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(-te.getPos().getX() + x, -te.getPos().getY() + y, -te.getPos().getZ() + z);
+            Tessellator tessellator = Tessellator.getInstance();
+            WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+            worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+            IBlockState state = Blocks.BLOCK_MISC_CRANK.getBlock().getActualState(Blocks.BLOCK_MISC_CRANK.getBlock().getDefaultState(), te.getWorld(), te.getPos());
+            IBakedModel ibakedmodel1 = (new SimpleBakedModel.Builder(model, damageTexture)).makeBakedModel();
+            modelRenderer.renderModel(te.getWorld(), ibakedmodel1, state, te.getPos(), Tessellator.getInstance().getWorldRenderer());
+            tessellator.draw();
+            GlStateManager.popMatrix();
         }
     }
 }
