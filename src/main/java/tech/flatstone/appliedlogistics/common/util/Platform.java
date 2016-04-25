@@ -21,11 +21,17 @@
 package tech.flatstone.appliedlogistics.common.util;
 
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.classloading.FMLForgePlugin;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.CoreModManager;
+import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.util.Map;
 
 public class Platform {
@@ -103,5 +109,10 @@ public class Platform {
         }
 
         return stringbuilder.toString();
+    }
+
+    public static boolean isDevEnv() {
+        return (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+        //return !FMLForgePlugin.RUNTIME_DEOBF;
     }
 }

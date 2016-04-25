@@ -72,7 +72,11 @@ public class PlanMachinePulverizer extends ItemPlanBase implements IMachinePlan 
                 break;
 
             case INDUSTRIAL_AGE:
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearBronze"), 2, 4, 12, 80, 80, ""));
+                List<ItemStack> test = new ArrayList<>();
+                test.addAll(0, OreDictionary.getOres("cobblestone"));
+                test.addAll(1, OreDictionary.getOres("gearIron"));
+
+                requiredMaterialsList.add(new PlanRequiredMaterials(test, 2, 4, 12, 80, 80, ""));
 
                 planDetails = new PlanDetails(138, requiredMaterialsList, new ItemStack(Blocks.BLOCK_ORE_BLOCK.getBlock(), 1, 4));
                 break;
