@@ -23,7 +23,9 @@ package tech.flatstone.appliedlogistics.common.util;
 import net.minecraft.util.IStringSerializable;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public enum EnumOres implements IStringSerializable {
     // Vanilla Ores
@@ -59,12 +61,12 @@ public enum EnumOres implements IStringSerializable {
 
     private final String name;
     private final int meta;
-    private final EnumOreType[] enumOresTypelist;
+    private final EnumOreType[] enumOresTypeList;
 
     EnumOres(String name, int meta, EnumOreType... oreTypes) {
         this.name = name;
         this.meta = meta;
-        this.enumOresTypelist = oreTypes;
+        this.enumOresTypeList = oreTypes;
     }
 
     public static EnumOres byMeta(int meta) {
@@ -73,6 +75,18 @@ public enum EnumOres implements IStringSerializable {
         }
 
         return META_LOOKUP[meta];
+    }
+
+    public static List<EnumOres> byType(EnumOreType type) {
+        List<EnumOres> result = new ArrayList<>();
+
+        for (EnumOres ore : values()) {
+            if (ore.isTypeSet(type)) {
+                result.add(ore);
+            }
+        }
+
+        return result;
     }
 
     public int getMeta() {
@@ -92,6 +106,6 @@ public enum EnumOres implements IStringSerializable {
     }
 
     public boolean isTypeSet(EnumOreType enumOreType) {
-        return Arrays.asList(enumOresTypelist).contains(enumOreType);
+        return Arrays.asList(enumOresTypeList).contains(enumOreType);
     }
 }
