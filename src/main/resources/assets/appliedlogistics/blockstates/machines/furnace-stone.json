@@ -5,8 +5,8 @@
       "up": "appliedlogistics:blocks/machines/stone/FurnaceTop",
       "down": "appliedlogistics:blocks/machines/stone/FurnaceBottom",
       "north": "appliedlogistics:blocks/machines/stone/FurnaceFront",
-      "east": "appliedlogistics:blocks/machines/stone/FurnaceRight",
-      "west": "appliedlogistics:blocks/machines/stone/FurnaceLeft",
+      "east": "appliedlogistics:blocks/machines/stone/FurnaceLeft",
+      "west": "appliedlogistics:blocks/machines/stone/FurnaceRight",
       "south": "appliedlogistics:blocks/machines/stone/FurnaceBack",
       "particle": "appliedlogistics:blocks/machines/stone/FurnaceFront"
     },
