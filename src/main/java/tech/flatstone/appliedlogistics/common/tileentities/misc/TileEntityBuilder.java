@@ -355,11 +355,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
                 this.markDirty();
                 break;
 
-            case 1: // Previous Tech Level
-                changeLevel(getPrevTechLevel());
-                break;
-
-            case 2: // Next Tech Level
+            case 1: // Select Tech Level
                 changeLevel(getNextTechLevel());
                 break;
         }
@@ -371,16 +367,11 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
             if (planDetails.containsKey(TechLevel.byMeta(i)))
                 return i;
         }
-        return nextTechLevel;
-    }
-
-    public int getPrevTechLevel() {
-        int prevTechLevel = selectedTechLevel;
-        for (int i = selectedTechLevel - 1; i >= 0; i--) {
+        for (int i = 0; i <= this.getBlockMetadata(); i++) {
             if (planDetails.containsKey(TechLevel.byMeta(i)))
                 return i;
         }
-        return prevTechLevel;
+        return nextTechLevel;
     }
 
     private void changeLevel(int newTechLevel) {

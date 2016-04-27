@@ -20,12 +20,14 @@
 
 package tech.flatstone.appliedlogistics.client.gui.misc;
 
+import mezz.jei.Internal;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
@@ -41,6 +43,7 @@ import tech.flatstone.appliedlogistics.common.util.PlanDetails;
 import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,8 +51,8 @@ public class GuiBuilder extends GuiBase {
     TileEntityBuilder tileEntity;
     GuiHelper guiHelper;
     private GuiButton btnStartBuilder;
-    private GuiButton btnPrevTechLevel;
-    private GuiButton btnNextTechLevel;
+    private GuiButton btnSelectTechLevel;
+
 
     public GuiBuilder(InventoryPlayer inventoryPlayer, TileEntityBuilder tileEntity) {
         super(new ContainerBuilder(inventoryPlayer, tileEntity));
@@ -62,16 +65,14 @@ public class GuiBuilder extends GuiBase {
     @Override
     public void initGui() {
         super.initGui();
-        this.btnStartBuilder = new GuiButton(0, guiLeft + 183, guiTop + 117, 68, 20, LanguageHelper.LABEL.translateMessage("build"));
-        this.btnPrevTechLevel = new GuiButton(1, guiLeft + 183, guiTop + 139, 10, 20, "<");
-        this.btnNextTechLevel = new GuiButton(2, guiLeft + 241, guiTop + 139, 10, 20, ">");
+        this.btnStartBuilder = new GuiButton(0, guiLeft + 185, guiTop + 117, 64, 20, LanguageHelper.LABEL.translateMessage("build"));
+        this.btnSelectTechLevel = new GuiButton(1, guiLeft + 185, guiTop + 139, 64, 20, "");
 
         this.buttonList.clear();
         this.buttonList.add(btnStartBuilder);
 
         if (tileEntity.getBlockMetadata() > 0) {
-            this.buttonList.add(btnPrevTechLevel);
-            this.buttonList.add(btnNextTechLevel);
+            this.buttonList.add(btnSelectTechLevel);
         }
 
         this.btnStartBuilder.enabled = false;
@@ -89,6 +90,10 @@ public class GuiBuilder extends GuiBase {
             for (PlanRequiredMaterials materials : requiredMaterials) {
                 Slot slot = this.inventorySlots.getSlot(slotID);
                 ItemStack stack = materials.getRequiredMaterials().get(0);
+                //todo: Make icon change...
+//                if (materials.getRequiredMaterials().size() > 1) {
+//                    stack = materials.getRequiredMaterials().get(1);
+//                }
                 this.drawTransparentIconEmpty(slot, stack);
                 slotID++;
             }
@@ -102,10 +107,6 @@ public class GuiBuilder extends GuiBase {
          */
         this.fontRendererObj.drawString(tileEntity.hasCustomName() ? tileEntity.getCustomName() : LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()), 8, 6, 4210752);
         this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage("container.inventory"), 8, 129, 4210752);
-
-        if (this.tileEntity.getBlockMetadata() != 0 && this.tileEntity.getPlanItem() != null) {
-            guiHelper.drawCenteredString(194, 145, 46, LanguageHelper.NONE.translateMessage(TechLevel.byMeta(tileEntity.getSelectedTechLevel()).getUnlocalizedName()), 4210752);
-        }
 
         ItemStack itemPlan = tileEntity.getInternalInventory().getStackInSlot(0);
 
@@ -184,8 +185,7 @@ public class GuiBuilder extends GuiBase {
         btnStartBuilder.enabled = tileEntity.isMeetingBuildRequirements();
 
         if (tileEntity.getBlockMetadata() > 0) {
-            btnNextTechLevel.enabled = tileEntity.getNextTechLevel() != tileEntity.getSelectedTechLevel();
-            btnPrevTechLevel.enabled = tileEntity.getPrevTechLevel() != tileEntity.getSelectedTechLevel();
+            btnSelectTechLevel.displayString = LanguageHelper.NONE.translateMessage(TechLevel.byMeta(tileEntity.getSelectedTechLevel()).getUnlocalizedName());
         }
     }
 
