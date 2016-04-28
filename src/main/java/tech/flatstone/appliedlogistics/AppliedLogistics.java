@@ -20,23 +20,22 @@
 
 package tech.flatstone.appliedlogistics;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
 import tech.flatstone.appliedlogistics.api.exceptions.OutdatedJavaException;
-import tech.flatstone.appliedlogistics.api.features.EnumOreType;
-import tech.flatstone.appliedlogistics.common.blocks.Blocks;
+import tech.flatstone.appliedlogistics.common.config.Config;
 import tech.flatstone.appliedlogistics.common.integrations.IntegrationsManager;
 import tech.flatstone.appliedlogistics.common.network.PacketHandler;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.world.WorldGen;
 import tech.flatstone.appliedlogistics.proxy.IProxy;
 
@@ -93,6 +92,8 @@ public class AppliedLogistics {
         GameRegistry.registerWorldGenerator(worldGen, 0);
         MinecraftForge.EVENT_BUS.register(worldGen);
 
+        MinecraftForge.EVENT_BUS.register(this);
+
         // Init Integrations
         IntegrationsManager.instance().init();
     }
@@ -100,5 +101,12 @@ public class AppliedLogistics {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         IntegrationsManager.instance().postInit();
+    }
+
+    @SubscribeEvent
+    public void onConfigurationChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
+        if (event.modID == ModInfo.MOD_ID) {
+            Config.loadConfiguration();
+        }
     }
 }

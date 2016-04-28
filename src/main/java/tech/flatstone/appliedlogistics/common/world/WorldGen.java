@@ -147,7 +147,7 @@ public class WorldGen implements IWorldGenerator {
         }
 
         public void generate(World world, Random random, int x, int z) {
-            if (oreConfig.isEnabledForDim(world.provider.getDimensionId())) {
+            if (oreConfig.Enabled && oreConfig.isEnabledForDim(world.provider.getDimensionId())) {
                 for (int i = 0; i < oreConfig.ChunkOccurrence; i++) {
                     if (random.nextInt(100) < oreConfig.Weight) {
                         BlockPos blockPos = new BlockPos(x + random.nextInt(16), oreConfig.MinY + random.nextInt(oreConfig.MaxY - oreConfig.MinY), z + random.nextInt(16));

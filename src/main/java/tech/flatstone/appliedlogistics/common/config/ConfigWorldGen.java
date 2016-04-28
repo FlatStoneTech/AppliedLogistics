@@ -111,7 +111,7 @@ public class ConfigWorldGen {
 
     public static void init(Configuration configuration) {
         configuration.setCategoryLanguageKey(Config.CONFIG_WORLDGEN, "config.worldGen");
-        configuration.setCategoryRequiresWorldRestart(Config.CONFIG_WORLDGEN, true);
+        configuration.setCategoryRequiresWorldRestart(Config.CONFIG_WORLDGEN, true); //TODO: This could theoretically be false now, if desired
 
         final String WORLDGEN_ORES = String.format("%s.%s", Config.CONFIG_WORLDGEN, "ores");
 
@@ -130,7 +130,14 @@ public class ConfigWorldGen {
             String category = String.format("%s.%s", WORLDGEN_ORES, oreName);
             OreConfig defaultConfig = OreWorldGenDefaults.get(ore);
 
-            OreConfig oreConfig = new OreConfig();
+            OreConfig oreConfig;
+            if (OreWorldGen.containsKey(ore)) {
+                // Manipulating the existing config will automatically update WorldGen
+                oreConfig = OreWorldGen.get(ore);
+            }
+            else {
+                oreConfig = new OreConfig();
+            }
 
             oreConfig.Enabled = ConfigHelper.getBoolean(configuration, oreName, WORLDGEN_ORES, defaultConfig.Enabled, String.format(DESC_ENABLED, oreLower));
 
