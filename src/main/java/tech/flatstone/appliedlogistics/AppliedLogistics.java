@@ -105,7 +105,7 @@ public class AppliedLogistics {
 
     @SubscribeEvent
     public void onConfigurationChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
-        if (event.modID == ModInfo.MOD_ID) {
+        if (event.modID.equals(ModInfo.MOD_ID)) {
             Config.loadConfiguration();
         }
     }
