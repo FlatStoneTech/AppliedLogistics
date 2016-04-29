@@ -22,6 +22,7 @@ package tech.flatstone.appliedlogistics;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -40,6 +41,10 @@ import tech.flatstone.appliedlogistics.proxy.IProxy;
 public class AppliedLogistics {
     @Mod.Instance(ModInfo.MOD_ID)
     public static AppliedLogistics instance;
+
+    static {
+        FluidRegistry.enableUniversalBucket();
+    }
 
     @SidedProxy(clientSide = ModInfo.CLIENT_PROXY_CLASS, serverSide = ModInfo.SERVER_PROXY_CLASS)
     public static IProxy proxy;
