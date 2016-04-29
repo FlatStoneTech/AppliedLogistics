@@ -2,7 +2,6 @@ package tech.flatstone.appliedlogistics.common.util;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import tech.flatstone.appliedlogistics.common.config.Config;
 
 public class ConfigHelper {
     public static boolean getBoolean(Configuration configuration, String key, String category, boolean defaultValue, String description) {

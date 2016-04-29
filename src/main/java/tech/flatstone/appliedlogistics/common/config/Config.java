@@ -15,17 +15,16 @@ import java.util.Arrays;
 
 public class Config extends GuiConfig {
     public static final String CONFIG_WORLDGEN = "worldgen";
+    public static Configuration configuration;
 
     public Config(GuiScreen parentScreen) {
-        super (parentScreen,
-                Arrays.asList(new IConfigElement[] {
+        super(parentScreen,
+                Arrays.asList(new IConfigElement[]{
                         new ConfigElement(AppliedLogistics.configuration.getCategory(CONFIG_WORLDGEN)),
                 }),
                 ModInfo.MOD_ID, false, false, "Applied Logistics Configuration");
 
     }
-
-    public static Configuration configuration;
 
     public static Configuration initConfig(File configFile) {
         if (configuration == null) {

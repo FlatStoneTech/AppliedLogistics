@@ -32,7 +32,6 @@ import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.items.ItemBase;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
-import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 
 import java.util.List;

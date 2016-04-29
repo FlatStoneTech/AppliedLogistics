@@ -32,7 +32,8 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
-import tech.flatstone.appliedlogistics.common.util.*;
+import tech.flatstone.appliedlogistics.common.util.EnumOres;
+import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 
 import java.util.List;
 

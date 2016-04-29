@@ -20,7 +20,6 @@
 
 package tech.flatstone.appliedlogistics;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
@@ -32,11 +31,8 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
 import tech.flatstone.appliedlogistics.api.exceptions.OutdatedJavaException;
-import tech.flatstone.appliedlogistics.api.features.EnumOreType;
-import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.integrations.IntegrationsManager;
 import tech.flatstone.appliedlogistics.common.network.PacketHandler;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.world.WorldGen;
 import tech.flatstone.appliedlogistics.proxy.IProxy;
 

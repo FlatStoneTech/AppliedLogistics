@@ -20,16 +20,13 @@
 
 package tech.flatstone.appliedlogistics.common.blocks.misc;
 
-import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -49,16 +46,12 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.ModInfo;
-import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
-import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCrank;
 import tech.flatstone.appliedlogistics.common.util.*;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockRenderer, IProvideEvent {
     public BlockCrank() {

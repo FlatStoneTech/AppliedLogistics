@@ -10,7 +10,7 @@ public class ConfigWorldGen {
     public static boolean worldGen_Generate_Lead;
     public static boolean worldGen_Generate_Nickel;
     public static boolean worldGen_Generate_Rutile;
-    
+
     public static int worldGen_Generate_Copper_minY;
     public static int worldGen_Generate_Copper_maxY;
     public static int worldGen_Generate_Copper_veinSize;
@@ -64,7 +64,7 @@ public class ConfigWorldGen {
         configuration.setCategoryRequiresWorldRestart(Config.CONFIG_WORLDGEN, true);
 
         int[] dimBlacklist = {-1, 1};
-        
+
         final String WORLDGEN_ORES = String.format("%s.%s", Config.CONFIG_WORLDGEN, "ores");
         final String WORLDGEN_ORES_COPPER = String.format("%s.%s", WORLDGEN_ORES, "Copper");
         final String WORLDGEN_ORES_TIN = String.format("%s.%s", WORLDGEN_ORES, "Tin");
@@ -72,7 +72,7 @@ public class ConfigWorldGen {
         final String WORLDGEN_ORES_LEAD = String.format("%s.%s", WORLDGEN_ORES, "Lead");
         final String WORLDGEN_ORES_NICKEL = String.format("%s.%s", WORLDGEN_ORES, "Nickel");
         final String WORLDGEN_ORES_RUTILE = String.format("%s.%s", WORLDGEN_ORES, "Rutile");
-        
+
         worldGen_Generate_Copper = ConfigHelper.getBoolean(configuration, "Copper", WORLDGEN_ORES, true, "Enable copper in world generation");
         worldGen_Generate_Tin = ConfigHelper.getBoolean(configuration, "Tin", WORLDGEN_ORES, true, "Enable tin in world generation");
         worldGen_Generate_Silver = ConfigHelper.getBoolean(configuration, "Silver", WORLDGEN_ORES, true, "Enable silver in world generation");

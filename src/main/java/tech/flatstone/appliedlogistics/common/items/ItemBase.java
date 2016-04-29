@@ -27,7 +27,6 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.ModInfo;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 
 public abstract class ItemBase extends Item implements IItemRenderer {

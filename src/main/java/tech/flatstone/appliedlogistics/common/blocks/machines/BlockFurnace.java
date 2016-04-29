@@ -2,7 +2,6 @@ package tech.flatstone.appliedlogistics.common.blocks.machines;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,13 +12,10 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import sun.rmi.runtime.Log;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTechBase;
-import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityFurnace;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 import java.util.Random;
@@ -36,7 +32,7 @@ public class BlockFurnace extends BlockTechBase {
     @Override
     public int getLightValue(IBlockAccess world, BlockPos pos) {
         IBlockState blockState = getActualState(getDefaultState(), world, pos);
-        return (boolean)blockState.getValue(WORKING) ? 15 : 0;
+        return (boolean) blockState.getValue(WORKING) ? 15 : 0;
     }
 
     @Override
@@ -86,9 +82,9 @@ public class BlockFurnace extends BlockTechBase {
             return;
 
         EnumFacing enumfacing = tileEntity.getForward();
-        double d0 = (double)pos.getX() + 0.5D;
-        double d1 = (double)pos.getY() + rand.nextDouble() * 6.0D / 16.0D;
-        double d2 = (double)pos.getZ() + 0.5D;
+        double d0 = (double) pos.getX() + 0.5D;
+        double d1 = (double) pos.getY() + rand.nextDouble() * 6.0D / 16.0D;
+        double d2 = (double) pos.getZ() + 0.5D;
         double d3 = 0.52D;
         double d4 = rand.nextDouble() * 0.6D - 0.3D;
 

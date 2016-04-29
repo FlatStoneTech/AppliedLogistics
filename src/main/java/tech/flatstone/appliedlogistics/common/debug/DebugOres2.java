@@ -2,7 +2,6 @@ package tech.flatstone.appliedlogistics.common.debug;
 
 import net.minecraft.item.ItemStack;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
-import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.DebugItemHelper;
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
@@ -24,7 +23,7 @@ public class DebugOres2 implements IDebugChest {
                 debugChest.setItem(i + 18, new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, i));
 
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.VANILLA)) {
-                switch(i) {
+                switch (i) {
                     case 1:
                         debugChest.setItem(i, new ItemStack(net.minecraft.init.Items.gold_nugget));
                         break;

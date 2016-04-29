@@ -5,12 +5,9 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.apache.commons.lang3.text.WordUtils;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
-import tech.flatstone.appliedlogistics.common.config.Config;
 import tech.flatstone.appliedlogistics.common.config.ConfigWorldGen;
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
-
-import java.lang.reflect.Field;
 
 public class WorldGenInit {
     private static void addConfiguredWorldGen(IBlockState state, String blockName) {
@@ -19,12 +16,18 @@ public class WorldGenInit {
         try {
             boolean enabled = ReflectionHelper.findField(ConfigWorldGen.class, String.format("worldGen_Generate_%s", blockConfigName)).getBoolean(ConfigWorldGen.class);
             int minY = ReflectionHelper.findField(ConfigWorldGen.class, String.format("worldGen_Generate_%s_minY", blockConfigName)).getInt(ConfigWorldGen.class);
-            int maxY = ReflectionHelper.findField(ConfigWorldGen.class, String.format("worldGen_Generate_%s_maxY", blockConfigName)).getInt(ConfigWorldGen.class);;
-            int veinSize = ReflectionHelper.findField(ConfigWorldGen.class, String.format("worldGen_Generate_%s_veinSize", blockConfigName)).getInt(ConfigWorldGen.class);;
-            int weight = ReflectionHelper.findField(ConfigWorldGen.class, String.format("worldGen_Generate_%s_weight", blockConfigName)).getInt(ConfigWorldGen.class);;
-            int chunkOccurrence = ReflectionHelper.findField(ConfigWorldGen.class, String.format("worldGen_Generate_%s_chunkOccurrence", blockConfigName)).getInt(ConfigWorldGen.class);;
-            String dimensionRestriction = (String)ReflectionHelper.findField(ConfigWorldGen.class, String.format("worldGen_Generate_%s_dimensionRestriction", blockConfigName)).get(ConfigWorldGen.class);;
-            int[] dimensions = (int[])ReflectionHelper.findField(ConfigWorldGen.class, String.format("worldGen_Generate_%s_dimensions", blockConfigName)).get(ConfigWorldGen.class);;
+            int maxY = ReflectionHelper.findField(ConfigWorldGen.class, String.format("worldGen_Generate_%s_maxY", blockConfigName)).getInt(ConfigWorldGen.class);
+            ;
+            int veinSize = ReflectionHelper.findField(ConfigWorldGen.class, String.format("worldGen_Generate_%s_veinSize", blockConfigName)).getInt(ConfigWorldGen.class);
+            ;
+            int weight = ReflectionHelper.findField(ConfigWorldGen.class, String.format("worldGen_Generate_%s_weight", blockConfigName)).getInt(ConfigWorldGen.class);
+            ;
+            int chunkOccurrence = ReflectionHelper.findField(ConfigWorldGen.class, String.format("worldGen_Generate_%s_chunkOccurrence", blockConfigName)).getInt(ConfigWorldGen.class);
+            ;
+            String dimensionRestriction = (String) ReflectionHelper.findField(ConfigWorldGen.class, String.format("worldGen_Generate_%s_dimensionRestriction", blockConfigName)).get(ConfigWorldGen.class);
+            ;
+            int[] dimensions = (int[]) ReflectionHelper.findField(ConfigWorldGen.class, String.format("worldGen_Generate_%s_dimensions", blockConfigName)).get(ConfigWorldGen.class);
+            ;
 
             if (enabled)
                 WorldGen.addOreGen(blockName, state, veinSize, minY, maxY, chunkOccurrence, weight);
