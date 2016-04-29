@@ -1,12 +1,15 @@
 package tech.flatstone.appliedlogistics.common.blocks.machines;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -21,10 +24,23 @@ import tech.flatstone.appliedlogistics.common.util.TileHelper;
 import java.util.Random;
 
 public class BlockFurnace extends BlockTechBase {
+    private static final PropertyBool WORKING = PropertyBool.create("working");
+
     public BlockFurnace() {
         super(Material.rock, "machines/furnace", TechLevel.STONE_AGE, TechLevel.BRONZE_AGE, TechLevel.INDUSTRIAL_AGE, TechLevel.MECHANICAL_AGE, TechLevel.DIGITAL_AGE);
         this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE).withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityFurnace.class);
+    }
+
+    @Override
+    public int getLightValue(IBlockAccess world, BlockPos pos) {
+        TileEntityFurnace tileEntity = TileHelper.getTileEntity(world, pos, TileEntityFurnace.class);
+        if (tileEntity == null)
+            return super.getLightValue(world, pos);
+
+        LogHelper.info(">>> Someone asked for the light value...");
+
+        return tileEntity.getIntTemperature() > 20 ? 15 : 0;
     }
 
     @Override
@@ -39,8 +55,17 @@ public class BlockFurnace extends BlockTechBase {
     }
 
     @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        TileEntityFurnace tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityFurnace.class);
+        if (tileEntity != null && tileEntity.canBeRotated()) {
+            return state.withProperty(FACING, tileEntity.getForward()).withProperty(WORKING, tileEntity.getIntTemperature() > 20);
+        }
+        return state.withProperty(FACING, EnumFacing.NORTH).withProperty(WORKING, false);
+    }
+
+    @Override
     protected BlockState createBlockState() {
-        return new BlockState(this, TECHLEVEL, FACING);
+        return new BlockState(this, TECHLEVEL, FACING, WORKING);
     }
 
     @Override
@@ -57,8 +82,11 @@ public class BlockFurnace extends BlockTechBase {
     @SideOnly(Side.CLIENT)
     @Override
     public void randomDisplayTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
-        TileEntityBase tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBase.class);
+        TileEntityFurnace tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityFurnace.class);
         if (tileEntity == null)
+            return;
+
+        if (tileEntity.getIntTemperature() == 20)
             return;
 
         EnumFacing enumfacing = tileEntity.getForward();
@@ -68,21 +96,43 @@ public class BlockFurnace extends BlockTechBase {
         double d3 = 0.52D;
         double d4 = rand.nextDouble() * 0.6D - 0.3D;
 
-        EnumParticleTypes particleTypes = EnumParticleTypes.SMOKE_NORMAL;
-        
-        switch (enumfacing)
-        {
-            case WEST:
-                worldIn.spawnParticle(particleTypes, d0 + d3, d1 + 0.7f, d2 + d4, 0.0D, 0.0D, 0.0D, new int[0]);
+        EnumParticleTypes particleTypes = null;
+        switch (tileEntity.getBlockMetadata()) {
+            case 0: // Stone
+            case 1: // Bronze
+                particleTypes = EnumParticleTypes.SMOKE_LARGE;
                 break;
-            case EAST:
-                worldIn.spawnParticle(particleTypes, d0 - d3, d1 + 0.7f, d2 + d4, 0.0D, 0.0D, 0.0D, new int[0]);
+            case 2: // Mechanical
+            case 3: // Industrial
+                particleTypes = EnumParticleTypes.SMOKE_NORMAL;
                 break;
-            case NORTH:
-                worldIn.spawnParticle(particleTypes, d0 + d4, d1 + 0.7f, d2 + d3, 0.0D, 0.0D, 0.0D, new int[0]);
+            case 4: // Digital
+            default:
                 break;
-            case SOUTH:
-                worldIn.spawnParticle(particleTypes, d0 + d4, d1 + 0.7f, d2 - d3, 0.0D, 0.0D, 0.0D, new int[0]);
         }
+
+        if (particleTypes != null) {
+            switch (enumfacing) {
+                case WEST:
+                    worldIn.spawnParticle(particleTypes, d0 + d3, d1 + 0.7f, d2 + d4, 0.0D, 0.0D, 0.0D, new int[0]);
+                    break;
+                case EAST:
+                    worldIn.spawnParticle(particleTypes, d0 - d3, d1 + 0.7f, d2 + d4, 0.0D, 0.0D, 0.0D, new int[0]);
+                    break;
+                case NORTH:
+                    worldIn.spawnParticle(particleTypes, d0 + d4, d1 + 0.7f, d2 + d3, 0.0D, 0.0D, 0.0D, new int[0]);
+                    break;
+                case SOUTH:
+                    worldIn.spawnParticle(particleTypes, d0 + d4, d1 + 0.7f, d2 - d3, 0.0D, 0.0D, 0.0D, new int[0]);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public int damageDropped(IBlockState state) {
+        return getMetaFromState(state);
     }
 }

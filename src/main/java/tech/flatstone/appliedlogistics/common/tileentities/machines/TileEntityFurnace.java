@@ -9,6 +9,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaBodyMessage;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
@@ -25,7 +26,7 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
     private int fuelTotal = 0;
     private double intTemperature = 0;
     private int fuelTempTick = 0;
-    private int maxTemp = 200;
+    //private int maxTemp = 600;
     private int furnaceRows = 1;
     private boolean upgradeExtraSlots = false;
     private int[] smeltProgress = new int[9];
@@ -77,6 +78,7 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
             fuelRemaining = net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime(inventory.getStackInSlot(0));
             fuelTotal = fuelRemaining;
             inventory.decrStackSize(0, 1);
+            this.markForLightUpdate();
             this.markDirty();
             this.markForUpdate();
         }
@@ -85,7 +87,7 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
             --fuelRemaining;
         }
 
-        if (intTemperature < this.maxTemp && fuelRemaining > 0) {
+        if (intTemperature < this.getMaxTemp() && fuelRemaining > 0) {
             fuelTempTick++;
         }
 
@@ -93,8 +95,11 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
             fuelTempTick -= 0.2;
             fuelTotal = 0;
 
-            if (fuelTempTick < 0) {
+            if (fuelTempTick <= 0) {
                 fuelTempTick = 0;
+                this.markForLightUpdate();
+                this.markDirty();
+                this.markForUpdate();
             }
         }
 
@@ -128,8 +133,8 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
             }
 
             // Checking to process items
-            if (processItem != null && intTemperature > 175) {
-                smeltProgress[i]++;
+            if (processItem != null && getMultipler() > 0) {
+                smeltProgress[i]+=getMultipler();
 
                 if (smeltProgress[i] > 300) {
                     smeltProgress[i] = 300;
@@ -156,8 +161,26 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
         return (int) intTemperature;
     }
 
+    public int getMultipler() {
+        int speed = (int)Math.floor((intTemperature - 100) / 100);
+        if (speed < 0) speed = 0;
+        return speed;
+    }
+
     public int getMaxTemp() {
-        return maxTemp;
+        switch (TechLevel.byMeta(getBlockMetadata())) {
+            case STONE_AGE:
+            default:
+                return 200;
+            case BRONZE_AGE:
+                return 300;
+            case MECHANICAL_AGE:
+                return 400;
+            case INDUSTRIAL_AGE:
+                return 500;
+            case DIGITAL_AGE:
+                return 600;
+        }
     }
 
     public int getFurnaceRows() {

@@ -90,4 +90,9 @@ public class BlockPulverizer extends BlockTechBase {
         TileHelper.DropItems(tileEntity, 0, 0);
         TileHelper.DropItems(tileEntity, 2, 10);
     }
+
+    @Override
+    public int damageDropped(IBlockState state) {
+        return getMetaFromState(state);
+    }
 }

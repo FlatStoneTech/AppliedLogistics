@@ -29,6 +29,16 @@
       "south": {
         "y": 180
       }
+    },
+    "working": {
+      "true": {
+        "textures": {
+          "north": "appliedlogistics:blocks/machines/industrial/FurnaceFrontOn"
+        }
+      },
+      "false": {
+
+      }
     }
   }
 }

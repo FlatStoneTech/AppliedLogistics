@@ -61,8 +61,13 @@ public class GuiFurnace extends GuiBase {
         float tempPercent = ((((float) tileEntity.getIntTemperature() - 20) / (float) (tileEntity.getMaxTemp() - 20))) * 100;
 
         guiHelper.drawVerticalProgressBar(189, 10, 18, 52 + offsetY, Math.round(tempPercent), colorBackground, colorBorder, colorProgressBackground);
-        guiHelper.drawLineOnVerticalProgressBar(189, 10, 18, 52 + offsetY, 175, tileEntity.getMaxTemp(), colorProgressBackgroundGood);
-        guiHelper.drawCenteredString(189, 68 + offsetY, 18, String.format("%d°C", tileEntity.getIntTemperature()), 4210752);
+        guiHelper.drawLineOnVerticalProgressBar(189, 10, 18, 52 + offsetY, 200, tileEntity.getMaxTemp(), colorProgressBackgroundGood);
+        if (tileEntity.getMaxTemp() >= 300) guiHelper.drawLineOnVerticalProgressBar(189, 10, 18, 52 + offsetY, 300, tileEntity.getMaxTemp(), colorProgressBackgroundGood);
+        if (tileEntity.getMaxTemp() >= 400) guiHelper.drawLineOnVerticalProgressBar(189, 10, 18, 52 + offsetY, 400, tileEntity.getMaxTemp(), colorProgressBackgroundGood);
+        if (tileEntity.getMaxTemp() >= 500) guiHelper.drawLineOnVerticalProgressBar(189, 10, 18, 52 + offsetY, 500, tileEntity.getMaxTemp(), colorProgressBackgroundGood);
+        if (tileEntity.getMaxTemp() >= 600) guiHelper.drawLineOnVerticalProgressBar(189, 10, 18, 52 + offsetY, 600, tileEntity.getMaxTemp(), colorProgressBackgroundGood);
+
+        guiHelper.drawCenteredString(189, 68 + offsetY, 18, String.format("%dx", tileEntity.getMultipler()), 4210752);
 
 
     }
