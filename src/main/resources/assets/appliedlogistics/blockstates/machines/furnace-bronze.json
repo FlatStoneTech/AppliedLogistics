@@ -1,0 +1,44 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "up": "appliedlogistics:blocks/machines/bronze/FurnaceTop",
+      "down": "appliedlogistics:blocks/machines/bronze/FurnaceBottom",
+      "north": "appliedlogistics:blocks/machines/bronze/FurnaceFront",
+      "east": "appliedlogistics:blocks/machines/bronze/FurnaceLeft",
+      "west": "appliedlogistics:blocks/machines/bronze/FurnaceRight",
+      "south": "appliedlogistics:blocks/machines/bronze/FurnaceBack",
+      "particle": "appliedlogistics:blocks/machines/bronze/FurnaceFront"
+    },
+    "model": "minecraft:cube",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": [
+      {}
+    ],
+    "facing": {
+      "west": {
+        "y": -90
+      },
+      "east": {
+        "y": 90
+      },
+      "north": {
+      },
+      "south": {
+        "y": 180
+      }
+    },
+    "working": {
+      "true": {
+        "textures": {
+          "north": "appliedlogistics:blocks/machines/bronze/FurnaceFrontOn"
+        }
+      },
+      "false": {
+
+      }
+    }
+  }
+}

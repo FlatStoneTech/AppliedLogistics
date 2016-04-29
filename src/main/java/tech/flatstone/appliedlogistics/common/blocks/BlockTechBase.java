@@ -7,7 +7,9 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -16,6 +18,7 @@ import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public abstract class BlockTechBase extends BlockTileBase implements IBlockRenderer {
@@ -61,6 +64,16 @@ public abstract class BlockTechBase extends BlockTileBase implements IBlockRende
             } else {
                 ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), techLevel.getMeta(), new ModelResourceLocation(resourcePath + techLevel.getName(), "inventory"));
             }
+        }
+    }
+
+    @Override
+    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
+        if (techLevels.length == 0)
+            super.getSubBlocks(itemIn, tab, list);
+
+        for (TechLevel techLevel : techLevels) {
+            list.add(new ItemStack(this, 1, techLevel.getMeta()));
         }
     }
 }
