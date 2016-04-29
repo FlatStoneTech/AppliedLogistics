@@ -26,11 +26,17 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
     private int fuelTotal = 0;
     private double intTemperature = 0;
     private int fuelTempTick = 0;
-    //private int maxTemp = 600;
     private int furnaceRows = 1;
     private boolean upgradeExtraSlots = false;
     private int[] smeltProgress = new int[9];
     private int maxProcessItems = 1;
+
+    @Override
+    public void markForUpdate() {
+        super.markForUpdate();
+
+        this.markForLightUpdate();
+    }
 
     @Override
     public boolean canBeRotated() {
@@ -78,7 +84,6 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
             fuelRemaining = net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime(inventory.getStackInSlot(0));
             fuelTotal = fuelRemaining;
             inventory.decrStackSize(0, 1);
-            this.markForLightUpdate();
             this.markDirty();
             this.markForUpdate();
         }
@@ -97,13 +102,13 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
 
             if (fuelTempTick <= 0) {
                 fuelTempTick = 0;
-                this.markForLightUpdate();
+
                 this.markDirty();
                 this.markForUpdate();
             }
         }
 
-        intTemperature = (Math.sqrt(fuelTempTick) * 10) + 20;
+        intTemperature = (Math.sqrt(fuelTempTick) * 10);
 
         for (int i = 0; i < furnaceRows; i++) {
             // Check inputs for item, then move to process slot

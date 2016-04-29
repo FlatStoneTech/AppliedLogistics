@@ -13,6 +13,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import sun.rmi.runtime.Log;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTechBase;
@@ -34,13 +35,8 @@ public class BlockFurnace extends BlockTechBase {
 
     @Override
     public int getLightValue(IBlockAccess world, BlockPos pos) {
-        TileEntityFurnace tileEntity = TileHelper.getTileEntity(world, pos, TileEntityFurnace.class);
-        if (tileEntity == null)
-            return super.getLightValue(world, pos);
-
-        LogHelper.info(">>> Someone asked for the light value...");
-
-        return tileEntity.getIntTemperature() > 20 ? 15 : 0;
+        IBlockState blockState = getActualState(getDefaultState(), world, pos);
+        return (boolean)blockState.getValue(WORKING) ? 15 : 0;
     }
 
     @Override
@@ -58,7 +54,7 @@ public class BlockFurnace extends BlockTechBase {
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntityFurnace tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityFurnace.class);
         if (tileEntity != null && tileEntity.canBeRotated()) {
-            return state.withProperty(FACING, tileEntity.getForward()).withProperty(WORKING, tileEntity.getIntTemperature() > 20);
+            return state.withProperty(FACING, tileEntity.getForward()).withProperty(WORKING, tileEntity.getIntTemperature() > 0);
         }
         return state.withProperty(FACING, EnumFacing.NORTH).withProperty(WORKING, false);
     }
@@ -86,7 +82,7 @@ public class BlockFurnace extends BlockTechBase {
         if (tileEntity == null)
             return;
 
-        if (tileEntity.getIntTemperature() == 20)
+        if (tileEntity.getIntTemperature() == 0)
             return;
 
         EnumFacing enumfacing = tileEntity.getForward();

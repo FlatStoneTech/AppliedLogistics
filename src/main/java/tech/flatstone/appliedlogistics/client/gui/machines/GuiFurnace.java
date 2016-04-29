@@ -58,7 +58,7 @@ public class GuiFurnace extends GuiBase {
         this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()), 8, 6, 4210752);
         this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage("container.inventory"), 8, 33 + offsetY, 4210752);
 
-        float tempPercent = ((((float) tileEntity.getIntTemperature() - 20) / (float) (tileEntity.getMaxTemp() - 20))) * 100;
+        float tempPercent = ((((float) tileEntity.getIntTemperature()) / (float) (tileEntity.getMaxTemp()))) * 100;
 
         guiHelper.drawVerticalProgressBar(189, 10, 18, 52 + offsetY, Math.round(tempPercent), colorBackground, colorBorder, colorProgressBackground);
         guiHelper.drawLineOnVerticalProgressBar(189, 10, 18, 52 + offsetY, 200, tileEntity.getMaxTemp(), colorProgressBackgroundGood);

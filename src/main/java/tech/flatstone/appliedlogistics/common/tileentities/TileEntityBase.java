@@ -89,11 +89,11 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
     }
 
     public void markForLightUpdate() {
-        if (this.worldObj.isRemote)
-            return;
+        if (this.worldObj.isRemote) {
+            this.worldObj.markBlockForUpdate(this.pos);
+        }
 
-        //this.worldObj.checkLight(this.pos);
-        //this.worldObj.checkLightFor(EnumSkyBlock.BLOCK, this.pos);
+        this.worldObj.checkLightFor(EnumSkyBlock.BLOCK, this.pos);
     }
 
     public void onChunkLoad() {
