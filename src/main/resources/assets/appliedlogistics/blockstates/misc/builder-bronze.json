@@ -5,8 +5,8 @@
       "up": "appliedlogistics:blocks/machines/bronze/BuilderTop",
       "down": "appliedlogistics:blocks/machines/bronze/BuilderBottom",
       "north": "appliedlogistics:blocks/machines/bronze/BuilderFront",
-      "east": "appliedlogistics:blocks/machines/bronze/BuilderRight",
-      "west": "appliedlogistics:blocks/machines/bronze/BuilderLeft",
+      "east": "appliedlogistics:blocks/machines/bronze/BuilderLeft",
+      "west": "appliedlogistics:blocks/machines/bronze/BuilderRight",
       "south": "appliedlogistics:blocks/machines/bronze/BuilderBack",
       "particle": "appliedlogistics:blocks/machines/bronze/BuilderFront"
     },

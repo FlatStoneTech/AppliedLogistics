@@ -40,7 +40,7 @@ public class BlockPulverizer extends BlockTechBase {
     public static final PropertyEnum TECHLEVEL = PropertyEnum.create("tech", TechLevel.class);
 
     public BlockPulverizer() {
-        super(Material.rock, "machines/pulverizer", TechLevel.STONE_AGE);
+        super(Material.rock, "machines/pulverizer", TechLevel.STONE_AGE, TechLevel.BRONZE_AGE, TechLevel.INDUSTRIAL_AGE);
         this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE).withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityPulverizer.class);
     }
@@ -89,5 +89,10 @@ public class BlockPulverizer extends BlockTechBase {
 
         TileHelper.DropItems(tileEntity, 0, 0);
         TileHelper.DropItems(tileEntity, 2, 10);
+    }
+
+    @Override
+    public int damageDropped(IBlockState state) {
+        return getMetaFromState(state);
     }
 }

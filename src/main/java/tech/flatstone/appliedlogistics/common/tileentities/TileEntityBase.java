@@ -34,6 +34,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.EnumSkyBlock;
 import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaHeadMessage;
 import tech.flatstone.appliedlogistics.common.util.IOrientable;
 import tech.flatstone.appliedlogistics.common.util.IRotatable;
@@ -85,6 +86,14 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
             this.worldObj.notifyBlockOfStateChange(new BlockPos(xCoord, yCoord - 1, zCoord - 1), block);
             this.worldObj.notifyBlockOfStateChange(new BlockPos(xCoord, yCoord - 1, zCoord + 1), block);
         }
+    }
+
+    public void markForLightUpdate() {
+        if (this.worldObj.isRemote) {
+            this.worldObj.markBlockForUpdate(this.pos);
+        }
+
+        this.worldObj.checkLightFor(EnumSkyBlock.BLOCK, this.pos);
     }
 
     public void onChunkLoad() {

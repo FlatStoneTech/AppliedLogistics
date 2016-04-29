@@ -2,12 +2,12 @@
   "forge_marker": 1,
   "defaults": {
     "textures": {
-      "up": "appliedlogistics:blocks/machines/digital/BuilderTop",
+      "up": "appliedlogistics:blocks/machines/digital/BuilderTopOn",
       "down": "appliedlogistics:blocks/machines/digital/BuilderBottom",
       "north": "appliedlogistics:blocks/machines/digital/BuilderFront",
-      "east": "appliedlogistics:blocks/machines/digital/BuilderRight",
-      "west": "appliedlogistics:blocks/machines/digital/BuilderLeft",
-      "south": "appliedlogistics:blocks/machines/digital/BuilderBack",
+      "east": "appliedlogistics:blocks/machines/digital/BuilderLeftOn",
+      "west": "appliedlogistics:blocks/machines/digital/BuilderRightOn",
+      "south": "appliedlogistics:blocks/machines/digital/BuilderBackOn",
       "particle": "appliedlogistics:blocks/machines/digital/BuilderFront"
     },
     "model": "minecraft:cube",
