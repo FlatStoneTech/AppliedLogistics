@@ -22,8 +22,6 @@ package tech.flatstone.appliedlogistics.common.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -44,7 +42,6 @@ import tech.flatstone.appliedlogistics.common.util.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public abstract class BlockBase extends Block implements IBlockRenderer {
     protected boolean isInventory = false;

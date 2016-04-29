@@ -20,14 +20,12 @@
 
 package tech.flatstone.appliedlogistics.client.gui.misc;
 
-import mezz.jei.Internal;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
@@ -43,7 +41,6 @@ import tech.flatstone.appliedlogistics.common.util.PlanDetails;
 import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 

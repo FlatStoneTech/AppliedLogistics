@@ -278,7 +278,7 @@ class GridServer implements Runnable {
     void stop() throws InterruptedException, BrokenBarrierException, TimeoutException {
         doTick.set(false);
         try {
-            barrier.await(500,MILLISECONDS);
+            barrier.await(500, MILLISECONDS);
             running.set(false);
         } catch (InterruptedException | TimeoutException e) {
             LogHelper.fatal(e.getLocalizedMessage());
@@ -294,7 +294,7 @@ class GridServer implements Runnable {
     }
 
     void resume() {
-        if (running.get()){
+        if (running.get()) {
             doTick.set(true);
         }
     }

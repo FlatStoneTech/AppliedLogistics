@@ -1,8 +1,6 @@
 package tech.flatstone.appliedlogistics.common.util;
 
-import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -12,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DebugItemHelper {
-    private String inventoryName;
     ItemStack[] inventory;
+    private String inventoryName;
 
     public DebugItemHelper(String inventoryName) {
         this.inventoryName = inventoryName;
@@ -22,6 +20,22 @@ public class DebugItemHelper {
         for (int i = 0; i < inventory.length; i++) {
             inventory[i] = new ItemStack(Blocks.barrier);
         }
+    }
+
+    public static List<ItemStack> init() {
+        List<ItemStack> debugItems = new ArrayList<>();
+
+        List<IDebugChest> debugChests = new ArrayList<>();
+        debugChests.add(new DebugOres1());
+        debugChests.add(new DebugOres2());
+        debugChests.add(new DebugOres3());
+        debugChests.add(new DebugOres4());
+
+        for (IDebugChest debugChest : debugChests) {
+            debugItems.add(debugChest.getDebugChest());
+        }
+
+        return debugItems;
     }
 
     public void setItem(int slot, ItemStack itemStack) {
@@ -43,7 +57,7 @@ public class DebugItemHelper {
         NBTTagList chestContents = new NBTTagList();
         for (int i = 0; i < this.inventory.length; i++) {
             NBTTagCompound chestItem = new NBTTagCompound();
-            chestItem.setByte("Slot", (byte)i);
+            chestItem.setByte("Slot", (byte) i);
             this.inventory[i].writeToNBT(chestItem);
             chestContents.appendTag(chestItem);
         }
@@ -55,21 +69,5 @@ public class DebugItemHelper {
         itemStack.setTagCompound(chestNBT);
 
         return itemStack;
-    }
-
-    public static List<ItemStack> init() {
-        List<ItemStack> debugItems = new ArrayList<>();
-
-        List<IDebugChest> debugChests = new ArrayList<>();
-        debugChests.add(new DebugOres1());
-        debugChests.add(new DebugOres2());
-        debugChests.add(new DebugOres3());
-        debugChests.add(new DebugOres4());
-
-        for (IDebugChest debugChest : debugChests) {
-            debugItems.add(debugChest.getDebugChest());
-        }
-
-        return debugItems;
     }
 }

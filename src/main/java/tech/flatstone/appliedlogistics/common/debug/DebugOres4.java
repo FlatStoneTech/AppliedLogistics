@@ -2,7 +2,6 @@ package tech.flatstone.appliedlogistics.common.debug;
 
 import net.minecraft.item.ItemStack;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
-import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.DebugItemHelper;
 import tech.flatstone.appliedlogistics.common.util.EnumOres;

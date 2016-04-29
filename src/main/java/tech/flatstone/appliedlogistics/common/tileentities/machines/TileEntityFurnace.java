@@ -148,7 +148,7 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
 
             // Checking to process items
             if (processItem != null && getMultiplier() > 0) {
-                smeltProgress[i]+= getMultiplier();
+                smeltProgress[i] += getMultiplier();
 
                 if (smeltProgress[i] > 300) {
                     smeltProgress[i] = 300;
@@ -176,7 +176,7 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
     }
 
     public int getMultiplier() {
-        int speed = (int)Math.floor((intTemperature - 100) / 100);
+        int speed = (int) Math.floor((intTemperature - 100) / 100);
         if (speed < 0) speed = 0;
         return speed;
     }
