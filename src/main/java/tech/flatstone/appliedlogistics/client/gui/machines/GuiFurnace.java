@@ -67,7 +67,7 @@ public class GuiFurnace extends GuiBase {
         if (tileEntity.getMaxTemp() >= 500) guiHelper.drawLineOnVerticalProgressBar(189, 10, 18, 52 + offsetY, 500, tileEntity.getMaxTemp(), colorProgressBackgroundGood);
         if (tileEntity.getMaxTemp() >= 600) guiHelper.drawLineOnVerticalProgressBar(189, 10, 18, 52 + offsetY, 600, tileEntity.getMaxTemp(), colorProgressBackgroundGood);
 
-        guiHelper.drawCenteredString(189, 68 + offsetY, 18, String.format("%dx", tileEntity.getMultipler()), 4210752);
+        guiHelper.drawCenteredString(189, 68 + offsetY, 18, String.format("%dx", tileEntity.getMultiplier()), 4210752);
 
 
     }
