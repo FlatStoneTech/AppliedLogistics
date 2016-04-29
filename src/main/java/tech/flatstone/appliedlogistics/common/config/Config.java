@@ -5,8 +5,6 @@ import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.IConfigElement;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.ModInfo;
 
@@ -18,12 +16,13 @@ public class Config extends GuiConfig {
     public static Configuration configuration;
 
     public Config(GuiScreen parentScreen) {
-        super(parentScreen,
+        super(
+                parentScreen,
                 Arrays.asList(new IConfigElement[]{
                         new ConfigElement(AppliedLogistics.configuration.getCategory(CONFIG_WORLDGEN)),
                 }),
                 ModInfo.MOD_ID, false, false, "Applied Logistics Configuration");
-
+        titleLine2 = AppliedLogistics.configuration.getConfigFile().getAbsolutePath();
     }
 
     public static Configuration initConfig(File configFile) {
@@ -38,10 +37,5 @@ public class Config extends GuiConfig {
         ConfigWorldGen.init(configuration);
 
         configuration.save();
-    }
-
-    @SubscribeEvent
-    public void onConfigurationChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
-        loadConfiguration();
     }
 }
