@@ -24,6 +24,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
@@ -57,32 +59,46 @@ public abstract class CommonProxy implements IProxy {
 
     @Override
     public void registerOreDict() {
-        for (int i = 0; i < EnumOres.values().length; i++) {
-            String oreName = EnumOres.byMeta(i).getName();
-
+        for (EnumOres ores : EnumOres.values()) {
+            int meta = ores.getMeta();
+            String oreName = ores.getName();
+            
             // Register Ore
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE))
-                OreDictionary.registerOre("ore" + oreName, new ItemStack(Blocks.BLOCK_ORE.getBlock(), 1, i));
+            if (ores.isTypeSet(EnumOreType.ORE))
+                OreDictionary.registerOre("ore" + oreName, Blocks.BLOCK_ORE.getStack(1, meta));
 
             // Register Ore Block
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.BLOCK))
-                OreDictionary.registerOre("block" + oreName, new ItemStack(Blocks.BLOCK_ORE_BLOCK.getBlock(), 1, i));
+            if (ores.isTypeSet(EnumOreType.BLOCK))
+                OreDictionary.registerOre("block" + oreName, Blocks.BLOCK_ORE_BLOCK.getStack(1, meta));
 
             // Register Ingot
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT))
-                OreDictionary.registerOre("ingot" + oreName, new ItemStack(Items.ITEM_ORE_INGOT.item, 1, i));
+            if (ores.isTypeSet(EnumOreType.INGOT))
+                OreDictionary.registerOre("ingot" + oreName, Items.ITEM_ORE_INGOT.getStack(1, meta));
 
             // Register Dusts
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.DUST))
-                OreDictionary.registerOre("dust" + oreName, new ItemStack(Items.ITEM_ORE_DUST.item, 1, i));
+            if (ores.isTypeSet(EnumOreType.DUST))
+                OreDictionary.registerOre("dust" + oreName, Items.ITEM_ORE_DUST.getStack(1, meta));
 
             // Register Nuggets
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.NUGGET))
-                OreDictionary.registerOre("nugget" + oreName, new ItemStack(Items.ITEM_ORE_NUGGET.item, 1, i));
+            if (ores.isTypeSet(EnumOreType.NUGGET))
+                OreDictionary.registerOre("nugget" + oreName, Items.ITEM_ORE_NUGGET.getStack(1, meta));
 
             // Register Gears
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.GEAR))
-                OreDictionary.registerOre("gear" + oreName, new ItemStack(Items.ITEM_MATERIAL_GEAR.item, 1, i));
+            if (ores.isTypeSet(EnumOreType.GEAR))
+                OreDictionary.registerOre("gear" + oreName, Items.ITEM_MATERIAL_GEAR.getStack(1, meta));
+        }
+    }
+
+    @Override
+    public void registerFluids() {
+        for (EnumOres ores : EnumOres.values()) {
+            int meta = ores.getMeta();
+            String oreName = ores.getName();
+
+            if (ores.isTypeSet(EnumOreType.FLUID)) {
+                Fluid fluid = FluidHelper.createFluid(oreName, "appliedlogistics:fluids." + oreName, false);
+                FluidRegistry.addBucketForFluid(fluid);
+            }
         }
     }
 

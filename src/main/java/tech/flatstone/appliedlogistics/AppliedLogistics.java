@@ -23,6 +23,7 @@ package tech.flatstone.appliedlogistics;
 import net.minecraft.block.state.IBlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -49,6 +50,10 @@ public class AppliedLogistics {
     public static IProxy proxy;
 
     public static Configuration configuration;
+
+    static {
+        FluidRegistry.enableUniversalBucket();
+    }
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -78,6 +83,8 @@ public class AppliedLogistics {
         proxy.registerRenderers();
 
         proxy.registerWorldGen();
+
+        proxy.registerFluids();
 
         IntegrationsManager.instance().index();
         IntegrationsManager.instance().preInit();
