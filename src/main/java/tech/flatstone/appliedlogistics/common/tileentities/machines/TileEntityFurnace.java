@@ -4,6 +4,7 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
@@ -31,6 +32,8 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
     private boolean upgradeExtraSlots = false;
     private int[] smeltProgress = new int[9];
     private int maxProcessItems = 1;
+    private Item lastFuelType;
+    private int lastFuelValue;
 
     @Override
     public boolean canBeRotated() {
@@ -75,7 +78,13 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
     @Override
     public void update() {
         if (fuelRemaining == 0 && inventory.getStackInSlot(0) != null && net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime(inventory.getStackInSlot(0)) > 0) {
-            fuelRemaining = net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime(inventory.getStackInSlot(0));
+            if (inventory.getStackInSlot(0).getItem() == lastFuelType) {
+                fuelRemaining = lastFuelValue;
+            } else {
+                fuelRemaining = net.minecraft.tileentity.TileEntityFurnace.getItemBurnTime(inventory.getStackInSlot(0));
+                lastFuelType = inventory.getStackInSlot(0).getItem();
+                lastFuelValue = fuelRemaining;
+            }
             fuelTotal = fuelRemaining;
             inventory.decrStackSize(0, 1);
             this.markForLightUpdate();
@@ -133,8 +142,8 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
             }
 
             // Checking to process items
-            if (processItem != null && getMultipler() > 0) {
-                smeltProgress[i]+=getMultipler();
+            if (processItem != null && getMultiplier() > 0) {
+                smeltProgress[i]+= getMultiplier();
 
                 if (smeltProgress[i] > 300) {
                     smeltProgress[i] = 300;
@@ -161,7 +170,7 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
         return (int) intTemperature;
     }
 
-    public int getMultipler() {
+    public int getMultiplier() {
         int speed = (int)Math.floor((intTemperature - 100) / 100);
         if (speed < 0) speed = 0;
         return speed;
