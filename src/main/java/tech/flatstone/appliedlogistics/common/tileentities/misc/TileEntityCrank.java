@@ -85,6 +85,11 @@ public class TileEntityCrank extends TileEntityBase implements ITickable, IWaila
         return true;
     }
 
+    @Override
+    public boolean canRenderBreaking() {
+        return true;
+    }
+
     public void doCrank() {
         if (rotating == true)
             return;
