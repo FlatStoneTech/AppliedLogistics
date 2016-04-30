@@ -37,10 +37,7 @@ import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
-import tech.flatstone.appliedlogistics.common.util.ICrankable;
-import tech.flatstone.appliedlogistics.common.util.InventoryHelper;
-import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
+import tech.flatstone.appliedlogistics.common.util.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -238,12 +235,14 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
                 ItemStack outItem = crushable.outItemStack.copy();
                 float itemChance = crushable.chance;
                 boolean itemFortune = crushable.luckMultiplier == 1.0f;
+
                 if (crushRNG == -1) crushRNG = this.rnd.nextFloat();
 
-                int itemCount = (int) Math.floor((itemChance + crushRNG + outItem.stackSize) * fortuneMultiplier);
-                //LogHelper.info(">>> Item Chance: (" + outItem.getUnlocalizedName() + ") " + itemCount);
+                if (itemFortune)
+                    itemChance = itemChance + fortuneMultiplier;
 
-                outItem.stackSize = itemCount;
+                outItem.stackSize = (int)Math.round(Math.floor(itemChance) + crushRNG * itemChance % 1);
+                if (outItem.stackSize == 0) outItem = null;
 
                 // Simulate placing into output slot...
                 if (InventoryHelper.addItemStackToInventory(outItem, inventory, 2, 10, true) != null) {
