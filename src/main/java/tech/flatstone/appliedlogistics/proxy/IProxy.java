@@ -73,5 +73,7 @@ public interface IProxy {
     void registerWorldGen();
 
     void registerConfiguration(File configFile);
+
+    void registerFluids();
 }
 

@@ -81,6 +81,8 @@ public class AppliedLogistics {
 
         proxy.registerWorldGen();
 
+        proxy.registerFluids();
+
         IntegrationsManager.instance().index();
         IntegrationsManager.instance().preInit();
     }

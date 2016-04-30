@@ -42,7 +42,7 @@ public enum EnumOres implements IStringSerializable {
     RUTILE("Rutile", 8, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.FLUID),
 
     // Alloys
-    TITANIUM("Titanium", 9, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR),
+    TITANIUM("Titanium", 9, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR, EnumOreType.FLUID),
     BRONZE("Bronze", 10, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR, EnumOreType.FLUID),
     ELECTRUM("Electrum", 11, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR, EnumOreType.FLUID),
     STEEL("Steel", 12, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR, EnumOreType.FLUID),

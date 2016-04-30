@@ -90,6 +90,22 @@ public class AppliedLogisticsCreativeTabs {
             p_78018_1_.addAll(0, DebugItemHelper.init());
         }
     };
+    public static final CreativeTabs tabFluids = new CreativeTabs(ModInfo.MOD_ID) {
+        @Override
+        public Item getTabIconItem() {
+            return net.minecraft.init.Items.bucket;
+        }
+
+        @Override
+        public String getTabLabel() {
+            return ModInfo.MOD_ID + ".fluids";
+        }
+
+        @Override
+        public void displayAllReleventItems(List<ItemStack> p_78018_1_) {
+            super.displayAllReleventItems(p_78018_1_);
+        }
+    };
 
     private AppliedLogisticsCreativeTabs() {
 
