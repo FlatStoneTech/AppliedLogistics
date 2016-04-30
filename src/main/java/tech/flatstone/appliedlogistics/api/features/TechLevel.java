@@ -25,10 +25,10 @@ import tech.flatstone.appliedlogistics.ModInfo;
 
 public enum TechLevel implements IStringSerializable {
     STONE_AGE("stone"),             // Only cobblestone machines, hand cranked
-    BRONZE_AGE("bronze"),           //
-    INDUSTRIAL_AGE("industrial"),   // Steam powered power system, machines can use power (Steel)
-    MECHANICAL_AGE("mechanical"),   //
-    DIGITAL_AGE("digital"),         //
+    BRONZE_AGE("bronze"),           // Better Machines, hand cranked
+    MECHANICAL_AGE("mechanical"),   // Steam powered power system, machines can use power (Steel), basic electrical
+    INDUSTRIAL_AGE("industrial"),   // More Advanced Machines, powered...
+    DIGITAL_AGE("digital"),         // Digital stuff...
     CREATIVE("creative"),;          // N/A
 
     private static final TechLevel[] META_LOOKUP = new TechLevel[values().length];
@@ -51,6 +51,10 @@ public enum TechLevel implements IStringSerializable {
         }
 
         return META_LOOKUP[meta];
+    }
+
+    public static TechLevel[] all() {
+        return TechLevel.values();
     }
 
     public int getMeta() {

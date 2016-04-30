@@ -9,6 +9,7 @@ public class InventoryHelper {
     }
 
     public static ItemStack addItemStackToInventory(ItemStack itemIn, IInventory inventory, int slotStart, int slotEnd, boolean simulate) {
+        if (itemIn == null) return null;
         ItemStack itemOut = itemIn.copy();
 
         for (int i = slotStart; i <= slotEnd; i++) {

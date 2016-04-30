@@ -21,8 +21,8 @@ label.appliedlogistics.plan=Plan
 label.appliedlogistics.tech_level=Tech Level
 label.appliedlogistics.tech_level.stone=Stone
 label.appliedlogistics.tech_level.bronze=Bronze
-label.appliedlogistics.tech_level.steel=Steel
 label.appliedlogistics.tech_level.industrial=Industrial
+label.appliedlogistics.tech_level.mechanical=Mechanical
 label.appliedlogistics.tech_level.digital=Digital
 label.appliedlogistics.tech_level.creative=Creative
 label.appliedlogistics.details=Details
@@ -57,13 +57,16 @@ tile.appliedlogistics.ore_block.steel.name=Block of Steel
 ## Builder ##############################
 tile.appliedlogistics.builder.stone.name=Stone Builder
 tile.appliedlogistics.builder.bronze.name=Bronze Builder
-tile.appliedlogistics.builder.steel.name=Steel Builder
 tile.appliedlogistics.builder.industrial.name=Industrial Builder
+tile.appliedlogistics.builder.mechanical.name=Mechanical Builder
 tile.appliedlogistics.builder.digital.name=Digital Builder
 tile.appliedlogistics.builder.creative.name=Creative Builder
 
-## Plan Builder #########################
-tile.appliedlogistics.plan_builder.name=Plan Builder
+## Furnace ##############################
+tile.appliedlogistics.machine_furnace.name=Furnace
+
+## Plan Chest ###########################
+tile.appliedlogistics.plan_chest.name=Plan Chest
 
 ## Plan Library #########################
 tile.appliedlogistics.plan_library.name=Plan Library
@@ -82,9 +85,12 @@ tile.appliedlogistics.misc_crank.name=Machine Crank
 item.appliedlogistics.tool_hammer.name=Forge Hammer
 
 ## Plans ################################
-item.appliedlogistics.plan.blank.name=Blank Machine Plan
+item.appliedlogistics.plan_blank.name=Blank Machine Plan
+item.appliedlogistics.plan.error.name=<<<ERROR>>>
 item.appliedlogistics.plan.pulverizer.name=Pulverizer Machine Plan
 item.appliedlogistics.plan.builder.name=Builder Machine Plan
+item.appliedlogistics.plan.library.name=Plan Library Plan
+item.appliedlogistics.plan.furnace.name=Furnace Plan
 
 ## Gears ################################
 item.appliedlogistics.material_gear.iron.name=Iron Gear
@@ -129,7 +135,7 @@ item.appliedlogistics.ore_dust.steel.name=Steel Dust
 
 ## Nuggets ##############################
 item.appliedlogistics.ore_nugget.iron.name=Iron Nugget
-item.appliedlogistics.ore_nugget.diamond.name=Diamond Nugget
+item.appliedlogistics.ore_nugget.diamond.name=Diamond Shard
 item.appliedlogistics.ore_nugget.copper.name=Copper Nugget
 item.appliedlogistics.ore_nugget.tin.name=Tin Nugget
 item.appliedlogistics.ore_nugget.silver.name=Silver Nugget
@@ -141,13 +147,19 @@ item.appliedlogistics.ore_nugget.bronze.name=Bronze Nugget
 item.appliedlogistics.ore_nugget.electrum.name=Electrum Nugget
 item.appliedlogistics.ore_nugget.steel.name=Steel Nugget
 
+## Cards ################################
+item.appliedlogistics.card_blank.name=Blank Card
+item.appliedlogistics.card_blank_advanced.name=Blank Advanced Card
+item.appliedlogistics.kit_automation.name=Automation Kit
+item.appliedlogistics.kit_crafting.name=Crafting Table Kit
+item.appliedlogistics.kit_redstone_input.name=Redstone Input Kit
+item.appliedlogistics.kit_redstone_output.name=Redstone Output Kit
+
 #########################################
 ###          Descriptions             ###
 #########################################
 
 description.appliedlogistics.plan.pulverizer=Box of tiny hammers that destroys rocky things!
-## Puliverizer Plan #####################
-description.appliedlogistics.plan.pulverizer.material.cobblestone=Used to build the machine frame\ntesting line 2...
 
 #########################################
 ###         Creative Tabs             ###

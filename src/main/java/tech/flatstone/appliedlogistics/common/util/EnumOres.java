@@ -23,27 +23,29 @@ package tech.flatstone.appliedlogistics.common.util;
 import net.minecraft.util.IStringSerializable;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public enum EnumOres implements IStringSerializable {
     // Vanilla Ores
-    IRON("Iron", 0, EnumOreType.NUGGET, EnumOreType.DUST, EnumOreType.VANILLA, EnumOreType.GEAR),
-    GOLD("Gold", 1, EnumOreType.DUST, EnumOreType.VANILLA, EnumOreType.GEAR),
+    IRON("Iron", 0, EnumOreType.NUGGET, EnumOreType.DUST, EnumOreType.VANILLA, EnumOreType.GEAR, EnumOreType.FLUID),
+    GOLD("Gold", 1, EnumOreType.DUST, EnumOreType.VANILLA, EnumOreType.GEAR, EnumOreType.FLUID),
     DIAMOND("Diamond", 2, EnumOreType.NUGGET, EnumOreType.VANILLA),
 
     // Base Ores
-    COPPER("Copper", 3, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.GEAR),
-    TIN("Tin", 4, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.GEAR),
-    SILVER("Silver", 5, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.GEAR),
-    LEAD("Lead", 6, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.GEAR),
-    NICKEL("Nickel", 7, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.GEAR),
-    RUTILE("Rutile", 8, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE),
+    COPPER("Copper", 3, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.GEAR, EnumOreType.FLUID),
+    TIN("Tin", 4, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.GEAR, EnumOreType.FLUID),
+    SILVER("Silver", 5, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.GEAR, EnumOreType.FLUID),
+    LEAD("Lead", 6, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.GEAR, EnumOreType.FLUID),
+    NICKEL("Nickel", 7, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.GEAR, EnumOreType.FLUID),
+    RUTILE("Rutile", 8, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.FLUID),
 
     // Alloys
-    TITANIUM("Titanium", 9, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR),
-    BRONZE("Bronze", 10, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR),
-    ELECTRUM("Electrum", 11, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR),
-    STEEL("Steel", 12, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR),
+    TITANIUM("Titanium", 9, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR, EnumOreType.FLUID),
+    BRONZE("Bronze", 10, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR, EnumOreType.FLUID),
+    ELECTRUM("Electrum", 11, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR, EnumOreType.FLUID),
+    STEEL("Steel", 12, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR, EnumOreType.FLUID),
 
     // Misc Gears
     WOOD("Wood", 13, EnumOreType.GEAR, EnumOreType.VANILLA),
@@ -59,12 +61,12 @@ public enum EnumOres implements IStringSerializable {
 
     private final String name;
     private final int meta;
-    private final EnumOreType[] enumOresTypelist;
+    private final EnumOreType[] enumOresTypeList;
 
     EnumOres(String name, int meta, EnumOreType... oreTypes) {
         this.name = name;
         this.meta = meta;
-        this.enumOresTypelist = oreTypes;
+        this.enumOresTypeList = oreTypes;
     }
 
     public static EnumOres byMeta(int meta) {
@@ -73,6 +75,18 @@ public enum EnumOres implements IStringSerializable {
         }
 
         return META_LOOKUP[meta];
+    }
+
+    public static List<EnumOres> byType(EnumOreType type) {
+        List<EnumOres> result = new ArrayList<>();
+
+        for (EnumOres ore : values()) {
+            if (ore.isTypeSet(type)) {
+                result.add(ore);
+            }
+        }
+
+        return result;
     }
 
     public int getMeta() {
@@ -92,6 +106,6 @@ public enum EnumOres implements IStringSerializable {
     }
 
     public boolean isTypeSet(EnumOreType enumOreType) {
-        return Arrays.asList(enumOresTypelist).contains(enumOreType);
+        return Arrays.asList(enumOresTypeList).contains(enumOreType);
     }
 }

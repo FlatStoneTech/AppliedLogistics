@@ -55,7 +55,7 @@ import java.util.List;
 
 public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockRenderer, IProvideEvent {
     public BlockCrank() {
-        super(Material.wood);
+        super(Material.wood, "misc/crank");
         this.setTileEntity(TileEntityCrank.class);
         this.setHarvestLevel("Axe", 0);
     }
@@ -91,8 +91,10 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
     }
 
     @Override
-    public void registerBlockRenderer() {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(ModInfo.MOD_ID + ":" + "misc_crank", "inventory"));
+    public void registerBlockItemRenderer() {
+        final String resourcePath = String.format("%s:%s", ModInfo.MOD_ID, this.resourcePath);
+
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(resourcePath, "inventory"));
     }
 
     @Override
@@ -270,5 +272,10 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
 
         if (mask != null && crankShaft.intersectsWith(mask))
             list.add(crankShaft);
+    }
+
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        return this.getDefaultState();
     }
 }

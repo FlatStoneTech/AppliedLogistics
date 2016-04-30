@@ -36,6 +36,7 @@ import net.minecraftforge.fml.common.IWorldGenerator;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import tech.flatstone.appliedlogistics.common.config.ConfigWorldGen;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 import tech.flatstone.appliedlogistics.common.util.WorldInfoHelper;
 
@@ -44,30 +45,25 @@ import java.util.List;
 import java.util.Random;
 
 public class WorldGen implements IWorldGenerator {
-    protected static ArrayList<OreGen> oreSpawnList = new ArrayList();
-    protected static ArrayList<Integer> oreDimBlackList = new ArrayList();
-    protected static ArrayListMultimap<Integer, ChunkCoordIntPair> retrogenChunks = ArrayListMultimap.create();
+    private static List<OreGen> oreSpawnList = new ArrayList<>();
+    private static ArrayListMultimap<Integer, ChunkCoordIntPair> retrogenChunks = ArrayListMultimap.create();
     private int numChunks = 2;
 
-    public static OreGen addOreGen(String name, IBlockState block, int maxVeinSize, int minY, int maxY, int chunkOccurrence, int weight) {
-        OreGen oreGen = new OreGen(name, block, maxVeinSize, Blocks.stone, minY, maxY, chunkOccurrence, weight);
+    public static OreGen addOreGen(String name, IBlockState block, ConfigWorldGen.OreConfig oreConfig) {
+        OreGen oreGen = new OreGen(name, block, Blocks.stone, oreConfig);
         oreSpawnList.add(oreGen);
         return oreGen;
     }
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
-        if (!oreDimBlackList.contains(world.provider.getDimensionId()))
-            for (OreGen oreGen : oreSpawnList)
-                oreGen.generate(world, random, chunkX * 16, chunkZ * 16);
+        generateOres(random, chunkX, chunkZ, world, true);
     }
 
     public void generateOres(Random random, int chunkX, int chunkZ, World world, boolean newGeneration) {
-        if (!oreDimBlackList.contains(world.provider.getDimensionId())) {
-            for (OreGen gen : oreSpawnList) {
-                if ((newGeneration) || (retroGenEnabled(gen.name))) {
-                    gen.generate(world, random, chunkX * 16, chunkZ * 16);
-                }
+        for (OreGen gen : oreSpawnList) {
+            if ((newGeneration) || (retroGenEnabled(gen.name))) {
+                gen.generate(world, random, chunkX * 16, chunkZ * 16);
             }
         }
     }
@@ -111,10 +107,10 @@ public class WorldGen implements IWorldGenerator {
         List<ChunkCoordIntPair> chunks = retrogenChunks.get(dimID);
 
         if ((chunks != null) && (!chunks.isEmpty())) {
-            if (WorldInfoHelper.getTps() >= 20){
+            if (WorldInfoHelper.getTps() >= 20) {
                 numChunks++;
             } else {
-                numChunks = Math.max(2,numChunks-1);
+                numChunks = Math.max(2, numChunks - 1);
             }
 
             for (int i = 1; i <= numChunks; i++) {
@@ -133,34 +129,30 @@ public class WorldGen implements IWorldGenerator {
                 generateOres(fmlRandom, chunkCoordIntPair.chunkXPos, chunkCoordIntPair.chunkZPos, event.world, false);
                 chunks.remove(index);
             }
-        }
 
-        if (counter > 0)
-            LogHelper.info("Retrogen was performed on " + counter + " Chunks, " + Math.max(0, chunks.size()) + " chunks remaining");
+            if (counter > 0)
+                LogHelper.info("Retrogen was performed on " + counter + " Chunks, " + Math.max(0, chunks.size()) + " chunks remaining");
+        }
     }
 
     public static class OreGen {
-        WorldGenMinable worldGenMinable;
-        int minY;
-        int maxY;
-        int chunkOccurrence;
-        int weight;
         String name;
+        WorldGenMinable worldGenMinable;
+        ConfigWorldGen.OreConfig oreConfig;
 
-        public OreGen(String name, IBlockState block, int maxVeinSize, Block replaceTarget, int minY, int maxY, int chunkOccurrence, int weight) {
+        public OreGen(String name, IBlockState block, Block replaceTarget, ConfigWorldGen.OreConfig oreConfig) {
             this.name = name;
-            this.worldGenMinable = new WorldGenMinable(block, maxVeinSize, BlockHelper.forBlock(replaceTarget));
-            this.minY = minY;
-            this.maxY = maxY;
-            this.chunkOccurrence = chunkOccurrence;
-            this.weight = weight;
+            this.worldGenMinable = new WorldGenMinable(block, oreConfig.VeinSize, BlockHelper.forBlock(replaceTarget));
+            this.oreConfig = oreConfig;
         }
 
         public void generate(World world, Random random, int x, int z) {
-            for (int i = 0; i < chunkOccurrence; i++) {
-                if (random.nextInt(100) < this.weight) {
-                    BlockPos blockPos = new BlockPos(x + random.nextInt(16), this.minY + random.nextInt(this.maxY - this.minY), z + random.nextInt(16));
-                    this.worldGenMinable.generate(world, random, blockPos);
+            if (oreConfig.Enabled && oreConfig.isEnabledForDim(world.provider.getDimensionId())) {
+                for (int i = 0; i < oreConfig.ChunkOccurrence; i++) {
+                    if (random.nextInt(100) < oreConfig.Weight) {
+                        BlockPos blockPos = new BlockPos(x + random.nextInt(16), oreConfig.MinY + random.nextInt(oreConfig.MaxY - oreConfig.MinY), z + random.nextInt(16));
+                        this.worldGenMinable.generate(world, random, blockPos);
+                    }
                 }
             }
         }

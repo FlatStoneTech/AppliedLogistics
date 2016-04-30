@@ -1,0 +1,44 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "minecraft:cube_all",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": [
+      {}
+    ],
+    "oretype": {
+      "copper": {
+        "textures": {
+          "all": "appliedlogistics:blocks/ores/ores/Copper"
+        }
+      },
+      "tin": {
+        "textures": {
+          "all": "appliedlogistics:blocks/ores/ores/Tin"
+        }
+      },
+      "silver": {
+        "textures": {
+          "all": "appliedlogistics:blocks/ores/ores/Silver"
+        }
+      },
+      "lead": {
+        "textures": {
+          "all": "appliedlogistics:blocks/ores/ores/Lead"
+        }
+      },
+      "nickel": {
+        "textures": {
+          "all": "appliedlogistics:blocks/ores/ores/Nickel"
+        }
+      },
+      "rutile": {
+        "textures": {
+          "all": "appliedlogistics:blocks/ores/ores/Rutile"
+        }
+      }
+    }
+  }
+}

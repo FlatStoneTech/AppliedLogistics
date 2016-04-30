@@ -15,6 +15,8 @@
 
 (todo)
 
+*Breif info from OddUser:*
+It is a mod that relies on progression to achieve automation. Throughout a progression of ages, you will be able to improve your machines to do more for you, like cook ores faster, or more ores at once... But, this doesn't even begin to explain it. The machines which process materials are configurable but not in a set way. You can choose from various upgrades, each of which has a set weight, and cannot exceed the limit for the machine you are working with.
 ## Project Links
 
 * [GitHub]()

@@ -20,25 +20,16 @@
 
 package tech.flatstone.appliedlogistics.common.items.plans;
 
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
-import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 
-public class PlanBlank extends ItemPlanBase implements IProvideRecipe, IItemRenderer {
+public class PlanBlank extends ItemPlanBase implements IProvideRecipe {
     public PlanBlank() {
         this.setMaxStackSize(16);
-    }
-
-    @Override
-    public void registerItemRenderer() {
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":plans/item_plan", "inventory"));
     }
 
     @Override

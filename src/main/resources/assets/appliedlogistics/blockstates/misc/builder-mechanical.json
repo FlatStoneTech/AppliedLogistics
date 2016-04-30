@@ -1,0 +1,34 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "up": "appliedlogistics:blocks/machines/mechanical/BuilderTop",
+      "down": "appliedlogistics:blocks/machines/mechanical/BuilderBottom",
+      "north": "appliedlogistics:blocks/machines/mechanical/BuilderFront",
+      "east": "appliedlogistics:blocks/machines/mechanical/BuilderLeft",
+      "west": "appliedlogistics:blocks/machines/mechanical/BuilderRight",
+      "south": "appliedlogistics:blocks/machines/mechanical/BuilderBack",
+      "particle": "appliedlogistics:blocks/machines/mechanical/BuilderFront"
+    },
+    "model": "minecraft:cube",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": [
+      {}
+    ],
+    "facing": {
+      "west": {
+        "y": -90
+      },
+      "east": {
+        "y": 90
+      },
+      "north": {
+      },
+      "south": {
+        "y": 180
+      }
+    }
+  }
+}

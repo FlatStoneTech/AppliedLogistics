@@ -20,6 +20,8 @@
 
 package tech.flatstone.appliedlogistics.proxy;
 
+import java.io.File;
+
 public interface IProxy {
     /**
      * Register Blocks
@@ -67,5 +69,11 @@ public interface IProxy {
     void registerGUIs();
 
     void registerRenderers();
+
+    void registerWorldGen();
+
+    void registerConfiguration(File configFile);
+
+    void registerFluids();
 }
 

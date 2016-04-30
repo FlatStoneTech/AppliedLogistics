@@ -20,25 +20,17 @@
 
 package tech.flatstone.appliedlogistics.common.items.cards;
 
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.items.ItemBase;
-import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 
-public class ItemKitCard extends ItemBase implements IProvideRecipe, IItemRenderer {
+public class ItemKitCard extends ItemBase implements IProvideRecipe {
     public ItemKitCard() {
+        super("cards/card_base");
         this.setMaxStackSize(16);
-    }
-
-    @Override
-    public void registerItemRenderer() {
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":cards/card_base", "inventory"));
     }
 
     @Override

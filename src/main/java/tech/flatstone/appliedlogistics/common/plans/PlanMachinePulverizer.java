@@ -51,7 +51,7 @@ public class PlanMachinePulverizer extends ItemPlanBase implements IMachinePlan 
 
         switch (techLevel) {
             case STONE_AGE:
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("cobblestone"), 12, 12, 2, 120, 200, "plan.pulverizer.material.cobblestone"));
+                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("cobblestone"), 12, 12, 2, 120, 200, "plan.pulverizer.materials.cobblestone"));
                 requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("plankWood"), 4, 4, 1, 40, 80, ""));
                 requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearWood"), 0, 1, 3, 60, 60, ""));
                 requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearStone"), 1, 2, 5, 80, 80, ""));
@@ -72,7 +72,11 @@ public class PlanMachinePulverizer extends ItemPlanBase implements IMachinePlan 
                 break;
 
             case INDUSTRIAL_AGE:
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearBronze"), 2, 4, 12, 80, 80, ""));
+                List<ItemStack> test = new ArrayList<>();
+                test.addAll(0, OreDictionary.getOres("cobblestone"));
+                test.addAll(1, OreDictionary.getOres("gearIron"));
+
+                requiredMaterialsList.add(new PlanRequiredMaterials(test, 2, 4, 12, 80, 80, ""));
 
                 planDetails = new PlanDetails(138, requiredMaterialsList, new ItemStack(Blocks.BLOCK_ORE_BLOCK.getBlock(), 1, 4));
                 break;

@@ -21,8 +21,13 @@
 package tech.flatstone.appliedlogistics;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import tech.flatstone.appliedlogistics.common.items.Items;
+import tech.flatstone.appliedlogistics.common.util.DebugItemHelper;
+
+import java.util.List;
 
 public class AppliedLogisticsCreativeTabs {
     public static final CreativeTabs tabGeneral = new CreativeTabs(ModInfo.MOD_ID) {
@@ -67,6 +72,38 @@ public class AppliedLogisticsCreativeTabs {
         @Override
         public String getTabLabel() {
             return ModInfo.MOD_ID + ".plans";
+        }
+    };
+    public static final CreativeTabs tabDebug = new CreativeTabs(ModInfo.MOD_ID) {
+        @Override
+        public Item getTabIconItem() {
+            return Item.getItemFromBlock(Blocks.command_block);
+        }
+
+        @Override
+        public String getTabLabel() {
+            return ModInfo.MOD_ID + ".debug";
+        }
+
+        @Override
+        public void displayAllReleventItems(List<ItemStack> p_78018_1_) {
+            p_78018_1_.addAll(0, DebugItemHelper.init());
+        }
+    };
+    public static final CreativeTabs tabFluids = new CreativeTabs(ModInfo.MOD_ID) {
+        @Override
+        public Item getTabIconItem() {
+            return net.minecraft.init.Items.bucket;
+        }
+
+        @Override
+        public String getTabLabel() {
+            return ModInfo.MOD_ID + ".fluids";
+        }
+
+        @Override
+        public void displayAllReleventItems(List<ItemStack> p_78018_1_) {
+            super.displayAllReleventItems(p_78018_1_);
         }
     };
 

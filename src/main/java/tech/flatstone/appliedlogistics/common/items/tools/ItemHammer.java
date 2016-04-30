@@ -23,7 +23,6 @@ package tech.flatstone.appliedlogistics.common.items.tools;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,18 +30,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.registries.HammerRegistry;
 import tech.flatstone.appliedlogistics.api.registries.helpers.Crushable;
 import tech.flatstone.appliedlogistics.common.items.ItemBaseTool;
 import tech.flatstone.appliedlogistics.common.items.Items;
-import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 import tech.flatstone.appliedlogistics.common.util.IProvideEvent;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.Platform;
@@ -51,14 +47,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
-public class ItemHammer extends ItemBaseTool implements IItemRenderer, IProvideRecipe, IProvideEvent {
+public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvideEvent {
     public static Set blocksEffectiveAgainst = Sets.newHashSet(new Block[]{});
     public static boolean canHarvest = false;
     public static ToolMaterial toolMaterialHammer = EnumHelper.addToolMaterial("APPLIEDLOGISTICSHAMMER", 3, 100, 15.0F, 4.0F, 30);
     private static IBlockState blockHarvest = null;
 
     public ItemHammer() {
-        super(3.0F, toolMaterialHammer, blocksEffectiveAgainst);
+        super(3.0F, toolMaterialHammer, blocksEffectiveAgainst, "tools/toolHammer");
         this.setUnlocalizedName("tool_hammer");
     }
 
@@ -124,11 +120,6 @@ public class ItemHammer extends ItemBaseTool implements IItemRenderer, IProvideR
         }
 
         return valid;
-    }
-
-    @Override
-    public void registerItemRenderer() {
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(ModInfo.MOD_ID + ":tools/toolHammer", "inventory"));
     }
 
     @Override

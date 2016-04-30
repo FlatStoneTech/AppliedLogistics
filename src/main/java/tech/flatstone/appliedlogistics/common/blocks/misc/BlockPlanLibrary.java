@@ -21,30 +21,28 @@
 package tech.flatstone.appliedlogistics.common.blocks.misc;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
-import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPlanLibrary;
-import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-public class BlockPlanLibrary extends BlockTileBase implements IProvideRecipe, IBlockRenderer {
+public class BlockPlanLibrary extends BlockTileBase implements IProvideRecipe {
     public BlockPlanLibrary() {
-        super(Material.rock);
+        super(Material.rock, "misc/planLibrary");
+        this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityPlanLibrary.class);
     }
 
@@ -55,6 +53,30 @@ public class BlockPlanLibrary extends BlockTileBase implements IProvideRecipe, I
 
         playerIn.openGui(AppliedLogistics.instance, 1, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
+    }
+
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        TileEntityPlanLibrary tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityPlanLibrary.class);
+        if (tileEntity != null) {
+            return state.withProperty(FACING, tileEntity.getForward());
+        }
+        return state.withProperty(FACING, EnumFacing.NORTH);
+    }
+
+    @Override
+    protected BlockState createBlockState() {
+        return new BlockState(this, FACING);
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return this.getDefaultState();
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return 0;
     }
 
     @Override
@@ -74,10 +96,5 @@ public class BlockPlanLibrary extends BlockTileBase implements IProvideRecipe, I
     public void breakBlock(World world, BlockPos blockPos, IBlockState blockState) {
         TileEntity tileEntity = world.getTileEntity(blockPos);
         TileHelper.DropItems(tileEntity, 0, 0);
-    }
-
-    @Override
-    public void registerBlockRenderer() {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(ModInfo.MOD_ID + ":misc/plan_builder", "inventory"));
     }
 }

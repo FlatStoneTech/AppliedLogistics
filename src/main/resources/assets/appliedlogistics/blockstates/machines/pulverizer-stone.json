@@ -1,0 +1,34 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "up": "appliedlogistics:blocks/machines/stone/PulverizerTop",
+      "down": "appliedlogistics:blocks/machines/stone/PulverizerBottom",
+      "north": "appliedlogistics:blocks/machines/stone/PulverizerFront",
+      "east": "appliedlogistics:blocks/machines/stone/PulverizerLeft",
+      "west": "appliedlogistics:blocks/machines/stone/PulverizerRight",
+      "south": "appliedlogistics:blocks/machines/stone/PulverizerBack",
+      "particle": "appliedlogistics:blocks/machines/stone/PulverizerFront"
+    },
+    "model": "minecraft:cube",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": [
+      {}
+    ],
+    "facing": {
+      "west": {
+        "y": -90
+      },
+      "east": {
+        "y": 90
+      },
+      "north": {
+      },
+      "south": {
+        "y": 180
+      }
+    }
+  }
+}

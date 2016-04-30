@@ -20,37 +20,47 @@
 
 package tech.flatstone.appliedlogistics;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import tech.flatstone.appliedlogistics.api.features.EnumOreType;
-import tech.flatstone.appliedlogistics.common.blocks.Blocks;
+import org.apache.commons.lang3.JavaVersion;
+import org.apache.commons.lang3.SystemUtils;
+import tech.flatstone.appliedlogistics.api.exceptions.OutdatedJavaException;
+import tech.flatstone.appliedlogistics.common.config.Config;
 import tech.flatstone.appliedlogistics.common.integrations.IntegrationsManager;
 import tech.flatstone.appliedlogistics.common.network.PacketHandler;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.world.WorldGen;
 import tech.flatstone.appliedlogistics.proxy.IProxy;
 
-@Mod(modid = ModInfo.MOD_ID, name = ModInfo.MOD_NAME, certificateFingerprint = ModInfo.FINGERPRINT, dependencies = ModInfo.DEPENDENCIES, version = ModInfo.VERSION_BUILD)
+@Mod(modid = ModInfo.MOD_ID, name = ModInfo.MOD_NAME, certificateFingerprint = ModInfo.FINGERPRINT, dependencies = ModInfo.DEPENDENCIES, version = ModInfo.VERSION_BUILD, guiFactory = ModInfo.GUI_FACTORY)
 public class AppliedLogistics {
     @Mod.Instance(ModInfo.MOD_ID)
     public static AppliedLogistics instance;
-
     @SidedProxy(clientSide = ModInfo.CLIENT_PROXY_CLASS, serverSide = ModInfo.SERVER_PROXY_CLASS)
     public static IProxy proxy;
+    public static Configuration configuration;
 
-    public static void addConfiguredWorldGen(IBlockState state, String config) {
-        //todo: need to get config in here like asap...
-        WorldGen.addOreGen(config, state, 4, 20, 85, 8, 100);
+    static {
+        FluidRegistry.enableUniversalBucket();
     }
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        //Make sure we are running on java 7 or newer
+        if (!SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_1_7)) {
+            throw new OutdatedJavaException(String.format("%s requires Java 7 or newer, Please update your java", ModInfo.MOD_NAME));
+        }
+
+        proxy.registerConfiguration(event.getSuggestedConfigurationFile());
+
         PacketHandler.init();
 
         // Register Blocks
@@ -69,17 +79,12 @@ public class AppliedLogistics {
 
         proxy.registerRenderers();
 
+        proxy.registerWorldGen();
+
+        proxy.registerFluids();
+
         IntegrationsManager.instance().index();
-
-        for (int i = 0; i < EnumOres.values().length; i++) {
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE)) {
-                addConfiguredWorldGen(Blocks.BLOCK_ORE.getBlock().getStateFromMeta(i), EnumOres.byMeta(i).getUnlocalizedName());
-            }
-        }
-
         IntegrationsManager.instance().preInit();
-
-
     }
 
     @Mod.EventHandler
@@ -92,6 +97,8 @@ public class AppliedLogistics {
         GameRegistry.registerWorldGenerator(worldGen, 0);
         MinecraftForge.EVENT_BUS.register(worldGen);
 
+        MinecraftForge.EVENT_BUS.register(this);
+
         // Init Integrations
         IntegrationsManager.instance().init();
     }
@@ -99,5 +106,12 @@ public class AppliedLogistics {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         IntegrationsManager.instance().postInit();
+    }
+
+    @SubscribeEvent
+    public void onConfigurationChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
+        if (event.modID.equals(ModInfo.MOD_ID)) {
+            Config.loadConfiguration();
+        }
     }
 }

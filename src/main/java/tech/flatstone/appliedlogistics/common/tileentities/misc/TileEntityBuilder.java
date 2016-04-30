@@ -42,7 +42,7 @@ import tech.flatstone.appliedlogistics.common.util.*;
 import java.util.*;
 
 
-public class TileEntityBuilder extends TileEntityMachineBase implements ITickable, INetworkButton, IWailaBodyMessage, ICrankable, IRotatable {
+public class TileEntityBuilder extends TileEntityMachineBase implements ITickable, INetworkButton, IWailaBodyMessage, ICrankable {
     private InternalInventory inventory = new InternalInventory(this, 56);
     private HashMap<TechLevel, PlanDetails> planDetails = new HashMap<TechLevel, PlanDetails>();
     private String planName = "";
@@ -52,6 +52,11 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
     private int ticksRemaining = 0;
     private boolean machineWorking = false;
     private int badCrankCount = 0;
+
+    @Override
+    public boolean canBeRotated() {
+        return true;
+    }
 
     public int getTotalWeight() {
         int weight = 0;
@@ -350,11 +355,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
                 this.markDirty();
                 break;
 
-            case 1: // Previous Tech Level
-                changeLevel(getPrevTechLevel());
-                break;
-
-            case 2: // Next Tech Level
+            case 1: // Select Tech Level
                 changeLevel(getNextTechLevel());
                 break;
         }
@@ -366,16 +367,11 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
             if (planDetails.containsKey(TechLevel.byMeta(i)))
                 return i;
         }
-        return nextTechLevel;
-    }
-
-    public int getPrevTechLevel() {
-        int prevTechLevel = selectedTechLevel;
-        for (int i = selectedTechLevel - 1; i >= 0; i--) {
+        for (int i = 0; i <= this.getBlockMetadata(); i++) {
             if (planDetails.containsKey(TechLevel.byMeta(i)))
                 return i;
         }
-        return prevTechLevel;
+        return nextTechLevel;
     }
 
     private void changeLevel(int newTechLevel) {
@@ -474,7 +470,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
 
     @Override
     public boolean canAttachCrank() {
-        return getBlockMetadata() == 0;
+        return getBlockMetadata() == 0 || getBlockMetadata() == 1;
     }
 
     @Override
@@ -489,11 +485,5 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
         }
 
         return false;
-    }
-
-    @Override
-    public EnumFacing getDirection() {
-        //return this.getDirectionFacing();
-        return EnumFacing.UP;
     }
 }

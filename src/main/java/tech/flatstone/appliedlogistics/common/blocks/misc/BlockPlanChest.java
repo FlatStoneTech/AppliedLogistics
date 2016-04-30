@@ -21,28 +21,26 @@
 package tech.flatstone.appliedlogistics.common.blocks.misc;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
-import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPlanChest;
-import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-public class BlockPlanChest extends BlockTileBase implements IBlockRenderer {
+public class BlockPlanChest extends BlockTileBase {
     public BlockPlanChest() {
-        super(Material.rock);
+        super(Material.rock, "misc/planChest");
+        this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityPlanChest.class);
     }
 
@@ -65,6 +63,30 @@ public class BlockPlanChest extends BlockTileBase implements IBlockRenderer {
     }
 
     @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        TileEntityPlanChest tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityPlanChest.class);
+        if (tileEntity != null) {
+            return state.withProperty(FACING, tileEntity.getForward());
+        }
+        return state.withProperty(FACING, EnumFacing.NORTH);
+    }
+
+    @Override
+    protected BlockState createBlockState() {
+        return new BlockState(this, FACING);
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return this.getDefaultState();
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return 0;
+    }
+
+    @Override
     public int getComparatorInputOverride(World worldIn, BlockPos pos) {
         TileEntityPlanChest tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityPlanChest.class);
         if (tileEntity == null || !tileEntity.isComparatorEnabled())
@@ -75,10 +97,5 @@ public class BlockPlanChest extends BlockTileBase implements IBlockRenderer {
             inventory.setInventorySlotContents(i, tileEntity.getStackInSlot(i));
         }
         return Container.calcRedstoneFromInventory(inventory);
-    }
-
-    @Override
-    public void registerBlockRenderer() {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(ModInfo.MOD_ID + ":misc/plan_library", "inventory"));
     }
 }

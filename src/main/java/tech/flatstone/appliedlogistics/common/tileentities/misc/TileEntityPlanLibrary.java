@@ -41,6 +41,11 @@ public class TileEntityPlanLibrary extends TileEntityMachineBase implements INet
     private int selectedPlan = 0;
 
     @Override
+    public boolean canBeRotated() {
+        return true;
+    }
+
+    @Override
     public void initMachineData() {
 
     }
@@ -88,6 +93,15 @@ public class TileEntityPlanLibrary extends TileEntityMachineBase implements INet
                 inventory.setInventorySlotContents(1, new ItemStack(Items.ITEM_PLAN.getItem()));
                 inventory.markDirty();
                 updateOutputItemNBT();
+            }
+
+            if (operation == InventoryOperation.decreaseStackSize && inputSlot != null) {
+                ItemStack newInputSlot = inputSlot.copy();
+                newInputSlot.stackSize--;
+                if (newInputSlot.stackSize == 0)
+                    newInputSlot = null;
+
+                inventory.setInventorySlotContents(0, newInputSlot);
             }
         }
     }

@@ -20,11 +20,22 @@
 
 package tech.flatstone.appliedlogistics.common.items;
 
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 
-public abstract class ItemBase extends Item {
+public abstract class ItemBase extends Item implements IItemRenderer {
+    protected String resourcePath = "";
+
+    public ItemBase(String resourcePath) {
+        this.resourcePath = resourcePath;
+    }
+
     @Override
     public String getUnlocalizedName() {
         String itemName = getUnwrappedUnlocalizedName(super.getUnlocalizedName());
@@ -43,5 +54,13 @@ public abstract class ItemBase extends Item {
 
     protected String getUnwrappedUnlocalizedName(String unlocalizedName) {
         return unlocalizedName.substring(unlocalizedName.indexOf(":") + 1);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void registerItemRenderer() {
+        final String resourcePath = String.format("%s:%s", ModInfo.MOD_ID, this.resourcePath);
+
+        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(resourcePath, "inventory"));
     }
 }
