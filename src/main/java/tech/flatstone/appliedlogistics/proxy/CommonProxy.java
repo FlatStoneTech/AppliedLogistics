@@ -64,7 +64,7 @@ public abstract class CommonProxy implements IProxy {
     public void registerOreDict() {
         for (EnumOres ores : EnumOres.values()) {
             int meta = ores.getMeta();
-            String oreName = ores.getName();
+            String oreName = ores.getOreName();
             
             // Register Ore
             if (ores.isTypeSet(EnumOreType.ORE))
@@ -96,7 +96,7 @@ public abstract class CommonProxy implements IProxy {
     public void registerFluids() {
         for (EnumOres ores : EnumOres.values()) {
             int meta = ores.getMeta();
-            String oreName = ores.getName();
+            String oreName = ores.getOreName();
 
             if (ores.isTypeSet(EnumOreType.FLUID)) {
                 //Fluid fluid = FluidHelper.createFluid(oreName, "appliedlogistics:fluids." + oreName, false);
@@ -109,7 +109,7 @@ public abstract class CommonProxy implements IProxy {
     public void registerCrusherRecipes() {
         // Ores -> Dust
         for (int i = 0; i < EnumOres.values().length; i++) {
-            String oreName = EnumOres.byMeta(i).getName();
+            String oreName = EnumOres.byMeta(i).getOreName();
 
             // Register Ores
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.DUST) && (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE) || EnumOres.byMeta(i).isTypeSet(EnumOreType.VANILLA))) {
