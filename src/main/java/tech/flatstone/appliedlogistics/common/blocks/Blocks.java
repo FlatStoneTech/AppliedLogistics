@@ -110,7 +110,7 @@ public enum Blocks {
         }
 
         // Register Block in Game Registry
-        GameRegistry.register(block.setCreativeTab(creativeTabs).setRegistryName(ModInfo.MOD_ID, internalName));
+        GameRegistry.register(block.setCreativeTab(creativeTabs).setRegistryName(ModInfo.MOD_ID, internalName).setUnlocalizedName(internalName));
 
         try {
             GameRegistry.register(itemBlockClass.getConstructor(Block.class).newInstance(block).setRegistryName(block.getRegistryName()));

@@ -53,7 +53,7 @@ public abstract class ItemBase extends Item implements IItemRenderer {
     }
 
     protected String getUnwrappedUnlocalizedName(String unlocalizedName) {
-        return unlocalizedName.substring(unlocalizedName.indexOf(":") + 1);
+        return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
     }
 
     @SideOnly(Side.CLIENT)

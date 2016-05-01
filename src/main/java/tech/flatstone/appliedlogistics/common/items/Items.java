@@ -69,6 +69,7 @@ public enum Items {
         this.internalName = internalName;
         this.item = item;
         item.setRegistryName(ModInfo.MOD_ID, internalName);
+        item.setUnlocalizedName(internalName);
         item.setCreativeTab(creativeTabs);
     }
 
