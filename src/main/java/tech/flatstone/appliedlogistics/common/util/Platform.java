@@ -74,22 +74,25 @@ public class Platform {
         }
     }
 
-    public static String getPropertyString(Map<IProperty, Comparable> p_178131_1_, String... extrasArgs) {
+    public static String getPropertyString(Map < IProperty<?>, Comparable<? >> values, String... extrasArgs)
+    {
         StringBuilder stringbuilder = new StringBuilder();
 
-        for (Map.Entry<IProperty, Comparable> entry : p_178131_1_.entrySet()) {
-            if (stringbuilder.length() != 0) {
+        for (Map.Entry< IProperty<?>, Comparable<? >> entry : values.entrySet())
+        {
+            if (stringbuilder.length() != 0)
+            {
                 stringbuilder.append(",");
             }
 
-            IProperty iproperty = (IProperty) entry.getKey();
-            Comparable comparable = (Comparable) entry.getValue();
+            IProperty<?> iproperty = (IProperty)entry.getKey();
             stringbuilder.append(iproperty.getName());
             stringbuilder.append("=");
-            stringbuilder.append(iproperty.getName(comparable));
+            stringbuilder.append(getPropertyName(iproperty, (Comparable)entry.getValue()));
         }
 
-        if (stringbuilder.length() == 0) {
+        if (stringbuilder.length() == 0)
+        {
             stringbuilder.append("inventory");
         }
 
@@ -100,6 +103,11 @@ public class Platform {
         }
 
         return stringbuilder.toString();
+    }
+
+    private static <T extends Comparable<T>> String getPropertyName(IProperty<T> p_187489_1_, Comparable<?> p_187489_2_)
+    {
+        return p_187489_1_.getName((T)p_187489_2_);
     }
 
     public static boolean isDevEnv() {

@@ -26,17 +26,20 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
@@ -61,24 +64,24 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
     }
 
     @Override
-    public boolean isFullCube() {
+    public boolean isFullCube(IBlockState state) {
         return false;
     }
 
     @Override
-    public boolean isOpaqueCube() {
+    public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
     @Override
-    public int getRenderType() {
-        return 2;
+    public EnumBlockRenderType getRenderType(IBlockState state) {
+        return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
-    @Override
-    public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos) {
-        setBlockBounds(7 / 16f, 0, 7 / 16f, 9 / 16f, .75f, 9 / 16f);
-    }
+    //@Override
+    //public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos) {
+    //    setBlockBounds(7 / 16f, 0, 7 / 16f, 9 / 16f, .75f, 9 / 16f);
+    //}
 
     @Override
     public void RegisterRecipes() {
@@ -98,7 +101,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         //todo: check not fake player
         //todo: check that there is work to do
 
@@ -141,7 +144,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
     }
 
     @Override
-    public MovingObjectPosition collisionRayTrace(World worldIn, BlockPos pos, Vec3 start, Vec3 end) {
+    public RayTraceResult collisionRayTrace(IBlockState blockState, World worldIn, BlockPos pos, Vec3d start, Vec3d end) {
         TileEntityCrank tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityCrank.class);
         EnumFacing crankRotation = tileEntity.getCrankRotation();
 
@@ -150,30 +153,30 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
 
         crankTop = RotationHelper.rotateBB(crankTop, crankRotation).offset(pos.getX(), pos.getY(), pos.getZ());
 
-        MovingObjectPosition crankTopPos = crankTop.calculateIntercept(start, end);
-        MovingObjectPosition crankShaftPos = crankShaft.calculateIntercept(start, end);
+        RayTraceResult crankTopPos = crankTop.calculateIntercept(start, end);
+        RayTraceResult crankShaftPos = crankShaft.calculateIntercept(start, end);
 
         if (crankTopPos != null) {
-            return new MovingObjectPosition(start.addVector((double) pos.getX(), (double) pos.getY(), (double) pos.getZ()), crankTopPos.sideHit, pos);
+            return new RayTraceResult(start.addVector((double) pos.getX(), (double) pos.getY(), (double) pos.getZ()), crankTopPos.sideHit, pos);
         }
 
         if (crankShaftPos != null)
-            return new MovingObjectPosition(start.addVector((double) pos.getX(), (double) pos.getY(), (double) pos.getZ()), crankShaftPos.sideHit, pos);
+            return new RayTraceResult(start.addVector((double) pos.getX(), (double) pos.getY(), (double) pos.getZ()), crankShaftPos.sideHit, pos);
 
         return null;
     }
 
     @SubscribeEvent
     public void drawBlockHighlight(DrawBlockHighlightEvent event) {
-        if (!(event.target.typeOfHit == MovingObjectType.BLOCK && ItemStack.areItemsEqual(new ItemStack(event.player.worldObj.getBlockState(event.target.getBlockPos()).getBlock()), new ItemStack(Blocks.BLOCK_MISC_CRANK.getBlock()))))
+        if (!(event.getTarget().typeOfHit == RayTraceResult.Type.BLOCK && ItemStack.areItemsEqual(new ItemStack(event.getPlayer().worldObj.getBlockState(event.getTarget().getBlockPos()).getBlock()), new ItemStack(Blocks.BLOCK_MISC_CRANK.getBlock()))))
             return;
 
         event.setCanceled(true);
 
-        TileEntityCrank tileEntity = TileHelper.getTileEntity(event.player.worldObj, event.target.getBlockPos(), TileEntityCrank.class);
+        TileEntityCrank tileEntity = TileHelper.getTileEntity(event.getPlayer().worldObj, event.getTarget().getBlockPos(), TileEntityCrank.class);
 
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
-        BlockPos posBlock = event.target.getBlockPos();
+        BlockPos posBlock = event.getTarget().getBlockPos();
 
         AxisAlignedBB crankTop = new AxisAlignedBB(7 / 16d, 10 / 16d, 2 / 16d, 9 / 16d, 12 / 16d, 14 / 16d).offset(-0.5, -0.5, -0.5);
         AxisAlignedBB crankShaft = new AxisAlignedBB(7 / 16d, 0, 7 / 16d, 9 / 16d, 10 / 16d, 9 / 16d).offset(-0.5, -0.5, -0.5);
@@ -181,7 +184,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
         GL11.glPushMatrix();
         GlStateManager.translate(posBlock.getX() - renderManager.viewerPosX + 0.5, posBlock.getY() - renderManager.viewerPosY + 0.5, posBlock.getZ() - renderManager.viewerPosZ + 0.5);
         if (tileEntity.isRotating())
-            GlStateManager.rotate(tileEntity.getRotation() + 15 * event.partialTicks, 0, 1, 0);
+            GlStateManager.rotate(tileEntity.getRotation() + 15 * event.getPartialTicks(), 0, 1, 0);
         if (!tileEntity.isRotating())
             GlStateManager.rotate(tileEntity.getRotation(), 0, 1, 0);
 
@@ -193,7 +196,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
         GlStateManager.depthMask(false);
 
         Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        VertexBuffer worldrenderer = tessellator.getBuffer();
         worldrenderer.begin(3, DefaultVertexFormats.POSITION);
         worldrenderer.pos(crankShaft.maxX, crankShaft.maxY, crankShaft.maxZ).endVertex();
         worldrenderer.pos(crankTop.maxX, crankTop.minY, crankTop.maxZ).endVertex();
@@ -258,7 +261,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
     }
 
     @Override
-    public void addCollisionBoxesToList(World worldIn, BlockPos pos, IBlockState state, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
+    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity p_185477_6_) {
         TileEntityCrank tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityCrank.class);
         EnumFacing crankRotation = tileEntity.getCrankRotation();
 

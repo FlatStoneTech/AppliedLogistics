@@ -20,7 +20,7 @@
 
 package tech.flatstone.appliedlogistics.common.util;
 
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import tech.flatstone.appliedlogistics.ModInfo;
 
 public enum LanguageHelper {
@@ -40,9 +40,9 @@ public enum LanguageHelper {
 
     public String translateMessage(String message) {
         if (this.name == "")
-            return StatCollector.translateToLocal(message);
+            return I18n.translateToLocal(message);
 
-        return StatCollector.translateToLocal(String.format("%s.%s.%s", this.name, ModInfo.MOD_ID, message));
+        return I18n.translateToLocal(String.format("%s.%s.%s", this.name, ModInfo.MOD_ID, message));
     }
 
     //Todo: for later Minecraft.getMinecraft().thePlayer.uniqueID.toString() == "4f3a8d1e-33c1-44e7-bce8-e683027c7dac"

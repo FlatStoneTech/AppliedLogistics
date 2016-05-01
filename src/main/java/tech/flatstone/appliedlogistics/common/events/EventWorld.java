@@ -25,8 +25,6 @@ import net.minecraftforge.event.world.BlockEvent;
 
 public class EventWorld {
     public static void blockBreakEvent(BlockEvent.BreakEvent event) {
-        IBlockState state = event.state;
-
-
+        IBlockState state = event.getState();
     }
 }

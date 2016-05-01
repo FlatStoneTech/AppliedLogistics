@@ -23,12 +23,13 @@ package tech.flatstone.appliedlogistics.common.world;
 import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.block.state.pattern.BlockHelper;
+import net.minecraft.block.state.pattern.BlockMatcher;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraftforge.event.world.ChunkDataEvent;
@@ -53,11 +54,6 @@ public class WorldGen implements IWorldGenerator {
         OreGen oreGen = new OreGen(name, block, Blocks.stone, oreConfig);
         oreSpawnList.add(oreGen);
         return oreGen;
-    }
-
-    @Override
-    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
-        generateOres(random, chunkX, chunkZ, world, true);
     }
 
     public void generateOres(Random random, int chunkX, int chunkZ, World world, boolean newGeneration) {
@@ -89,7 +85,7 @@ public class WorldGen implements IWorldGenerator {
 
     @SubscribeEvent
     public void chunkLoad(ChunkDataEvent.Load event) {
-        int dimID = event.world.provider.getDimensionId();
+        int dimID = event.getWorld().provider.getDimension();
         if ((!event.getData().getCompoundTag("AppliedLogistics").hasKey("DEFAULT")) && retrogenEnabled()) {
             LogHelper.info("Chunk " + event.getChunk().getChunkCoordIntPair() + " has been flagged for Ore RetroGen by Applied Logistics");
             retrogenChunks.put(dimID, event.getChunk().getChunkCoordIntPair());
@@ -101,7 +97,7 @@ public class WorldGen implements IWorldGenerator {
         if ((event.side == Side.CLIENT) || (event.phase == TickEvent.Phase.START))
             return;
 
-        int dimID = event.world.provider.getDimensionId();
+        int dimID = event.world.provider.getDimension();
         int counter = 0;
 
         List<ChunkCoordIntPair> chunks = retrogenChunks.get(dimID);
@@ -135,6 +131,11 @@ public class WorldGen implements IWorldGenerator {
         }
     }
 
+    @Override
+    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
+        generateOres(random, chunkX, chunkZ, world, true);
+    }
+
     public static class OreGen {
         String name;
         WorldGenMinable worldGenMinable;
@@ -142,12 +143,12 @@ public class WorldGen implements IWorldGenerator {
 
         public OreGen(String name, IBlockState block, Block replaceTarget, ConfigWorldGen.OreConfig oreConfig) {
             this.name = name;
-            this.worldGenMinable = new WorldGenMinable(block, oreConfig.VeinSize, BlockHelper.forBlock(replaceTarget));
+            this.worldGenMinable = new WorldGenMinable(block, oreConfig.VeinSize, BlockMatcher.forBlock(replaceTarget));
             this.oreConfig = oreConfig;
         }
 
         public void generate(World world, Random random, int x, int z) {
-            if (oreConfig.Enabled && oreConfig.isEnabledForDim(world.provider.getDimensionId())) {
+            if (oreConfig.Enabled && oreConfig.isEnabledForDim(world.provider.getDimension())) {
                 for (int i = 0; i < oreConfig.ChunkOccurrence; i++) {
                     if (random.nextInt(100) < oreConfig.Weight) {
                         BlockPos blockPos = new BlockPos(x + random.nextInt(16), oreConfig.MinY + random.nextInt(oreConfig.MaxY - oreConfig.MinY), z + random.nextInt(16));

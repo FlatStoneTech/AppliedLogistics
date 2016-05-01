@@ -26,7 +26,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
@@ -92,8 +92,8 @@ public class PlanItem extends ItemPlanBase {
             String planDescription = ((IMachinePlan) plan).getLocalizedPlanDescription();
             for (String message : Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(planDescription, 150)) {
                 tooltip.add(String.format("%s%s%s",
-                        EnumChatFormatting.YELLOW,
-                        EnumChatFormatting.ITALIC,
+                        TextFormatting.YELLOW,
+                        TextFormatting.ITALIC,
                         message
                 ));
             }

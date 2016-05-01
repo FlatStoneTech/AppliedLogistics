@@ -25,7 +25,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.ModInfo;
@@ -150,7 +150,7 @@ public abstract class GuiBase extends GuiContainer {
 
         for (int i = 0; i < list.size(); ++i) {
             if (i != 0) {
-                list.set(i, EnumChatFormatting.GRAY + list.get(i));
+                list.set(i, TextFormatting.GRAY + list.get(i));
                 continue;
             }
 
@@ -163,8 +163,8 @@ public abstract class GuiBase extends GuiContainer {
             if (!materials.getDescription().isEmpty()) {
                 for (String message : font.listFormattedStringToWidth(materials.getDescription(), 150)) {
                     list.add(i + j, String.format("%s%s%s",
-                            EnumChatFormatting.YELLOW,
-                            EnumChatFormatting.ITALIC,
+                            TextFormatting.YELLOW,
+                            TextFormatting.ITALIC,
                             message
                     ));
                     j++;
@@ -174,15 +174,15 @@ public abstract class GuiBase extends GuiContainer {
             // Add Min / Max
             if (materials.getMinCount() == materials.getMaxCount()) {
                 list.add(i + j, String.format("%s%s%s: %s",
-                        EnumChatFormatting.GRAY,
-                        EnumChatFormatting.ITALIC,
+                        TextFormatting.GRAY,
+                        TextFormatting.ITALIC,
                         LanguageHelper.LABEL.translateMessage("required"),
                         materials.getMinCount()
                 ));
             } else {
                 list.add(i + j, String.format("%s%s%s: %s / %s %s",
-                        EnumChatFormatting.GRAY,
-                        EnumChatFormatting.ITALIC,
+                        TextFormatting.GRAY,
+                        TextFormatting.ITALIC,
                         LanguageHelper.LABEL.translateMessage("min"),
                         materials.getMinCount(),
                         LanguageHelper.LABEL.translateMessage("max"),
@@ -194,15 +194,15 @@ public abstract class GuiBase extends GuiContainer {
             // Add Weight Information
             if (materials.getMinCount() == materials.getMaxCount()) {
                 list.add(i + j, String.format("%s%s%s: %skg",
-                        EnumChatFormatting.GRAY,
-                        EnumChatFormatting.ITALIC,
+                        TextFormatting.GRAY,
+                        TextFormatting.ITALIC,
                         LanguageHelper.LABEL.translateMessage("weight_added"),
                         materials.getItemWeight() * materials.getMaxCount()
                 ));
             } else {
                 list.add(i + j, String.format("%s%s%s: %skg",
-                        EnumChatFormatting.GRAY,
-                        EnumChatFormatting.ITALIC,
+                        TextFormatting.GRAY,
+                        TextFormatting.ITALIC,
                         LanguageHelper.LABEL.translateMessage("weight_per_item"),
                         materials.getItemWeight()
                 ));

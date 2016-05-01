@@ -24,7 +24,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 import tech.flatstone.appliedlogistics.common.util.Platform;
 import tech.flatstone.appliedlogistics.common.util.iterators.InventoryIterator;
 
@@ -221,7 +221,7 @@ public class InternalDynamicInventory implements IInventory, Iterable<ItemStack>
     }
 
     @Override
-    public IChatComponent getDisplayName() {
+    public ITextComponent getDisplayName() {
         return null;
     }
 }

@@ -20,18 +20,18 @@
 
 package tech.flatstone.appliedlogistics.client.util;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.client.renderer.vertex.VertexFormatElement.EnumType;
 import net.minecraft.client.renderer.vertex.VertexFormatElement.EnumUsage;
-import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.client.model.IColoredBakedQuad;
-import net.minecraftforge.client.model.IFlexibleBakedModel;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -57,7 +57,7 @@ public class ModelTransformer {
         List<BakedQuad>[] quads = new List[7];
         for (int i = 0; i < quads.length; i++) {
             quads[i] = new ArrayList<BakedQuad>();
-            for (BakedQuad quad : (i == 6 ? model.getGeneralQuads() : model.getFaceQuads(EnumFacing.getFront(i))))
+            for (BakedQuad quad : (i == 6 ? model.getQuads(null, null, 0) : model.getQuads(null, EnumFacing.getFront(i), 0)))
                 quads[i].add(transform(quad, transformer, vfTransformer, original, newFormat));
         }
         return new TransformedModel(model, quads, newFormat);
@@ -71,7 +71,7 @@ public class ModelTransformer {
         f.setAccessible(true);
         UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
         if (quad.hasTintIndex()) builder.setQuadTint(quad.getTintIndex());
-        if (quad instanceof IColoredBakedQuad) builder.setQuadColored();
+        //if (quad instanceof IColoredBakedQuad) builder.setQuadColored();
         builder.setQuadOrientation(quad.getFace());
         LightUtil.putBakedQuad(builder, quad);
         UnpackedBakedQuad unpackedQuad = builder.build();
@@ -190,7 +190,7 @@ public class ModelTransformer {
 
     }
 
-    private static final class TransformedModel implements IBakedModel, IFlexibleBakedModel {
+    private static final class TransformedModel implements IBakedModel {
 
         private final IBakedModel parent;
         private final List<BakedQuad>[] quads;
@@ -204,13 +204,9 @@ public class ModelTransformer {
         }
 
         @Override
-        public List<BakedQuad> getFaceQuads(EnumFacing facing) {
-
-            return quads[facing.ordinal()];
-        }
-
-        @Override
-        public List<BakedQuad> getGeneralQuads() {
+        public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
+            if (side != null)
+                return quads[side.ordinal()];
 
             return quads[6];
         }
@@ -246,9 +242,8 @@ public class ModelTransformer {
         }
 
         @Override
-        public VertexFormat getFormat() {
-
-            return format;
+        public ItemOverrideList getOverrides() {
+            return null;
         }
 
     }

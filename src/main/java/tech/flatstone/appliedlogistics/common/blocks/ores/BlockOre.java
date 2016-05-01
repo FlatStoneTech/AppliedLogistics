@@ -22,7 +22,7 @@ package tech.flatstone.appliedlogistics.common.blocks.ores;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -34,7 +34,7 @@ import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import java.util.List;
 
 public class BlockOre extends BlockBase {
-    public static final PropertyEnum ORES = PropertyEnum.create("oreType", EnumOres.class);
+    public static final PropertyEnum ORES = PropertyEnum.create("oretype", EnumOres.class);
 
     public BlockOre() {
         super(Material.rock, "ores/ore");
@@ -53,8 +53,8 @@ public class BlockOre extends BlockBase {
     }
 
     @Override
-    protected BlockState createBlockState() {
-        return new BlockState(this, ORES);
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, ORES);
     }
 
     @Override
