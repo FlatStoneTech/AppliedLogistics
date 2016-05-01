@@ -99,8 +99,8 @@ public abstract class CommonProxy implements IProxy {
             String oreName = ores.getName();
 
             if (ores.isTypeSet(EnumOreType.FLUID)) {
-                Fluid fluid = FluidHelper.createFluid(oreName, "appliedlogistics:fluids." + oreName, false);
-                FluidRegistry.addBucketForFluid(fluid);
+                //Fluid fluid = FluidHelper.createFluid(oreName, "appliedlogistics:fluids." + oreName, false);
+                //FluidRegistry.addBucketForFluid(fluid);
             }
         }
     }

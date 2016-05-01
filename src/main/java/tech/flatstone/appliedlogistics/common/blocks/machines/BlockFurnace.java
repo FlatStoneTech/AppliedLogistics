@@ -2,10 +2,12 @@ package tech.flatstone.appliedlogistics.common.blocks.machines;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.IBlockAccess;
@@ -30,9 +32,8 @@ public class BlockFurnace extends BlockTechBase {
     }
 
     @Override
-    public int getLightValue(IBlockAccess world, BlockPos pos) {
-        IBlockState blockState = getActualState(getDefaultState(), world, pos);
-        return (boolean) blockState.getValue(WORKING) ? 15 : 0;
+    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
+        return state.getValue(WORKING) ? 15 : 0;
     }
 
     @Override
@@ -56,12 +57,12 @@ public class BlockFurnace extends BlockTechBase {
     }
 
     @Override
-    protected BlockState createBlockState() {
-        return new BlockState(this, TECHLEVEL, FACING, WORKING);
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, TECHLEVEL, FACING, WORKING);
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntityFurnace tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityFurnace.class);
 
         if (worldIn.isRemote)
@@ -71,9 +72,8 @@ public class BlockFurnace extends BlockTechBase {
         return true;
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
-    public void randomDisplayTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
+    public void randomDisplayTick(IBlockState state, World worldIn, BlockPos pos, Random rand) {
         TileEntityFurnace tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityFurnace.class);
         if (tileEntity == null)
             return;

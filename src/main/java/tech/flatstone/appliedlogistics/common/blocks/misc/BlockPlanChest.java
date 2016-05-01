@@ -21,12 +21,14 @@
 package tech.flatstone.appliedlogistics.common.blocks.misc;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.util.BlockPos;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -45,8 +47,7 @@ public class BlockPlanChest extends BlockTileBase {
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
-        TileEntityPlanChest tileEntityPlanChest = TileHelper.getTileEntity(worldIn, pos, TileEntityPlanChest.class);
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {        TileEntityPlanChest tileEntityPlanChest = TileHelper.getTileEntity(worldIn, pos, TileEntityPlanChest.class);
         if (tileEntityPlanChest != null)
             LogHelper.info(">>> Rows: " + tileEntityPlanChest.getSlotRows());
 
@@ -58,7 +59,8 @@ public class BlockPlanChest extends BlockTileBase {
     }
 
     @Override
-    public boolean hasComparatorInputOverride() {
+    public boolean hasComparatorInputOverride(IBlockState state) {
+        //todo: // FIXME: 4/30/16
         return true;
     }
 
@@ -72,8 +74,8 @@ public class BlockPlanChest extends BlockTileBase {
     }
 
     @Override
-    protected BlockState createBlockState() {
-        return new BlockState(this, FACING);
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, FACING);
     }
 
     @Override
@@ -87,7 +89,7 @@ public class BlockPlanChest extends BlockTileBase {
     }
 
     @Override
-    public int getComparatorInputOverride(World worldIn, BlockPos pos) {
+    public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos) {
         TileEntityPlanChest tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityPlanChest.class);
         if (tileEntity == null || !tileEntity.isComparatorEnabled())
             return 0;

@@ -68,7 +68,7 @@ public enum Items {
     Items(String internalName, Item item, CreativeTabs creativeTabs) {
         this.internalName = internalName;
         this.item = item;
-        item.setUnlocalizedName(ModInfo.MOD_ID + ":" + internalName);
+        item.setRegistryName(ModInfo.MOD_ID, internalName);
         item.setCreativeTab(creativeTabs);
     }
 
@@ -83,7 +83,8 @@ public enum Items {
             throw new IllegalArgumentException(String.format("Unlocalized names need to be all lowercase! Item: %s", internalName));
         }
 
-        GameRegistry.registerItem(item, internalName);
+        //GameRegistry.registerItem(item, internalName);
+        GameRegistry.register(item);
 
         if (item instanceof IItemRenderer && Platform.isClient()) {
             ((IItemRenderer) item).registerItemRenderer();

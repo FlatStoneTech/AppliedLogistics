@@ -26,6 +26,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
+import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.machines.BlockFurnace;
 import tech.flatstone.appliedlogistics.common.blocks.machines.BlockPulverizer;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockBuilder;
@@ -44,6 +45,7 @@ import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 import tech.flatstone.appliedlogistics.common.util.Platform;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 
 public enum Blocks {
@@ -108,7 +110,19 @@ public enum Blocks {
         }
 
         // Register Block in Game Registry
-        GameRegistry.registerBlock(block.setCreativeTab(creativeTabs).setUnlocalizedName(internalName), itemBlockClass, internalName);
+        GameRegistry.register(block.setCreativeTab(creativeTabs).setRegistryName(ModInfo.MOD_ID, internalName));
+
+        try {
+            GameRegistry.register(itemBlockClass.getConstructor(Block.class).newInstance(block).setRegistryName(block.getRegistryName()));
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
 
         // If bock has Render Info, Register Renderer
         if (block instanceof IBlockRenderer && Platform.isClient()) {

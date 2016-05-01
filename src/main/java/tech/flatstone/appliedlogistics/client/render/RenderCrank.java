@@ -25,13 +25,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.client.resources.model.SimpleBakedModel;
+import net.minecraft.client.renderer.block.model.SimpleBakedModel;
 import net.minecraftforge.client.model.animation.FastTESR;
 import tech.flatstone.appliedlogistics.client.util.ModelTransformer;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
@@ -44,7 +44,7 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderCrank extends FastTESR<TileEntityCrank> {
     @Override
-    public void renderTileEntityFast(final TileEntityCrank te, double x, double y, double z, final float partialTicks, int destroyStage, WorldRenderer worldRenderer) {
+    public void renderTileEntityFast(final TileEntityCrank te, double x, double y, double z, final float partialTicks, int destroyStage, VertexBuffer worldRenderer) {
         IBakedModel origModel = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(Blocks.BLOCK_MISC_CRANK.getBlock().getDefaultState());
 
         worldRenderer.setTranslation(-te.getPos().getX() + x, -te.getPos().getY() + y, -te.getPos().getZ() + z);
@@ -70,7 +70,7 @@ public class RenderCrank extends FastTESR<TileEntityCrank> {
         }, ModelTransformer.IVertexFormatTransformer.COMPUTE_NORMALS, worldRenderer.getVertexFormat());
 
         BlockModelRenderer modelRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer();
-        modelRenderer.renderModel(te.getWorld(), model, Blocks.BLOCK_MISC_CRANK.getBlock().getDefaultState(), te.getPos(), worldRenderer);
+        modelRenderer.renderModel(te.getWorld(), model, Blocks.BLOCK_MISC_CRANK.getBlock().getDefaultState(), te.getPos(), worldRenderer, false);
 
         if (destroyStage >= 0) {
             bindTexture(TextureMap.locationBlocksTexture);
@@ -78,11 +78,11 @@ public class RenderCrank extends FastTESR<TileEntityCrank> {
             GlStateManager.pushMatrix();
             GlStateManager.translate(-te.getPos().getX() + x, -te.getPos().getY() + y, -te.getPos().getZ() + z);
             Tessellator tessellator = Tessellator.getInstance();
-            WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+            VertexBuffer worldrenderer = tessellator.getBuffer();
             worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
             IBlockState state = Blocks.BLOCK_MISC_CRANK.getBlock().getActualState(Blocks.BLOCK_MISC_CRANK.getBlock().getDefaultState(), te.getWorld(), te.getPos());
-            IBakedModel ibakedmodel1 = (new SimpleBakedModel.Builder(model, damageTexture)).makeBakedModel();
-            modelRenderer.renderModel(te.getWorld(), ibakedmodel1, state, te.getPos(), Tessellator.getInstance().getWorldRenderer());
+            IBakedModel iBakedModel1 = (new SimpleBakedModel.Builder(state, model, damageTexture, te.getPos())).makeBakedModel();
+            modelRenderer.renderModel(te.getWorld(), iBakedModel1, state, te.getPos(), Tessellator.getInstance().getBuffer(), false);
             tessellator.draw();
             GlStateManager.popMatrix();
         }

@@ -86,7 +86,7 @@ public class AppliedLogisticsCreativeTabs {
         }
 
         @Override
-        public void displayAllReleventItems(List<ItemStack> p_78018_1_) {
+        public void displayAllRelevantItems(List<ItemStack> p_78018_1_) {
             p_78018_1_.addAll(0, DebugItemHelper.init());
         }
     };
@@ -99,11 +99,6 @@ public class AppliedLogisticsCreativeTabs {
         @Override
         public String getTabLabel() {
             return ModInfo.MOD_ID + ".fluids";
-        }
-
-        @Override
-        public void displayAllReleventItems(List<ItemStack> p_78018_1_) {
-            super.displayAllReleventItems(p_78018_1_);
         }
     };
 

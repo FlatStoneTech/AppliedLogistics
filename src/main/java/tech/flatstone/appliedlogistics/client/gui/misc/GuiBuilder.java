@@ -25,7 +25,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
@@ -108,7 +108,7 @@ public class GuiBuilder extends GuiBase {
         ItemStack itemPlan = tileEntity.getInternalInventory().getStackInSlot(0);
 
         if (tileEntity.getPlanItem() == null) {
-            this.fontRendererObj.drawString(EnumChatFormatting.RED + LanguageHelper.MESSAGE.translateMessage("plan.insert"), 36, 26, 4210752);
+            this.fontRendererObj.drawString(TextFormatting.RED + LanguageHelper.MESSAGE.translateMessage("plan.insert"), 36, 26, 4210752);
         } else {
             this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage(itemPlan.getUnlocalizedName() + ".name"), 8, 48, 4210752);
         }

@@ -98,7 +98,7 @@ public enum EnumOres implements IStringSerializable {
     }
 
     public String getName() {
-        return this.name;
+        return this.name.toLowerCase();
     }
 
     public String toString() {

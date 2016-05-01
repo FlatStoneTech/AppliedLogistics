@@ -22,11 +22,12 @@ package tech.flatstone.appliedlogistics.common.blocks.machines;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
@@ -57,17 +58,17 @@ public class BlockPulverizer extends BlockTechBase {
     }
 
     @Override
-    protected BlockState createBlockState() {
-        return new BlockState(this, TECHLEVEL, FACING);
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, TECHLEVEL, FACING);
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntityPulverizer tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityPulverizer.class);
         if (hitY == 1 &&
                 tileEntity != null &&
                 tileEntity.canAttachCrank() &&
-                ItemStack.areItemsEqual(playerIn.getCurrentEquippedItem(), new ItemStack(Blocks.BLOCK_MISC_CRANK.getBlock())) &&
+                ItemStack.areItemsEqual(playerIn.getHeldItemMainhand(), new ItemStack(Blocks.BLOCK_MISC_CRANK.getBlock())) &&
                 !(ItemStack.areItemsEqual(new ItemStack(worldIn.getBlockState(pos.up()).getBlock()), new ItemStack(Blocks.BLOCK_MISC_CRANK.getBlock())))
                 )
             return false;

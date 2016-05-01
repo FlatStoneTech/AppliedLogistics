@@ -5,8 +5,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -39,7 +39,7 @@ public abstract class BlockTechBase extends BlockTileBase implements IBlockRende
         ModelLoader.setCustomStateMapper(this, new DefaultStateMapper() {
             @Override
             protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
-                Map<IProperty, Comparable> blockStates = Maps.newLinkedHashMap(state.getProperties());
+                Map < IProperty<?>, Comparable<? >> blockStates = Maps.newLinkedHashMap(state.getProperties());
 
                 if (!Arrays.asList(techLevels).contains(blockStates.get(TECHLEVEL)))
                     return new ModelResourceLocation(badPath, "");

@@ -27,8 +27,11 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -54,24 +57,25 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
     private static IBlockState blockHarvest = null;
 
     public ItemHammer() {
-        super(3.0F, toolMaterialHammer, blocksEffectiveAgainst, "tools/toolHammer");
+        super(3.0F, 1.0F, toolMaterialHammer, blocksEffectiveAgainst, "tools/toolHammer");
         this.setUnlocalizedName("tool_hammer");
     }
 
     @Override
-    public boolean canHarvestBlock(Block block) {
+    public boolean canHarvestBlock(IBlockState blockIn) {
+        //todo: fix this, no event based need now :D
         return canHarvest;
     }
 
-    @Override
-    public float getDigSpeed(ItemStack itemstack, IBlockState state) {
-        if (state != blockHarvest)
-            canHarvest = false;
-
-        blockHarvest = state;
-
-        return canHarvest ? efficiencyOnProperMaterial * 0.75f : 0.75f;
-    }
+//    @Override
+//    public float getDigSpeed(ItemStack itemstack, IBlockState state) {
+//        if (state != blockHarvest)
+//            canHarvest = false;
+//
+//        blockHarvest = state;
+//
+//        return canHarvest ? efficiencyOnProperMaterial * 0.75f : 0.75f;
+//    }
 
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player) {
@@ -79,7 +83,7 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
         IBlockState iBlockState = world.getBlockState(pos);
         Block block = iBlockState.getBlock();
         ItemStack blockItemStack = new ItemStack(block, 1, block.getMetaFromState(iBlockState));
-        int fortune = EnchantmentHelper.getFortuneModifier(player);
+        int fortune = EnchantmentHelper.getLootingModifier(player); //todo: fix?
         boolean valid = false;
 
         ArrayList<Crushable> drops = HammerRegistry.getDrops(blockItemStack);
@@ -104,7 +108,7 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
                 valid = true;
             }
         } else {
-            if (block.getMaterial().isToolNotRequired() || block.getHarvestLevel(iBlockState) == 0) {
+            if (block.getMaterial(iBlockState).isToolNotRequired() || block.getHarvestLevel(iBlockState) == 0) {
                 return false;
             }
         }
@@ -112,7 +116,7 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
         itemstack.damageItem(1, player);
 
         if (itemstack.stackSize == 0)
-            player.destroyCurrentEquippedItem();
+            player.setHeldItem(EnumHand.MAIN_HAND, null);
 
         if (!world.isRemote) {
             world.setBlockToAir(pos);
@@ -143,43 +147,45 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
         ));
     }
 
-    @SubscribeEvent
-    public void playerInteractEvent(PlayerInteractEvent event) {
-        EntityPlayer player = event.entityPlayer;
-        ItemStack itemStack = player.getHeldItem();
+//todo: fix this...
+//    @SubscribeEvent
+//    public void playerInteractEvent(PlayerInteractEvent event) {
+//        EntityPlayer player = event.getEntityPlayer();
+//        ItemStack itemStack = player.getHeldItemMainhand();
+//
+//        if (itemStack == null || !itemStack.getItem().equals(this))
+//            return;
+//
+//        canHarvest = false;
+//
+//        if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
+//            IBlockState blockState = event.world.getBlockState(event.pos);
+//            ItemStack blockToCheck = new ItemStack(blockState.getBlock(), 1, blockState.getBlock().getMetaFromState(blockState));
+//
+//            canHarvest = HammerRegistry.containsBlock(blockToCheck);
+//        }
+//    }
 
-        if (itemStack == null || !itemStack.getItem().equals(this))
-            return;
 
-        canHarvest = false;
-
-        if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
-            IBlockState blockState = event.world.getBlockState(event.pos);
-            ItemStack blockToCheck = new ItemStack(blockState.getBlock(), 1, blockState.getBlock().getMetaFromState(blockState));
-
-            canHarvest = HammerRegistry.containsBlock(blockToCheck);
-        }
-    }
+//    @Override
+//    public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+//        Block block = world.getBlockState(pos).getBlock();
+//
+//        if (block != null && !player.isSneaking()) {
+//            if (Platform.isClient())
+//                return !world.isRemote;
+//
+//            if (block.rotateBlock(world, pos, side)) {
+//                player.swingItem();
+//                return !world.isRemote;
+//            }
+//        }
+//
+//        return false;
+//    }
 
     @Override
-    public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
-        Block block = world.getBlockState(pos).getBlock();
-
-        if (block != null && !player.isSneaking()) {
-            if (Platform.isClient())
-                return !world.isRemote;
-
-            if (block.rotateBlock(world, pos, side)) {
-                player.swingItem();
-                return !world.isRemote;
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean doesSneakBypassUse(World world, BlockPos pos, EntityPlayer player) {
+    public boolean doesSneakBypassUse(ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player) {
         return true;
     }
 }
