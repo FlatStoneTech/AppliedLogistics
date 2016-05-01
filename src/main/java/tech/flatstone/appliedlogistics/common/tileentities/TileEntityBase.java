@@ -71,9 +71,9 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
         if (this.renderedFragment > 0) {
             this.renderedFragment |= 0x1;
         } else if (this.worldObj != null) {
-            this.worldObj.markBlockRangeForRenderUpdate(this.pos, this.pos);
-
             Block block = worldObj.getBlockState(this.pos).getBlock();
+            //todo: look at this, is it correct?
+            this.worldObj.notifyBlockUpdate(this.pos, worldObj.getBlockState(this.pos), worldObj.getBlockState(this.pos), 3);
 
             int xCoord = this.pos.getX();
             int yCoord = this.pos.getY();
@@ -90,7 +90,7 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
 
     public void markForLightUpdate() {
         if (this.worldObj.isRemote) {
-            this.worldObj.markBlockRangeForRenderUpdate(this.pos, this.pos);
+            this.worldObj.notifyBlockUpdate(this.pos, worldObj.getBlockState(this.pos), worldObj.getBlockState(this.pos), 3);
         }
 
         this.worldObj.checkLightFor(EnumSkyBlock.BLOCK, this.pos);

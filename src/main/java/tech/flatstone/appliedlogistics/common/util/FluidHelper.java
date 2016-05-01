@@ -4,6 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import tech.flatstone.appliedlogistics.ModInfo;
 
 public class FluidHelper {
     public static Fluid createFluid(String name, String textureName, boolean hasFlowIcon) {
@@ -11,9 +12,8 @@ public class FluidHelper {
         ResourceLocation flowing = hasFlowIcon ? new ResourceLocation(textureName + "-flow") : still;
 
         Fluid fluid = new Fluid(name, still, flowing);
-        if (!FluidRegistry.registerFluid(fluid)) {
-            throw new IllegalStateException("Unable to register fluid");
-        }
+        fluid.setUnlocalizedName(ModInfo.MOD_ID + "." + name);
+        FluidRegistry.registerFluid(fluid);
 
         return fluid;
     }

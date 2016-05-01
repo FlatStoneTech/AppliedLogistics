@@ -22,6 +22,7 @@ package tech.flatstone.appliedlogistics;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -33,12 +34,16 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
+import sun.rmi.runtime.Log;
 import tech.flatstone.appliedlogistics.api.exceptions.OutdatedJavaException;
 import tech.flatstone.appliedlogistics.common.config.Config;
 import tech.flatstone.appliedlogistics.common.integrations.IntegrationsManager;
 import tech.flatstone.appliedlogistics.common.network.PacketHandler;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 import tech.flatstone.appliedlogistics.common.world.WorldGen;
 import tech.flatstone.appliedlogistics.proxy.IProxy;
+
+import java.util.Map;
 
 @Mod(modid = ModInfo.MOD_ID, name = ModInfo.MOD_NAME, certificateFingerprint = ModInfo.FINGERPRINT, dependencies = ModInfo.DEPENDENCIES, version = ModInfo.VERSION_BUILD, guiFactory = ModInfo.GUI_FACTORY)
 public class AppliedLogistics {
@@ -106,6 +111,12 @@ public class AppliedLogistics {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         IntegrationsManager.instance().postInit();
+
+        Map<String, Fluid> fluids = FluidRegistry.getRegisteredFluids();
+        for (String key : fluids.keySet()) {
+            Fluid fluid = fluids.get(key);
+            LogHelper.info(">>> Fluid Name: " + key + " (" + fluid.getUnlocalizedName() + ")");
+        }
     }
 
     @SubscribeEvent

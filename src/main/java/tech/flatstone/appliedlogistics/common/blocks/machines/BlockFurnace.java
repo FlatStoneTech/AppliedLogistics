@@ -33,7 +33,8 @@ public class BlockFurnace extends BlockTechBase {
 
     @Override
     public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
-        return state.getValue(WORKING) ? 15 : 0;
+        IBlockState blockState = getActualState(getDefaultState(), world, pos);
+        return blockState.getValue(WORKING) ? 15 : 0;
     }
 
     @Override

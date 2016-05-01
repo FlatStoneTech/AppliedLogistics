@@ -41,10 +41,7 @@ import tech.flatstone.appliedlogistics.common.plans.PlanMachineFurnace;
 import tech.flatstone.appliedlogistics.common.plans.PlanMachinePulverizer;
 import tech.flatstone.appliedlogistics.common.plans.PlanPlanBuilder;
 import tech.flatstone.appliedlogistics.common.plans.PlanPlanChest;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
-import tech.flatstone.appliedlogistics.common.util.IProvideEvent;
-import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
-import tech.flatstone.appliedlogistics.common.util.IProvideSmelting;
+import tech.flatstone.appliedlogistics.common.util.*;
 import tech.flatstone.appliedlogistics.common.world.WorldGenInit;
 
 import java.io.File;
@@ -96,7 +93,7 @@ public abstract class CommonProxy implements IProxy {
     public void registerFluids() {
         for (EnumOres ores : EnumOres.values()) {
             int meta = ores.getMeta();
-            String oreName = ores.getOreName();
+            String oreName = ores.getName();
 
             if (ores.isTypeSet(EnumOreType.FLUID)) {
                 //Fluid fluid = FluidHelper.createFluid(oreName, "appliedlogistics:fluids." + oreName, false);

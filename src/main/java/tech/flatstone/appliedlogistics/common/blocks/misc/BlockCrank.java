@@ -78,10 +78,10 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
         return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
-    //@Override
-    //public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos) {
-    //    setBlockBounds(7 / 16f, 0, 7 / 16f, 9 / 16f, .75f, 9 / 16f);
-    //}
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        return new AxisAlignedBB(7 / 16f, 0, 7 / 16f, 9 / 16f, .75f, 9 / 16f);
+    }
 
     @Override
     public void RegisterRecipes() {
