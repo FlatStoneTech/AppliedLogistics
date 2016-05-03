@@ -2,17 +2,12 @@ package tech.flatstone.appliedlogistics.common.util;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
 import tech.flatstone.appliedlogistics.ModInfo;
-import tech.flatstone.appliedlogistics.common.blocks.fluids.BlockFluidBlock;
-
-import java.lang.reflect.InvocationTargetException;
 
 public class FluidHelper {
     public static Fluid createFluid(String name, String textureName, boolean hasFlowIcon) {

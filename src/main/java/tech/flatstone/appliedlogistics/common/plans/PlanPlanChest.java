@@ -22,11 +22,9 @@ package tech.flatstone.appliedlogistics.common.plans;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
-import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 import tech.flatstone.appliedlogistics.common.util.PlanDetails;
@@ -60,7 +58,7 @@ public class PlanPlanChest extends PlanBase implements IMachinePlan {
                 requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_REDSTONE_OUTPUT.getItem()), 0, 1, 10, 200, 200, "Adds comparator output"));
                 requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_AUTOMATION.getItem()), 0, 1, 10, 200, 200, "Adds support to adding items with pipes and hoppers"));
 
-                planDetails = new PlanDetails(72, requiredMaterialsList, new ItemStack(Blocks.BLOCK_PLAN_CHEST.getBlock()));
+                planDetails = new PlanDetails(72, requiredMaterialsList, Blocks.BLOCK_PLAN_CHEST.getStack());
                 break;
         }
 

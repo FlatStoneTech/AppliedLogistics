@@ -20,12 +20,8 @@
 
 package tech.flatstone.appliedlogistics.common.items;
 
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
-import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.items.cards.*;
 import tech.flatstone.appliedlogistics.common.items.materials.ItemGear;
 import tech.flatstone.appliedlogistics.common.items.ores.ItemOreDust;
@@ -34,11 +30,7 @@ import tech.flatstone.appliedlogistics.common.items.ores.ItemOreNugget;
 import tech.flatstone.appliedlogistics.common.items.plans.PlanBlank;
 import tech.flatstone.appliedlogistics.common.items.plans.PlanItem;
 import tech.flatstone.appliedlogistics.common.items.tools.ItemHammer;
-import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
-import tech.flatstone.appliedlogistics.common.util.Platform;
 import tech.flatstone.appliedlogistics.common.util.RegistrationHelper;
-
-import java.util.Locale;
 
 public enum Items {
     ITEM_ORE_INGOT(ItemOreIngot.class),
@@ -59,10 +51,10 @@ public enum Items {
     ITEM_PLAN_BLANK(PlanBlank.class),
     ITEM_PLAN(PlanItem.class);
 
-    private final Class <? extends Item> itemClass;
+    private final Class<? extends Item> itemClass;
     private Item item;
 
-    Items(Class <? extends Item> itemClass) {
+    Items(Class<? extends Item> itemClass) {
         this.itemClass = itemClass;
     }
 

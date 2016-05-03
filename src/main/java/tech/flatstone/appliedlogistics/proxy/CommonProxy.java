@@ -20,8 +20,6 @@
 
 package tech.flatstone.appliedlogistics.proxy;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
@@ -63,7 +61,7 @@ public abstract class CommonProxy implements IProxy {
         for (EnumOres ores : EnumOres.values()) {
             int meta = ores.getMeta();
             String oreName = ores.getOreName();
-            
+
             // Register Ore
             if (ores.isTypeSet(EnumOreType.ORE))
                 OreDictionary.registerOre("ore" + oreName, Blocks.BLOCK_ORE.getStack(1, meta));
@@ -161,18 +159,14 @@ public abstract class CommonProxy implements IProxy {
 
     @Override
     public void registerFurnaceRecipes() {
-        for (int i = 0; i < Items.values().length; i++) {
-            Item item = Items.values()[i].getItem();
-            if (item instanceof IProvideSmelting) {
-                ((IProvideSmelting) item).RegisterSmelting();
-            }
+        for (Items item : Items.values()) {
+            if (item.getItem() instanceof IProvideSmelting)
+                ((IProvideSmelting) item.getItem()).RegisterSmelting();
         }
 
-        for (int i = 0; i < Blocks.values().length; i++) {
-            Block block = Blocks.values()[i].getBlock();
-            if (block instanceof IProvideSmelting) {
-                ((IProvideSmelting) block).RegisterSmelting();
-            }
+        for (Blocks block : Blocks.values()) {
+            if (block.getBlock() instanceof IProvideSmelting)
+                ((IProvideSmelting) block.getBlock()).RegisterSmelting();
         }
     }
 

@@ -39,7 +39,7 @@ public abstract class BlockTechBase extends BlockTileBase implements IBlockRende
         ModelLoader.setCustomStateMapper(this, new DefaultStateMapper() {
             @Override
             protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
-                Map < IProperty<?>, Comparable<? >> blockStates = Maps.newLinkedHashMap(state.getProperties());
+                Map<IProperty<?>, Comparable<?>> blockStates = Maps.newLinkedHashMap(state.getProperties());
 
                 if (!Arrays.asList(techLevels).contains(blockStates.get(TECHLEVEL)))
                     return new ModelResourceLocation(badPath, "");

@@ -15,13 +15,13 @@ public class DebugOres1 implements IDebugChest {
         for (int i = 0; i < 9; i++) {
 
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE))
-                debugChest.setItem(i, new ItemStack(Blocks.BLOCK_ORE.getBlock(), 1, i));
+                debugChest.setItem(i, Blocks.BLOCK_ORE.getStack(1, i));
 
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.BLOCK))
-                debugChest.setItem(i + 9, new ItemStack(Blocks.BLOCK_ORE_BLOCK.getBlock(), 1, i));
+                debugChest.setItem(i + 9, Blocks.BLOCK_ORE_BLOCK.getStack(1, i));
 
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT))
-                debugChest.setItem(i + 18, new ItemStack(Items.ITEM_ORE_INGOT.getItem(), 1, i));
+                debugChest.setItem(i + 18, Items.ITEM_ORE_INGOT.getStack(1, i));
 
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.VANILLA)) {
                 switch (i) {

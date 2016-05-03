@@ -20,18 +20,11 @@
 
 package tech.flatstone.appliedlogistics.client.render;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.client.renderer.block.model.SimpleBakedModel;
 import net.minecraftforge.client.model.animation.FastTESR;
 import tech.flatstone.appliedlogistics.client.util.ModelTransformer;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
@@ -39,8 +32,6 @@ import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCrank;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector4f;
-
-import org.lwjgl.opengl.GL11;
 
 public class RenderCrank extends FastTESR<TileEntityCrank> {
     @Override

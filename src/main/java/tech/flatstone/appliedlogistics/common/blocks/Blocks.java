@@ -52,9 +52,9 @@ public enum Blocks {
     BLOCK_MACHINE_PULVERIZER(BlockPulverizer.class, ItemPulverizer.class),
     BLOCK_MACHINE_FURNACE(BlockFurnace.class, ItemFurnace.class);
 
-    private Block block;
     private final Class<? extends BlockBase> blockClass;
     private final Class<? extends ItemBlock> itemBlockClass;
+    private Block block;
 
     Blocks(Class<? extends BlockBase> blockClass) {
         this(blockClass, ItemBlock.class);

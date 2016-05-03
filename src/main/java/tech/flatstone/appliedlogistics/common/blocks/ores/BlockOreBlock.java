@@ -82,7 +82,7 @@ public class BlockOreBlock extends BlockBase implements IProvideRecipe {
         for (int i = 0; i < EnumOres.values().length; i++) {
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT) && EnumOres.byMeta(i).isTypeSet(EnumOreType.BLOCK)) {
                 // Register 9x Ingot -> Block
-                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Blocks.BLOCK_ORE_BLOCK.getBlock(), 1, i),
+                GameRegistry.addRecipe(new ShapedOreRecipe(Blocks.BLOCK_ORE_BLOCK.getStack(1, i),
                         "xxx",
                         "xxx",
                         "xxx",

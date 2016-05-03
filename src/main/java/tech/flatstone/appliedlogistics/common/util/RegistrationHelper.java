@@ -1,6 +1,5 @@
 package tech.flatstone.appliedlogistics.common.util;
 
-import com.sun.istack.internal.NotNull;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -12,11 +11,11 @@ import tech.flatstone.appliedlogistics.common.items.ItemBase;
 import java.util.Locale;
 
 public class RegistrationHelper {
-    public static Block registerBlock(Class <? extends Block> blockClass) {
+    public static Block registerBlock(Class<? extends Block> blockClass) {
         return registerBlock(blockClass, ItemBlock.class);
     }
 
-    public static Block registerBlock(Class <? extends Block> blockClass, Class<? extends ItemBlock> itemBlockClass) {
+    public static Block registerBlock(Class<? extends Block> blockClass, Class<? extends ItemBlock> itemBlockClass) {
         Block block = null;
         ItemBlock itemBlock;
         String internalName;
@@ -25,7 +24,7 @@ public class RegistrationHelper {
             block = blockClass.getConstructor().newInstance();
             itemBlock = itemBlockClass.getConstructor(Block.class).newInstance(block);
 
-            internalName = ((BlockBase)block).getInternalName();
+            internalName = ((BlockBase) block).getInternalName();
 
             if (!internalName.equals(internalName.toLowerCase(Locale.US)))
                 throw new IllegalArgumentException(String.format("Unlocalized names need to be all lowercase! Item: %s", internalName));
@@ -54,14 +53,14 @@ public class RegistrationHelper {
         return block;
     }
 
-    public static Item registerItem(Class <? extends Item> itemClass) {
+    public static Item registerItem(Class<? extends Item> itemClass) {
         Item item = null;
         String internalName;
 
         try {
             item = itemClass.getConstructor().newInstance();
 
-            internalName = ((ItemBase)item).getInternalName();
+            internalName = ((ItemBase) item).getInternalName();
 
             if (!internalName.equals(internalName.toLowerCase(Locale.US)))
                 throw new IllegalArgumentException(String.format("Unlocalized names need to be all lowercase! Item: %s", internalName));
