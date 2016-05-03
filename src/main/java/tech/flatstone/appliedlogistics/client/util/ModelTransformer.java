@@ -194,7 +194,7 @@ public class ModelTransformer {
 
     }
 
-    //Iflexible Model was deprecated and removed anymore as a result no need to implament it
+    //Iflexible Model was deprecated and removed as a result there is no need to implament it anymore 
     private static final class TransformedModel implements IBakedModel {
 
         private final IBakedModel parent;
