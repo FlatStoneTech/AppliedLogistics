@@ -20,8 +20,6 @@
 
 package tech.flatstone.appliedlogistics.proxy;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
@@ -35,16 +33,14 @@ import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
 import tech.flatstone.appliedlogistics.api.registries.PulverizerRegistry;
 import tech.flatstone.appliedlogistics.client.gui.GuiHandler;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
+import tech.flatstone.appliedlogistics.common.blocks.fluids.BlockFluidBlock;
 import tech.flatstone.appliedlogistics.common.config.Config;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.plans.PlanMachineFurnace;
 import tech.flatstone.appliedlogistics.common.plans.PlanMachinePulverizer;
 import tech.flatstone.appliedlogistics.common.plans.PlanPlanBuilder;
 import tech.flatstone.appliedlogistics.common.plans.PlanPlanChest;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
-import tech.flatstone.appliedlogistics.common.util.IProvideEvent;
-import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
-import tech.flatstone.appliedlogistics.common.util.IProvideSmelting;
+import tech.flatstone.appliedlogistics.common.util.*;
 import tech.flatstone.appliedlogistics.common.world.WorldGenInit;
 
 import java.io.File;
@@ -64,8 +60,8 @@ public abstract class CommonProxy implements IProxy {
     public void registerOreDict() {
         for (EnumOres ores : EnumOres.values()) {
             int meta = ores.getMeta();
-            String oreName = ores.getName();
-            
+            String oreName = ores.getOreName();
+
             // Register Ore
             if (ores.isTypeSet(EnumOreType.ORE))
                 OreDictionary.registerOre("ore" + oreName, Blocks.BLOCK_ORE.getStack(1, meta));
@@ -94,13 +90,16 @@ public abstract class CommonProxy implements IProxy {
 
     @Override
     public void registerFluids() {
+        //todo: make this better once we figure out fluids...
         for (EnumOres ores : EnumOres.values()) {
             int meta = ores.getMeta();
             String oreName = ores.getName();
 
             if (ores.isTypeSet(EnumOreType.FLUID)) {
-                //Fluid fluid = FluidHelper.createFluid(oreName, "appliedlogistics:fluids." + oreName, false);
-                //FluidRegistry.addBucketForFluid(fluid);
+                Fluid fluid = FluidHelper.createFluid(oreName, "appliedlogistics:fluids." + oreName, false);
+                FluidRegistry.addBucketForFluid(fluid);
+
+                FluidHelper.registerFluidBlock(new BlockFluidBlock(fluid));
             }
         }
     }
@@ -108,28 +107,27 @@ public abstract class CommonProxy implements IProxy {
     @Override
     public void registerCrusherRecipes() {
         // Ores -> Dust
-        for (int i = 0; i < EnumOres.values().length; i++) {
-            String oreName = EnumOres.byMeta(i).getName();
+        for (EnumOres ores : EnumOres.values()) {
+            String oreName = ores.getOreName();
 
-            // Register Ores
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.DUST) && (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE) || EnumOres.byMeta(i).isTypeSet(EnumOreType.VANILLA))) {
+            if (ores.isTypeSet(EnumOreType.DUST) && (ores.isTypeSet(EnumOreType.ORE) || ores.isTypeSet(EnumOreType.VANILLA))) {
                 HammerRegistry.registerOreDictOre(oreName);
                 PulverizerRegistry.registerOreDictOre(oreName);
             }
 
-            // Register Ingots
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT) && (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE) || EnumOres.byMeta(i).isTypeSet(EnumOreType.VANILLA)))
+            if (ores.isTypeSet(EnumOreType.INGOT) && (ores.isTypeSet(EnumOreType.ORE) || ores.isTypeSet(EnumOreType.VANILLA))) {
                 PulverizerRegistry.registerOreDictIngot(oreName);
+            }
         }
 
         // Add other misc vanilla things
 
         // Coal
-        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(Items.ITEM_ORE_NUGGET.item, 1, EnumOres.DIAMOND.getMeta()), 0.005f, 0.01f);
+        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), Items.ITEM_ORE_NUGGET.getStack(1, EnumOres.DIAMOND.getMeta()), 0.005f, 0.01f);
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(net.minecraft.init.Items.coal, 2), 1.0f, 0.5f);
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(net.minecraft.init.Items.coal, 1), 0.5f, 0.5f);
         HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(net.minecraft.init.Items.coal, 1), 0.5f, 0.5f);
-        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(Items.ITEM_ORE_NUGGET.item, 1, EnumOres.DIAMOND.getMeta()), 0.05f, true);
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), Items.ITEM_ORE_NUGGET.getStack(1, EnumOres.DIAMOND.getMeta()), 0.05f, true);
         PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(net.minecraft.init.Items.coal, 2), 1.5f, true);
 
         // Redstone
@@ -161,39 +159,28 @@ public abstract class CommonProxy implements IProxy {
 
     @Override
     public void registerFurnaceRecipes() {
-        for (int i = 0; i < Items.values().length; i++) {
-            Item item = Items.values()[i].getItem();
-            if (item instanceof IProvideSmelting) {
-                ((IProvideSmelting) item).RegisterSmelting();
-            }
+        for (Items item : Items.values()) {
+            if (item.getItem() instanceof IProvideSmelting)
+                ((IProvideSmelting) item.getItem()).RegisterSmelting();
         }
 
-        for (int i = 0; i < Blocks.values().length; i++) {
-            Block block = Blocks.values()[i].getBlock();
-            if (block instanceof IProvideSmelting) {
-                ((IProvideSmelting) block).RegisterSmelting();
-            }
+        for (Blocks block : Blocks.values()) {
+            if (block.getBlock() instanceof IProvideSmelting)
+                ((IProvideSmelting) block.getBlock()).RegisterSmelting();
         }
     }
 
     @Override
     public void registerEvents() {
-        //todo: Re-do this, make better... fore intead of fori
-
-        for (int i = 0; i < Items.values().length; i++) {
-            Item item = Items.values()[i].getItem();
-            if (item instanceof IProvideEvent) {
-                MinecraftForge.EVENT_BUS.register(item);
-            }
+        for (Items item : Items.values()) {
+            if (item.getItem() instanceof IProvideEvent)
+                MinecraftForge.EVENT_BUS.register(item.getItem());
         }
 
-        for (int i = 0; i < Blocks.values().length; i++) {
-            Block block = Blocks.values()[i].getBlock();
-            if (block instanceof IProvideEvent) {
-                MinecraftForge.EVENT_BUS.register(block);
-            }
+        for (Blocks block : Blocks.values()) {
+            if (block.getBlock() instanceof IProvideEvent)
+                MinecraftForge.EVENT_BUS.register(block.getBlock());
         }
-
     }
 
     @Override
@@ -210,7 +197,7 @@ public abstract class CommonProxy implements IProxy {
     }
 
     @Override
-    public void registerBlueprints() {
+    public void registerPlans() {
         PlanRegistry.registerPlan(new PlanMachinePulverizer());
         PlanRegistry.registerPlan(new PlanPlanBuilder());
         PlanRegistry.registerPlan(new PlanPlanChest());

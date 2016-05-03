@@ -31,9 +31,9 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.EnumSkyBlock;
 import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaHeadMessage;
 import tech.flatstone.appliedlogistics.common.util.IOrientable;
@@ -71,9 +71,9 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
         if (this.renderedFragment > 0) {
             this.renderedFragment |= 0x1;
         } else if (this.worldObj != null) {
-            this.worldObj.markBlockRangeForRenderUpdate(this.pos, this.pos);
-
             Block block = worldObj.getBlockState(this.pos).getBlock();
+            //todo: look at this, is it correct?
+            this.worldObj.notifyBlockUpdate(this.pos, worldObj.getBlockState(this.pos), worldObj.getBlockState(this.pos), 3);
 
             int xCoord = this.pos.getX();
             int yCoord = this.pos.getY();
@@ -90,7 +90,7 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
 
     public void markForLightUpdate() {
         if (this.worldObj.isRemote) {
-            this.worldObj.markBlockRangeForRenderUpdate(this.pos, this.pos);
+            this.worldObj.notifyBlockUpdate(this.pos, worldObj.getBlockState(this.pos), worldObj.getBlockState(this.pos), 3);
         }
 
         this.worldObj.checkLightFor(EnumSkyBlock.BLOCK, this.pos);

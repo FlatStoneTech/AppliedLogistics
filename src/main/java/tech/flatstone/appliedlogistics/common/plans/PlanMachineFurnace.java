@@ -2,11 +2,9 @@ package tech.flatstone.appliedlogistics.common.plans;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
-import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 import tech.flatstone.appliedlogistics.common.util.PlanDetails;
@@ -15,9 +13,9 @@ import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlanMachineFurnace extends ItemPlanBase implements IMachinePlan {
+public class PlanMachineFurnace extends PlanBase implements IMachinePlan {
     public PlanMachineFurnace() {
-        this.setUnlocalizedName(String.format("%s:%s", ModInfo.MOD_ID, "plan.furnace"));
+        super("furnace");
     }
 
     @Override

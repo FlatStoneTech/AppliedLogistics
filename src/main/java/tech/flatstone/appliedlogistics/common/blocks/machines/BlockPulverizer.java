@@ -26,11 +26,12 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTechBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
@@ -44,6 +45,8 @@ public class BlockPulverizer extends BlockTechBase {
         super(Material.rock, "machines/pulverizer", TechLevel.STONE_AGE, TechLevel.BRONZE_AGE, TechLevel.INDUSTRIAL_AGE);
         this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE).withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityPulverizer.class);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabMachines);
+        this.setInternalName("machine_pulverizer");
     }
 
     @Override
@@ -68,8 +71,8 @@ public class BlockPulverizer extends BlockTechBase {
         if (hitY == 1 &&
                 tileEntity != null &&
                 tileEntity.canAttachCrank() &&
-                ItemStack.areItemsEqual(playerIn.getHeldItemMainhand(), new ItemStack(Blocks.BLOCK_MISC_CRANK.getBlock())) &&
-                !(ItemStack.areItemsEqual(new ItemStack(worldIn.getBlockState(pos.up()).getBlock()), new ItemStack(Blocks.BLOCK_MISC_CRANK.getBlock())))
+                ItemStack.areItemsEqual(playerIn.getHeldItemMainhand(), Blocks.BLOCK_MISC_CRANK.getStack()) &&
+                !(ItemStack.areItemsEqual(new ItemStack(worldIn.getBlockState(pos.up()).getBlock()), Blocks.BLOCK_MISC_CRANK.getStack()))
                 )
             return false;
 

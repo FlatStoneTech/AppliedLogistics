@@ -27,12 +27,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPlanChest;
@@ -44,10 +45,13 @@ public class BlockPlanChest extends BlockTileBase {
         super(Material.rock, "misc/planChest");
         this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityPlanChest.class);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabMachines);
+        this.setInternalName("plan_chest");
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {        TileEntityPlanChest tileEntityPlanChest = TileHelper.getTileEntity(worldIn, pos, TileEntityPlanChest.class);
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+        TileEntityPlanChest tileEntityPlanChest = TileHelper.getTileEntity(worldIn, pos, TileEntityPlanChest.class);
         if (tileEntityPlanChest != null)
             LogHelper.info(">>> Rows: " + tileEntityPlanChest.getSlotRows());
 

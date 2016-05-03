@@ -24,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.common.items.ItemBase;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
@@ -32,6 +33,8 @@ public class ItemKitCrafting extends ItemBase implements IProvideRecipe {
     public ItemKitCrafting() {
         super("cards/kit_crafting");
         this.setMaxStackSize(8);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabGeneral);
+        this.setInternalName("kit_crafting");
     }
 
     @Override

@@ -23,7 +23,6 @@ package tech.flatstone.appliedlogistics.common.items.ores;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
 
 public class ItemOre extends ItemBlock {

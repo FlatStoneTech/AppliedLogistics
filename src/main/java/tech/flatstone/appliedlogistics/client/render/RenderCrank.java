@@ -20,18 +20,11 @@
 
 package tech.flatstone.appliedlogistics.client.render;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.client.renderer.block.model.SimpleBakedModel;
 import net.minecraftforge.client.model.animation.FastTESR;
 import tech.flatstone.appliedlogistics.client.util.ModelTransformer;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
@@ -39,8 +32,6 @@ import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCrank;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector4f;
-
-import org.lwjgl.opengl.GL11;
 
 public class RenderCrank extends FastTESR<TileEntityCrank> {
     @Override
@@ -67,24 +58,25 @@ public class RenderCrank extends FastTESR<TileEntityCrank> {
                 }
                 return data;
             }
-        }, ModelTransformer.IVertexFormatTransformer.COMPUTE_NORMALS, worldRenderer.getVertexFormat());
+        }, ModelTransformer.IVertexFormatTransformer.NONE, worldRenderer.getVertexFormat());
 
         BlockModelRenderer modelRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer();
         modelRenderer.renderModel(te.getWorld(), model, Blocks.BLOCK_MISC_CRANK.getBlock().getDefaultState(), te.getPos(), worldRenderer, false);
 
-        if (destroyStage >= 0) {
-            bindTexture(TextureMap.locationBlocksTexture);
-            TextureAtlasSprite damageTexture = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("minecraft:blocks/destroy_stage_" + destroyStage);
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(-te.getPos().getX() + x, -te.getPos().getY() + y, -te.getPos().getZ() + z);
-            Tessellator tessellator = Tessellator.getInstance();
-            VertexBuffer worldrenderer = tessellator.getBuffer();
-            worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-            IBlockState state = Blocks.BLOCK_MISC_CRANK.getBlock().getActualState(Blocks.BLOCK_MISC_CRANK.getBlock().getDefaultState(), te.getWorld(), te.getPos());
-            IBakedModel iBakedModel1 = (new SimpleBakedModel.Builder(state, model, damageTexture, te.getPos())).makeBakedModel();
-            modelRenderer.renderModel(te.getWorld(), iBakedModel1, state, te.getPos(), Tessellator.getInstance().getBuffer(), false);
-            tessellator.draw();
-            GlStateManager.popMatrix();
-        }
+        //todo: look into why this tessellator stuff isn't working...
+//        if (destroyStage >= 0) {
+//            bindTexture(TextureMap.locationBlocksTexture);
+//            TextureAtlasSprite damageTexture = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("minecraft:blocks/destroy_stage_" + destroyStage);
+//            GlStateManager.pushMatrix();
+//            GlStateManager.translate(-te.getPos().getX() + x, -te.getPos().getY() + y, -te.getPos().getZ() + z);
+//            Tessellator tessellator = Tessellator.getInstance();
+//            VertexBuffer worldrenderer = tessellator.getBuffer();
+//            worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+//            IBlockState state = Blocks.BLOCK_MISC_CRANK.getBlock().getActualState(Blocks.BLOCK_MISC_CRANK.getBlock().getDefaultState(), te.getWorld(), te.getPos());
+//            IBakedModel iBakedModel1 = (new SimpleBakedModel.Builder(state, model, damageTexture, te.getPos())).makeBakedModel();
+//            modelRenderer.renderModel(te.getWorld(), iBakedModel1, state, te.getPos(), Tessellator.getInstance().getBuffer(), false);
+//            tessellator.draw();
+//            GlStateManager.popMatrix();
+//        }
     }
 }

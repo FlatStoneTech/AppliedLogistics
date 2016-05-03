@@ -101,6 +101,10 @@ public enum EnumOres implements IStringSerializable {
         return this.name.toLowerCase();
     }
 
+    public String getOreName() {
+        return this.name;
+    }
+
     public String toString() {
         return getName();
     }

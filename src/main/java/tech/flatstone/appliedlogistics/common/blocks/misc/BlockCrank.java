@@ -27,15 +27,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -48,6 +50,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.lwjgl.opengl.GL11;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
@@ -61,6 +64,8 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
         super(Material.wood, "misc/crank");
         this.setTileEntity(TileEntityCrank.class);
         this.setHarvestLevel("Axe", 0);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabGeneral);
+        this.setInternalName("misc_crank");
     }
 
     @Override
@@ -78,10 +83,10 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
         return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
-    //@Override
-    //public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos) {
-    //    setBlockBounds(7 / 16f, 0, 7 / 16f, 9 / 16f, .75f, 9 / 16f);
-    //}
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        return new AxisAlignedBB(7 / 16f, 0, 7 / 16f, 9 / 16f, .75f, 9 / 16f);
+    }
 
     @Override
     public void RegisterRecipes() {
@@ -168,7 +173,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
 
     @SubscribeEvent
     public void drawBlockHighlight(DrawBlockHighlightEvent event) {
-        if (!(event.getTarget().typeOfHit == RayTraceResult.Type.BLOCK && ItemStack.areItemsEqual(new ItemStack(event.getPlayer().worldObj.getBlockState(event.getTarget().getBlockPos()).getBlock()), new ItemStack(Blocks.BLOCK_MISC_CRANK.getBlock()))))
+        if (!(event.getTarget().typeOfHit == RayTraceResult.Type.BLOCK && ItemStack.areItemsEqual(new ItemStack(event.getPlayer().worldObj.getBlockState(event.getTarget().getBlockPos()).getBlock()), Blocks.BLOCK_MISC_CRANK.getStack())))
             return;
 
         event.setCanceled(true);

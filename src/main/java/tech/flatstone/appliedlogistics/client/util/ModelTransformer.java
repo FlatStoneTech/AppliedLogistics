@@ -22,6 +22,7 @@ package tech.flatstone.appliedlogistics.client.util;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -30,7 +31,6 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.client.renderer.vertex.VertexFormatElement.EnumType;
 import net.minecraft.client.renderer.vertex.VertexFormatElement.EnumUsage;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;

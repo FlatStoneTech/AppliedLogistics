@@ -6,15 +6,14 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTechBase;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityFurnace;
@@ -29,11 +28,14 @@ public class BlockFurnace extends BlockTechBase {
         super(Material.rock, "machines/furnace", TechLevel.STONE_AGE, TechLevel.BRONZE_AGE, TechLevel.INDUSTRIAL_AGE, TechLevel.MECHANICAL_AGE, TechLevel.DIGITAL_AGE);
         this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE).withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityFurnace.class);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabMachines);
+        this.setInternalName("machine_furnace");
     }
 
     @Override
     public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
-        return state.getValue(WORKING) ? 15 : 0;
+        IBlockState blockState = getActualState(getDefaultState(), world, pos);
+        return blockState.getValue(WORKING) ? 15 : 0;
     }
 
     @Override

@@ -86,6 +86,7 @@ public class GuiBuilder extends GuiBase {
             int slotID = 0;
             for (PlanRequiredMaterials materials : requiredMaterials) {
                 Slot slot = this.inventorySlots.getSlot(slotID);
+                //todo: add a 0 check before assuming 0
                 ItemStack stack = materials.getRequiredMaterials().get(0);
                 //todo: Make icon change...
 //                if (materials.getRequiredMaterials().size() > 1) {

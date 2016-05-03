@@ -37,7 +37,10 @@ import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
-import tech.flatstone.appliedlogistics.common.util.*;
+import tech.flatstone.appliedlogistics.common.util.EnumOres;
+import tech.flatstone.appliedlogistics.common.util.ICrankable;
+import tech.flatstone.appliedlogistics.common.util.InventoryHelper;
+import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -241,7 +244,7 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
                 if (itemFortune)
                     itemChance = itemChance + fortuneMultiplier;
 
-                outItem.stackSize = (int)Math.round(Math.floor(itemChance) + crushRNG * itemChance % 1);
+                outItem.stackSize = (int) Math.round(Math.floor(itemChance) + crushRNG * itemChance % 1);
                 if (outItem.stackSize == 0) outItem = null;
 
                 // Simulate placing into output slot...

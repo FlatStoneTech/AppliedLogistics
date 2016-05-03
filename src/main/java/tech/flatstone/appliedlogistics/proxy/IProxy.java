@@ -61,7 +61,7 @@ public interface IProxy {
     /**
      * Register Blueprints
      */
-    void registerBlueprints();
+    void registerPlans();
 
     /**
      * Register GUIs

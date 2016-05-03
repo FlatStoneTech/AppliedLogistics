@@ -64,4 +64,9 @@ public class LogHelper {
     public static void off(String message) {
         log(Level.OFF, message);
     }
+
+    public static void internal(String message) {
+        if (Platform.isDevEnv())
+            log(Level.INFO, message);
+    }
 }

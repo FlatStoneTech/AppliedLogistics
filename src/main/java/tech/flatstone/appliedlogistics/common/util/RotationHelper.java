@@ -20,8 +20,8 @@
 
 package tech.flatstone.appliedlogistics.common.util;
 
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 
 public class RotationHelper {
     public static AxisAlignedBB rotateBB(AxisAlignedBB box, EnumFacing facing) {

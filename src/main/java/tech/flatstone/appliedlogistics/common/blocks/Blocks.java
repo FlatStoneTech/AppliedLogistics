@@ -21,12 +21,8 @@
 package tech.flatstone.appliedlogistics.common.blocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
-import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.machines.BlockFurnace;
 import tech.flatstone.appliedlogistics.common.blocks.machines.BlockPulverizer;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockBuilder;
@@ -41,54 +37,37 @@ import tech.flatstone.appliedlogistics.common.items.misc.ItemBuilder;
 import tech.flatstone.appliedlogistics.common.items.misc.ItemCrank;
 import tech.flatstone.appliedlogistics.common.items.ores.ItemOre;
 import tech.flatstone.appliedlogistics.common.items.ores.ItemOreBlock;
-import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
-import tech.flatstone.appliedlogistics.common.util.Platform;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Locale;
+import tech.flatstone.appliedlogistics.common.util.RegistrationHelper;
 
 public enum Blocks {
-    // Ore
-    BLOCK_ORE("ore", new BlockOre(), ItemOre.class, AppliedLogisticsCreativeTabs.tabOres),
-    BLOCK_ORE_BLOCK("ore_block", new BlockOreBlock(), ItemOreBlock.class, AppliedLogisticsCreativeTabs.tabOres),
+    BLOCK_ORE(BlockOre.class, ItemOre.class),
+    BLOCK_ORE_BLOCK(BlockOreBlock.class, ItemOreBlock.class),
 
-    BLOCK_BUILDER("builder", new BlockBuilder(), ItemBuilder.class, AppliedLogisticsCreativeTabs.tabMachines),
-    BLOCK_PLAN_LIBRARY("plan_library", new BlockPlanLibrary(), AppliedLogisticsCreativeTabs.tabMachines),
-    BLOCK_PLAN_CHEST("plan_chest", new BlockPlanChest(), AppliedLogisticsCreativeTabs.tabMachines),
+    BLOCK_BUILDER(BlockBuilder.class, ItemBuilder.class),
+    BLOCK_PLAN_LIBRARY(BlockPlanLibrary.class),
+    BLOCK_PLAN_CHEST(BlockPlanChest.class),
 
-    BLOCK_MISC_CRANK("misc_crank", new BlockCrank(), ItemCrank.class, AppliedLogisticsCreativeTabs.tabGeneral),
+    BLOCK_MISC_CRANK(BlockCrank.class, ItemCrank.class),
 
-    BLOCK_MACHINE_PULVERIZER("machine_pulverizer", new BlockPulverizer(), ItemPulverizer.class, AppliedLogisticsCreativeTabs.tabMachines),
-    BLOCK_MACHINE_FURNACE("machine_furnace", new BlockFurnace(), ItemFurnace.class, AppliedLogisticsCreativeTabs.tabMachines);
+    BLOCK_MACHINE_PULVERIZER(BlockPulverizer.class, ItemPulverizer.class),
+    BLOCK_MACHINE_FURNACE(BlockFurnace.class, ItemFurnace.class);
 
-    private final Block block;
-    private final String internalName;
+    private final Class<? extends BlockBase> blockClass;
     private final Class<? extends ItemBlock> itemBlockClass;
-    private final CreativeTabs creativeTabs;
+    private Block block;
 
-    Blocks(String internalName, Block block) {
-        this(internalName, block, ItemBlock.class, null);
+    Blocks(Class<? extends BlockBase> blockClass) {
+        this(blockClass, ItemBlock.class);
     }
 
-    Blocks(String internalName, Block block, CreativeTabs creativeTabs) {
-        this(internalName, block, ItemBlock.class, creativeTabs);
-    }
-
-    Blocks(String internalName, Block block, Class<? extends ItemBlock> itemBlockClass) {
-        this(internalName, block, itemBlockClass, null);
-    }
-
-    Blocks(String internalName, Block block, Class<? extends ItemBlock> itemBlockClass, CreativeTabs creativeTabs) {
-        this.internalName = internalName;
-        this.block = block;
+    Blocks(Class<? extends BlockBase> blockClass, Class<? extends ItemBlock> itemBlockClass) {
+        this.blockClass = blockClass;
         this.itemBlockClass = itemBlockClass;
-        this.creativeTabs = creativeTabs;
     }
 
     public static void registerBlocks() {
-        for (Blocks b : Blocks.values()) {
-            b.registerBlock();
+        for (Blocks block : Blocks.values()) {
+            block.registerBlock();
         }
     }
 
@@ -104,36 +83,11 @@ public enum Blocks {
         return new ItemStack(block, size, meta);
     }
 
-    private void registerBlock() {
-        if (!internalName.equals(internalName.toLowerCase(Locale.US))) {
-            throw new IllegalArgumentException(String.format("Unlocalized names need to be all lowercase! Item: %s", internalName));
-        }
-
-        // Register Block in Game Registry
-        GameRegistry.register(block.setCreativeTab(creativeTabs).setRegistryName(ModInfo.MOD_ID, internalName).setUnlocalizedName(internalName));
-
-        try {
-            GameRegistry.register(itemBlockClass.getConstructor(Block.class).newInstance(block).setRegistryName(block.getRegistryName()));
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-
-        // If bock has Render Info, Register Renderer
-        if (block instanceof IBlockRenderer && Platform.isClient()) {
-            ((IBlockRenderer) block).registerBlockRenderer();
-            ((IBlockRenderer) block).registerBlockItemRenderer();
-        }
-
-        LogHelper.info("Registered Block: " + internalName);
-    }
-
     public Block getBlock() {
         return this.block;
+    }
+
+    private void registerBlock() {
+        block = RegistrationHelper.registerBlock(blockClass, itemBlockClass);
     }
 }

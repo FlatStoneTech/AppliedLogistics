@@ -31,8 +31,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
@@ -48,6 +48,7 @@ import java.util.List;
 public abstract class BlockBase extends Block implements IBlockRenderer {
     protected boolean isInventory = false;
     protected String resourcePath = "";
+    protected String internalName = "";
 
     protected BlockBase(Material material, String resourcePath) {
         super(material);
@@ -57,6 +58,14 @@ public abstract class BlockBase extends Block implements IBlockRenderer {
         setResistance(5.0F);
         setHarvestLevel("pickaxe", 0);
         this.resourcePath = resourcePath;
+    }
+
+    public String getInternalName() {
+        return internalName;
+    }
+
+    public void setInternalName(String internalName) {
+        this.internalName = internalName;
     }
 
     @Override

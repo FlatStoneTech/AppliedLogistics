@@ -29,6 +29,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
 import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
@@ -39,6 +40,8 @@ public class PlanItem extends ItemPlanBase {
     public PlanItem() {
         this.setHasSubtypes(true);
         this.maxStackSize = 1;
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabPlans);
+        this.setInternalName("plan_item");
     }
 
     public static void setTagForPlan(ItemStack stack, Item plan) {

@@ -32,7 +32,7 @@ public class SlotBuilderPlan extends SlotBase {
     public SlotBuilderPlan(IInventory inventory, int idx, int x, int y, TileEntityBuilder tileEntity) {
         super(inventory, idx, x, y);
         this.tileEntity = tileEntity;
-        this.overlayIcon = new ItemStack(Items.ITEM_PLAN.item);
+        this.overlayIcon = Items.ITEM_PLAN.getStack();
     }
 
     @Override
