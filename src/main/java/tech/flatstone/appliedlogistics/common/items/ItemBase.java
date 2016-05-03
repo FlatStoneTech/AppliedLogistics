@@ -31,6 +31,7 @@ import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 
 public abstract class ItemBase extends Item implements IItemRenderer {
     protected String resourcePath = "";
+    protected String internalName = "";
 
     public ItemBase(String resourcePath) {
         this.resourcePath = resourcePath;
@@ -42,6 +43,14 @@ public abstract class ItemBase extends Item implements IItemRenderer {
 
         String test = String.format("item.%s.%s", ModInfo.MOD_ID, itemName);
         return test;
+    }
+
+    public String getInternalName() {
+        return internalName;
+    }
+
+    public void setInternalName(String internalName) {
+        this.internalName = internalName;
     }
 
     @Override

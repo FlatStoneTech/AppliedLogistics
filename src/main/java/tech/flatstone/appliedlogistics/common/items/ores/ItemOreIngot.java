@@ -28,6 +28,8 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import tech.flatstone.appliedlogistics.AppliedLogistics;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
@@ -43,6 +45,8 @@ public class ItemOreIngot extends ItemBase implements IProvideRecipe, IProvideSm
     public ItemOreIngot() {
         super("ores/ingot");
         this.setHasSubtypes(true);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabOres);
+        this.setInternalName("ore_ingot");
     }
 
     @Override
@@ -80,12 +84,12 @@ public class ItemOreIngot extends ItemBase implements IProvideRecipe, IProvideSm
         for (int i = 0; i < EnumOres.values().length; i++) {
             // Block -> 9x Ingots
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT) && EnumOres.byMeta(i).isTypeSet(EnumOreType.BLOCK)) {
-                GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Items.ITEM_ORE_INGOT.item, 9, i), "block" + EnumOres.byMeta(i).getName()));
+                GameRegistry.addRecipe(new ShapelessOreRecipe(Items.ITEM_ORE_INGOT.getStack(9, i), "block" + EnumOres.byMeta(i).getName()));
             }
 
             // 9x Nuggets -> Ingot
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT) && EnumOres.byMeta(i).isTypeSet(EnumOreType.NUGGET)) {
-                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Items.ITEM_ORE_INGOT.item, 1, i),
+                GameRegistry.addRecipe(new ShapedOreRecipe(Items.ITEM_ORE_INGOT.getStack(1, i),
                         "xxx",
                         "xxx",
                         "xxx",
@@ -120,11 +124,11 @@ public class ItemOreIngot extends ItemBase implements IProvideRecipe, IProvideSm
         for (int i = 0; i < EnumOres.values().length; i++) {
             // Register Ore -> Ingot
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE) && EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT))
-                GameRegistry.addSmelting(new ItemStack(Blocks.BLOCK_ORE.getBlock(), 1, i), new ItemStack(Items.ITEM_ORE_INGOT.item, 1, i), 0);
+                GameRegistry.addSmelting(Blocks.BLOCK_ORE.getStack(1, i), Items.ITEM_ORE_INGOT.getStack(1, i), 0);
 
             // Register Dust -> Ingot
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.DUST) && EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT))
-                GameRegistry.addSmelting(new ItemStack(Items.ITEM_ORE_DUST.item, 1, i), new ItemStack(Items.ITEM_ORE_INGOT.item, 1, i), 0);
+                GameRegistry.addSmelting(Items.ITEM_ORE_DUST.getStack(1, i), Items.ITEM_ORE_INGOT.getStack(1, i), 0);
         }
     }
 }

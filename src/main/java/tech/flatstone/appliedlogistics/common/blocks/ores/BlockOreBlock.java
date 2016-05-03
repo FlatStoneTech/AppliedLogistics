@@ -29,6 +29,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
@@ -43,6 +44,8 @@ public class BlockOreBlock extends BlockBase implements IProvideRecipe {
     public BlockOreBlock() {
         super(Material.rock, "ores/oreBlock");
         this.setDefaultState(this.blockState.getBaseState().withProperty(ORES, EnumOres.IRON));
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabOres);
+        this.setInternalName("ore_block");
     }
 
     @Override

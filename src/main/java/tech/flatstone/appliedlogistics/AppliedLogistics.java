@@ -20,6 +20,7 @@
 
 package tech.flatstone.appliedlogistics;
 
+import com.google.common.base.Stopwatch;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fluids.Fluid;
@@ -34,7 +35,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
-import sun.rmi.runtime.Log;
 import tech.flatstone.appliedlogistics.api.exceptions.OutdatedJavaException;
 import tech.flatstone.appliedlogistics.common.config.Config;
 import tech.flatstone.appliedlogistics.common.integrations.IntegrationsManager;
@@ -44,6 +44,7 @@ import tech.flatstone.appliedlogistics.common.world.WorldGen;
 import tech.flatstone.appliedlogistics.proxy.IProxy;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Mod(modid = ModInfo.MOD_ID, name = ModInfo.MOD_NAME, certificateFingerprint = ModInfo.FINGERPRINT, dependencies = ModInfo.DEPENDENCIES, version = ModInfo.VERSION_BUILD, guiFactory = ModInfo.GUI_FACTORY)
 public class AppliedLogistics {
@@ -59,6 +60,9 @@ public class AppliedLogistics {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        final Stopwatch stopwatch = Stopwatch.createStarted();
+        LogHelper.info("Pre Initialization (Started)");
+
         //Make sure we are running on java 7 or newer
         if (!SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_1_7)) {
             throw new OutdatedJavaException(String.format("%s requires Java 7 or newer, Please update your java", ModInfo.MOD_NAME));
@@ -74,7 +78,7 @@ public class AppliedLogistics {
 
         proxy.registerGUIs();
 
-        proxy.registerBlueprints();
+        proxy.registerPlans();
 
         proxy.registerFurnaceRecipes();
 
@@ -90,10 +94,14 @@ public class AppliedLogistics {
 
         IntegrationsManager.instance().index();
         IntegrationsManager.instance().preInit();
+
+        LogHelper.info("Pre Initialization (Ended after " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + "ms)");
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
+        final Stopwatch stopwatch = Stopwatch.createStarted();
+        LogHelper.info("Initialization (Started)");
         proxy.registerRecipes();
 
         proxy.registerCrusherRecipes();
@@ -106,10 +114,15 @@ public class AppliedLogistics {
 
         // Init Integrations
         IntegrationsManager.instance().init();
+
+        LogHelper.info("Initialization (Ended after " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + "ms)");
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+        final Stopwatch stopwatch = Stopwatch.createStarted();
+        LogHelper.info("Post Initialization (Started)");
+
         IntegrationsManager.instance().postInit();
 
         Map<String, Fluid> fluids = FluidRegistry.getRegisteredFluids();
@@ -117,6 +130,8 @@ public class AppliedLogistics {
             Fluid fluid = fluids.get(key);
             LogHelper.info(">>> Fluid Name: " + key + " (" + fluid.getUnlocalizedName() + ")");
         }
+
+        LogHelper.info("Post Initialization (Ended after " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + "ms)");
     }
 
     @SubscribeEvent

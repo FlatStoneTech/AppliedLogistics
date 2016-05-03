@@ -35,9 +35,9 @@ import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlanPlanChest extends ItemPlanBase implements IMachinePlan {
+public class PlanPlanChest extends PlanBase implements IMachinePlan {
     public PlanPlanChest() {
-        this.setUnlocalizedName(String.format("%s:%s", ModInfo.MOD_ID, "plan.chest"));
+        super("chest");
     }
 
     @Override

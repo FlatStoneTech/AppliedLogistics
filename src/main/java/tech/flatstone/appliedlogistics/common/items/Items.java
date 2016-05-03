@@ -36,59 +36,39 @@ import tech.flatstone.appliedlogistics.common.items.plans.PlanItem;
 import tech.flatstone.appliedlogistics.common.items.tools.ItemHammer;
 import tech.flatstone.appliedlogistics.common.util.IItemRenderer;
 import tech.flatstone.appliedlogistics.common.util.Platform;
+import tech.flatstone.appliedlogistics.common.util.RegistrationHelper;
 
 import java.util.Locale;
 
 public enum Items {
-    ITEM_ORE_INGOT("ore_ingot", new ItemOreIngot(), AppliedLogisticsCreativeTabs.tabOres),
-    ITEM_ORE_DUST("ore_dust", new ItemOreDust(), AppliedLogisticsCreativeTabs.tabOres),
-    ITEM_ORE_NUGGET("ore_nugget", new ItemOreNugget(), AppliedLogisticsCreativeTabs.tabOres),
+    ITEM_ORE_INGOT(ItemOreIngot.class),
+    ITEM_ORE_DUST(ItemOreDust.class),
+    ITEM_ORE_NUGGET(ItemOreNugget.class),
 
-    ITEM_MATERIAL_GEAR("material_gear", new ItemGear(), AppliedLogisticsCreativeTabs.tabGeneral),
+    ITEM_MATERIAL_GEAR(ItemGear.class),
 
-    ITEM_CARD_BLANK("card_blank", new ItemKitCard(), AppliedLogisticsCreativeTabs.tabGeneral),
-    ITEM_CARD_BLANK_ADVANCED("card_blank_advanced", new ItemKitCardAdvanced(), AppliedLogisticsCreativeTabs.tabGeneral),
-    ITEM_KIT_AUTOMATION("kit_automation", new ItemKitAutomation(), AppliedLogisticsCreativeTabs.tabGeneral),
-    ITEM_KIT_CRAFTING("kit_crafting", new ItemKitCrafting(), AppliedLogisticsCreativeTabs.tabGeneral),
-    ITEM_KIT_REDSTONE_INPUT("kit_redstone_input", new ItemKitRedstoneInput(), AppliedLogisticsCreativeTabs.tabGeneral),
-    ITEM_KIT_REDSTONE_OUTPUT("kit_redstone_output", new ItemKitRedstoneOutput(), AppliedLogisticsCreativeTabs.tabGeneral),
+    ITEM_CARD_BLANK(ItemKitCard.class),
+    ITEM_CARD_BLANK_ADVANCED(ItemKitCardAdvanced.class),
+    ITEM_KIT_AUTOMATION(ItemKitAutomation.class),
+    ITEM_KIT_CRAFTING(ItemKitCrafting.class),
+    ITEM_KIT_REDSTONE_INPUT(ItemKitRedstoneInput.class),
+    ITEM_KIT_REDSTONE_OUTPUT(ItemKitRedstoneOutput.class),
 
-    ITEM_TOOL_HAMMER("tool_hammer", new ItemHammer(), AppliedLogisticsCreativeTabs.tabGeneral),
+    ITEM_TOOL_HAMMER(ItemHammer.class),
 
-    ITEM_PLAN_BLANK("plan_blank", new PlanBlank(), AppliedLogisticsCreativeTabs.tabPlans),
-    ITEM_PLAN("plan_item", new PlanItem(), AppliedLogisticsCreativeTabs.tabPlans);
+    ITEM_PLAN_BLANK(PlanBlank.class),
+    ITEM_PLAN(PlanItem.class);
 
-    public final Item item;
-    private final String internalName;
+    private final Class <? extends Item> itemClass;
+    private Item item;
 
-    Items(String internalName, Item item) {
-        this(internalName, item, null);
-    }
-
-    Items(String internalName, Item item, CreativeTabs creativeTabs) {
-        this.internalName = internalName;
-        this.item = item;
-        item.setRegistryName(ModInfo.MOD_ID, internalName);
-        item.setUnlocalizedName(internalName);
-        item.setCreativeTab(creativeTabs);
+    Items(Class <? extends Item> itemClass) {
+        this.itemClass = itemClass;
     }
 
     public static void registerItems() {
         for (Items i : Items.values()) {
-            i.register();
-        }
-    }
-
-    public void register() {
-        if (!internalName.equals(internalName.toLowerCase(Locale.US))) {
-            throw new IllegalArgumentException(String.format("Unlocalized names need to be all lowercase! Item: %s", internalName));
-        }
-
-        //GameRegistry.registerItem(item, internalName);
-        GameRegistry.register(item);
-
-        if (item instanceof IItemRenderer && Platform.isClient()) {
-            ((IItemRenderer) item).registerItemRenderer();
+            i.registerItem();
         }
     }
 
@@ -106,5 +86,9 @@ public enum Items {
 
     public Item getItem() {
         return this.item;
+    }
+
+    private void registerItem() {
+        item = RegistrationHelper.registerItem(itemClass);
     }
 }

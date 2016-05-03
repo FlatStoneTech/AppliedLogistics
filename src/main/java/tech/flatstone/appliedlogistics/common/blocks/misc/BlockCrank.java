@@ -48,6 +48,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.lwjgl.opengl.GL11;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
@@ -61,6 +62,8 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
         super(Material.wood, "misc/crank");
         this.setTileEntity(TileEntityCrank.class);
         this.setHarvestLevel("Axe", 0);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabGeneral);
+        this.setInternalName("misc_crank");
     }
 
     @Override

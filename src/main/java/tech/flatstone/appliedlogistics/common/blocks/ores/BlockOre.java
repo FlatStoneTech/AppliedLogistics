@@ -27,6 +27,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
@@ -39,6 +40,8 @@ public class BlockOre extends BlockBase {
     public BlockOre() {
         super(Material.rock, "ores/ore");
         this.setDefaultState(this.blockState.getBaseState().withProperty(ORES, EnumOres.IRON));
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabOres);
+        this.setInternalName("ore");
     }
 
     @Override

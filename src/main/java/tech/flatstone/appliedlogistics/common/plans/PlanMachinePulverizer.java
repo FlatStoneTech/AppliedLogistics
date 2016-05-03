@@ -34,9 +34,9 @@ import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlanMachinePulverizer extends ItemPlanBase implements IMachinePlan {
+public class PlanMachinePulverizer extends PlanBase implements IMachinePlan {
     public PlanMachinePulverizer() {
-        this.setUnlocalizedName(String.format("%s:%s", ModInfo.MOD_ID, "plan.pulverizer"));
+        super("pulverizer");
     }
 
     @Override

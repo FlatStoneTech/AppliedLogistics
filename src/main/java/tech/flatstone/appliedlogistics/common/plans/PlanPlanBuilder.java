@@ -35,9 +35,9 @@ import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlanPlanBuilder extends ItemPlanBase implements IMachinePlan {
+public class PlanPlanBuilder extends PlanBase implements IMachinePlan {
     public PlanPlanBuilder() {
-        this.setUnlocalizedName(String.format("%s:%s", ModInfo.MOD_ID, "plan.builder"));
+        super("builder");
     }
 
     @Override

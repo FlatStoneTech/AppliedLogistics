@@ -24,12 +24,15 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 
 public class PlanBlank extends ItemPlanBase implements IProvideRecipe {
     public PlanBlank() {
         this.setMaxStackSize(16);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabPlans);
+        this.setInternalName("plan_blank");
     }
 
     @Override

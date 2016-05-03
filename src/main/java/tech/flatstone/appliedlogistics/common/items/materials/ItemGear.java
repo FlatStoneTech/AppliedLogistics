@@ -27,6 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.items.ItemBase;
@@ -40,6 +41,8 @@ public class ItemGear extends ItemBase implements IProvideRecipe {
     public ItemGear() {
         super("materials/gear");
         this.setHasSubtypes(true);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabGeneral);
+        this.setInternalName("material_gear");
     }
 
     @Override
@@ -77,7 +80,7 @@ public class ItemGear extends ItemBase implements IProvideRecipe {
         for (int i = 0; i < EnumOres.values().length; i++) {
             // Normal Gear Recipe
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.GEAR) && EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT)) {
-                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Items.ITEM_MATERIAL_GEAR.item, 1, i),
+                GameRegistry.addRecipe(new ShapedOreRecipe(Items.ITEM_MATERIAL_GEAR.getStack(1, i),
                         " x ",
                         "xyx",
                         " x ",
@@ -102,7 +105,7 @@ public class ItemGear extends ItemBase implements IProvideRecipe {
                         break;
                 }
 
-                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Items.ITEM_MATERIAL_GEAR.item, 1, i),
+                GameRegistry.addRecipe(new ShapedOreRecipe(Items.ITEM_MATERIAL_GEAR.getStack(1, i),
                         " x ",
                         "xyx",
                         " x ",

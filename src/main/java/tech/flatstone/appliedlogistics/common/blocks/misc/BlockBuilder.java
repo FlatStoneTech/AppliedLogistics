@@ -38,6 +38,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTechBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
@@ -54,6 +55,8 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe {
         super(Material.rock, "misc/builder", TechLevel.all());
         this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE).withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityBuilder.class);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabMachines);
+        this.setInternalName("builder");
     }
 
     @Override

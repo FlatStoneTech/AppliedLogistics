@@ -23,6 +23,7 @@ package tech.flatstone.appliedlogistics.common.items.cards;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.common.items.ItemBase;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
@@ -31,6 +32,8 @@ public class ItemKitAutomation extends ItemBase implements IProvideRecipe {
     public ItemKitAutomation() {
         super("cards/kit_automation");
         this.setMaxStackSize(8);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabGeneral);
+        this.setInternalName("kit_automation");
     }
 
     @Override

@@ -40,6 +40,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.api.registries.HammerRegistry;
 import tech.flatstone.appliedlogistics.api.registries.helpers.Crushable;
 import tech.flatstone.appliedlogistics.common.items.ItemBaseTool;
@@ -61,6 +62,8 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
     public ItemHammer() {
         super(3.0F, 1.0F, toolMaterialHammer, blocksEffectiveAgainst, "tools/toolHammer");
         this.setUnlocalizedName("tool_hammer");
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabGeneral);
+        this.setInternalName("tool_hammer");
     }
 
     @Override
@@ -131,7 +134,7 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
 
     @Override
     public void RegisterRecipes() {
-        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Items.ITEM_TOOL_HAMMER.item),
+        GameRegistry.addRecipe(new ShapedOreRecipe(Items.ITEM_TOOL_HAMMER.getStack(),
                 " yz",
                 " xy",
                 "x  ",
@@ -140,7 +143,7 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
                 'z', "nuggetIron"
         ));
 
-        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Items.ITEM_TOOL_HAMMER.item),
+        GameRegistry.addRecipe(new ShapedOreRecipe(Items.ITEM_TOOL_HAMMER.getStack(),
                 "zy ",
                 "yx ",
                 "  x",

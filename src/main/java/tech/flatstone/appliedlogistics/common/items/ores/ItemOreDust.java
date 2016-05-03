@@ -25,6 +25,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.items.ItemBase;
@@ -36,6 +37,8 @@ public class ItemOreDust extends ItemBase {
     public ItemOreDust() {
         super("ores/dust");
         this.setHasSubtypes(true);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabOres);
+        this.setInternalName("ore_dust");
     }
 
     @Override

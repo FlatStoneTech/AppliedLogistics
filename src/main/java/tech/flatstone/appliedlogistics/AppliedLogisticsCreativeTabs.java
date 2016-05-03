@@ -33,7 +33,7 @@ public class AppliedLogisticsCreativeTabs {
     public static final CreativeTabs tabGeneral = new CreativeTabs(ModInfo.MOD_ID) {
         @Override
         public Item getTabIconItem() {
-            return Items.ITEM_TOOL_HAMMER.item;
+            return Items.ITEM_TOOL_HAMMER.getItem();
         }
 
         @Override
@@ -44,7 +44,7 @@ public class AppliedLogisticsCreativeTabs {
     public static final CreativeTabs tabOres = new CreativeTabs(ModInfo.MOD_ID) {
         @Override
         public Item getTabIconItem() {
-            return Items.ITEM_ORE_DUST.item;
+            return Items.ITEM_ORE_DUST.getItem();
         }
 
         @Override
@@ -55,7 +55,7 @@ public class AppliedLogisticsCreativeTabs {
     public static final CreativeTabs tabMachines = new CreativeTabs(ModInfo.MOD_ID) {
         @Override
         public Item getTabIconItem() {
-            return Items.ITEM_MATERIAL_GEAR.item;
+            return Items.ITEM_MATERIAL_GEAR.getItem();
         }
 
         @Override
@@ -66,7 +66,7 @@ public class AppliedLogisticsCreativeTabs {
     public static final CreativeTabs tabPlans = new CreativeTabs(ModInfo.MOD_ID) {
         @Override
         public Item getTabIconItem() {
-            return Items.ITEM_PLAN.item;
+            return Items.ITEM_PLAN.getItem();
         }
 
         @Override

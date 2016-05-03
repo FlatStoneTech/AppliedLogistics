@@ -27,6 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.items.ItemBase;
@@ -40,6 +41,8 @@ public class ItemOreNugget extends ItemBase implements IProvideRecipe {
     public ItemOreNugget() {
         super("ores/nugget");
         this.setHasSubtypes(true);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabOres);
+        this.setInternalName("ore_nugget");
     }
 
     @Override
@@ -77,17 +80,17 @@ public class ItemOreNugget extends ItemBase implements IProvideRecipe {
         for (int i = 0; i < EnumOres.values().length; i++) {
             // Ingot -> 9x Nugget
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT) && EnumOres.byMeta(i).isTypeSet(EnumOreType.NUGGET)) {
-                GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Items.ITEM_ORE_NUGGET.item, 9, i), "ingot" + EnumOres.byMeta(i).getName()));
+                GameRegistry.addRecipe(new ShapelessOreRecipe(Items.ITEM_ORE_NUGGET.getStack(9, i), "ingot" + EnumOres.byMeta(i).getName()));
             }
 
             // Iron Ingot -> 9x Iron Nuggets
             if (EnumOres.byMeta(i) == EnumOres.IRON) {
-                GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Items.ITEM_ORE_NUGGET.item, 9, i), "ingotIron"));
+                GameRegistry.addRecipe(new ShapelessOreRecipe(Items.ITEM_ORE_NUGGET.getStack(9, i), "ingotIron"));
             }
 
             // Diamond -> 9x Diamond Nuggets
             if (EnumOres.byMeta(i) == EnumOres.DIAMOND) {
-                GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Items.ITEM_ORE_NUGGET.item, 9, i), "gemDiamond"));
+                GameRegistry.addRecipe(new ShapelessOreRecipe(Items.ITEM_ORE_NUGGET.getStack(9, i), "gemDiamond"));
             }
         }
     }

@@ -24,6 +24,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.common.items.ItemBase;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 
@@ -31,6 +32,8 @@ public class ItemKitCard extends ItemBase implements IProvideRecipe {
     public ItemKitCard() {
         super("cards/card_base");
         this.setMaxStackSize(16);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabGeneral);
+        this.setInternalName("card_blank");
     }
 
     @Override

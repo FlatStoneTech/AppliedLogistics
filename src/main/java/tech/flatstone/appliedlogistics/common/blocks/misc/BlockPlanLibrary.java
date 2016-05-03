@@ -35,6 +35,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPlanLibrary;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
@@ -45,6 +46,8 @@ public class BlockPlanLibrary extends BlockTileBase implements IProvideRecipe {
         super(Material.rock, "misc/planLibrary");
         this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityPlanLibrary.class);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabMachines);
+        this.setInternalName("plan_library");
     }
 
     @Override
