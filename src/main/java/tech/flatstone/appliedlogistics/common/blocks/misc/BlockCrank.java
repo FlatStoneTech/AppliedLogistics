@@ -24,6 +24,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
@@ -38,6 +39,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -48,6 +50,8 @@ import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
@@ -285,5 +289,40 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         return this.getDefaultState();
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean addDestroyEffects(World world, BlockPos pos, EffectRenderer effectRenderer)
+    {
+    	TileEntityCrank tileEntity = TileHelper.getTileEntity(world, pos, TileEntityCrank.class);
+        EnumFacing crankRotation = tileEntity.getCrankRotation();
+
+        AxisAlignedBB crankTop = new AxisAlignedBB(7 / 16d, 10 / 16d, 2 / 16d, 9 / 16d, 12 / 16d, 14 / 16d);
+        AxisAlignedBB crankShaft = new AxisAlignedBB(7 / 16d, 0, 7 / 16d, 9 / 16d, 10 / 16d, 9 / 16d).offset(pos.getX(), pos.getY(), pos.getZ());
+
+        crankTop = RotationHelper.rotateBB(crankTop, crankRotation).offset(pos.getX(), pos.getY(), pos.getZ());
+
+    	int stateID = Block.getStateId(getDefaultState().getActualState(world, pos));
+        int i = 9;
+
+        for (int j = 0; j < i; ++j)
+        {
+            for (int k = 0; k < i; ++k)
+            {
+                for (int l = 0; l < i; ++l)
+                {
+                    double d0 = pos.getX() + (j + 0.5D) / (double)i;
+                    double d1 = pos.getY() + (k + 0.5D) / (double)i;
+                    double d2 = pos.getZ() + (l + 0.5D) / (double)i;
+                    Vec3d vec = new Vec3d(d0, d1, d2);
+                    if (crankTop.isVecInside(vec) || crankShaft.isVecInside(vec))
+                    {
+                    	effectRenderer.spawnEffectParticle(EnumParticleTypes.BLOCK_CRACK.getParticleID(), d0, d1, d2, d0 - pos.getX() - 0.5D, d1 - pos.getY() - 0.5D, d2 - pos.getZ() - 0.5D, stateID);
+                    }
+                }
+            }
+        }
+        return true;
     }
 }
