@@ -51,4 +51,4 @@ Thanks to all the following people:
 * [FireBall1725]() for Applied Logistics
 * [GlassPelican]() for Applied Logistics
 * [CyanideX]() for Textures
-* all the [contributors](../graphs/contributors) that have helped!
+* all the [contributors](../../graphs/contributors) that have helped!
