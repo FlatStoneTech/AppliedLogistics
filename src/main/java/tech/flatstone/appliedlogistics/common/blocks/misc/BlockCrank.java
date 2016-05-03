@@ -295,7 +295,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
     @SideOnly(Side.CLIENT)
     public boolean addDestroyEffects(World world, BlockPos pos, EffectRenderer effectRenderer)
     {
-    	TileEntityCrank tileEntity = TileHelper.getTileEntity(world, pos, TileEntityCrank.class);
+        TileEntityCrank tileEntity = TileHelper.getTileEntity(world, pos, TileEntityCrank.class);
         EnumFacing crankRotation = tileEntity.getCrankRotation();
 
         AxisAlignedBB crankTop = new AxisAlignedBB(7 / 16d, 10 / 16d, 2 / 16d, 9 / 16d, 12 / 16d, 14 / 16d);
@@ -303,7 +303,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
 
         crankTop = RotationHelper.rotateBB(crankTop, crankRotation).offset(pos.getX(), pos.getY(), pos.getZ());
 
-    	int stateID = Block.getStateId(getDefaultState().getActualState(world, pos));
+        int stateID = Block.getStateId(getDefaultState().getActualState(world, pos));
         int i = 9;
 
         for (int j = 0; j < i; ++j)
@@ -318,7 +318,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
                     Vec3d vec = new Vec3d(d0, d1, d2);
                     if (crankTop.isVecInside(vec) || crankShaft.isVecInside(vec))
                     {
-                    	effectRenderer.spawnEffectParticle(EnumParticleTypes.BLOCK_CRACK.getParticleID(), d0, d1, d2, d0 - pos.getX() - 0.5D, d1 - pos.getY() - 0.5D, d2 - pos.getZ() - 0.5D, stateID);
+                        effectRenderer.spawnEffectParticle(EnumParticleTypes.BLOCK_CRACK.getParticleID(), d0, d1, d2, d0 - pos.getX() - 0.5D, d1 - pos.getY() - 0.5D, d2 - pos.getZ() - 0.5D, stateID);
                     }
                 }
             }
