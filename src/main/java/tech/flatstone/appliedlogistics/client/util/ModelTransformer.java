@@ -71,7 +71,11 @@ public class ModelTransformer {
         f.setAccessible(true);
         UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
         if (quad.hasTintIndex()) builder.setQuadTint(quad.getTintIndex());
-        //if (quad instanceof IColoredBakedQuad) builder.setQuadColored();
+        //if (quad instanceof IColoredBakedQuad) no longer needed as show in a forge sample 
+        //https://github.com/MinecraftForge/MinecraftForge/blob/1.9/src/main/java/net/minecraftforge/client/model/pipeline/LightUtil.java
+        //as compered to
+        //https://github.com/MinecraftForge/MinecraftForge/blob/1.8.8/src/main/java/net/minecraftforge/client/model/pipeline/LightUtil.java
+        builder.setQuadColored();
         builder.setQuadOrientation(quad.getFace());
         LightUtil.putBakedQuad(builder, quad);
         UnpackedBakedQuad unpackedQuad = builder.build();
@@ -190,6 +194,7 @@ public class ModelTransformer {
 
     }
 
+    //Iflexible Model was deprecated and removed anymore as a result no need to implament it
     private static final class TransformedModel implements IBakedModel {
 
         private final IBakedModel parent;
