@@ -304,7 +304,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
         crankTop = RotationHelper.rotateBB(crankTop, crankRotation).offset(pos.getX(), pos.getY(), pos.getZ());
 
         int stateID = Block.getStateId(getDefaultState().getActualState(world, pos));
-        int i = 9;
+        double i = 9;
 
         for (int j = 0; j < i; ++j)
         {
@@ -312,9 +312,9 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
             {
                 for (int l = 0; l < i; ++l)
                 {
-                    double d0 = pos.getX() + (j + 0.5D) / (double)i;
-                    double d1 = pos.getY() + (k + 0.5D) / (double)i;
-                    double d2 = pos.getZ() + (l + 0.5D) / (double)i;
+                    double d0 = pos.getX() + (j + 0.5D) / i;
+                    double d1 = pos.getY() + (k + 0.5D) / i;
+                    double d2 = pos.getZ() + (l + 0.5D) / i;
                     Vec3d vec = new Vec3d(d0, d1, d2);
                     if (crankTop.isVecInside(vec) || crankShaft.isVecInside(vec))
                     {
