@@ -312,23 +312,24 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
             {
                 for (int l = 0; l < i; ++l)
                 {
-                	addMaskedDestroyEffects(pos, effectRenderer, stateID, i, j, k, l, crankTop, crankShaft);
+                	double d0 = pos.getX() + (j + 0.5D) / i;
+                    double d1 = pos.getY() + (k + 0.5D) / i;
+                    double d2 = pos.getZ() + (l + 0.5D) / i;
+                    Vec3d vec = new Vec3d(d0, d1, d2);
+                	addMaskedDestroyEffects(pos, effectRenderer, stateID, vec, crankTop, crankShaft);
                 }
             }
         }
         return true;
     }
 
-    private void addMaskedDestroyEffects(BlockPos pos, EffectRenderer effectRenderer, int stateID, double i, int j, int k, int l, AxisAlignedBB... masks) {
-        double d0 = pos.getX() + (j + 0.5D) / i;
-        double d1 = pos.getY() + (k + 0.5D) / i;
-        double d2 = pos.getZ() + (l + 0.5D) / i;
-        Vec3d vec = new Vec3d(d0, d1, d2);
+    private void addMaskedDestroyEffects(BlockPos pos, EffectRenderer effectRenderer, int stateID, Vec3d vec, AxisAlignedBB... masks) {
+        
         for (AxisAlignedBB mask : masks)
         {
         	if (mask.isVecInside(vec))
             {
-            	effectRenderer.spawnEffectParticle(EnumParticleTypes.BLOCK_CRACK.getParticleID(), d0, d1, d2, d0 - pos.getX() - 0.5D, d1 - pos.getY() - 0.5D, d2 - pos.getZ() - 0.5D, stateID);
+            	effectRenderer.spawnEffectParticle(EnumParticleTypes.BLOCK_CRACK.getParticleID(), vec.xCoord, vec.yCoord, vec.zCoord, vec.xCoord - pos.getX() - 0.5D, vec.yCoord - pos.getY() - 0.5D, vec.zCoord - pos.getZ() - 0.5D, stateID);
             	break;
             }
         }
