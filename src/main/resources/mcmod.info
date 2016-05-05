@@ -2,13 +2,13 @@
 {
   "modid": "appliedlogistics",
   "name": "Applied Logistics",
-  "description": "Example placeholder mod.",
+  "description": "",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["FireBall","Glasspelican"],
+  "credits": "Special thanks to everyone that has contributed on Github",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []

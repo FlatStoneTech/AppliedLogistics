@@ -58,6 +58,8 @@ ext {
 
 version = minecraft_version + "-" + "b" + cibuild + "-univeral"
 archivesBaseName = cibasename
+api_version = 1
+api_featureset = 1
 
 // If TeamCity is running this build, lets set the version info
 if (hasProperty("teamcity")) {
@@ -73,10 +75,12 @@ if (hasProperty("teamcity")) {
 minecraft {
     version = minecraft_version + "-" + forge_version
 
-    replaceIn "ModInfo.java"
+    replaceIn "ModInfo.java", "ApiInfo.java"
 
     replace "@VERSION@", project.version
     replace "@MCVERSION@", minecraft_version
+    replace "@APIVERSION@", api_version
+    replace "@APIFEATURE@", api_featureset
 
     runDir = "run"
     mappings = "snapshot_20160312"
