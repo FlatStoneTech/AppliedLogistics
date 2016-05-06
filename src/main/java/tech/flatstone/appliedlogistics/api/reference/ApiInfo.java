@@ -20,6 +20,32 @@
 
 package tech.flatstone.appliedlogistics.api.reference;
 
+import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.api.exceptions.IncompatibleApiVersionException;
+
 public class ApiInfo {
     public static final String API_VERSION = "@APIVERSION@";
+    public static final String API_FEATURE_LEVEL = "@APIFEATURE@";
+    private static int apiVersion;
+    private static int featureLevel;
+
+    public ApiInfo() {
+        apiVersion = Integer.getInteger(API_VERSION);
+        featureLevel = Integer.getInteger(API_FEATURE_LEVEL);
+    }
+
+    public static int getApiVersion() {
+        return apiVersion;
+    }
+
+    public static int getFeatureLevel() {
+        return featureLevel;
+    }
+
+    public static void CheckAPI(String ModName, int apiVersionNum, int apiFeatureLevel) {
+        if ((apiVersionNum != apiVersion) && (apiFeatureLevel < featureLevel)) {
+            throw new IncompatibleApiVersionException(String.format("%s expects %s API %d:%d version %d:%d provided",
+                    ModName, ModInfo.MOD_NAME, apiVersionNum, apiFeatureLevel, apiVersion, featureLevel));
+        }
+    }
 }
