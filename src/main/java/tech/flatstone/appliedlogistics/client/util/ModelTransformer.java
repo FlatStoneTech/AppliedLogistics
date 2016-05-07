@@ -75,7 +75,7 @@ public class ModelTransformer {
         //https://github.com/MinecraftForge/MinecraftForge/blob/1.9/src/main/java/net/minecraftforge/client/model/pipeline/LightUtil.java
         //as compered to
         //https://github.com/MinecraftForge/MinecraftForge/blob/1.8.8/src/main/java/net/minecraftforge/client/model/pipeline/LightUtil.java
-        builder.setQuadColored();
+        builder.setApplyDiffuseLighting(false);
         builder.setQuadOrientation(quad.getFace());
         LightUtil.putBakedQuad(builder, quad);
         UnpackedBakedQuad unpackedQuad = builder.build();
