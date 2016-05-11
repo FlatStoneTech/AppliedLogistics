@@ -125,13 +125,8 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
     @Override
     public boolean canPlaceBlockAt(World worldIn, BlockPos pos) {
         TileEntity tileEntity = TileHelper.getTileEntity(worldIn, pos.down(), TileEntity.class);
-        if (tileEntity == null)
-            return false;
+        return tileEntity != null && tileEntity instanceof ICrankable && ((ICrankable) tileEntity).canAttachCrank();
 
-        if (!(tileEntity instanceof ICrankable))
-            return false;
-
-        return ((ICrankable) tileEntity).canAttachCrank();
     }
 
     @Override
@@ -155,6 +150,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
     @Override
     public RayTraceResult collisionRayTrace(IBlockState blockState, World worldIn, BlockPos pos, Vec3d start, Vec3d end) {
         TileEntityCrank tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityCrank.class);
+        assert tileEntity != null;
         EnumFacing crankRotation = tileEntity.getCrankRotation();
 
         AxisAlignedBB crankTop = new AxisAlignedBB(7 / 16d, 10 / 16d, 2 / 16d, 9 / 16d, 12 / 16d, 14 / 16d);
@@ -192,6 +188,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
 
         GL11.glPushMatrix();
         GlStateManager.translate(posBlock.getX() - renderManager.viewerPosX + 0.5, posBlock.getY() - renderManager.viewerPosY + 0.5, posBlock.getZ() - renderManager.viewerPosZ + 0.5);
+        assert tileEntity != null;
         if (tileEntity.isRotating())
             GlStateManager.rotate(tileEntity.getRotation() + 15 * event.getPartialTicks(), 0, 1, 0);
         if (!tileEntity.isRotating())
@@ -270,8 +267,9 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
     }
 
     @Override
-    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity p_185477_6_) {
+    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity entity) {
         TileEntityCrank tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityCrank.class);
+        assert tileEntity != null;
         EnumFacing crankRotation = tileEntity.getCrankRotation();
 
         AxisAlignedBB crankTop = new AxisAlignedBB(7 / 16d, 10 / 16d, 2 / 16d, 9 / 16d, 12 / 16d, 14 / 16d);
@@ -293,9 +291,9 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean addDestroyEffects(World world, BlockPos pos, EffectRenderer effectRenderer)
-    {
+    public boolean addDestroyEffects(World world, BlockPos pos, EffectRenderer effectRenderer) {
         TileEntityCrank tileEntity = TileHelper.getTileEntity(world, pos, TileEntityCrank.class);
+        assert tileEntity != null;
         EnumFacing crankRotation = tileEntity.getCrankRotation();
 
         AxisAlignedBB crankTop = new AxisAlignedBB(7 / 16d, 10 / 16d, 2 / 16d, 9 / 16d, 12 / 16d, 14 / 16d);
@@ -306,12 +304,9 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
         int stateID = Block.getStateId(getDefaultState().getActualState(world, pos));
         double i = 9;
 
-        for (int j = 0; j < i; ++j)
-        {
-            for (int k = 0; k < i; ++k)
-            {
-                for (int l = 0; l < i; ++l)
-                {
+        for (int j = 0; j < i; ++j) {
+            for (int k = 0; k < i; ++k) {
+                for (int l = 0; l < i; ++l) {
                     double d0 = pos.getX() + (j + 0.5D) / i;
                     double d1 = pos.getY() + (k + 0.5D) / i;
                     double d2 = pos.getZ() + (l + 0.5D) / i;
@@ -324,11 +319,9 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
     }
 
     private void addMaskedDestroyEffects(BlockPos pos, EffectRenderer effectRenderer, int stateID, Vec3d vec, AxisAlignedBB... masks) {
-        
-        for (AxisAlignedBB mask : masks)
-        {
-            if (mask.isVecInside(vec))
-            {
+
+        for (AxisAlignedBB mask : masks) {
+            if (mask.isVecInside(vec)) {
                 effectRenderer.spawnEffectParticle(EnumParticleTypes.BLOCK_CRACK.getParticleID(), vec.xCoord, vec.yCoord, vec.zCoord, vec.xCoord - pos.getX() - 0.5D, vec.yCoord - pos.getY() - 0.5D, vec.zCoord - pos.getZ() - 0.5D, stateID);
                 break;
             }
