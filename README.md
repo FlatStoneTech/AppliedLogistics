@@ -15,7 +15,7 @@
 
 (todo)
 
-*Breif info from OddUser:*
+*Brief info from OddUser:*
 It is a mod that relies on progression to achieve automation. Throughout a progression of ages, you will be able to improve your machines to do more for you, like cook ores faster, or more ores at once... But, this doesn't even begin to explain it. The machines which process materials are configurable but not in a set way. You can choose from various upgrades, each of which has a set weight, and cannot exceed the limit for the machine you are working with.
 ## Project Links
 
@@ -25,7 +25,10 @@ It is a mod that relies on progression to achieve automation. Throughout a progr
 
 ## License
 
-Please refer to [LICENCE](https://github.com/FlatStoneTech/AppliedLogistics/blob/master/LICENSE) file
+Summary:
+You can use the software, but have no ownership thereof. Portions of the source may be used to develop new software; this is referred to as 'Educational Use'. Otherwise, you may not make any commercial gain from it. You can't distribute the source or software. You can't rent or sell the software. The copyright holders may not be held liable for anything & retain all copyright.
+
+Fore more details please refer to [LICENCE](https://github.com/FlatStoneTech/AppliedLogistics/blob/master/LICENSE) file
 
 ## Downloads
 
