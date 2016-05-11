@@ -99,9 +99,9 @@ public class TransportGridTest {
         UUID node1 = transportGrid.createTransportNode();
         UUID node2 = transportGrid.createTransportNode();
 
-        transportGrid.createDirectionalNodeConnection(node1,node2);
+        transportGrid.createDirectionalNodeConnection(node1, node2);
         transportGrid.graphServer.sync();
-        transportGrid.removeDirectionalNodeConnection(node2,node1);
+        transportGrid.removeDirectionalNodeConnection(node2, node1);
         transportGrid.graphServer.sync();
     }
 
@@ -110,9 +110,9 @@ public class TransportGridTest {
         UUID node1 = transportGrid.createTransportNode();
         UUID node2 = transportGrid.createTransportNode();
 
-        transportGrid.createNodeConnection(node1,node2);
+        transportGrid.createNodeConnection(node1, node2);
         transportGrid.graphServer.sync();
-        transportGrid.removeNodeConnection(node1,node2);
+        transportGrid.removeNodeConnection(node1, node2);
         transportGrid.graphServer.sync();
     }
 }
