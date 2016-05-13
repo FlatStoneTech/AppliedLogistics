@@ -58,8 +58,10 @@ public class WorldGen implements IWorldGenerator {
 
     public void generateOres(Random random, int chunkX, int chunkZ, World world, boolean newGeneration) {
         for (OreGen gen : oreSpawnList) {
-            if ((newGeneration) || (retroGenEnabled(gen.name))) {
+            if (newGeneration) {
                 gen.generate(world, random, chunkX * 16, chunkZ * 16);
+            } else if ( world.getChunkFromChunkCoords(chunkX,chunkZ) ) {
+
             }
         }
     }
@@ -72,6 +74,21 @@ public class WorldGen implements IWorldGenerator {
         return true;
     }
 
+    private boolean retroGenRequired(NBTTagCompound modTag){
+        boolean thisChunk = false;
+        for (OreGen ore: oreSpawnList) {
+            thisChunk |= !modTag.hasKey(ore.name);
+            thisChunk |= modTag.getBoolean(ore.name);
+        }
+        return thisChunk;
+    }
+
+    private void saveGenInfo(NBTTagCompound tag){
+        for(OreGen ore: oreSpawnList){
+            tag.setBoolean(ore.name,ore.oreConfig.Enabled);
+        }
+    }
+
     private boolean retroGenEnabled(String oreName) {
         return true;
     }
@@ -81,12 +98,17 @@ public class WorldGen implements IWorldGenerator {
         NBTTagCompound nbtTagCompound = new NBTTagCompound();
         event.getData().setTag("AppliedLogistics", nbtTagCompound);
         nbtTagCompound.setBoolean("DEFAULT", true);
+        saveGenInfo(nbtTagCompound);
     }
 
     @SubscribeEvent
     public void chunkLoad(ChunkDataEvent.Load event) {
         int dimID = event.getWorld().provider.getDimension();
-        if ((!event.getData().getCompoundTag("AppliedLogistics").hasKey("DEFAULT")) && retrogenEnabled()) {
+        if (!retrogenEnabled())
+            return;
+
+        NBTTagCompound tag = event.getData().getCompoundTag("AppliedLogistics");
+        if ((!tag.hasKey("DEFAULT")) || retroGenRequired(tag)) {
             LogHelper.info("Chunk " + event.getChunk().getChunkCoordIntPair() + " has been flagged for Ore RetroGen by Applied Logistics");
             retrogenChunks.put(dimID, event.getChunk().getChunkCoordIntPair());
         }

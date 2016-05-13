@@ -91,7 +91,7 @@ public class TileEntityCrank extends TileEntityBase implements ITickable, IWaila
     }
 
     public void doCrank() {
-        if (rotating == true)
+        if (rotating)
             return;
 
         if (worldObj.isRemote)

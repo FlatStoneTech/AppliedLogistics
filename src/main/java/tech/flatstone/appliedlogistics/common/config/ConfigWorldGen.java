@@ -74,7 +74,7 @@ public class ConfigWorldGen {
 
     public static void init(Configuration configuration) {
         configuration.setCategoryLanguageKey(Config.CONFIG_WORLDGEN, "config.worldGen");
-        configuration.setCategoryRequiresWorldRestart(Config.CONFIG_WORLDGEN, true); //TODO: This could theoretically be false now, if desired
+        configuration.setCategoryRequiresWorldRestart(Config.CONFIG_WORLDGEN, false);
 
         final String WORLDGEN_ORES = String.format("%s.%s", Config.CONFIG_WORLDGEN, "ores");
 
