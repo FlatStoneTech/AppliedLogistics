@@ -47,7 +47,7 @@ import java.util.Random;
 
 public class WorldGen implements IWorldGenerator {
     private static List<OreGen> oreSpawnList = new ArrayList<>();
-    private static ArrayListMultimap<Integer, ChunkCoordIntPair> retrogenChunks = ArrayListMultimap.create();
+    private static ArrayListMultimap<Integer, ChunkInfo> retrogenChunks = ArrayListMultimap.create();
     private int numChunks = 2;
 
     public static OreGen addOreGen(String name, IBlockState block, ConfigWorldGen.OreConfig oreConfig) {
@@ -56,16 +56,19 @@ public class WorldGen implements IWorldGenerator {
         return oreGen;
     }
 
-    public void generateOres(Random random, int chunkX, int chunkZ, World world, boolean newGeneration) {
+    public void generateOres(Random random, int chunkX, int chunkZ, World world) {
         for (OreGen gen : oreSpawnList) {
-            if (newGeneration) {
-                gen.generate(world, random, chunkX * 16, chunkZ * 16);
-            } else if ( world.getChunkFromChunkCoords(chunkX,chunkZ) ) {
-
-            }
+            gen.generate(world, random, chunkX * 16, chunkZ * 16);
         }
     }
 
+    private void reGenerateOres(Random random, ChunkInfo chunkInfo, World world) {
+        for (OreGen gen : oreSpawnList) {
+            if (chunkInfo.tagCompound.getBoolean(gen.name)) {
+                gen.generate(world, random, chunkInfo.coordIntPair.chunkXPos *16 ,chunkInfo.coordIntPair.chunkZPos *16);
+            }
+        }
+    }
     private boolean retrogenEnabled() {
         /*for (OreGen gen : oreSpawnList) {
 
@@ -110,7 +113,7 @@ public class WorldGen implements IWorldGenerator {
         NBTTagCompound tag = event.getData().getCompoundTag("AppliedLogistics");
         if ((!tag.hasKey("DEFAULT")) || retroGenRequired(tag)) {
             LogHelper.info("Chunk " + event.getChunk().getChunkCoordIntPair() + " has been flagged for Ore RetroGen by Applied Logistics");
-            retrogenChunks.put(dimID, event.getChunk().getChunkCoordIntPair());
+            retrogenChunks.put(dimID, new ChunkInfo(event.getChunk().getChunkCoordIntPair(),tag));
         }
     }
 
@@ -122,7 +125,7 @@ public class WorldGen implements IWorldGenerator {
         int dimID = event.world.provider.getDimension();
         int counter = 0;
 
-        List<ChunkCoordIntPair> chunks = retrogenChunks.get(dimID);
+        List<ChunkInfo> chunks = retrogenChunks.get(dimID);
 
         if ((chunks != null) && (!chunks.isEmpty())) {
             if (WorldInfoHelper.getTps() >= 20) {
@@ -138,13 +141,13 @@ public class WorldGen implements IWorldGenerator {
 
                 counter++;
 
-                ChunkCoordIntPair chunkCoordIntPair = chunks.get(index);
+                ChunkCoordIntPair chunkCoordIntPair = chunks.get(index).getCoordIntPair();
                 long worldSeed = event.world.getSeed();
                 Random fmlRandom = new Random(worldSeed);
                 long xSeed = fmlRandom.nextLong() >> 3;
                 long zSeed = fmlRandom.nextLong() >> 3;
                 fmlRandom.setSeed(xSeed * chunkCoordIntPair.chunkXPos + zSeed * chunkCoordIntPair.chunkZPos ^ worldSeed);
-                generateOres(fmlRandom, chunkCoordIntPair.chunkXPos, chunkCoordIntPair.chunkZPos, event.world, false);
+                reGenerateOres(fmlRandom, chunks.get(index), event.world);
                 chunks.remove(index);
             }
 
@@ -155,7 +158,7 @@ public class WorldGen implements IWorldGenerator {
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
-        generateOres(random, chunkX, chunkZ, world, true);
+        generateOres(random, chunkX, chunkZ, world);
     }
 
     public static class OreGen {
@@ -178,6 +181,24 @@ public class WorldGen implements IWorldGenerator {
                     }
                 }
             }
+        }
+    }
+
+    private static class ChunkInfo {
+        private ChunkCoordIntPair coordIntPair;
+        private NBTTagCompound tagCompound;
+
+        public ChunkCoordIntPair getCoordIntPair() {
+            return coordIntPair;
+        }
+
+        public NBTTagCompound getTagCompound() {
+            return tagCompound;
+        }
+
+        public ChunkInfo(ChunkCoordIntPair coordIntPair, NBTTagCompound tagCompound) {
+            this.coordIntPair = coordIntPair;
+            this.tagCompound = tagCompound;
         }
     }
 }
