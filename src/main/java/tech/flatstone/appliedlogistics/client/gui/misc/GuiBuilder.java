@@ -20,11 +20,9 @@
 
 package tech.flatstone.appliedlogistics.client.gui.misc;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -37,7 +35,9 @@ import tech.flatstone.appliedlogistics.common.container.slot.SlotBuilderInventor
 import tech.flatstone.appliedlogistics.common.network.PacketHandler;
 import tech.flatstone.appliedlogistics.common.network.messages.PacketButtonClick;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityBuilder;
-import tech.flatstone.appliedlogistics.common.util.*;
+import tech.flatstone.appliedlogistics.common.util.BuilderSlotDetails;
+import tech.flatstone.appliedlogistics.common.util.GuiHelper;
+import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 
 import java.io.IOException;
 import java.util.List;
@@ -130,7 +130,7 @@ public class GuiBuilder extends GuiBase {
          * Progress Bars
          */
         if (tileEntity.getPlanItem() != null && tileEntity.getTicksRemaining() == 0 && tileEntity.getBlockMetadata() != TechLevel.CREATIVE.getMeta()) {
-            int weightMax = ((IMachinePlan)(tileEntity.getPlanBase())).getPlanMaxWeight(TechLevel.byMeta(tileEntity.getCurrentTechLevel()));
+            int weightMax = ((IMachinePlan) (tileEntity.getPlanBase())).getPlanMaxWeight(TechLevel.byMeta(tileEntity.getCurrentTechLevel()));
             int weightTotal = tileEntity.getTotalWeight();
             int weightProgressColor = colorProgressBackground;
 
@@ -194,7 +194,7 @@ public class GuiBuilder extends GuiBase {
 
         List<BuilderSlotDetails> builderSlotDetailsList = tileEntity.getBuilderSlotDetailsList();
 
-        if (slot instanceof SlotBuilderInventory && slot.getSlotIndex() > 0 && slot.getSlotIndex() <= builderSlotDetailsList.size()){
+        if (slot instanceof SlotBuilderInventory && slot.getSlotIndex() > 0 && slot.getSlotIndex() <= builderSlotDetailsList.size()) {
             renderItemStackToolTip(builderSlotDetailsList.get(slot.getSlotIndex() - 1), mouseX, mouseY);
         }
     }

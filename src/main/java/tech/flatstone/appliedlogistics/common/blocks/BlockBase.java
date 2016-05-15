@@ -21,7 +21,6 @@
 package tech.flatstone.appliedlogistics.common.blocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -60,7 +59,6 @@ public abstract class BlockBase extends Block implements IBlockRenderer {
         setHarvestLevel("pickaxe", 0);
         this.resourcePath = resourcePath;
     }
-
 
 
     public String getInternalName() {

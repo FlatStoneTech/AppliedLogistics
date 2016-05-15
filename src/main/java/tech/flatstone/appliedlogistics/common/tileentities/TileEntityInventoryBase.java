@@ -30,7 +30,6 @@ import net.minecraft.util.text.ITextComponent;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.IInventoryCustom;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.IInventoryHandler;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 public abstract class TileEntityInventoryBase extends TileEntityBase implements ISidedInventory, IInventoryHandler {
     public abstract IInventory getInternalInventory();

@@ -20,16 +20,6 @@
 
 package tech.flatstone.appliedlogistics.common.integrations.jei.Builder;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
-import tech.flatstone.appliedlogistics.api.features.TechLevel;
-import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
-import tech.flatstone.appliedlogistics.common.items.Items;
-import tech.flatstone.appliedlogistics.common.util.PlanDetails;
-import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
-
 import java.util.ArrayList;
 import java.util.List;
 

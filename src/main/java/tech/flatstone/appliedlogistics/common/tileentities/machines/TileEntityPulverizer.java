@@ -41,7 +41,6 @@ import tech.flatstone.appliedlogistics.common.util.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class TileEntityPulverizer extends TileEntityMachineBase implements ITickable, IWailaBodyMessage, ICrankable {
     private InternalInventory inventory = new InternalInventory(this, 11);

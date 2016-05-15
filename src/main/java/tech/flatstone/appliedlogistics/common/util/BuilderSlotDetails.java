@@ -1,11 +1,8 @@
 package tech.flatstone.appliedlogistics.common.util;
 
 import net.minecraft.item.ItemStack;
-import tech.flatstone.appliedlogistics.api.features.TechLevel;
-import tech.flatstone.appliedlogistics.api.features.plan.SlotTechLevelProperties;
 
 import java.util.List;
-import java.util.Map;
 
 public class BuilderSlotDetails {
     private List<ItemStack> slotMaterial;

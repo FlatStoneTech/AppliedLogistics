@@ -27,10 +27,7 @@ import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.api.features.plan.PlanSlot;
 import tech.flatstone.appliedlogistics.api.features.plan.SlotTechLevelProperties;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
-import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
-import tech.flatstone.appliedlogistics.common.util.PlanDetails;
-import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -23,8 +23,6 @@ package tech.flatstone.appliedlogistics.common.tileentities.misc;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -35,11 +33,9 @@ import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.api.features.plan.PlanSlot;
 import tech.flatstone.appliedlogistics.api.features.plan.SlotTechLevelProperties;
 import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
-import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCrank;
 import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaBodyMessage;
 import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
-import tech.flatstone.appliedlogistics.common.plans.PlanBase;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
@@ -100,7 +96,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
 
         // Setup the Slot List
         String planName = this.planItem.getTagCompound().getString("PlanType");
-        ItemPlanBase planBase = (ItemPlanBase)PlanRegistry.getPlanAsItem(planName);
+        ItemPlanBase planBase = (ItemPlanBase) PlanRegistry.getPlanAsItem(planName);
 
         if (planBase == null)
             return null;
@@ -204,6 +200,8 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
             this.markForUpdate();
 
             this.worldObj.addBlockEvent(this.pos, this.blockType, EnumEventTypes.PLAN_SLOT_UPDATE.ordinal(), 0);
+
+            TileHelper.DropItems(this, 1, 27);
         }
     }
 
@@ -287,9 +285,9 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
         if (planBase == null)
             return;
 
-        List<PlanSlot> planSlots = ((IMachinePlan)planBase).getPlanSlots();
+        List<PlanSlot> planSlots = ((IMachinePlan) planBase).getPlanSlots();
 
-        for(PlanSlot slot : planSlots) {
+        for (PlanSlot slot : planSlots) {
             int minCount = -1;
             int maxCount = -1;
             SlotTechLevelProperties techLevelProperties = slot.getSlotProperties().get(TechLevel.byMeta(currentTechLevel));
@@ -322,7 +320,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
 
     @Override
     public boolean receiveClientEvent(int id, int type) {
-        switch(EnumEventTypes.values()[id]) {
+        switch (EnumEventTypes.values()[id]) {
             case PLAN_SLOT_UPDATE:
                 initPlanSlotChange();
                 break;
@@ -365,7 +363,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
                 return false;
         }
 
-        if (getTotalWeight() > ((IMachinePlan)getPlanBase()).getPlanMaxWeight(TechLevel.byMeta(currentTechLevel)))
+        if (getTotalWeight() > ((IMachinePlan) getPlanBase()).getPlanMaxWeight(TechLevel.byMeta(currentTechLevel)))
             return false;
 
         return true;
@@ -430,7 +428,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
             this.internalInventory.setInventorySlotContents(slotID, null);
         }
 
-        this.outputItem = ((IMachinePlan)(getPlanBase())).getPlanItem(TechLevel.byMeta(currentTechLevel));
+        this.outputItem = ((IMachinePlan) (getPlanBase())).getPlanItem(TechLevel.byMeta(currentTechLevel));
 
         this.markDirty();
         this.markForUpdate();

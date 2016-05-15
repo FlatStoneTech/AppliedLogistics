@@ -20,10 +20,6 @@
 
 package tech.flatstone.appliedlogistics.client.util;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -39,7 +35,11 @@ import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
-@SuppressWarnings({ "deprecation", "unchecked" })
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
+@SuppressWarnings({"deprecation", "unchecked"})
 public class ModelTransformer {
 
     public static IBakedModel transform(IBakedModel model, IVertexTransformer transformer, IBlockState state, long rand) {
@@ -77,6 +77,12 @@ public class ModelTransformer {
             e.printStackTrace();
         }
         return unpackedQuad;
+    }
+
+    public static interface IVertexTransformer {
+
+        public float[] transform(BakedQuad quad, EnumType type, EnumUsage usage, float... data);
+
     }
 
     private static final class TransformedModel implements IBakedModel {
@@ -131,12 +137,6 @@ public class ModelTransformer {
 
             return parent.getOverrides();
         }
-
-    }
-
-    public static interface IVertexTransformer {
-
-        public float[] transform(BakedQuad quad, EnumType type, EnumUsage usage, float... data);
 
     }
 
