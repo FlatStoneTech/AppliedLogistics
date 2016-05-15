@@ -49,6 +49,7 @@ public class WorldGen implements IWorldGenerator {
     private static List<OreGen> oreSpawnList = new ArrayList<>();
     private static ArrayListMultimap<Integer, ChunkInfo> retrogenChunks = ArrayListMultimap.create();
     private int numChunks = 2;
+    private boolean retrogenEnable = true;
 
     public static OreGen addOreGen(String name, IBlockState block, ConfigWorldGen.OreConfig oreConfig) {
         OreGen oreGen = new OreGen(name, block, Blocks.stone, oreConfig);
@@ -64,36 +65,35 @@ public class WorldGen implements IWorldGenerator {
 
     private void reGenerateOres(Random random, ChunkInfo chunkInfo, World world) {
         for (OreGen gen : oreSpawnList) {
-            if (chunkInfo.tagCompound.getBoolean(gen.name)) {
-                gen.generate(world, random, chunkInfo.coordIntPair.chunkXPos *16 ,chunkInfo.coordIntPair.chunkZPos *16);
+            if (!chunkInfo.getTagCompound().getBoolean(gen.name)) {
+                gen.generate(world, random,
+                        chunkInfo.getCoordIntPair().chunkXPos * 16,
+                        chunkInfo.getCoordIntPair().chunkZPos * 16);
             }
         }
     }
+
     private boolean retrogenEnabled() {
-        /*for (OreGen gen : oreSpawnList) {
-
-        }*/
-
-        return true;
+        return retrogenEnable;
     }
 
-    private boolean retroGenRequired(NBTTagCompound modTag){
+    public void enableRetrogen(boolean enable) {
+        retrogenEnable = enable;
+    }
+
+    private boolean retroGenRequired(NBTTagCompound modTag) {
         boolean thisChunk = false;
-        for (OreGen ore: oreSpawnList) {
+        for (OreGen ore : oreSpawnList) {
             thisChunk |= !modTag.hasKey(ore.name);
-            thisChunk |= modTag.getBoolean(ore.name);
+            thisChunk |= !modTag.getBoolean(ore.name);
         }
         return thisChunk;
     }
 
-    private void saveGenInfo(NBTTagCompound tag){
-        for(OreGen ore: oreSpawnList){
-            tag.setBoolean(ore.name,ore.oreConfig.Enabled);
+    private void saveGenInfo(NBTTagCompound tag) {
+        for (OreGen ore : oreSpawnList) {
+            tag.setBoolean(ore.name, ore.oreConfig.Enabled);
         }
-    }
-
-    private boolean retroGenEnabled(String oreName) {
-        return true;
     }
 
     @SubscribeEvent
@@ -113,7 +113,7 @@ public class WorldGen implements IWorldGenerator {
         NBTTagCompound tag = event.getData().getCompoundTag("AppliedLogistics");
         if ((!tag.hasKey("DEFAULT")) || retroGenRequired(tag)) {
             LogHelper.info("Chunk " + event.getChunk().getChunkCoordIntPair() + " has been flagged for Ore RetroGen by Applied Logistics");
-            retrogenChunks.put(dimID, new ChunkInfo(event.getChunk().getChunkCoordIntPair(),tag));
+            retrogenChunks.put(dimID, new ChunkInfo(event.getChunk().getChunkCoordIntPair(), tag));
         }
     }
 
@@ -188,17 +188,17 @@ public class WorldGen implements IWorldGenerator {
         private ChunkCoordIntPair coordIntPair;
         private NBTTagCompound tagCompound;
 
+        public ChunkInfo(ChunkCoordIntPair coordIntPair, NBTTagCompound tagCompound) {
+            this.coordIntPair = coordIntPair;
+            this.tagCompound = tagCompound;
+        }
+
         public ChunkCoordIntPair getCoordIntPair() {
             return coordIntPair;
         }
 
         public NBTTagCompound getTagCompound() {
             return tagCompound;
-        }
-
-        public ChunkInfo(ChunkCoordIntPair coordIntPair, NBTTagCompound tagCompound) {
-            this.coordIntPair = coordIntPair;
-            this.tagCompound = tagCompound;
         }
     }
 }
