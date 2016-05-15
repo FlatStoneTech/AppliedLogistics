@@ -38,8 +38,6 @@ import tech.flatstone.appliedlogistics.common.config.Config;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.plans.PlanMachineFurnace;
 import tech.flatstone.appliedlogistics.common.plans.PlanMachinePulverizer;
-import tech.flatstone.appliedlogistics.common.plans.PlanPlanBuilder;
-import tech.flatstone.appliedlogistics.common.plans.PlanPlanChest;
 import tech.flatstone.appliedlogistics.common.util.*;
 import tech.flatstone.appliedlogistics.common.world.WorldGenInit;
 
@@ -199,8 +197,6 @@ public abstract class CommonProxy implements IProxy {
     @Override
     public void registerPlans() {
         PlanRegistry.registerPlan(new PlanMachinePulverizer());
-        PlanRegistry.registerPlan(new PlanPlanBuilder());
-        PlanRegistry.registerPlan(new PlanPlanChest());
         PlanRegistry.registerPlan(new PlanMachineFurnace());
     }
 

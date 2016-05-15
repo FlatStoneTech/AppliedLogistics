@@ -255,8 +255,19 @@ public class GuiHelper extends GuiScreen {
     }
 
     public void drawResource(ResourceLocation resource, int x, int y, int x1, int y1, int w, int h) {
+        this.zLevel = 300;
+
         Minecraft.getMinecraft().getTextureManager().bindTexture(resource);
-        drawTexturedModalRect(0, 0, 0, 0, 128, 128);
+
+        GL11.glPushMatrix();
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+        drawTexturedModalRect(x, y, x1, y1, w, h);
+
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glPopMatrix();
+
     }
 
     public void drawMachineUpgradeIcons(int x, int y, TileEntityMachineBase tileEntity) {

@@ -1,19 +1,28 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "textures": {
-      "particle": "blocks/planks_oak"
-    },
     "model": "appliedlogistics:misc/crank"
   },
   "variants": {
-    "normal": [
-      {}
-    ],
-    "inventory": [
-      {
+    "oretype": {
+      "iron": {
+        "textures": {
+          "texture": "blocks/iron_block"
+        },
+        "y": 90
+      },
+      "bronze": {
+        "textures": {
+          "texture": "appliedlogistics:blocks/ores/blocks/Bronze"
+        },
+        "y": 90
+      },
+      "wood": {
+        "textures": {
+          "texture": "blocks/planks_oak"
+        },
         "y": 90
       }
-    ]
+    }
   }
 }

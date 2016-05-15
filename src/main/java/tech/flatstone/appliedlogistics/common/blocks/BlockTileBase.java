@@ -21,6 +21,7 @@ import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.IOrientable;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 import javax.annotation.Nonnull;
@@ -40,6 +41,7 @@ public abstract class BlockTileBase extends BlockBase implements ITileEntityProv
     protected void setTileEntity(final Class<? extends TileEntity> clazz) {
         this.tileEntityClass = clazz;
         this.setTileProvider(true);
+        this.isBlockContainer = true;
         this.isInventory = IInventory.class.isAssignableFrom(clazz);
 
         String tileName = "tileentity." + ModInfo.MOD_ID + "." + clazz.getSimpleName();
@@ -174,5 +176,13 @@ public abstract class BlockTileBase extends BlockBase implements ITileEntityProv
     @Override
     public void registerBlockItemRenderer() {
         super.registerBlockItemRenderer();
+    }
+
+    @Override
+    public boolean onBlockEventReceived(World worldIn, BlockPos pos, IBlockState state, int eventID, int eventParam)
+    {
+        super.onBlockEventReceived(worldIn, pos, state, eventID, eventParam);
+        TileEntity tileentity = worldIn.getTileEntity(pos);
+        return tileentity == null ? false : tileentity.receiveClientEvent(eventID, eventParam);
     }
 }

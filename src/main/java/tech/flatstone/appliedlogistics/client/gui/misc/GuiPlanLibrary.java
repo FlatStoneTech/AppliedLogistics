@@ -94,8 +94,9 @@ public class GuiPlanLibrary extends GuiBase {
         String planName = LanguageHelper.NONE.translateMessage(((ItemPlanBase) plan).getUnlocalizedName() + ".name");
         guiHelper.drawCenteredString(22, 22, 133, planName, 4210752);
 
-        String planDescription = plan.getLocalizedPlanDescription(); //198px Wide
-        guiHelper.renderSplitString(planDescription, 10, 40, 198, colorFont);
+        //todo: fixme
+        //String planDescription = plan.getLocalizedPlanDescription(); //198px Wide
+        //guiHelper.renderSplitString(planDescription, 10, 40, 198, colorFont);
     }
 
     @Override

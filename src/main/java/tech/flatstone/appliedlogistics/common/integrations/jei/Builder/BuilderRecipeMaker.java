@@ -37,33 +37,34 @@ public class BuilderRecipeMaker {
     public static List<BuilderRecipeJEI> getRecipes() {
         ArrayList<BuilderRecipeJEI> recipes = new ArrayList<BuilderRecipeJEI>();
 
-        for (Item itemPlan : PlanRegistry.getPlanItems()) {
-            IMachinePlan iMachinePlan = (IMachinePlan) itemPlan;
-
-            for (TechLevel techLevel : TechLevel.values()) {
-                PlanDetails planDetails = iMachinePlan.getTechLevels(techLevel);
-
-                if (planDetails == null)
-                    continue;
-
-                ItemStack stackPlan = new ItemStack(Items.ITEM_PLAN.getItem());
-
-                NBTTagCompound nbtTagCompound = new NBTTagCompound();
-                nbtTagCompound.setString("PlanType", itemPlan.getUnlocalizedName());
-
-                stackPlan.setTagCompound(nbtTagCompound);
-
-                List<PlanRequiredMaterials> materialsList = planDetails.getRequiredMaterialsList();
-                List<ItemStack> stackInput = new ArrayList<ItemStack>();
-
-                for (PlanRequiredMaterials material : materialsList) {
-                    stackInput.add(material.getRequiredMaterials().get(0));
-                }
-
-                BuilderRecipeJEI recipe = new BuilderRecipeJEI(stackInput, stackPlan, techLevel, planDetails.getItemOutput());
-                recipes.add(recipe);
-            }
-        }
+        //todo: Fix the JEI for the Recipe Maker
+//        for (Item itemPlan : PlanRegistry.getPlanItems()) {
+//            IMachinePlan iMachinePlan = (IMachinePlan) itemPlan;
+//
+//            for (TechLevel techLevel : TechLevel.values()) {
+//                PlanDetails planDetails = iMachinePlan.getTechLevels(techLevel);
+//
+//                if (planDetails == null)
+//                    continue;
+//
+//                ItemStack stackPlan = new ItemStack(Items.ITEM_PLAN.getItem());
+//
+//                NBTTagCompound nbtTagCompound = new NBTTagCompound();
+//                nbtTagCompound.setString("PlanType", itemPlan.getUnlocalizedName());
+//
+//                stackPlan.setTagCompound(nbtTagCompound);
+//
+//                List<PlanRequiredMaterials> materialsList = planDetails.getRequiredMaterialsList();
+//                List<ItemStack> stackInput = new ArrayList<ItemStack>();
+//
+//                for (PlanRequiredMaterials material : materialsList) {
+//                    stackInput.add(material.getRequiredMaterials().get(0));
+//                }
+//
+//                BuilderRecipeJEI recipe = new BuilderRecipeJEI(stackInput, stackPlan, techLevel, planDetails.getItemOutput());
+//                recipes.add(recipe);
+//            }
+//        }
 
         return recipes;
     }

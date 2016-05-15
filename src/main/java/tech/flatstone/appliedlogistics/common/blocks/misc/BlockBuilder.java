@@ -43,6 +43,7 @@ import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTechBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityBuilder;
+import tech.flatstone.appliedlogistics.common.util.EnumEventTypes;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
@@ -73,6 +74,7 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe {
         if (worldIn.isRemote)
             return true;
 
+        worldIn.addBlockEvent(pos, this, EnumEventTypes.PLAN_SLOT_UPDATE.ordinal(), 0);
         playerIn.openGui(AppliedLogistics.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
@@ -133,19 +135,19 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe {
         return true;
     }
 
-    @Override
-    public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos) {
-        TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
+//    @Override
+//    public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos) {
+//        TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
+//
+//        return tileEntity.getComparatorOutput();
+//    }
 
-        return tileEntity.getComparatorOutput();
-    }
-
-    @Override
-    public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
-        TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
-        if (tileEntity == null)
-            return;
-
-        tileEntity.setBadCrankCount(0);
-    }
+//    @Override
+//    public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
+//        TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
+//        if (tileEntity == null)
+//            return;
+//
+//        tileEntity.setBadCrankCount(0);
+//    }
 }

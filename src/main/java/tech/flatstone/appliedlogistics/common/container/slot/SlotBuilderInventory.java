@@ -23,8 +23,7 @@ package tech.flatstone.appliedlogistics.common.container.slot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityBuilder;
-import tech.flatstone.appliedlogistics.common.util.PlanDetails;
-import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
+import tech.flatstone.appliedlogistics.common.util.BuilderSlotDetails;
 
 import java.util.List;
 
@@ -40,13 +39,9 @@ public class SlotBuilderInventory extends SlotBase {
 
     @Override
     public boolean canBeHovered() {
-        PlanDetails planDetails = tileEntity.getPlanDetails();
-        if (planDetails == null)
-            return false;
+        List<BuilderSlotDetails> builderSlotDetailsList = tileEntity.getBuilderSlotDetailsList();
 
-        List<PlanRequiredMaterials> planRequiredMaterialsList = planDetails.getRequiredMaterialsList();
-        return planRequiredMaterialsList.size() >= slotID;
-
+        return (builderSlotDetailsList.size() >= slotID);
     }
 
     @Override
@@ -54,20 +49,19 @@ public class SlotBuilderInventory extends SlotBase {
         if (!canBeHovered())
             return false;
 
-        PlanDetails planDetails = tileEntity.getPlanDetails();
-        if (planDetails == null)
+        List<BuilderSlotDetails> builderSlotDetailsList = tileEntity.getBuilderSlotDetailsList();
+
+        BuilderSlotDetails slotDetails = builderSlotDetailsList.get(slotID - 1);
+
+        if (slotDetails.getSlotMaterialMaxCount() == -1)
             return false;
 
-        List<ItemStack> validItems = planDetails.getRequiredMaterialsList().get(slotID - 1).getRequiredMaterials();
-        for (ItemStack validItem : validItems) {
-            validItem.stackSize = 1;
-
+        for (ItemStack validItem : slotDetails.getSlotMaterials()) {
             if (validItem.isItemEqual(stack))
                 return true;
 
             if (validItem.getItemDamage() == Short.MAX_VALUE && validItem.getItem() == stack.getItem())
                 return true;
-
         }
 
         return false;
@@ -75,10 +69,8 @@ public class SlotBuilderInventory extends SlotBase {
 
     @Override
     public int getSlotStackLimit() {
-        PlanDetails planDetails = tileEntity.getPlanDetails();
-        if (planDetails == null)
-            return 0;
+        List<BuilderSlotDetails> builderSlotDetailsList = tileEntity.getBuilderSlotDetailsList();
 
-        return planDetails.getRequiredMaterialsList().get(slotID - 1).getMaxCount();
+        return builderSlotDetailsList.get(slotID - 1).getSlotMaterialMaxCount();
     }
 }

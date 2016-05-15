@@ -23,6 +23,7 @@ package tech.flatstone.appliedlogistics.client.render;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelRenderer;
 import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraftforge.client.model.animation.FastTESR;
@@ -42,7 +43,7 @@ public class RenderCrank extends FastTESR<TileEntityCrank> {
 
         IBakedModel model = ModelTransformer.transform(origModel, new ModelTransformer.IVertexTransformer() {
             @Override
-            public float[] transform(VertexFormatElement.EnumType type, VertexFormatElement.EnumUsage usage, float... data) {
+            public float[] transform(BakedQuad quad, VertexFormatElement.EnumType type, VertexFormatElement.EnumUsage usage, float... data) {
                 if (usage == VertexFormatElement.EnumUsage.POSITION) {
                     Vector4f vec = new Vector4f(data[0] - 0.5F, data[1] - 0.5F, data[2] - 0.5F, 0);
                     Matrix4f mat = new Matrix4f();
@@ -58,25 +59,9 @@ public class RenderCrank extends FastTESR<TileEntityCrank> {
                 }
                 return data;
             }
-        }, ModelTransformer.IVertexFormatTransformer.NONE, worldRenderer.getVertexFormat());
+        }, null, 0);
 
         BlockModelRenderer modelRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer();
         modelRenderer.renderModel(te.getWorld(), model, Blocks.BLOCK_MISC_CRANK.getBlock().getDefaultState(), te.getPos(), worldRenderer, false);
-
-        //todo: look into why this tessellator stuff isn't working...
-//        if (destroyStage >= 0) {
-//            bindTexture(TextureMap.locationBlocksTexture);
-//            TextureAtlasSprite damageTexture = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("minecraft:blocks/destroy_stage_" + destroyStage);
-//            GlStateManager.pushMatrix();
-//            GlStateManager.translate(-te.getPos().getX() + x, -te.getPos().getY() + y, -te.getPos().getZ() + z);
-//            Tessellator tessellator = Tessellator.getInstance();
-//            VertexBuffer worldrenderer = tessellator.getBuffer();
-//            worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-//            IBlockState state = Blocks.BLOCK_MISC_CRANK.getBlock().getActualState(Blocks.BLOCK_MISC_CRANK.getBlock().getDefaultState(), te.getWorld(), te.getPos());
-//            IBakedModel iBakedModel1 = (new SimpleBakedModel.Builder(state, model, damageTexture, te.getPos())).makeBakedModel();
-//            modelRenderer.renderModel(te.getWorld(), iBakedModel1, state, te.getPos(), Tessellator.getInstance().getBuffer(), false);
-//            tessellator.draw();
-//            GlStateManager.popMatrix();
-//        }
     }
 }

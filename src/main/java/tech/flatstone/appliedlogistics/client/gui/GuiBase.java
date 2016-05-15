@@ -20,6 +20,7 @@
 
 package tech.flatstone.appliedlogistics.client.gui;
 
+import com.fireball1725.firecore.common.util.*;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
@@ -29,10 +30,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.common.util.*;
 import tech.flatstone.appliedlogistics.common.util.GuiHelper;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 import tech.flatstone.appliedlogistics.common.util.OpenGLHelper;
-import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 
 import java.awt.*;
 import java.util.List;
@@ -138,12 +139,16 @@ public abstract class GuiBase extends GuiContainer {
         guiHelper.drawItemStack(itemStack, slot.xDisplayPosition + guiLeft, slot.yDisplayPosition + guiTop, this.itemRender, false);
     }
 
+    protected void drawSlotIcon(Slot slot) {
+        guiHelper.drawResource(new ResourceLocation(ModInfo.MOD_ID, "textures/icons.png"), slot.xDisplayPosition + guiLeft, slot.yDisplayPosition + guiTop, 0, 0, 16, 16);
+    }
+
     public void renderToolTip(List<String> messages, int x, int y) {
         this.drawHoveringText(messages, x, y, fontRendererObj);
     }
 
-    public void renderItemStackToolTip(PlanRequiredMaterials materials, int x, int y) {
-        ItemStack stack = materials.getRequiredMaterials().get(0);
+    public void renderItemStackToolTip(BuilderSlotDetails materials, int x, int y) {
+        ItemStack stack = materials.getSlotMaterials().get(0);
         FontRenderer font = stack.getItem().getFontRenderer(stack) == null ? fontRendererObj : stack.getItem().getFontRenderer(stack);
 
         java.util.List<String> list = stack.getTooltip(this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips);
@@ -160,8 +165,8 @@ public abstract class GuiBase extends GuiContainer {
             int j = 1;
 
             // Add Description
-            if (!materials.getDescription().isEmpty()) {
-                for (String message : font.listFormattedStringToWidth(materials.getDescription(), 150)) {
+            if (!materials.getSlotDescription().isEmpty()) {
+                for (String message : font.listFormattedStringToWidth(materials.getSlotDescription(), 150)) {
                     list.add(i + j, String.format("%s%s%s",
                             TextFormatting.YELLOW,
                             TextFormatting.ITALIC,
@@ -171,40 +176,47 @@ public abstract class GuiBase extends GuiContainer {
                 }
             }
 
-            // Add Min / Max
-            if (materials.getMinCount() == materials.getMaxCount()) {
-                list.add(i + j, String.format("%s%s%s: %s",
-                        TextFormatting.GRAY,
-                        TextFormatting.ITALIC,
-                        LanguageHelper.LABEL.translateMessage("required"),
-                        materials.getMinCount()
-                ));
-            } else {
-                list.add(i + j, String.format("%s%s%s: %s / %s %s",
-                        TextFormatting.GRAY,
-                        TextFormatting.ITALIC,
-                        LanguageHelper.LABEL.translateMessage("min"),
-                        materials.getMinCount(),
-                        LanguageHelper.LABEL.translateMessage("max"),
-                        materials.getMaxCount()
-                ));
-            }
-            j++;
+            if (materials.getSlotMaterialMaxCount() != -1) {
+                // Add Min / Max
+                if (materials.getSlotMaterialMinCount() == materials.getSlotMaterialMaxCount()) {
+                    list.add(i + j, String.format("%s%s%s: %s",
+                            TextFormatting.GRAY,
+                            TextFormatting.ITALIC,
+                            LanguageHelper.LABEL.translateMessage("required"),
+                            materials.getSlotMaterialMinCount()
+                    ));
+                } else {
+                    list.add(i + j, String.format("%s%s%s: %s / %s %s",
+                            TextFormatting.GRAY,
+                            TextFormatting.ITALIC,
+                            LanguageHelper.LABEL.translateMessage("min"),
+                            materials.getSlotMaterialMinCount(),
+                            LanguageHelper.LABEL.translateMessage("max"),
+                            materials.getSlotMaterialMaxCount()
+                    ));
+                }
+                j++;
 
-            // Add Weight Information
-            if (materials.getMinCount() == materials.getMaxCount()) {
-                list.add(i + j, String.format("%s%s%s: %skg",
-                        TextFormatting.GRAY,
-                        TextFormatting.ITALIC,
-                        LanguageHelper.LABEL.translateMessage("weight_added"),
-                        materials.getItemWeight() * materials.getMaxCount()
-                ));
+                // Add Weight Information
+                if (materials.getSlotMaterialMinCount() == materials.getSlotMaterialMaxCount()) {
+                    list.add(i + j, String.format("%s%s%s: %skg",
+                            TextFormatting.GRAY,
+                            TextFormatting.ITALIC,
+                            LanguageHelper.LABEL.translateMessage("weight_added"),
+                            materials.getSlotMaterialWeight() * materials.getSlotMaterialMaxCount()
+                    ));
+                } else {
+                    list.add(i + j, String.format("%s%s%s: %skg",
+                            TextFormatting.GRAY,
+                            TextFormatting.ITALIC,
+                            LanguageHelper.LABEL.translateMessage("weight_per_item"),
+                            materials.getSlotMaterialWeight()
+                    ));
+                }
             } else {
-                list.add(i + j, String.format("%s%s%s: %skg",
-                        TextFormatting.GRAY,
-                        TextFormatting.ITALIC,
-                        LanguageHelper.LABEL.translateMessage("weight_per_item"),
-                        materials.getItemWeight()
+                list.add(i + j, String.format("%s%s",
+                        TextFormatting.AQUA,
+                        LanguageHelper.MESSAGE.translateMessage("incorrect_tech_level")
                 ));
             }
         }

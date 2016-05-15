@@ -22,6 +22,8 @@ package tech.flatstone.appliedlogistics.common.blocks.misc;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -30,6 +32,7 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -52,20 +55,26 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
+import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCrank;
 import tech.flatstone.appliedlogistics.common.util.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockRenderer, IProvideEvent {
+public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvideEvent {
+    public static final PropertyEnum ORES = PropertyEnum.create("oretype", EnumOres.class);
+
     public BlockCrank() {
         super(Material.wood, "misc/crank");
         this.setTileEntity(TileEntityCrank.class);
-        this.setHarvestLevel("Axe", 0);
+        this.setHarvestLevel("Axe", 0); //todo fix from enumore level..
         this.setCreativeTab(AppliedLogisticsCreativeTabs.tabGeneral);
         this.setInternalName("misc_crank");
+        this.setDefaultState(this.blockState.getBaseState().withProperty(ORES, EnumOres.IRON));
     }
 
     @Override
@@ -76,6 +85,35 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
     @Override
     public boolean isOpaqueCube(IBlockState state) {
         return false;
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return this.getDefaultState().withProperty(ORES, EnumOres.byMeta(meta));
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        EnumOres ores = (EnumOres) state.getValue(ORES);
+        return (ores.getMeta());
+    }
+
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, ORES);
+    }
+
+    @Override
+    public int damageDropped(IBlockState state) {
+        return getMetaFromState(state);
+    }
+
+    @Override
+    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
+        for (EnumOres ore : EnumOres.values()) {
+            if (ore.isTypeSet(EnumOreType.CRANK))
+                list.add(new ItemStack(itemIn, 1, ore.getMeta()));
+        }
     }
 
     @Override
@@ -96,13 +134,6 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
                 " s ",
                 's', "stickWood"
         ));
-    }
-
-    @Override
-    public void registerBlockItemRenderer() {
-        final String resourcePath = String.format("%s:%s", ModInfo.MOD_ID, this.resourcePath);
-
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(resourcePath, "inventory"));
     }
 
     @Override
@@ -189,9 +220,9 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
         GL11.glPushMatrix();
         GlStateManager.translate(posBlock.getX() - renderManager.viewerPosX + 0.5, posBlock.getY() - renderManager.viewerPosY + 0.5, posBlock.getZ() - renderManager.viewerPosZ + 0.5);
         if (tileEntity.isRotating())
-            GlStateManager.rotate(tileEntity.getRotation() + 15 * event.getPartialTicks(), 0, 1, 0);
+            GlStateManager.rotate(tileEntity.getRotation() + 15 * event.getPartialTicks() + 90, 0, 1, 0);
         if (!tileEntity.isRotating())
-            GlStateManager.rotate(tileEntity.getRotation(), 0, 1, 0);
+            GlStateManager.rotate(tileEntity.getRotation() + 90, 0, 1, 0);
 
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
@@ -284,6 +315,6 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IBlockR
 
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        return this.getDefaultState();
+        return state;
     }
 }

@@ -37,10 +37,7 @@ import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
-import tech.flatstone.appliedlogistics.common.util.ICrankable;
-import tech.flatstone.appliedlogistics.common.util.InventoryHelper;
-import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
+import tech.flatstone.appliedlogistics.common.util.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,9 +52,8 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
     private boolean machineWorking = false;
     private int badCrankCount = 0;
     private int crushIndex = 0;
-    private float crushRNG = 0;
     private boolean crushPaused = false;
-    private Random rnd = new Random();
+    private int randomItemCount = 0;
 
     public boolean isCrushPaused() {
         return crushPaused;
@@ -110,7 +106,7 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
         maxProcessCount = nbtTagCompound.getInteger("maxProcessCount");
         crushIndex = nbtTagCompound.getInteger("crushIndex");
         crushPaused = nbtTagCompound.getBoolean("crushPaused");
-        crushRNG = nbtTagCompound.getFloat("crushRNG");
+        randomItemCount = nbtTagCompound.getInteger("randomItemCount");
     }
 
     @Override
@@ -124,7 +120,7 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
         nbtTagCompound.setInteger("maxProcessCount", maxProcessCount);
         nbtTagCompound.setInteger("crushIndex", crushIndex);
         nbtTagCompound.setBoolean("crushPaused", crushPaused);
-        nbtTagCompound.setFloat("crushRNG", crushRNG);
+        nbtTagCompound.setInteger("randomItemCount", randomItemCount);
     }
 
     @Override
@@ -134,7 +130,7 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
 
     @Override
     public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
-        if (slot >= 2 && this.crushPaused) crushPaused = false;
+
     }
 
     @Override
@@ -229,8 +225,6 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
                 return;
             }
 
-            if (this.crushPaused) return;
-
             for (int i = this.crushIndex; i < drops.size(); i++) {
                 this.crushIndex = i;
                 Crushable crushable = drops.get(this.crushIndex);
@@ -239,12 +233,14 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
                 float itemChance = crushable.chance;
                 boolean itemFortune = crushable.luckMultiplier == 1.0f;
 
-                if (crushRNG == -1) crushRNG = this.rnd.nextFloat();
+                if (!crushPaused) {
+                    if (itemFortune)
+                        this.randomItemCount = RandomHelper.CalculatePulverizer(itemChance, fortuneMultiplier);
+                    if (!itemFortune)
+                        this.randomItemCount = RandomHelper.CalculatePulverizer(itemChance, 0);
+                }
 
-                if (itemFortune)
-                    itemChance = itemChance + fortuneMultiplier;
-
-                outItem.stackSize = (int) Math.round(Math.floor(itemChance) + crushRNG * itemChance % 1);
+                outItem.stackSize = this.randomItemCount;
                 if (outItem.stackSize == 0) outItem = null;
 
                 // Simulate placing into output slot...
@@ -254,7 +250,7 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
                 }
 
                 InventoryHelper.addItemStackToInventory(outItem, inventory, 2, 10);
-                this.crushRNG = -1;
+                this.crushPaused = false;
             }
 
             this.crushIndex = 0;

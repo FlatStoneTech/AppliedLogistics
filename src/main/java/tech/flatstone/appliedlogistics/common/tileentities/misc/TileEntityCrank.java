@@ -56,8 +56,8 @@ public class TileEntityCrank extends TileEntityBase implements ITickable, IWaila
         TileEntity tileEntity = TileHelper.getTileEntity(this.worldObj, this.pos.down(), TileEntity.class);
         if (tileEntity != null && tileEntity instanceof IRotatable) {
             EnumFacing facing = ((IRotatable) tileEntity).getDirection();
-            int offset = ((facing.getHorizontalIndex() + 1) * 90);
-            return offset + rotation;
+            int offset = ((facing.getHorizontalIndex() + 1) * 90) + 90;
+            return rotation + offset;
         }
         return rotation;
     }

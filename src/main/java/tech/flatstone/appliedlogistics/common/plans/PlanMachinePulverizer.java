@@ -24,12 +24,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
+import tech.flatstone.appliedlogistics.api.features.plan.PlanSlot;
+import tech.flatstone.appliedlogistics.api.features.plan.SlotTechLevelProperties;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
+import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 import tech.flatstone.appliedlogistics.common.util.PlanDetails;
 import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class PlanMachinePulverizer extends PlanBase implements IMachinePlan {
@@ -38,53 +42,90 @@ public class PlanMachinePulverizer extends PlanBase implements IMachinePlan {
     }
 
     @Override
-    public String getLocalizedPlanDescription() {
-        return LanguageHelper.DESCRIPTION.translateMessage("plan.pulverizer");
-    }
-
-    @Override
-    public PlanDetails getTechLevels(TechLevel techLevel) {
-        PlanDetails planDetails = null;
-        List<PlanRequiredMaterials> requiredMaterialsList = new ArrayList<PlanRequiredMaterials>();
-
+    public int getPlanMaxWeight(TechLevel techLevel) {
         switch (techLevel) {
             case STONE_AGE:
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("cobblestone"), 12, 12, 2, 120, 200, "plan.pulverizer.materials.cobblestone"));
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("plankWood"), 4, 4, 1, 40, 80, ""));
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearWood"), 0, 1, 3, 60, 60, ""));
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearStone"), 1, 2, 5, 80, 80, ""));
-
-                planDetails = new PlanDetails(38, requiredMaterialsList, Blocks.BLOCK_MACHINE_PULVERIZER.getStack(1));
-                break;
-
+                return 60;
             case BRONZE_AGE:
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("cobblestone"), 12, 12, 2, 120, 200, ""));
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("plankWood"), 4, 4, 1, 40, 80, ""));
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("ingotIron"), 2, 2, 4, 40, 80, ""));
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("blockBronze"), 1, 1, 10, 60, 60, ""));
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearStone"), 0, 2, 5, 80, 80, ""));
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearIron"), 1, 2, 10, 80, 80, ""));
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("gearBronze"), 2, 4, 12, 80, 80, ""));
-
-                planDetails = new PlanDetails(38, requiredMaterialsList, Blocks.BLOCK_MACHINE_PULVERIZER.getStack(1));
-                break;
-
-            case INDUSTRIAL_AGE:
-                List<ItemStack> test = new ArrayList<>();
-                test.addAll(0, OreDictionary.getOres("cobblestone"));
-                test.addAll(1, OreDictionary.getOres("gearIron"));
-
-                requiredMaterialsList.add(new PlanRequiredMaterials(test, 2, 4, 12, 80, 80, ""));
-
-                planDetails = new PlanDetails(38, requiredMaterialsList, Blocks.BLOCK_MACHINE_PULVERIZER.getStack(1));
-                break;
+                return 200;
+            case MECHANICAL_AGE:
+                return 300;
+            default:
+                return 0;
         }
-
-        return planDetails;
     }
 
     @Override
-    public String getMachineDetails(TechLevel techLevel, List<ItemStack> inventory) {
+    public ItemStack getPlanItem(TechLevel techLevel) {
+        return Blocks.BLOCK_MACHINE_PULVERIZER.getStack(1, techLevel.getMeta());
+    }
+
+    @Override
+    public List<PlanSlot> getPlanSlots() {
+        List<PlanSlot> planSlots = new ArrayList<>();
+
+
+        // Cobblestone
+        planSlots.add(new PlanSlot(
+                OreDictionary.getOres("cobblestone"),
+                LanguageHelper.DESCRIPTION.translateMessage("plan.pulverizer.cobblestone"),
+                new HashMap<TechLevel, SlotTechLevelProperties>() {{
+                    put(TechLevel.STONE_AGE, new SlotTechLevelProperties(12, 12));
+                }},
+                0,
+                100
+        ));
+
+        // Stone
+        planSlots.add(new PlanSlot(
+                OreDictionary.getOres("stone"),
+                LanguageHelper.DESCRIPTION.translateMessage("plan.pulverizer.stone"),
+                new HashMap<TechLevel, SlotTechLevelProperties>() {{
+                    put(TechLevel.BRONZE_AGE, new SlotTechLevelProperties(8, 8));
+                    put(TechLevel.INDUSTRIAL_AGE, new SlotTechLevelProperties(6, 6));
+                }},
+                0,
+                100
+        ));
+
+        // Wood
+        planSlots.add(new PlanSlot(
+                OreDictionary.getOres("plankWood"),
+                LanguageHelper.DESCRIPTION.translateMessage("plan.pulverizer.wood"),
+                new HashMap<TechLevel, SlotTechLevelProperties>() {{
+                    put(TechLevel.STONE_AGE, new SlotTechLevelProperties(4, 4));
+                }},
+                0,
+                100
+        ));
+
+        // Wooden Gear
+        planSlots.add(new PlanSlot(
+                OreDictionary.getOres("gearWood"),
+                LanguageHelper.DESCRIPTION.translateMessage("plan.pulverizer.wood_gear"),
+                new HashMap<TechLevel, SlotTechLevelProperties>() {{
+                    put(TechLevel.STONE_AGE, new SlotTechLevelProperties(0, 1));
+                }},
+                20,
+                100
+        ));
+
+        // Stone Gear
+        planSlots.add(new PlanSlot(
+                OreDictionary.getOres("gearStone"),
+                LanguageHelper.DESCRIPTION.translateMessage("plan.pulverizer.stone_gear"),
+                new HashMap<TechLevel, SlotTechLevelProperties>() {{
+                    put(TechLevel.STONE_AGE, new SlotTechLevelProperties(1, 2));
+                }},
+                30,
+                100
+        ));
+
+        return planSlots;
+    }
+
+    @Override
+    public String getPlanDetails(TechLevel techLevel, List<ItemStack> inventory) {
         ItemStack speedUpgrades = null;
         ItemStack chanceUpgrades = null;
 
@@ -120,7 +161,22 @@ public class PlanMachinePulverizer extends PlanBase implements IMachinePlan {
     }
 
     @Override
+    public String getPlanDescription() {
+        return LanguageHelper.DESCRIPTION.translateMessage("plan.pulverizer");
+    }
+
+    @Override
+    public List<ItemStack> getCreativeTabItemStack() {
+        return null;
+    }
+
+    @Override
     public int getPlanRequiredXP() {
         return 5;
+    }
+
+    @Override
+    public List<String> getItemDescription(TechLevel techLevel, List<ItemStack> inventory) {
+        return null;
     }
 }

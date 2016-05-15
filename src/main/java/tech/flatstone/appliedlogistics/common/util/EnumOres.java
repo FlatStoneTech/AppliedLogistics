@@ -29,7 +29,7 @@ import java.util.List;
 
 public enum EnumOres implements IStringSerializable {
     // Vanilla Ores
-    IRON("Iron", 0, EnumOreType.NUGGET, EnumOreType.DUST, EnumOreType.VANILLA, EnumOreType.GEAR, EnumOreType.FLUID),
+    IRON("Iron", 0, EnumOreType.NUGGET, EnumOreType.DUST, EnumOreType.VANILLA, EnumOreType.GEAR, EnumOreType.FLUID, EnumOreType.CRANK),
     GOLD("Gold", 1, EnumOreType.DUST, EnumOreType.VANILLA, EnumOreType.GEAR, EnumOreType.FLUID),
     DIAMOND("Diamond", 2, EnumOreType.NUGGET, EnumOreType.VANILLA),
 
@@ -43,12 +43,12 @@ public enum EnumOres implements IStringSerializable {
 
     // Alloys
     TITANIUM("Titanium", 9, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR, EnumOreType.FLUID),
-    BRONZE("Bronze", 10, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR, EnumOreType.FLUID),
+    BRONZE("Bronze", 10, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR, EnumOreType.FLUID, EnumOreType.CRANK),
     ELECTRUM("Electrum", 11, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR, EnumOreType.FLUID),
     STEEL("Steel", 12, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR, EnumOreType.FLUID),
 
     // Misc Gears
-    WOOD("Wood", 13, EnumOreType.GEAR, EnumOreType.VANILLA),
+    WOOD("Wood", 13, EnumOreType.GEAR, EnumOreType.VANILLA, EnumOreType.CRANK),
     COBBLESTONE("Stone", 14, EnumOreType.GEAR, EnumOreType.VANILLA),;
 
     private static final EnumOres[] META_LOOKUP = new EnumOres[values().length];
