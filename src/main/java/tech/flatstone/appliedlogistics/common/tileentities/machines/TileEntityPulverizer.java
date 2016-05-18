@@ -49,7 +49,6 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
     private int maxProcessCount = 1;
     private int ticksRemaining = 0;
     private boolean machineWorking = false;
-    private int badCrankCount = 0;
     private int crushIndex = 0;
     private boolean crushPaused = false;
     private int randomItemCount = 0;
@@ -161,12 +160,6 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
         if (ticksRemaining > 0 && machineWorking)
             return true;
 
-        badCrankCount++;
-        if (badCrankCount > 5) {
-            badCrankCount = 0;
-            ((BlockCrank) this.worldObj.getBlockState(pos.up()).getBlock()).breakCrank(this.worldObj, this.pos.up(), false);
-        }
-
         return false;
     }
 
@@ -255,7 +248,6 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
             this.crushIndex = 0;
             inventory.setInventorySlotContents(1, null);
 
-            badCrankCount = 0;
             machineWorking = false;
 
             this.markForUpdate();

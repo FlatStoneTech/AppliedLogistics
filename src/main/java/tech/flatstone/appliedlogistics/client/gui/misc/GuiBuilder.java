@@ -36,6 +36,7 @@ import tech.flatstone.appliedlogistics.common.network.PacketHandler;
 import tech.flatstone.appliedlogistics.common.network.messages.PacketButtonClick;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityBuilder;
 import tech.flatstone.appliedlogistics.common.util.BuilderSlotDetails;
+import tech.flatstone.appliedlogistics.common.util.EnumIcons;
 import tech.flatstone.appliedlogistics.common.util.GuiHelper;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 
@@ -87,7 +88,7 @@ public class GuiBuilder extends GuiBase {
             this.drawTransparentIconEmpty(slot, slotDetails.getSlotMaterials().get(0));
 
             if (slotDetails.getSlotMaterialMaxCount() == -1) {
-                this.drawSlotIcon(slot);
+                this.drawOverlayIcon(slot, EnumIcons.LOCK_OVERLAY);
             }
 
 

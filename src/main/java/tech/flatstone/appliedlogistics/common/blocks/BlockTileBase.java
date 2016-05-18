@@ -105,6 +105,7 @@ public abstract class BlockTileBase extends BlockBase implements ITileEntityProv
             return;
 
         if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("MachineItemData")) {
+            //todo: set other nbt data
             tileEntity.setMachineItemData(itemStack.getTagCompound().getCompoundTag("MachineItemData"));
             tileEntity.initMachineData();
         }

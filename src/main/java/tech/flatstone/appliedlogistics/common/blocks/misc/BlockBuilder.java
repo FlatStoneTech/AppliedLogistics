@@ -65,8 +65,9 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe {
         if (hitY == 1 &&
                 tileEntity != null &&
                 tileEntity.canAttachCrank() &&
-                ItemStack.areItemsEqual(playerIn.getHeldItemMainhand(), Blocks.BLOCK_MISC_CRANK.getStack()) &&
-                !(ItemStack.areItemsEqual(new ItemStack(worldIn.getBlockState(pos.up()).getBlock()), Blocks.BLOCK_MISC_CRANK.getStack()))
+                playerIn.getHeldItemMainhand() != null &&
+                playerIn.getHeldItemMainhand().getItem() == Blocks.BLOCK_MISC_CRANK.getStack().getItem() &&
+                worldIn.isAirBlock(pos.up())
                 )
             return false;
 
@@ -108,12 +109,12 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe {
         return getMetaFromState(state);
     }
 
-    @Override
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
-        for (int i = 0; i < TechLevel.values().length; i++) {
-            list.add(new ItemStack(itemIn, 1, i));
-        }
-    }
+//    @Override
+//    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
+//        for (int i = 0; i < TechLevel.values().length; i++) {
+//            list.add(new ItemStack(itemIn, 1, i));
+//        }
+//    }
 
     @Override
     public void RegisterRecipes() {

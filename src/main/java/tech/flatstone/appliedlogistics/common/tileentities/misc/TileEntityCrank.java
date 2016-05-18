@@ -27,17 +27,21 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCrank;
 import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaBodyMessage;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
-import tech.flatstone.appliedlogistics.common.util.ICrankable;
-import tech.flatstone.appliedlogistics.common.util.IRotatable;
-import tech.flatstone.appliedlogistics.common.util.TileHelper;
+import tech.flatstone.appliedlogistics.common.util.*;
 
 import java.util.List;
+import java.util.Random;
+
+//todo: crank drops defualt item, not one with correct meta...
 
 public class TileEntityCrank extends TileEntityBase implements ITickable, IWailaBodyMessage {
     private int rotation = 0;
     private boolean rotating = false;
+    private int badCrankCount = 0;
+    private int crankTickCounter = 400;
 
     @Override
     public void update() {
@@ -48,6 +52,16 @@ public class TileEntityCrank extends TileEntityBase implements ITickable, IWaila
                 crankDone();
                 if (rotation == 360)
                     rotation = 0;
+            }
+        }
+
+        if (badCrankCount > 0 && !worldObj.isRemote) {
+            crankTickCounter--;
+
+            if (crankTickCounter == -1) {
+                crankTickCounter = 600;
+                badCrankCount--;
+                this.markDirty();
             }
         }
     }
@@ -91,16 +105,49 @@ public class TileEntityCrank extends TileEntityBase implements ITickable, IWaila
     }
 
     public void doCrank() {
-        if (rotating == true)
+        if (rotating)
             return;
 
         if (worldObj.isRemote)
             return;
 
+        Random rng = new Random();
+        float randomFloat = rng.nextFloat();
+        if (randomFloat <= 0.08 && this.getBlockMetadata() == EnumOres.WOOD.getMeta()) { // todo: config Option for %
+            ((BlockCrank) this.worldObj.getBlockState(this.pos).getBlock()).breakCrank(this.worldObj, this.pos, false);
+            return;
+        }
+
         TileEntity tileEntity = TileHelper.getTileEntity(this.worldObj, this.pos.down(), TileEntity.class);
         if (tileEntity != null && tileEntity instanceof ICrankable) {
             if (((ICrankable) tileEntity).canCrank()) {
                 rotating = true;
+                this.markForUpdate();
+                this.markDirty();
+            } else {
+                //todo: some form of check on the meta on the crank...
+
+                switch (EnumOres.byMeta(this.getBlockMetadata())) {
+                    case IRON:
+                        //todo: detect if it is a machine or not.
+                        badCrankCount = 0;
+                        break;
+                    case BRONZE:
+                        // Not going to break the crank, ever, so ...
+                        badCrankCount = 0;
+                        break;
+                    case WOOD:
+                        if (badCrankCount == 6) { //todo: Config Option
+                            ((BlockCrank) this.worldObj.getBlockState(this.pos).getBlock()).breakCrank(this.worldObj, this.pos, false);
+                            return;
+                        }
+                        break;
+                    default:
+                        ((BlockCrank) this.worldObj.getBlockState(this.pos).getBlock()).breakCrank(this.worldObj, this.pos, false);
+                        return;
+                }
+
+                badCrankCount++;
                 this.markForUpdate();
                 this.markDirty();
             }
@@ -112,6 +159,8 @@ public class TileEntityCrank extends TileEntityBase implements ITickable, IWaila
         super.writeToNBT(nbtTagCompound);
 
         nbtTagCompound.setBoolean("rotating", this.rotating);
+        nbtTagCompound.setInteger("badCrankCount", this.badCrankCount);
+        nbtTagCompound.setInteger("crankTickCounter", this.crankTickCounter);
     }
 
     @Override
@@ -119,6 +168,8 @@ public class TileEntityCrank extends TileEntityBase implements ITickable, IWaila
         super.readFromNBT(nbtTagCompound);
 
         this.rotating = nbtTagCompound.getBoolean("rotating");
+        this.badCrankCount = nbtTagCompound.getInteger("badCrankCount");
+        this.crankTickCounter = nbtTagCompound.getInteger("crankTickCounter");
     }
 
     @Override

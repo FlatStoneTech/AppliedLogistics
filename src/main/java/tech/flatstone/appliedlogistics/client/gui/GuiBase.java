@@ -29,10 +29,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.ModInfo;
-import tech.flatstone.appliedlogistics.common.util.BuilderSlotDetails;
-import tech.flatstone.appliedlogistics.common.util.GuiHelper;
-import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
-import tech.flatstone.appliedlogistics.common.util.OpenGLHelper;
+import tech.flatstone.appliedlogistics.common.util.*;
 
 import java.awt.*;
 import java.util.List;
@@ -138,8 +135,9 @@ public abstract class GuiBase extends GuiContainer {
         guiHelper.drawItemStack(itemStack, slot.xDisplayPosition + guiLeft, slot.yDisplayPosition + guiTop, this.itemRender, false);
     }
 
-    protected void drawSlotIcon(Slot slot) {
-        guiHelper.drawResource(new ResourceLocation(ModInfo.MOD_ID, "textures/icons.png"), slot.xDisplayPosition + guiLeft, slot.yDisplayPosition + guiTop, 0, 0, 16, 16);
+    protected void drawOverlayIcon(Slot slot, EnumIcons icon) {
+        guiHelper.drawIcon("textures/icons/" + icon.getFileName(), slot.xDisplayPosition + guiLeft, slot.yDisplayPosition + guiTop, icon.getWidth(), icon.getHeight(), 0.5f);
+
     }
 
     public void renderToolTip(List<String> messages, int x, int y) {

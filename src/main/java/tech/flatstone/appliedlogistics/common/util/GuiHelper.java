@@ -23,15 +23,15 @@ package tech.flatstone.appliedlogistics.common.util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 
 import java.awt.*;
@@ -254,20 +254,25 @@ public class GuiHelper extends GuiScreen {
         }
     }
 
-    public void drawResource(ResourceLocation resource, int x, int y, int x1, int y1, int w, int h) {
+    public void drawIcon(String resourceObject, int x, int y, int w, int h, float a) {
         this.zLevel = 300;
 
+        ResourceLocation resource = new ResourceLocation(ModInfo.MOD_ID, resourceObject);
         Minecraft.getMinecraft().getTextureManager().bindTexture(resource);
 
         GL11.glPushMatrix();
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-        drawTexturedModalRect(x, y, x1, y1, w, h);
+        int colorErrorFont = new Color(255, 64, 64).hashCode();
+
+        GlStateManager.color(1, 1, 1, a);
+        //drawTexturedModalRect(x, y, 0, 0, w, h);
+        drawModalRectWithTexture(x, y, 0, 0, w, h, w, h);
+        //drawGradientRect(x, y, x+w, y+h, colorErrorFont, colorErrorFont);
 
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopMatrix();
-
     }
 
     public void drawMachineUpgradeIcons(int x, int y, TileEntityMachineBase tileEntity) {
@@ -286,5 +291,29 @@ public class GuiHelper extends GuiScreen {
         if (tileEntity.isSidedEnabled()) {
             drawMiniItemStack(new ItemStack(Blocks.hopper), iconX, y);
         }
+    }
+
+    /**
+     * Draws a textured rectangle at z = 0. Args: x, y, u, v, width, height, textureWidth, textureHeight
+     *
+     * @param x X coordinate to start drawing at
+     * @param y Y coordinate to start drawing at
+     * @param textureX Position in the texture to start drawing at, in pixels.
+     * @param textureY Position in the texture to start drawing at, in pixels.
+     * @param textureWidth Width of the texture in the default texture pack, in pixels.
+     * @param textureHeight Height of the texture in the default texture pack, in pixels.
+     */
+    public void drawModalRectWithTexture(int x, int y, float textureX, float textureY, int width, int height, float textureWidth, float textureHeight)
+    {
+        float f = 1.0F / textureWidth;
+        float f1 = 1.0F / textureHeight;
+        Tessellator tessellator = Tessellator.getInstance();
+        VertexBuffer vertexbuffer = tessellator.getBuffer();
+        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+        vertexbuffer.pos((double)(x), (double)(y + height), (double)this.zLevel).tex((double)((float)(textureX + 0) * f), (double)((float)(textureY + height) * f1)).endVertex();
+        vertexbuffer.pos((double)(x + width), (double)(y + height), (double)this.zLevel).tex((double)((float)(textureX + width) * f), (double)((float)(textureY + height) * f1)).endVertex();
+        vertexbuffer.pos((double)(x + width), (double)(y), (double)this.zLevel).tex((double)((float)(textureX + width) * f), (double)((float)(textureY + 0) * f1)).endVertex();
+        vertexbuffer.pos((double)(x), (double)(y), (double)this.zLevel).tex((double)((float)(textureX + 0) * f), (double)((float)(textureY + 0) * f1)).endVertex();
+        tessellator.draw();
     }
 }

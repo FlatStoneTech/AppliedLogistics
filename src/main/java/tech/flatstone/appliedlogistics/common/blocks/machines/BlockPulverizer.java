@@ -71,8 +71,9 @@ public class BlockPulverizer extends BlockTechBase {
         if (hitY == 1 &&
                 tileEntity != null &&
                 tileEntity.canAttachCrank() &&
-                ItemStack.areItemsEqual(playerIn.getHeldItemMainhand(), Blocks.BLOCK_MISC_CRANK.getStack()) &&
-                !(ItemStack.areItemsEqual(new ItemStack(worldIn.getBlockState(pos.up()).getBlock()), Blocks.BLOCK_MISC_CRANK.getStack()))
+                playerIn.getHeldItemMainhand() != null &&
+                playerIn.getHeldItemMainhand().getItem() == Blocks.BLOCK_MISC_CRANK.getStack().getItem() &&
+                worldIn.isAirBlock(pos.up())
                 )
             return false;
 

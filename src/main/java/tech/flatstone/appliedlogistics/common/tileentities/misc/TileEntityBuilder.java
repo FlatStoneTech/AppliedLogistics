@@ -51,7 +51,6 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
     private int currentTechLevel = -1;
     private int ticksRemaining = 0;
     private boolean machineWorking = false;
-    private int badCrankCount = 0;
     private int ticksTotal = 0;
     private ItemStack outputItem = null;
 
@@ -233,12 +232,6 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
     public boolean canCrank() {
         if (ticksRemaining > 0)
             return true;
-
-        badCrankCount++;
-        if (badCrankCount > 5) {
-            badCrankCount = 0;
-            ((BlockCrank) this.worldObj.getBlockState(this.pos.up()).getBlock()).breakCrank(this.worldObj, this.pos.up(), false);
-        }
 
         return false;
     }
@@ -429,6 +422,23 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
         }
 
         this.outputItem = ((IMachinePlan) (getPlanBase())).getPlanItem(TechLevel.byMeta(currentTechLevel));
+
+        NBTTagCompound tagMachineItems = new NBTTagCompound();
+        NBTTagCompound tagCompound = new NBTTagCompound();
+        for (int i = 29; i < 56; i++) {
+            NBTTagCompound item = new NBTTagCompound();
+            ItemStack itemStack = this.getStackInSlot(i);
+            if (itemStack != null) {
+                itemStack.writeToNBT(item);
+                tagCompound.setTag("item_" + (i - 29), item);
+            }
+        }
+        tagMachineItems.setTag("MachineItemData", tagCompound);
+
+        String planName = this.planItem.getTagCompound().getString("PlanType");
+        tagMachineItems.setString("PlanType", planName);
+
+        this.outputItem.setTagCompound(tagMachineItems);
 
         this.markDirty();
         this.markForUpdate();
