@@ -148,7 +148,7 @@ public abstract class BlockTileBase extends BlockBase implements ITileEntityProv
     public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
         TileEntityBase tileEntityBase = TileHelper.getTileEntity(world, pos, TileEntityBase.class);
         if (tileEntityBase != null) {
-            final ItemStack itemStack = new ItemStack(this);
+            final ItemStack itemStack = new ItemStack(this, 1, tileEntityBase.getBlockMetadata());
 
             NBTTagCompound machineItemData = tileEntityBase.getMachineItemData();
             if (machineItemData != null) {
