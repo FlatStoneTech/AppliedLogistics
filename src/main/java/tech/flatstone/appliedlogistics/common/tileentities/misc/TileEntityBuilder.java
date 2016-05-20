@@ -29,6 +29,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
+import tech.flatstone.appliedlogistics.api.features.IUpgradeableMachine;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.api.features.plan.PlanSlot;
 import tech.flatstone.appliedlogistics.api.features.plan.SlotTechLevelProperties;
@@ -53,6 +54,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
     private boolean machineWorking = false;
     private int ticksTotal = 0;
     private ItemStack outputItem = null;
+    private boolean upgradeMode = false;
 
     private List<BuilderSlotDetails> builderSlotDetailsList = new ArrayList<>();
 
@@ -81,6 +83,10 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
             return null;
 
         return this.planItem;
+    }
+
+    public boolean isUpgradeMode() {
+        return upgradeMode;
     }
 
     public ItemPlanBase getPlanBase() {
@@ -114,6 +120,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
         ticksRemaining = nbtTagCompound.getInteger("ticksRemaining");
         machineWorking = nbtTagCompound.getBoolean("machineWorking");
         ticksTotal = nbtTagCompound.getInteger("ticksTotal");
+        upgradeMode = nbtTagCompound.getBoolean("upgradeMode");
 
         if (nbtTagCompound.hasKey("outputItem")) {
             NBTTagCompound outputItemStack = nbtTagCompound.getCompoundTag("outputItem");
@@ -129,6 +136,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
         nbtTagCompound.setInteger("ticksRemaining", ticksRemaining);
         nbtTagCompound.setBoolean("machineWorking", machineWorking);
         nbtTagCompound.setInteger("ticksTotal", ticksTotal);
+        nbtTagCompound.setBoolean("upgradeMode", upgradeMode);
 
         if (outputItem != null) {
             NBTTagCompound outputItemStack = new NBTTagCompound();
@@ -266,6 +274,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
 
         if (this.planItem == null) {
             currentTechLevel = -1;
+            this.upgradeMode = false;
 
             this.markDirty();
             this.markForUpdate();
@@ -289,8 +298,21 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
                 maxCount = techLevelProperties.getItemMaxCount();
             }
 
-            builderSlotDetailsList.add(new BuilderSlotDetails(slot.getSlotMaterial(), slot.getSlotDescription(), minCount, maxCount, slot.getSlotMaterialWeight(), slot.getSlotMaterialTimeToAdd()));
+            BuilderSlotDetails slotDetails = new BuilderSlotDetails(slot.getSlotMaterial(), slot.getSlotDescription(), minCount, maxCount, slot.getSlotMaterialWeight(), slot.getSlotMaterialTimeToAdd());
+
+            if (minCount == -1)
+                slotDetails.setSlotIncorrectTechLevel(true);
+
+            if (this.upgradeMode) {
+                //todo: fix with real nbt data...
+                slotDetails.setSlotMaterialCount(10);
+            }
+
+            builderSlotDetailsList.add(slotDetails);
         }
+
+        if (this.planItem.getItem() instanceof IUpgradeableMachine)
+            this.upgradeMode = true;
 
         this.markDirty();
         this.markForUpdate();
@@ -423,22 +445,24 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
 
         this.outputItem = ((IMachinePlan) (getPlanBase())).getPlanItem(TechLevel.byMeta(currentTechLevel));
 
-        NBTTagCompound tagMachineItems = new NBTTagCompound();
-        NBTTagCompound tagCompound = new NBTTagCompound();
-        for (int i = 29; i < 56; i++) {
-            NBTTagCompound item = new NBTTagCompound();
-            ItemStack itemStack = this.getStackInSlot(i);
-            if (itemStack != null) {
-                itemStack.writeToNBT(item);
-                tagCompound.setTag("item_" + (i - 29), item);
+        if (outputItem.getItem() instanceof IUpgradeableMachine) {
+            NBTTagCompound tagMachineItems = new NBTTagCompound();
+            NBTTagCompound tagCompound = new NBTTagCompound();
+            for (int i = 29; i < 56; i++) {
+                NBTTagCompound item = new NBTTagCompound();
+                ItemStack itemStack = this.getStackInSlot(i);
+                if (itemStack != null) {
+                    itemStack.writeToNBT(item);
+                    tagCompound.setTag("item_" + (i - 29), item);
+                }
             }
+            tagMachineItems.setTag("MachineItemData", tagCompound);
+
+            String planName = this.planItem.getTagCompound().getString("PlanType");
+            tagMachineItems.setString("PlanType", planName);
+
+            this.outputItem.setTagCompound(tagMachineItems);
         }
-        tagMachineItems.setTag("MachineItemData", tagCompound);
-
-        String planName = this.planItem.getTagCompound().getString("PlanType");
-        tagMachineItems.setString("PlanType", planName);
-
-        this.outputItem.setTagCompound(tagMachineItems);
 
         this.markDirty();
         this.markForUpdate();

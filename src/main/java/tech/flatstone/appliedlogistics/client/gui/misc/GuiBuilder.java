@@ -20,9 +20,12 @@
 
 package tech.flatstone.appliedlogistics.client.gui.misc;
 
+import com.fireball1725.firecore.common.util.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -35,10 +38,10 @@ import tech.flatstone.appliedlogistics.common.container.slot.SlotBuilderInventor
 import tech.flatstone.appliedlogistics.common.network.PacketHandler;
 import tech.flatstone.appliedlogistics.common.network.messages.PacketButtonClick;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityBuilder;
-import tech.flatstone.appliedlogistics.common.util.BuilderSlotDetails;
-import tech.flatstone.appliedlogistics.common.util.EnumIcons;
+import tech.flatstone.appliedlogistics.common.util.*;
 import tech.flatstone.appliedlogistics.common.util.GuiHelper;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.io.IOException;
 import java.util.List;
@@ -87,10 +90,9 @@ public class GuiBuilder extends GuiBase {
 
             this.drawTransparentIconEmpty(slot, slotDetails.getSlotMaterials().get(0));
 
-            if (slotDetails.getSlotMaterialMaxCount() == -1) {
+            if (slotDetails.isSlotIncorrectTechLevel()) {
                 this.drawOverlayIcon(slot, EnumIcons.LOCK_OVERLAY);
             }
-
 
             slotID++;
         }
@@ -108,8 +110,25 @@ public class GuiBuilder extends GuiBase {
 
 //        if (tileEntity.getPlanItem() == null) {
 //            this.fontRendererObj.drawString(TextFormatting.RED + LanguageHelper.MESSAGE.translateMessage("plan.insert"), 36, 26, 4210752);
-        if (itemPlan != null) {
+        if (itemPlan != null && tileEntity.isUpgradeMode()) {
+            this.fontRendererObj.drawString(LanguageHelper.LABEL.translateMessage("upgrade") + " " + LanguageHelper.NONE.translateMessage(itemPlan.getUnlocalizedName() + ".name"), 8, 48, 4210752);
+        } else if (itemPlan != null) {
             this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage(itemPlan.getUnlocalizedName() + ".name"), 8, 48, 4210752);
+        }
+
+        List<BuilderSlotDetails> builderSlotDetailsList = tileEntity.getBuilderSlotDetailsList();
+        int slotID = 0;
+        for (BuilderSlotDetails slotDetails : builderSlotDetailsList) {
+            Slot slot = this.inventorySlots.getSlot(slotID);
+
+            if (slotDetails.getSlotMaterialCount() > 0) {
+                this.zLevel += 100000;
+                GlStateManager.enableDepth();
+                guiHelper.drawStringWithShadow(slot.xDisplayPosition, slot.yDisplayPosition, "xX", colorXPGreen);
+                this.zLevel -= 100000;
+            }
+
+            slotID++;
         }
 
         /**
@@ -224,5 +243,12 @@ public class GuiBuilder extends GuiBase {
         UUID playerUUID = Minecraft.getMinecraft().thePlayer.getUniqueID();
         PacketButtonClick packetButtonClick = new PacketButtonClick(button.id, tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ(), playerUUID);
         PacketHandler.INSTANCE.sendToServer(packetButtonClick);
+    }
+
+    @Override
+    protected void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
+        super.handleMouseClick(slotIn, slotId, mouseButton, type);
+
+        LogHelper.info(">>> Slot Click: " + slotId);
     }
 }

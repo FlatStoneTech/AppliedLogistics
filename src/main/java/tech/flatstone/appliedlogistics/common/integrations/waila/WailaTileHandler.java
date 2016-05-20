@@ -39,6 +39,7 @@ public class WailaTileHandler implements IWailaDataProvider {
     public static void callbackRegister(IWailaRegistrar registrar) {
         WailaTileHandler instance = new WailaTileHandler();
 
+        registrar.registerStackProvider(instance, BlockBase.class);
         registrar.registerHeadProvider(instance, BlockBase.class);
         registrar.registerBodyProvider(instance, BlockBase.class);
         registrar.registerTailProvider(instance, BlockBase.class);

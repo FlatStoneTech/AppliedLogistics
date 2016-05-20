@@ -24,9 +24,10 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ITickable;
+import tech.flatstone.appliedlogistics.api.features.IUpgradeableMachine;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 
-public class ItemBuilder extends ItemBlock {
+public class ItemBuilder extends ItemBlock implements IUpgradeableMachine {
     public ItemBuilder(Block block) {
         super(block);
         this.setHasSubtypes(true);

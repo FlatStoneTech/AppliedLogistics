@@ -12,6 +12,9 @@ public class BuilderSlotDetails {
     private int slotMaterialWeight;
     private int slotMaterialTimeToAdd;
 
+    private int slotMaterialCount = 0;
+    private boolean slotIncorrectTechLevel;
+
     public BuilderSlotDetails(List<ItemStack> slotMaterial, String slotDescription, int slotMaterialMinCount, int slotMaterialMaxCount, int slotMaterialWeight, int slotMaterialTimeToAdd) {
         this.slotMaterial = slotMaterial;
         this.slotDescription = slotDescription;
@@ -43,5 +46,21 @@ public class BuilderSlotDetails {
 
     public int getSlotMaterialTimeToAdd() {
         return slotMaterialTimeToAdd;
+    }
+
+    public int getSlotMaterialCount() {
+        return slotMaterialCount;
+    }
+
+    public void setSlotMaterialCount(int slotMaterialCount) {
+        this.slotMaterialCount = slotMaterialCount;
+    }
+
+    public boolean isSlotIncorrectTechLevel() {
+        return slotIncorrectTechLevel;
+    }
+
+    public void setSlotIncorrectTechLevel(boolean slotIncorrectTechLevel) {
+        this.slotIncorrectTechLevel = slotIncorrectTechLevel;
     }
 }

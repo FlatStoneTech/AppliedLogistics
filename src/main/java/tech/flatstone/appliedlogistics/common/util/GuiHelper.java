@@ -24,6 +24,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -134,13 +136,11 @@ public class GuiHelper extends GuiScreen {
      * @param renderItem Item Render
      */
     public void drawItemStack(ItemStack itemStack, int x, int y, RenderItem renderItem, boolean transparent) {
-        this.zLevel = 50.0f;
-        renderItem.zLevel = 50.0f;
-
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         int colorOverlay = new Color(139, 139, 139, 160).hashCode();
 
         RenderHelper.enableGUIStandardItemLighting();
+
         renderItem.renderItemAndEffectIntoGUI(itemStack, x, y);
 
         GL11.glEnable(GL11.GL_BLEND);
@@ -149,17 +149,16 @@ public class GuiHelper extends GuiScreen {
         GlStateManager.disableDepth();
         GlStateManager.colorMask(true, true, true, false);
         if (transparent) {
-            this.zLevel = 100.0f;
-            renderItem.zLevel = 100.0f;
+            this.zLevel += 50.0f;
+            renderItem.zLevel += 50.0f;
             this.drawGradientRect(x, y, x + 16, y + 16, colorOverlay, colorOverlay);
+            this.zLevel -= 50.0f;
+            renderItem.zLevel -= 50.0f;
         }
         GlStateManager.colorMask(true, true, true, true);
         GlStateManager.enableDepth();
 
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
-        this.zLevel = 0.0f;
-        renderItem.zLevel = 0.0f;
     }
 
     public void drawMiniItemStack(ItemStack itemStack, int x, int y) {
@@ -172,33 +171,6 @@ public class GuiHelper extends GuiScreen {
         OpenGLHelper.restoreGLState(savedGLState);
     }
 
-    /**
-     * Draws a slot that is disabled...
-     *
-     * @param x          slot x
-     * @param y          slot y
-     * @param renderItem Item Render
-     */
-    public void drawDisabledSlot(int x, int y, RenderItem renderItem) {
-        this.zLevel = 100.f;
-        renderItem.zLevel = 100.0f;
-
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        int colorOverlay = new Color(139, 139, 139, 200).hashCode();
-        GlStateManager.disableLighting();
-        GlStateManager.disableDepth();
-        GlStateManager.colorMask(true, true, true, false);
-        renderItem.renderItemAndEffectIntoGUI(new ItemStack(Blocks.barrier), x, y);
-        this.drawGradientRect(x, y, x + 16, y + 16, colorOverlay, colorOverlay);
-        GlStateManager.colorMask(true, true, true, true);
-        GlStateManager.enableLighting();
-        GlStateManager.enableDepth();
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
-        this.zLevel = 0.0f;
-        renderItem.zLevel = 0.0f;
-    }
-
     public void drawCenteredStringWithShadow(int x, int y, int w, String message, int color) {
         int messageWidth = fontRenderer.getStringWidth(message);
         int messageX = x + ((w >> 1) - (messageWidth >> 1));
@@ -207,7 +179,13 @@ public class GuiHelper extends GuiScreen {
     }
 
     public void drawStringWithShadow(int x, int y, String message, int color) {
+        //GlStateManager.disableLighting();
+        //GlStateManager.disableDepth();
+        //GlStateManager.disableBlend();
         fontRenderer.drawStringWithShadow(message, x, y, color);
+        //GlStateManager.enableLighting();
+        //GlStateManager.enableDepth();
+        //GlStateManager.enableBlend();
     }
 
     public void drawCenteredString(int x, int y, int w, String message, int color) {
@@ -255,6 +233,7 @@ public class GuiHelper extends GuiScreen {
     }
 
     public void drawIcon(String resourceObject, int x, int y, int w, int h, float a) {
+        float lastZLevel = this.zLevel;
         this.zLevel = 300;
 
         ResourceLocation resource = new ResourceLocation(ModInfo.MOD_ID, resourceObject);
@@ -267,12 +246,12 @@ public class GuiHelper extends GuiScreen {
         int colorErrorFont = new Color(255, 64, 64).hashCode();
 
         GlStateManager.color(1, 1, 1, a);
-        //drawTexturedModalRect(x, y, 0, 0, w, h);
         drawModalRectWithTexture(x, y, 0, 0, w, h, w, h);
-        //drawGradientRect(x, y, x+w, y+h, colorErrorFont, colorErrorFont);
 
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopMatrix();
+
+        this.zLevel = lastZLevel;
     }
 
     public void drawMachineUpgradeIcons(int x, int y, TileEntityMachineBase tileEntity) {
