@@ -31,17 +31,19 @@ import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.util.List;
 
 public class BlockOre extends BlockBase {
-    public static final PropertyEnum ORES = PropertyEnum.create("oretype", EnumOres.class);
+    public static PropertyEnum ORES;
 
     public BlockOre() {
         super(Material.rock, "ores/ore");
         this.setDefaultState(this.blockState.getBaseState().withProperty(ORES, EnumOres.IRON));
         this.setCreativeTab(AppliedLogisticsCreativeTabs.tabOres);
         this.setInternalName("ore");
+        setHarvestLevel("pickaxe", 0);
     }
 
     @Override
@@ -57,6 +59,10 @@ public class BlockOre extends BlockBase {
 
     @Override
     protected BlockStateContainer createBlockState() {
+        LogHelper.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
+        ORES = PropertyEnum.create("oretype", );
+
         return new BlockStateContainer(this, ORES);
     }
 

@@ -20,34 +20,37 @@ public class RegistrationHelper {
         ItemBlock itemBlock;
         String internalName;
 
-        try {
-            block = blockClass.getConstructor().newInstance();
-            itemBlock = itemBlockClass.getConstructor(Block.class).newInstance(block);
+        for (int i = 0; i < 2; i++) {
 
-            internalName = ((BlockBase) block).getInternalName();
+            try {
+                block = blockClass.getConstructor().newInstance();
+                itemBlock = itemBlockClass.getConstructor(Block.class).newInstance(block);
 
-            if (!internalName.equals(internalName.toLowerCase(Locale.US)))
-                throw new IllegalArgumentException(String.format("Unlocalized names need to be all lowercase! Item: %s", internalName));
+                internalName = ((BlockBase) block).getInternalName();
 
-            if (internalName.isEmpty())
-                throw new IllegalArgumentException(String.format("Unlocalized name cannot be blank! Item: %s", blockClass.getCanonicalName()));
+                if (!internalName.equals(internalName.toLowerCase(Locale.US)))
+                    throw new IllegalArgumentException(String.format("Unlocalized names need to be all lowercase! Item: %s", internalName));
 
-            block.setRegistryName(ModInfo.MOD_ID, internalName);
-            block.setUnlocalizedName(internalName);
-            itemBlock.setRegistryName(block.getRegistryName());
+                if (internalName.isEmpty())
+                    throw new IllegalArgumentException(String.format("Unlocalized name cannot be blank! Item: %s", blockClass.getCanonicalName()));
 
-            GameRegistry.register(block);
-            GameRegistry.register(itemBlock);
+                block.setRegistryName(ModInfo.MOD_ID, internalName + i);
+                block.setUnlocalizedName(internalName);
+                itemBlock.setRegistryName(block.getRegistryName());
 
-            if (block instanceof IBlockRenderer && Platform.isClient()) {
-                ((IBlockRenderer) block).registerBlockRenderer();
-                ((IBlockRenderer) block).registerBlockItemRenderer();
+                GameRegistry.register(block);
+                GameRegistry.register(itemBlock);
+
+                if (block instanceof IBlockRenderer && Platform.isClient()) {
+                    ((IBlockRenderer) block).registerBlockRenderer();
+                    ((IBlockRenderer) block).registerBlockItemRenderer();
+                }
+
+                LogHelper.info(String.format("Registered block (%s)", blockClass.getCanonicalName()));
+            } catch (Exception ex) {
+                LogHelper.fatal(String.format("Fatal Error while registering block (%s)", blockClass.getCanonicalName()));
+                ex.printStackTrace();
             }
-
-            LogHelper.info(String.format("Registered block (%s)", blockClass.getCanonicalName()));
-        } catch (Exception ex) {
-            LogHelper.fatal(String.format("Fatal Error while registering block (%s)", blockClass.getCanonicalName()));
-            ex.printStackTrace();
         }
 
         return block;
@@ -57,30 +60,33 @@ public class RegistrationHelper {
         Item item = null;
         String internalName;
 
-        try {
-            item = itemClass.getConstructor().newInstance();
+        for (int i = 0; i < 2; i++) {
 
-            internalName = ((ItemBase) item).getInternalName();
+            try {
+                item = itemClass.getConstructor().newInstance();
 
-            if (!internalName.equals(internalName.toLowerCase(Locale.US)))
-                throw new IllegalArgumentException(String.format("Unlocalized names need to be all lowercase! Item: %s", internalName));
+                internalName = ((ItemBase) item).getInternalName();
 
-            if (internalName.isEmpty())
-                throw new IllegalArgumentException(String.format("Unlocalized name cannot be blank! Item: %s", itemClass.getCanonicalName()));
+                if (!internalName.equals(internalName.toLowerCase(Locale.US)))
+                    throw new IllegalArgumentException(String.format("Unlocalized names need to be all lowercase! Item: %s", internalName));
 
-            item.setRegistryName(ModInfo.MOD_ID, internalName);
-            item.setUnlocalizedName(internalName);
+                if (internalName.isEmpty())
+                    throw new IllegalArgumentException(String.format("Unlocalized name cannot be blank! Item: %s", itemClass.getCanonicalName()));
 
-            GameRegistry.register(item);
+                item.setRegistryName(ModInfo.MOD_ID, internalName + i);
+                item.setUnlocalizedName(internalName);
 
-            if (item instanceof IItemRenderer && Platform.isClient()) {
-                ((IItemRenderer) item).registerItemRenderer();
+                GameRegistry.register(item);
+
+                if (item instanceof IItemRenderer && Platform.isClient()) {
+                    ((IItemRenderer) item).registerItemRenderer();
+                }
+
+                LogHelper.info(String.format("Registered item (%s)", itemClass.getCanonicalName()));
+            } catch (Exception ex) {
+                LogHelper.fatal(String.format("Fatal Error while registering item (%s)", itemClass.getCanonicalName()));
+                ex.printStackTrace();
             }
-
-            LogHelper.info(String.format("Registered item (%s)", itemClass.getCanonicalName()));
-        } catch (Exception ex) {
-            LogHelper.fatal(String.format("Fatal Error while registering item (%s)", itemClass.getCanonicalName()));
-            ex.printStackTrace();
         }
 
         return item;

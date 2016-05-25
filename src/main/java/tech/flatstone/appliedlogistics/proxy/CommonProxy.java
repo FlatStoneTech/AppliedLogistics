@@ -153,7 +153,7 @@ public abstract class CommonProxy implements IProxy {
         PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.sandstone), new ItemStack(net.minecraft.init.Blocks.sand), 4.0f, false);
 
         // Silica
-        PulverizerRegistry.register(Blocks.BLOCK_ORE.getStack(1, EnumOres.SILICA.getMeta()), Items.ITEM_ORE_DUST.getStack(1, EnumOres.SILICA.getMeta()), 1.0f, false);
+        //PulverizerRegistry.register(Blocks.BLOCK_ORE.getStack(1, EnumOres.SILICA.getMeta()), Items.ITEM_ORE_DUST.getStack(1, EnumOres.SILICA.getMeta()), 1.0f, false);
 
         // Clay
         PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.clay), new ItemStack(net.minecraft.init.Items.clay_ball), 4.0f, true);

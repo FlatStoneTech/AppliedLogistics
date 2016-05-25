@@ -51,11 +51,6 @@ public enum EnumOres implements IStringSerializable {
     // Misc Gears
     WOOD("Wood", 13, EnumOreType.GEAR, EnumOreType.VANILLA, EnumOreType.CRANK),
     COBBLESTONE("Stone", 14, EnumOreType.GEAR, EnumOreType.VANILLA),
-
-    // Misc Other Stuff
-    SILICA("Silica", 16, EnumOreType.ORE, EnumOreType.DUST, EnumOreType.GRAVITY),
-    RAW_KAOLINITE("Raw_Kaolinite", 17, EnumOreType.DUST),
-    KAOLINITE("Kaolinite", 18, EnumOreType.INGOT),
     ;
 
     private static final EnumOres[] META_LOOKUP = new EnumOres[values().length];

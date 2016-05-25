@@ -60,7 +60,6 @@ public abstract class BlockBase extends Block implements IBlockRenderer {
         this.resourcePath = resourcePath;
     }
 
-
     public String getInternalName() {
         return internalName;
     }

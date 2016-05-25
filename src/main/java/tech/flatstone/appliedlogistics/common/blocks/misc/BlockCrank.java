@@ -66,7 +66,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
     public BlockCrank() {
         super(Material.wood, "misc/crank");
         this.setTileEntity(TileEntityCrank.class);
-        this.setHarvestLevel("Axe", 0); //todo fix from enumore level..
+        //this.setHarvestLevel("Axe", 0); //todo fix from enumore level..
         this.setCreativeTab(AppliedLogisticsCreativeTabs.tabGeneral);
         this.setInternalName("misc_crank");
         this.setDefaultState(this.blockState.getBaseState().withProperty(ORES, EnumOres.IRON));
