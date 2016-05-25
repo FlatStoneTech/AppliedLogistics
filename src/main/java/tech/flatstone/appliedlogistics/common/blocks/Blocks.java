@@ -25,6 +25,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import tech.flatstone.appliedlogistics.common.blocks.machines.BlockFurnace;
 import tech.flatstone.appliedlogistics.common.blocks.machines.BlockPulverizer;
+import tech.flatstone.appliedlogistics.common.blocks.materials.BlockSilica;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockBuilder;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCrank;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPlanChest;
@@ -50,7 +51,11 @@ public enum Blocks {
     BLOCK_MISC_CRANK(BlockCrank.class, ItemCrank.class),
 
     BLOCK_MACHINE_PULVERIZER(BlockPulverizer.class, ItemPulverizer.class),
-    BLOCK_MACHINE_FURNACE(BlockFurnace.class, ItemFurnace.class);
+    BLOCK_MACHINE_FURNACE(BlockFurnace.class, ItemFurnace.class),
+
+    BLOCKS_MATERIAL_SILICA(BlockSilica.class),
+
+    ;
 
     private final Class<? extends BlockBase> blockClass;
     private final Class<? extends ItemBlock> itemBlockClass;

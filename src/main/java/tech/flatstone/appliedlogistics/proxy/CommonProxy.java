@@ -20,6 +20,7 @@
 
 package tech.flatstone.appliedlogistics.proxy;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
@@ -148,8 +149,11 @@ public abstract class CommonProxy implements IProxy {
         PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.gravel), new ItemStack(net.minecraft.init.Items.flint), 0.1f, true);
 
         // Sand
-        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.sand), new ItemStack(net.minecraft.init.Blocks.clay), 1.0f, false);
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.sand), Blocks.BLOCKS_MATERIAL_SILICA.getStack(), 1.0f, false);
         PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.sandstone), new ItemStack(net.minecraft.init.Blocks.sand), 4.0f, false);
+
+        // Silica
+        PulverizerRegistry.register(Blocks.BLOCK_ORE.getStack(1, EnumOres.SILICA.getMeta()), Items.ITEM_ORE_DUST.getStack(1, EnumOres.SILICA.getMeta()), 1.0f, false);
 
         // Clay
         PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.clay), new ItemStack(net.minecraft.init.Items.clay_ball), 4.0f, true);

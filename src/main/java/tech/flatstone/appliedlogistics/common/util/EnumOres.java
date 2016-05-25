@@ -40,6 +40,7 @@ public enum EnumOres implements IStringSerializable {
     LEAD("Lead", 6, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.GEAR, EnumOreType.FLUID),
     NICKEL("Nickel", 7, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.GEAR, EnumOreType.FLUID),
     RUTILE("Rutile", 8, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.FLUID),
+    ALUMINUM("Aluminum", 15, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.GEAR, EnumOreType.FLUID),
 
     // Alloys
     TITANIUM("Titanium", 9, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR, EnumOreType.FLUID),
@@ -49,7 +50,13 @@ public enum EnumOres implements IStringSerializable {
 
     // Misc Gears
     WOOD("Wood", 13, EnumOreType.GEAR, EnumOreType.VANILLA, EnumOreType.CRANK),
-    COBBLESTONE("Stone", 14, EnumOreType.GEAR, EnumOreType.VANILLA),;
+    COBBLESTONE("Stone", 14, EnumOreType.GEAR, EnumOreType.VANILLA),
+
+    // Misc Other Stuff
+    SILICA("Silica", 16, EnumOreType.ORE, EnumOreType.DUST, EnumOreType.GRAVITY),
+    RAW_KAOLINITE("Raw_Kaolinite", 17, EnumOreType.DUST),
+    KAOLINITE("Kaolinite", 18, EnumOreType.INGOT),
+    ;
 
     private static final EnumOres[] META_LOOKUP = new EnumOres[values().length];
 
