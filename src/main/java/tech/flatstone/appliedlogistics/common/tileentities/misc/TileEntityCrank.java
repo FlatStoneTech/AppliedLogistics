@@ -113,7 +113,7 @@ public class TileEntityCrank extends TileEntityBase implements ITickable, IWaila
 
         Random rng = new Random();
         float randomFloat = rng.nextFloat();
-        if (randomFloat <= 0.08 && this.getBlockMetadata() == EnumOres.WOOD.getMeta()) { // todo: config Option for %
+        if (randomFloat <= 0.08 && this.getBlockMetadata() == EnumCrankMaterials.WOOD.getMeta()) { // todo: config Option for %
             ((BlockCrank) this.worldObj.getBlockState(this.pos).getBlock()).breakCrank(this.worldObj, this.pos, false);
             return;
         }
@@ -127,7 +127,7 @@ public class TileEntityCrank extends TileEntityBase implements ITickable, IWaila
             } else {
                 //todo: some form of check on the meta on the crank...
 
-                switch (EnumOres.byMeta(this.getBlockMetadata())) {
+                switch (EnumCrankMaterials.values()[getBlockMetadata()]) {
                     case IRON:
                         //todo: detect if it is a machine or not.
                         badCrankCount = 0;

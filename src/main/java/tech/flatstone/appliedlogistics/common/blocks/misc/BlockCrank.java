@@ -52,7 +52,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
-import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCrank;
@@ -61,7 +60,7 @@ import tech.flatstone.appliedlogistics.common.util.*;
 import java.util.List;
 
 public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvideEvent {
-    public static final PropertyEnum ORES = PropertyEnum.create("oretype", EnumOres.class);
+    public static final PropertyEnum META = PropertyEnum.create("material", EnumCrankMaterials.class);
 
     public BlockCrank() {
         super(Material.wood, "misc/crank");
@@ -69,7 +68,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
         //this.setHarvestLevel("Axe", 0); //todo fix from enumore level..
         this.setCreativeTab(AppliedLogisticsCreativeTabs.tabGeneral);
         this.setInternalName("misc_crank");
-        this.setDefaultState(this.blockState.getBaseState().withProperty(ORES, EnumOres.IRON));
+        this.setDefaultState(this.blockState.getBaseState().withProperty(META, EnumCrankMaterials.WOOD));
     }
 
     @Override
@@ -84,18 +83,18 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        return this.getDefaultState().withProperty(ORES, EnumOres.byMeta(meta));
+        return this.getDefaultState().withProperty(META, EnumCrankMaterials.values()[meta]);
     }
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        EnumOres ores = (EnumOres) state.getValue(ORES);
-        return (ores.getMeta());
+        EnumCrankMaterials materials = (EnumCrankMaterials) state.getValue(META);
+        return (materials.getMeta());
     }
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, ORES);
+        return new BlockStateContainer(this, META);
     }
 
     @Override
@@ -105,9 +104,8 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
 
     @Override
     public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
-        for (EnumOres ore : EnumOres.values()) {
-            if (ore.isTypeSet(EnumOreType.CRANK))
-                list.add(new ItemStack(itemIn, 1, ore.getMeta()));
+        for (EnumCrankMaterials material : EnumCrankMaterials.values()) {
+            list.add(new ItemStack(itemIn, 1, material.getMeta()));
         }
     }
 

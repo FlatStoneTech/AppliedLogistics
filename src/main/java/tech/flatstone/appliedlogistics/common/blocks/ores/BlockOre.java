@@ -31,39 +31,34 @@ import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.util.List;
 
 public class BlockOre extends BlockBase {
-    public static PropertyEnum ORES;
+    public static PropertyEnum MATERIAL = PropertyEnum.create("material", EnumOres.class);
 
     public BlockOre() {
         super(Material.rock, "ores/ore");
-        this.setDefaultState(this.blockState.getBaseState().withProperty(ORES, EnumOres.IRON));
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabOres);
+        this.setDefaultState(this.blockState.getBaseState().withProperty(MATERIAL, EnumOres.byMeta(0)));
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabMaterials);
         this.setInternalName("ore");
         setHarvestLevel("pickaxe", 0);
     }
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        return this.getDefaultState().withProperty(ORES, EnumOres.byMeta(meta));
+        return this.getDefaultState().withProperty(MATERIAL, EnumOres.byMeta(meta));
     }
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        EnumOres ores = (EnumOres) state.getValue(ORES);
-        return (ores.getMeta());
+        EnumOres material = (EnumOres) state.getValue(MATERIAL);
+        return (material.getMeta());
     }
 
     @Override
     protected BlockStateContainer createBlockState() {
-        LogHelper.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-
-        ORES = PropertyEnum.create("oretype", );
-
-        return new BlockStateContainer(this, ORES);
+        return new BlockStateContainer(this, MATERIAL);
     }
 
     @Override

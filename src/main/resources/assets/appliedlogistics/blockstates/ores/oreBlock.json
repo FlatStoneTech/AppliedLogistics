@@ -8,7 +8,7 @@
     "inventory": [
       {}
     ],
-    "oretype": {
+    "material": {
       "copper": {
         "textures": {
           "all": "appliedlogistics:blocks/ores/blocks/Copper"

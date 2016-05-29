@@ -41,7 +41,7 @@ public class ItemOreNugget extends ItemBase implements IProvideRecipe {
     public ItemOreNugget() {
         super("ores/nugget");
         this.setHasSubtypes(true);
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabOres);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabMaterials);
         this.setInternalName("ore_nugget");
     }
 
@@ -77,20 +77,20 @@ public class ItemOreNugget extends ItemBase implements IProvideRecipe {
 
     @Override
     public void RegisterRecipes() {
-        for (int i = 0; i < EnumOres.values().length; i++) {
+        for (EnumOres ore : EnumOres.values()) {
             // Ingot -> 9x Nugget
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT) && EnumOres.byMeta(i).isTypeSet(EnumOreType.NUGGET)) {
-                GameRegistry.addRecipe(new ShapelessOreRecipe(Items.ITEM_ORE_NUGGET.getStack(9, i), "ingot" + EnumOres.byMeta(i).getName()));
+            if (ore.isTypeSet(EnumOreType.INGOT) && ore.isTypeSet(EnumOreType.NUGGET)) {
+                GameRegistry.addRecipe(new ShapelessOreRecipe(Items.ITEM_ORE_NUGGET.getStack(9, ore.getMeta()), "ingot" + ore.getOreName()));
             }
 
             // Iron Ingot -> 9x Iron Nuggets
-            if (EnumOres.byMeta(i) == EnumOres.IRON) {
-                GameRegistry.addRecipe(new ShapelessOreRecipe(Items.ITEM_ORE_NUGGET.getStack(9, i), "ingotIron"));
+            if (ore == EnumOres.IRON) {
+                GameRegistry.addRecipe(new ShapelessOreRecipe(Items.ITEM_ORE_NUGGET.getStack(9, ore.getMeta()), "ingotIron"));
             }
 
             // Diamond -> 9x Diamond Nuggets
-            if (EnumOres.byMeta(i) == EnumOres.DIAMOND) {
-                GameRegistry.addRecipe(new ShapelessOreRecipe(Items.ITEM_ORE_NUGGET.getStack(9, i), "gemDiamond"));
+            if (ore == EnumOres.DIAMOND) {
+                GameRegistry.addRecipe(new ShapelessOreRecipe(Items.ITEM_ORE_NUGGET.getStack(9, ore.getMeta()), "gemDiamond"));
             }
         }
     }

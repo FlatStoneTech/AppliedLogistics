@@ -80,10 +80,36 @@ public abstract class CommonProxy implements IProxy {
             // Register Nuggets
             if (ores.isTypeSet(EnumOreType.NUGGET))
                 OreDictionary.registerOre("nugget" + oreName, Items.ITEM_ORE_NUGGET.getStack(1, meta));
+        }
 
-            // Register Gears
-            if (ores.isTypeSet(EnumOreType.GEAR))
-                OreDictionary.registerOre("gear" + oreName, Items.ITEM_MATERIAL_GEAR.getStack(1, meta));
+        for (EnumAlloys ores : EnumAlloys.values()) {
+            int meta = ores.getMeta();
+            String oreName = ores.getAlloyName();
+
+            // Register Ore
+            if (ores.isTypeSet(EnumOreType.ORE))
+                OreDictionary.registerOre("ore" + oreName, Blocks.BLOCK_ALLOY.getStack(1, meta));
+
+            // Register Ore Block
+            if (ores.isTypeSet(EnumOreType.BLOCK))
+                OreDictionary.registerOre("block" + oreName, Blocks.BLOCK_ALLOY_BLOCK.getStack(1, meta));
+
+            // Register Ingot
+            if (ores.isTypeSet(EnumOreType.INGOT))
+                OreDictionary.registerOre("ingot" + oreName, Items.ITEM_ALLOY_INGOT.getStack(1, meta));
+
+            // Register Dusts
+            if (ores.isTypeSet(EnumOreType.DUST))
+                OreDictionary.registerOre("dust" + oreName, Items.ITEM_ALLOY_DUST.getStack(1, meta));
+
+            // Register Nuggets
+            if (ores.isTypeSet(EnumOreType.NUGGET))
+                OreDictionary.registerOre("nugget" + oreName, Items.ITEM_ALLOY_NUGGET.getStack(1, meta));
+        }
+
+        // Register Gears
+        for (EnumMaterialsGear gear : EnumMaterialsGear.values()) {
+            OreDictionary.registerOre("gear" + gear.getOreName(), Items.ITEM_MATERIAL_GEAR.getStack(1, gear.getMeta()));
         }
     }
 

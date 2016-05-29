@@ -76,11 +76,11 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
                 if (machineItemData.hasKey("item_" + i)) {
                     ItemStack item = ItemStack.loadItemStackFromNBT(machineItemData.getCompoundTag("item_" + i));
 
-                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.WOOD.getMeta())))
-                        speedMultiplier = 1.5f * item.stackSize;
-
-                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.COBBLESTONE.getMeta())))
-                        fortuneMultiplier = 0.8f * item.stackSize;
+//                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.WOOD.getMeta())))
+//                        speedMultiplier = 1.5f * item.stackSize;
+//
+//                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.COBBLESTONE.getMeta())))
+//                        fortuneMultiplier = 0.8f * item.stackSize;
                 }
             }
         }

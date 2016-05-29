@@ -19,8 +19,9 @@ public class DebugOres4 implements IDebugChest {
             if (EnumOres.byMeta(i + 9).isTypeSet(EnumOreType.DUST))
                 debugChest.setItem(i + 9, new ItemStack(Items.ITEM_ORE_DUST.getItem(), 1, i + 9));
 
-            if (EnumOres.byMeta(i + 9).isTypeSet(EnumOreType.GEAR))
-                debugChest.setItem(i + 18, new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, i + 9));
+            //todo: // FIXME: 5/28/16 
+            //if (EnumOres.byMeta(i + 9).isTypeSet(EnumOreType.GEAR))
+            //    debugChest.setItem(i + 18, new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, i + 9));
         }
 
         return debugChest.registerItem();

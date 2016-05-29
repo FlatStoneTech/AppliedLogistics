@@ -29,28 +29,18 @@ import java.util.List;
 
 public enum EnumOres implements IStringSerializable {
     // Vanilla Ores
-    IRON("Iron", 0, EnumOreType.NUGGET, EnumOreType.DUST, EnumOreType.VANILLA, EnumOreType.GEAR, EnumOreType.FLUID, EnumOreType.CRANK),
-    GOLD("Gold", 1, EnumOreType.DUST, EnumOreType.VANILLA, EnumOreType.GEAR, EnumOreType.FLUID),
+    IRON("Iron", 0, EnumOreType.NUGGET, EnumOreType.DUST, EnumOreType.VANILLA, EnumOreType.FLUID),
+    GOLD("Gold", 1, EnumOreType.DUST, EnumOreType.VANILLA, EnumOreType.FLUID),
     DIAMOND("Diamond", 2, EnumOreType.NUGGET, EnumOreType.VANILLA),
 
     // Base Ores
-    COPPER("Copper", 3, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.GEAR, EnumOreType.FLUID),
-    TIN("Tin", 4, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.GEAR, EnumOreType.FLUID),
-    SILVER("Silver", 5, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.GEAR, EnumOreType.FLUID),
-    LEAD("Lead", 6, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.GEAR, EnumOreType.FLUID),
-    NICKEL("Nickel", 7, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.GEAR, EnumOreType.FLUID),
+    COPPER("Copper", 3, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.FLUID),
+    TIN("Tin", 4, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.FLUID),
+    SILVER("Silver", 5, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.FLUID),
+    LEAD("Lead", 6, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.FLUID),
+    NICKEL("Nickel", 7, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.FLUID),
     RUTILE("Rutile", 8, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.FLUID),
-    ALUMINUM("Aluminum", 15, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.GEAR, EnumOreType.FLUID),
-
-    // Alloys
-    TITANIUM("Titanium", 9, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR, EnumOreType.FLUID),
-    BRONZE("Bronze", 10, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR, EnumOreType.FLUID, EnumOreType.CRANK),
-    ELECTRUM("Electrum", 11, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR, EnumOreType.FLUID),
-    STEEL("Steel", 12, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.GEAR, EnumOreType.FLUID),
-
-    // Misc Gears
-    WOOD("Wood", 13, EnumOreType.GEAR, EnumOreType.VANILLA, EnumOreType.CRANK),
-    COBBLESTONE("Stone", 14, EnumOreType.GEAR, EnumOreType.VANILLA),
+    ALUMINUM("Aluminum", 9, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.FLUID),
     ;
 
     private static final EnumOres[] META_LOOKUP = new EnumOres[values().length];

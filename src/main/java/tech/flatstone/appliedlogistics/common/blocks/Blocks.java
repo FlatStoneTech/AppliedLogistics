@@ -30,19 +30,25 @@ import tech.flatstone.appliedlogistics.common.blocks.misc.BlockBuilder;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCrank;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPlanChest;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPlanLibrary;
+import tech.flatstone.appliedlogistics.common.blocks.ores.BlockAlloy;
+import tech.flatstone.appliedlogistics.common.blocks.ores.BlockAlloyBlock;
 import tech.flatstone.appliedlogistics.common.blocks.ores.BlockOre;
 import tech.flatstone.appliedlogistics.common.blocks.ores.BlockOreBlock;
 import tech.flatstone.appliedlogistics.common.items.machines.ItemFurnace;
 import tech.flatstone.appliedlogistics.common.items.machines.ItemPulverizer;
 import tech.flatstone.appliedlogistics.common.items.misc.ItemBuilder;
 import tech.flatstone.appliedlogistics.common.items.misc.ItemCrank;
+import tech.flatstone.appliedlogistics.common.items.ores.ItemAlloy;
+import tech.flatstone.appliedlogistics.common.items.ores.ItemAlloyBlock;
 import tech.flatstone.appliedlogistics.common.items.ores.ItemOre;
 import tech.flatstone.appliedlogistics.common.items.ores.ItemOreBlock;
 import tech.flatstone.appliedlogistics.common.util.RegistrationHelper;
 
 public enum Blocks {
     BLOCK_ORE(BlockOre.class, ItemOre.class),
+    BLOCK_ALLOY(BlockAlloy.class, ItemAlloy.class),
     BLOCK_ORE_BLOCK(BlockOreBlock.class, ItemOreBlock.class),
+    BLOCK_ALLOY_BLOCK(BlockAlloyBlock.class, ItemAlloyBlock.class),
 
     BLOCK_BUILDER(BlockBuilder.class, ItemBuilder.class),
     BLOCK_PLAN_LIBRARY(BlockPlanLibrary.class),
@@ -54,7 +60,6 @@ public enum Blocks {
     BLOCK_MACHINE_FURNACE(BlockFurnace.class, ItemFurnace.class),
 
     BLOCKS_MATERIAL_SILICA(BlockSilica.class),
-
     ;
 
     private final Class<? extends BlockBase> blockClass;

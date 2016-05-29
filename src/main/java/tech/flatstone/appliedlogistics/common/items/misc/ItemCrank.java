@@ -3,6 +3,7 @@ package tech.flatstone.appliedlogistics.common.items.misc;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import tech.flatstone.appliedlogistics.common.util.EnumCrankMaterials;
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
 
 public class ItemCrank extends ItemBlock {
@@ -21,7 +22,7 @@ public class ItemCrank extends ItemBlock {
     @Override
     public String getUnlocalizedName(ItemStack stack) {
         String name = super.getUnlocalizedName();
-        String oreName = EnumOres.byMeta(stack.getItemDamage()).getUnlocalizedName();
+        String oreName = EnumCrankMaterials.values()[stack.getItemDamage()].getUnlocalizedName();
         return name + "." + oreName;
     }
 }

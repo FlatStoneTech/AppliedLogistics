@@ -26,12 +26,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.items.ItemBase;
 import tech.flatstone.appliedlogistics.common.items.Items;
+import tech.flatstone.appliedlogistics.common.util.EnumMaterialsGear;
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 
@@ -47,10 +49,8 @@ public class ItemGear extends ItemBase implements IProvideRecipe {
 
     @Override
     public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
-        for (int i = 0; i < EnumOres.values().length; i++) {
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.GEAR)) {
-                subItems.add(new ItemStack(this, 1, i));
-            }
+        for (EnumMaterialsGear gear : EnumMaterialsGear.values()) {
+            subItems.add(new ItemStack(itemIn, 1, gear.getMeta()));
         }
     }
 
@@ -62,57 +62,48 @@ public class ItemGear extends ItemBase implements IProvideRecipe {
     @Override
     public String getUnlocalizedName(ItemStack itemStack) {
         String name = super.getUnlocalizedName();
-        String oreName = EnumOres.byMeta(itemStack.getItemDamage()).getUnlocalizedName();
-        return name + "." + oreName;
+        String materialName = EnumMaterialsGear.values()[itemStack.getItemDamage()].getUnlocalizedName();
+        return name + "." + materialName;
     }
 
     @Override
     public void registerItemRenderer() {
-        for (int i = 0; i < EnumOres.values().length; i++) {
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.GEAR)) {
-                ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(ModInfo.MOD_ID + ":materials/gear-" + EnumOres.byMeta(i).getUnlocalizedName(), "inventory"));
-            }
+        for (EnumMaterialsGear gear : EnumMaterialsGear.values()) {
+            ModelLoader.setCustomModelResourceLocation(this, gear.getMeta(), new ModelResourceLocation(ModInfo.MOD_ID + ":materials/gear-" + gear.getUnlocalizedName(), "inventory"));
         }
     }
 
     @Override
     public void RegisterRecipes() {
-        for (int i = 0; i < EnumOres.values().length; i++) {
-            // Normal Gear Recipe
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.GEAR) && EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT)) {
-                GameRegistry.addRecipe(new ShapedOreRecipe(Items.ITEM_MATERIAL_GEAR.getStack(1, i),
-                        " x ",
-                        "xyx",
-                        " x ",
-                        'x', "ingot" + EnumOres.byMeta(i).getName(),
-                        'y', "ingotIron")
-                );
-            }
+        for (EnumMaterialsGear gear : EnumMaterialsGear.values()) {
+            String materialName = gear.getOreName();
 
-            // Vanilla Material Gears
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.GEAR) && EnumOres.byMeta(i).isTypeSet(EnumOreType.VANILLA)) {
-                String outerMaterial = "";
-                String innerMaterial = "";
+            if (OreDictionary.getOres("ingot" + materialName).size() == 0)
+                continue;
 
-                switch (EnumOres.byMeta(i)) {
-                    case WOOD:
-                        outerMaterial = "stickWood";
-                        innerMaterial = "plankWood";
-                        break;
-                    case COBBLESTONE:
-                        outerMaterial = "cobblestone";
-                        innerMaterial = "plankWood";
-                        break;
-                }
-
-                GameRegistry.addRecipe(new ShapedOreRecipe(Items.ITEM_MATERIAL_GEAR.getStack(1, i),
-                        " x ",
-                        "xyx",
-                        " x ",
-                        'x', outerMaterial,
-                        'y', innerMaterial)
-                );
-            }
+            GameRegistry.addRecipe(new ShapedOreRecipe(Items.ITEM_MATERIAL_GEAR.getStack(1, gear.getMeta()),
+                    " x ",
+                    "xyx",
+                    " x ",
+                    'x', "ingot" + materialName,
+                    'y', Items.ITEM_MATERIAL_GEARCORE.getStack())
+            );
         }
+
+        GameRegistry.addRecipe(new ShapedOreRecipe(Items.ITEM_MATERIAL_GEAR.getStack(1, EnumMaterialsGear.WOOD.getMeta()),
+                " x ",
+                "xyx",
+                " x ",
+                'x', "stickWood",
+                'y', "plankWood")
+        );
+
+        GameRegistry.addRecipe(new ShapedOreRecipe(Items.ITEM_MATERIAL_GEAR.getStack(1, EnumMaterialsGear.COBBLESTONE.getMeta()),
+                " x ",
+                "xyx",
+                " x ",
+                'x', "cobblestone",
+                'y', "gearWood")
+        );
     }
 }

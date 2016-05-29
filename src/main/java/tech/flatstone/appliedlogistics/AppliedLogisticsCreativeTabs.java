@@ -41,7 +41,7 @@ public class AppliedLogisticsCreativeTabs {
             return ModInfo.MOD_ID + ".general";
         }
     };
-    public static final CreativeTabs tabOres = new CreativeTabs(ModInfo.MOD_ID) {
+    public static final CreativeTabs tabMaterials = new CreativeTabs(ModInfo.MOD_ID) {
         @Override
         public Item getTabIconItem() {
             return Items.ITEM_ORE_DUST.getItem();
@@ -49,7 +49,7 @@ public class AppliedLogisticsCreativeTabs {
 
         @Override
         public String getTabLabel() {
-            return ModInfo.MOD_ID + ".ores";
+            return ModInfo.MOD_ID + ".materials";
         }
     };
     public static final CreativeTabs tabMachines = new CreativeTabs(ModInfo.MOD_ID) {

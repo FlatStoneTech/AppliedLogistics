@@ -21,5 +21,5 @@
 package tech.flatstone.appliedlogistics.api.features;
 
 public enum EnumOreType {
-    ORE, NUGGET, DUST, INGOT, BLOCK, GEAR, VANILLA, FLUID, CRANK, GRAVITY
+    ORE, NUGGET, DUST, INGOT, BLOCK, VANILLA, FLUID
 }

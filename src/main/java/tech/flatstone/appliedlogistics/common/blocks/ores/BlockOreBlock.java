@@ -39,28 +39,28 @@ import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import java.util.List;
 
 public class BlockOreBlock extends BlockBase implements IProvideRecipe {
-    public static final PropertyEnum<EnumOres> ORES = PropertyEnum.create("oretype", EnumOres.class);
+    public static final PropertyEnum<EnumOres> MATERIAL = PropertyEnum.create("material", EnumOres.class);
 
     public BlockOreBlock() {
         super(Material.rock, "ores/oreBlock");
-        this.setDefaultState(this.blockState.getBaseState().withProperty(ORES, EnumOres.IRON));
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabOres);
+        this.setDefaultState(this.blockState.getBaseState().withProperty(MATERIAL, EnumOres.byMeta(0)));
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabMaterials);
         this.setInternalName("ore_block");
     }
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        return this.getDefaultState().withProperty(ORES, EnumOres.byMeta(meta));
+        return this.getDefaultState().withProperty(MATERIAL, EnumOres.byMeta(meta));
     }
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        return (state.getValue(ORES)).getMeta();
+        return (state.getValue(MATERIAL)).getMeta();
     }
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, ORES);
+        return new BlockStateContainer(this, MATERIAL);
     }
 
     @Override
@@ -79,14 +79,13 @@ public class BlockOreBlock extends BlockBase implements IProvideRecipe {
 
     @Override
     public void RegisterRecipes() {
-        for (int i = 0; i < EnumOres.values().length; i++) {
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT) && EnumOres.byMeta(i).isTypeSet(EnumOreType.BLOCK)) {
-                // Register 9x Ingot -> Block
-                GameRegistry.addRecipe(new ShapedOreRecipe(Blocks.BLOCK_ORE_BLOCK.getStack(1, i),
+        for (EnumOres ore : EnumOres.values()) {
+            if (ore.isTypeSet(EnumOreType.BLOCK) && ore.isTypeSet(EnumOreType.INGOT)) {
+                GameRegistry.addRecipe(new ShapedOreRecipe(Blocks.BLOCK_ORE_BLOCK.getStack(1, ore.getMeta()),
                         "xxx",
                         "xxx",
                         "xxx",
-                        'x', "ingot" + EnumOres.byMeta(i).getName())
+                        'x', "ingot" + ore.getOreName())
                 );
             }
         }
