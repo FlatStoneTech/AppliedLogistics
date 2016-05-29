@@ -66,6 +66,7 @@ public abstract class TileEntityInventoryBase extends TileEntityBase implements 
                 ItemStack itemStack = this.getStackInSlot(i);
                 if (itemStack != null)
                     itemStack.writeToNBT(item);
+
                 tagCompound.setTag("items" + i, item);
             }
             nbtTagCompound.setTag("Items", tagCompound);

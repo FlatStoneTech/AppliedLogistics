@@ -40,6 +40,7 @@ public abstract class BlockTileBase extends BlockBase implements ITileEntityProv
     protected void setTileEntity(final Class<? extends TileEntity> clazz) {
         this.tileEntityClass = clazz;
         this.setTileProvider(true);
+        this.isBlockContainer = true;
         this.isInventory = IInventory.class.isAssignableFrom(clazz);
 
         String tileName = "tileentity." + ModInfo.MOD_ID + "." + clazz.getSimpleName();
@@ -104,6 +105,7 @@ public abstract class BlockTileBase extends BlockBase implements ITileEntityProv
             return;
 
         if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("MachineItemData")) {
+            //todo: set other nbt data
             tileEntity.setMachineItemData(itemStack.getTagCompound().getCompoundTag("MachineItemData"));
             tileEntity.initMachineData();
         }
@@ -146,7 +148,7 @@ public abstract class BlockTileBase extends BlockBase implements ITileEntityProv
     public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
         TileEntityBase tileEntityBase = TileHelper.getTileEntity(world, pos, TileEntityBase.class);
         if (tileEntityBase != null) {
-            final ItemStack itemStack = new ItemStack(this);
+            final ItemStack itemStack = new ItemStack(this, 1, tileEntityBase.getBlockMetadata());
 
             NBTTagCompound machineItemData = tileEntityBase.getMachineItemData();
             if (machineItemData != null) {
@@ -174,5 +176,12 @@ public abstract class BlockTileBase extends BlockBase implements ITileEntityProv
     @Override
     public void registerBlockItemRenderer() {
         super.registerBlockItemRenderer();
+    }
+
+    @Override
+    public boolean onBlockEventReceived(World worldIn, BlockPos pos, IBlockState state, int eventID, int eventParam) {
+        super.onBlockEventReceived(worldIn, pos, state, eventID, eventParam);
+        TileEntity tileentity = worldIn.getTileEntity(pos);
+        return tileentity == null ? false : tileentity.receiveClientEvent(eventID, eventParam);
     }
 }

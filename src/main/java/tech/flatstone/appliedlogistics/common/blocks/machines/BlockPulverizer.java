@@ -32,6 +32,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
+import tech.flatstone.appliedlogistics.api.features.IUpgradeableMachine;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTechBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
@@ -71,8 +72,9 @@ public class BlockPulverizer extends BlockTechBase {
         if (hitY == 1 &&
                 tileEntity != null &&
                 tileEntity.canAttachCrank() &&
-                ItemStack.areItemsEqual(playerIn.getHeldItemMainhand(), Blocks.BLOCK_MISC_CRANK.getStack()) &&
-                !(ItemStack.areItemsEqual(new ItemStack(worldIn.getBlockState(pos.up()).getBlock()), Blocks.BLOCK_MISC_CRANK.getStack()))
+                playerIn.getHeldItemMainhand() != null &&
+                playerIn.getHeldItemMainhand().getItem() == Blocks.BLOCK_MISC_CRANK.getStack().getItem() &&
+                worldIn.isAirBlock(pos.up())
                 )
             return false;
 

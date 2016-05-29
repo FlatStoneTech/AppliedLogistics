@@ -24,9 +24,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import tech.flatstone.appliedlogistics.common.items.cards.*;
 import tech.flatstone.appliedlogistics.common.items.materials.ItemGear;
-import tech.flatstone.appliedlogistics.common.items.ores.ItemOreDust;
-import tech.flatstone.appliedlogistics.common.items.ores.ItemOreIngot;
-import tech.flatstone.appliedlogistics.common.items.ores.ItemOreNugget;
+import tech.flatstone.appliedlogistics.common.items.materials.ItemGearCore;
+import tech.flatstone.appliedlogistics.common.items.ores.*;
 import tech.flatstone.appliedlogistics.common.items.plans.PlanBlank;
 import tech.flatstone.appliedlogistics.common.items.plans.PlanItem;
 import tech.flatstone.appliedlogistics.common.items.tools.ItemHammer;
@@ -34,9 +33,13 @@ import tech.flatstone.appliedlogistics.common.util.RegistrationHelper;
 
 public enum Items {
     ITEM_ORE_INGOT(ItemOreIngot.class),
+    ITEM_ALLOY_INGOT(ItemAlloyIngot.class),
     ITEM_ORE_DUST(ItemOreDust.class),
+    ITEM_ALLOY_DUST(ItemAlloyDust.class),
     ITEM_ORE_NUGGET(ItemOreNugget.class),
+    ITEM_ALLOY_NUGGET(ItemAlloyNugget.class),
 
+    ITEM_MATERIAL_GEARCORE(ItemGearCore.class),
     ITEM_MATERIAL_GEAR(ItemGear.class),
 
     ITEM_CARD_BLANK(ItemKitCard.class),

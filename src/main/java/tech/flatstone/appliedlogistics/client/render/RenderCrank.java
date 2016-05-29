@@ -20,63 +20,49 @@
 
 package tech.flatstone.appliedlogistics.client.render;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelRenderer;
 import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraftforge.client.model.animation.FastTESR;
 import tech.flatstone.appliedlogistics.client.util.ModelTransformer;
-import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCrank;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector4f;
 
 public class RenderCrank extends FastTESR<TileEntityCrank> {
-    @Override
-    public void renderTileEntityFast(final TileEntityCrank te, double x, double y, double z, final float partialTicks, int destroyStage, VertexBuffer worldRenderer) {
-        IBakedModel origModel = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(Blocks.BLOCK_MISC_CRANK.getBlock().getDefaultState());
+	@Override
+	public void renderTileEntityFast(final TileEntityCrank te, double x, double y, double z, final float partialTicks, int destroyStage, VertexBuffer worldRenderer) {
+		IBlockState state = te.getWorld().getBlockState(te.getPos());
+		IBakedModel origModel = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
 
-        worldRenderer.setTranslation(-te.getPos().getX() + x, -te.getPos().getY() + y, -te.getPos().getZ() + z);
+		worldRenderer.setTranslation(-te.getPos().getX() + x, -te.getPos().getY() + y, -te.getPos().getZ() + z);
 
-        IBakedModel model = ModelTransformer.transform(origModel, new ModelTransformer.IVertexTransformer() {
-            @Override
-            public float[] transform(VertexFormatElement.EnumType type, VertexFormatElement.EnumUsage usage, float... data) {
-                if (usage == VertexFormatElement.EnumUsage.POSITION) {
-                    Vector4f vec = new Vector4f(data[0] - 0.5F, data[1] - 0.5F, data[2] - 0.5F, 0);
-                    Matrix4f mat = new Matrix4f();
-                    mat.setIdentity();
-                    if (te.isRotating())
-                        mat.rotY((float) Math.toRadians(te.getRotation() + 15 * partialTicks));
-                    if (!te.isRotating())
-                        mat.rotY((float) Math.toRadians(te.getRotation()));
-                    mat.transform(vec);
-                    data[0] = vec.x + 0.5F;
-                    data[1] = vec.y + 0.5F;
-                    data[2] = vec.z + 0.5F;
-                }
-                return data;
-            }
-        }, ModelTransformer.IVertexFormatTransformer.NONE, worldRenderer.getVertexFormat());
+		IBakedModel model = ModelTransformer.transform(origModel, new ModelTransformer.IVertexTransformer() {
+			@Override
+			public float[] transform(BakedQuad quad, VertexFormatElement.EnumType type, VertexFormatElement.EnumUsage usage, float... data) {
+				if (usage == VertexFormatElement.EnumUsage.POSITION) {
+					Vector4f vec = new Vector4f(data[0] - 0.5F, data[1] - 0.5F, data[2] - 0.5F, 0);
+					Matrix4f mat = new Matrix4f();
+					mat.setIdentity();
+					if (te.isRotating())
+						mat.rotY((float) Math.toRadians(te.getRotation() + 15 * partialTicks));
+					if (!te.isRotating())
+						mat.rotY((float) Math.toRadians(te.getRotation()));
+					mat.transform(vec);
+					data[0] = vec.x + 0.5F;
+					data[1] = vec.y + 0.5F;
+					data[2] = vec.z + 0.5F;
+				}
+				return data;
+			}
+		}, null, 0);
 
-        BlockModelRenderer modelRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer();
-        modelRenderer.renderModel(te.getWorld(), model, Blocks.BLOCK_MISC_CRANK.getBlock().getDefaultState(), te.getPos(), worldRenderer, false);
-
-        //todo: look into why this tessellator stuff isn't working...
-//        if (destroyStage >= 0) {
-//            bindTexture(TextureMap.locationBlocksTexture);
-//            TextureAtlasSprite damageTexture = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("minecraft:blocks/destroy_stage_" + destroyStage);
-//            GlStateManager.pushMatrix();
-//            GlStateManager.translate(-te.getPos().getX() + x, -te.getPos().getY() + y, -te.getPos().getZ() + z);
-//            Tessellator tessellator = Tessellator.getInstance();
-//            VertexBuffer worldrenderer = tessellator.getBuffer();
-//            worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-//            IBlockState state = Blocks.BLOCK_MISC_CRANK.getBlock().getActualState(Blocks.BLOCK_MISC_CRANK.getBlock().getDefaultState(), te.getWorld(), te.getPos());
-//            IBakedModel iBakedModel1 = (new SimpleBakedModel.Builder(state, model, damageTexture, te.getPos())).makeBakedModel();
-//            modelRenderer.renderModel(te.getWorld(), iBakedModel1, state, te.getPos(), Tessellator.getInstance().getBuffer(), false);
-//            tessellator.draw();
-//            GlStateManager.popMatrix();
-//        }
-    }
+		BlockModelRenderer modelRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer();
+		modelRenderer.renderModel(te.getWorld(), model, state, te.getPos(), worldRenderer, false);
+	}
 }

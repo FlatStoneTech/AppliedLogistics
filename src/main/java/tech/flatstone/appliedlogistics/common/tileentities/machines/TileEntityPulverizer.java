@@ -37,14 +37,10 @@ import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
-import tech.flatstone.appliedlogistics.common.util.ICrankable;
-import tech.flatstone.appliedlogistics.common.util.InventoryHelper;
-import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
+import tech.flatstone.appliedlogistics.common.util.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class TileEntityPulverizer extends TileEntityMachineBase implements ITickable, IWailaBodyMessage, ICrankable {
     private InternalInventory inventory = new InternalInventory(this, 11);
@@ -53,11 +49,9 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
     private int maxProcessCount = 1;
     private int ticksRemaining = 0;
     private boolean machineWorking = false;
-    private int badCrankCount = 0;
     private int crushIndex = 0;
-    private float crushRNG = 0;
     private boolean crushPaused = false;
-    private Random rnd = new Random();
+    private int randomItemCount = 0;
 
     public boolean isCrushPaused() {
         return crushPaused;
@@ -82,11 +76,11 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
                 if (machineItemData.hasKey("item_" + i)) {
                     ItemStack item = ItemStack.loadItemStackFromNBT(machineItemData.getCompoundTag("item_" + i));
 
-                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.WOOD.getMeta())))
-                        speedMultiplier = 1.5f * item.stackSize;
-
-                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.COBBLESTONE.getMeta())))
-                        fortuneMultiplier = 0.8f * item.stackSize;
+//                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.WOOD.getMeta())))
+//                        speedMultiplier = 1.5f * item.stackSize;
+//
+//                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.COBBLESTONE.getMeta())))
+//                        fortuneMultiplier = 0.8f * item.stackSize;
                 }
             }
         }
@@ -110,7 +104,7 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
         maxProcessCount = nbtTagCompound.getInteger("maxProcessCount");
         crushIndex = nbtTagCompound.getInteger("crushIndex");
         crushPaused = nbtTagCompound.getBoolean("crushPaused");
-        crushRNG = nbtTagCompound.getFloat("crushRNG");
+        randomItemCount = nbtTagCompound.getInteger("randomItemCount");
     }
 
     @Override
@@ -124,7 +118,7 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
         nbtTagCompound.setInteger("maxProcessCount", maxProcessCount);
         nbtTagCompound.setInteger("crushIndex", crushIndex);
         nbtTagCompound.setBoolean("crushPaused", crushPaused);
-        nbtTagCompound.setFloat("crushRNG", crushRNG);
+        nbtTagCompound.setInteger("randomItemCount", randomItemCount);
     }
 
     @Override
@@ -134,7 +128,7 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
 
     @Override
     public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
-        if (slot >= 2 && this.crushPaused) crushPaused = false;
+
     }
 
     @Override
@@ -165,12 +159,6 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
     public boolean canCrank() {
         if (ticksRemaining > 0 && machineWorking)
             return true;
-
-        badCrankCount++;
-        if (badCrankCount > 5) {
-            badCrankCount = 0;
-            ((BlockCrank) this.worldObj.getBlockState(pos.up()).getBlock()).breakCrank(this.worldObj, this.pos.up(), false);
-        }
 
         return false;
     }
@@ -229,8 +217,6 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
                 return;
             }
 
-            if (this.crushPaused) return;
-
             for (int i = this.crushIndex; i < drops.size(); i++) {
                 this.crushIndex = i;
                 Crushable crushable = drops.get(this.crushIndex);
@@ -239,12 +225,14 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
                 float itemChance = crushable.chance;
                 boolean itemFortune = crushable.luckMultiplier == 1.0f;
 
-                if (crushRNG == -1) crushRNG = this.rnd.nextFloat();
+                if (!crushPaused) {
+                    if (itemFortune)
+                        this.randomItemCount = RandomHelper.CalculatePulverizer(itemChance, fortuneMultiplier);
+                    if (!itemFortune)
+                        this.randomItemCount = RandomHelper.CalculatePulverizer(itemChance, 0);
+                }
 
-                if (itemFortune)
-                    itemChance = itemChance + fortuneMultiplier;
-
-                outItem.stackSize = (int) Math.round(Math.floor(itemChance) + crushRNG * itemChance % 1);
+                outItem.stackSize = this.randomItemCount;
                 if (outItem.stackSize == 0) outItem = null;
 
                 // Simulate placing into output slot...
@@ -254,13 +242,12 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
                 }
 
                 InventoryHelper.addItemStackToInventory(outItem, inventory, 2, 10);
-                this.crushRNG = -1;
+                this.crushPaused = false;
             }
 
             this.crushIndex = 0;
             inventory.setInventorySlotContents(1, null);
 
-            badCrankCount = 0;
             machineWorking = false;
 
             this.markForUpdate();

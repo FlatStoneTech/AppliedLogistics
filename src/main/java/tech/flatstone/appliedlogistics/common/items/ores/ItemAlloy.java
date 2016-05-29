@@ -18,60 +18,29 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.plans;
+package tech.flatstone.appliedlogistics.common.items.ores;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
-import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
-import tech.flatstone.appliedlogistics.api.features.TechLevel;
-import tech.flatstone.appliedlogistics.common.blocks.Blocks;
-import tech.flatstone.appliedlogistics.common.items.Items;
-import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
-import tech.flatstone.appliedlogistics.common.util.PlanDetails;
-import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
+import tech.flatstone.appliedlogistics.common.util.EnumAlloys;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class PlanPlanChest extends PlanBase implements IMachinePlan {
-    public PlanPlanChest() {
-        super("chest");
+public class ItemAlloy extends ItemBlock {
+    public ItemAlloy(Block block) {
+        super(block);
+        this.setHasSubtypes(true);
+        this.setMaxDamage(0);
     }
 
     @Override
-    public String getLocalizedPlanDescription() {
-        return LanguageHelper.DESCRIPTION.translateMessage("plan.chest");
+    public int getMetadata(int damage) {
+        return damage;
     }
 
     @Override
-    public PlanDetails getTechLevels(TechLevel techLevel) {
-        PlanDetails planDetails = null;
-        List<PlanRequiredMaterials> requiredMaterialsList = new ArrayList<PlanRequiredMaterials>();
-
-        switch (techLevel) {
-            case STONE_AGE:
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("cobblestone"), 8, 8, 20, 100, 100));
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("plankWood"), 4, 4, 10, 100, 100));
-
-                requiredMaterialsList.add(new PlanRequiredMaterials(OreDictionary.getOres("chestWood"), 1, 6, 10, 100, 100, "Each chest adds 9 slots of storage"));
-
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_REDSTONE_OUTPUT.getItem()), 0, 1, 10, 200, 200, "Adds comparator output"));
-                requiredMaterialsList.add(new PlanRequiredMaterials(new ItemStack(Items.ITEM_KIT_AUTOMATION.getItem()), 0, 1, 10, 200, 200, "Adds support to adding items with pipes and hoppers"));
-
-                planDetails = new PlanDetails(72, requiredMaterialsList, Blocks.BLOCK_PLAN_CHEST.getStack());
-                break;
-        }
-
-        return planDetails;
-    }
-
-    @Override
-    public String getMachineDetails(TechLevel techLevel, List<ItemStack> inventory) {
-        return "";
-    }
-
-    @Override
-    public int getPlanRequiredXP() {
-        return 10;
+    public String getUnlocalizedName(ItemStack stack) {
+        String name = super.getUnlocalizedName();
+        String materialName = EnumAlloys.byMeta(stack.getItemDamage()).getUnlocalizedName();
+        return name + "." + materialName;
     }
 }

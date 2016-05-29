@@ -3,9 +3,10 @@ package tech.flatstone.appliedlogistics.common.items.machines;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import tech.flatstone.appliedlogistics.api.features.IUpgradeableMachine;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 
-public class ItemFurnace extends ItemBlock {
+public class ItemFurnace extends ItemBlock implements IUpgradeableMachine {
 
     public ItemFurnace(Block block) {
         super(block);

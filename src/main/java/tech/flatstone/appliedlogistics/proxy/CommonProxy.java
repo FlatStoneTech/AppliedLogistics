@@ -20,6 +20,7 @@
 
 package tech.flatstone.appliedlogistics.proxy;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
@@ -38,8 +39,6 @@ import tech.flatstone.appliedlogistics.common.config.Config;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.plans.PlanMachineFurnace;
 import tech.flatstone.appliedlogistics.common.plans.PlanMachinePulverizer;
-import tech.flatstone.appliedlogistics.common.plans.PlanPlanBuilder;
-import tech.flatstone.appliedlogistics.common.plans.PlanPlanChest;
 import tech.flatstone.appliedlogistics.common.util.*;
 import tech.flatstone.appliedlogistics.common.world.WorldGenInit;
 
@@ -81,10 +80,36 @@ public abstract class CommonProxy implements IProxy {
             // Register Nuggets
             if (ores.isTypeSet(EnumOreType.NUGGET))
                 OreDictionary.registerOre("nugget" + oreName, Items.ITEM_ORE_NUGGET.getStack(1, meta));
+        }
 
-            // Register Gears
-            if (ores.isTypeSet(EnumOreType.GEAR))
-                OreDictionary.registerOre("gear" + oreName, Items.ITEM_MATERIAL_GEAR.getStack(1, meta));
+        for (EnumAlloys ores : EnumAlloys.values()) {
+            int meta = ores.getMeta();
+            String oreName = ores.getAlloyName();
+
+            // Register Ore
+            if (ores.isTypeSet(EnumOreType.ORE))
+                OreDictionary.registerOre("ore" + oreName, Blocks.BLOCK_ALLOY.getStack(1, meta));
+
+            // Register Ore Block
+            if (ores.isTypeSet(EnumOreType.BLOCK))
+                OreDictionary.registerOre("block" + oreName, Blocks.BLOCK_ALLOY_BLOCK.getStack(1, meta));
+
+            // Register Ingot
+            if (ores.isTypeSet(EnumOreType.INGOT))
+                OreDictionary.registerOre("ingot" + oreName, Items.ITEM_ALLOY_INGOT.getStack(1, meta));
+
+            // Register Dusts
+            if (ores.isTypeSet(EnumOreType.DUST))
+                OreDictionary.registerOre("dust" + oreName, Items.ITEM_ALLOY_DUST.getStack(1, meta));
+
+            // Register Nuggets
+            if (ores.isTypeSet(EnumOreType.NUGGET))
+                OreDictionary.registerOre("nugget" + oreName, Items.ITEM_ALLOY_NUGGET.getStack(1, meta));
+        }
+
+        // Register Gears
+        for (EnumMaterialsGear gear : EnumMaterialsGear.values()) {
+            OreDictionary.registerOre("gear" + gear.getOreName(), Items.ITEM_MATERIAL_GEAR.getStack(1, gear.getMeta()));
         }
     }
 
@@ -150,8 +175,11 @@ public abstract class CommonProxy implements IProxy {
         PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.gravel), new ItemStack(net.minecraft.init.Items.flint), 0.1f, true);
 
         // Sand
-        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.sand), new ItemStack(net.minecraft.init.Blocks.clay), 1.0f, false);
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.sand), Blocks.BLOCKS_MATERIAL_SILICA.getStack(), 1.0f, false);
         PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.sandstone), new ItemStack(net.minecraft.init.Blocks.sand), 4.0f, false);
+
+        // Silica
+        //PulverizerRegistry.register(Blocks.BLOCK_ORE.getStack(1, EnumOres.SILICA.getMeta()), Items.ITEM_ORE_DUST.getStack(1, EnumOres.SILICA.getMeta()), 1.0f, false);
 
         // Clay
         PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.clay), new ItemStack(net.minecraft.init.Items.clay_ball), 4.0f, true);
@@ -199,8 +227,6 @@ public abstract class CommonProxy implements IProxy {
     @Override
     public void registerPlans() {
         PlanRegistry.registerPlan(new PlanMachinePulverizer());
-        PlanRegistry.registerPlan(new PlanPlanBuilder());
-        PlanRegistry.registerPlan(new PlanPlanChest());
         PlanRegistry.registerPlan(new PlanMachineFurnace());
     }
 

@@ -20,14 +20,17 @@
 
 package tech.flatstone.appliedlogistics.client.gui.misc;
 
+import com.fireball1725.firecore.common.util.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.lwjgl.opengl.GL11;
+import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.client.gui.GuiBase;
 import tech.flatstone.appliedlogistics.common.container.misc.ContainerBuilder;
@@ -35,10 +38,10 @@ import tech.flatstone.appliedlogistics.common.container.slot.SlotBuilderInventor
 import tech.flatstone.appliedlogistics.common.network.PacketHandler;
 import tech.flatstone.appliedlogistics.common.network.messages.PacketButtonClick;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityBuilder;
+import tech.flatstone.appliedlogistics.common.util.*;
 import tech.flatstone.appliedlogistics.common.util.GuiHelper;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
-import tech.flatstone.appliedlogistics.common.util.PlanDetails;
-import tech.flatstone.appliedlogistics.common.util.PlanRequiredMaterials;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.io.IOException;
 import java.util.List;
@@ -80,21 +83,18 @@ public class GuiBuilder extends GuiBase {
         bindTexture("gui/machines/builder.png");
         drawTexturedModalRect(paramInt1, paramInt2, 0, 0, this.xSize, this.ySize);
 
-        PlanDetails planDetails = tileEntity.getPlanDetails();
-        if (planDetails != null) {
-            List<PlanRequiredMaterials> requiredMaterials = planDetails.getRequiredMaterialsList();
-            int slotID = 0;
-            for (PlanRequiredMaterials materials : requiredMaterials) {
-                Slot slot = this.inventorySlots.getSlot(slotID);
-                //todo: add a 0 check before assuming 0
-                ItemStack stack = materials.getRequiredMaterials().get(0);
-                //todo: Make icon change...
-//                if (materials.getRequiredMaterials().size() > 1) {
-//                    stack = materials.getRequiredMaterials().get(1);
-//                }
-                this.drawTransparentIconEmpty(slot, stack);
-                slotID++;
+        List<BuilderSlotDetails> builderSlotDetailsList = tileEntity.getBuilderSlotDetailsList();
+        int slotID = 0;
+        for (BuilderSlotDetails slotDetails : builderSlotDetailsList) {
+            Slot slot = this.inventorySlots.getSlot(slotID);
+
+            this.drawTransparentIconEmpty(slot, slotDetails.getSlotMaterials().get(0));
+
+            if (slotDetails.isSlotIncorrectTechLevel()) {
+                this.drawOverlayIcon(slot, EnumIcons.LOCK_OVERLAY);
             }
+
+            slotID++;
         }
     }
 
@@ -106,12 +106,29 @@ public class GuiBuilder extends GuiBase {
         this.fontRendererObj.drawString(tileEntity.hasCustomName() ? tileEntity.getCustomName() : LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()), 8, 6, 4210752);
         this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage("container.inventory"), 8, 129, 4210752);
 
-        ItemStack itemPlan = tileEntity.getInternalInventory().getStackInSlot(0);
+        ItemStack itemPlan = tileEntity.getPlanItem();
 
-        if (tileEntity.getPlanItem() == null) {
-            this.fontRendererObj.drawString(TextFormatting.RED + LanguageHelper.MESSAGE.translateMessage("plan.insert"), 36, 26, 4210752);
-        } else {
+//        if (tileEntity.getPlanItem() == null) {
+//            this.fontRendererObj.drawString(TextFormatting.RED + LanguageHelper.MESSAGE.translateMessage("plan.insert"), 36, 26, 4210752);
+        if (itemPlan != null && tileEntity.isUpgradeMode()) {
+            this.fontRendererObj.drawString(LanguageHelper.LABEL.translateMessage("upgrade") + " " + LanguageHelper.NONE.translateMessage(itemPlan.getUnlocalizedName() + ".name"), 8, 48, 4210752);
+        } else if (itemPlan != null) {
             this.fontRendererObj.drawString(LanguageHelper.NONE.translateMessage(itemPlan.getUnlocalizedName() + ".name"), 8, 48, 4210752);
+        }
+
+        List<BuilderSlotDetails> builderSlotDetailsList = tileEntity.getBuilderSlotDetailsList();
+        int slotID = 0;
+        for (BuilderSlotDetails slotDetails : builderSlotDetailsList) {
+            Slot slot = this.inventorySlots.getSlot(slotID);
+
+            if (slotDetails.getSlotMaterialCount() > 0) {
+                this.zLevel += 100000;
+                GlStateManager.enableDepth();
+                guiHelper.drawStringWithShadow(slot.xDisplayPosition, slot.yDisplayPosition, "xX", colorXPGreen);
+                this.zLevel -= 100000;
+            }
+
+            slotID++;
         }
 
         /**
@@ -119,7 +136,7 @@ public class GuiBuilder extends GuiBase {
          */
         GL11.glPushMatrix();
         GL11.glScalef(0.75f, 0.75f, 0.75f);
-        String machineDescription = tileEntity.getPlanDetailedDescription();
+        String machineDescription = tileEntity.getBuilderDetails();
         String[] description = machineDescription.split("\\n");
         int messageY = 12;
         for (String message : description) {
@@ -133,7 +150,7 @@ public class GuiBuilder extends GuiBase {
          * Progress Bars
          */
         if (tileEntity.getPlanItem() != null && tileEntity.getTicksRemaining() == 0 && tileEntity.getBlockMetadata() != TechLevel.CREATIVE.getMeta()) {
-            int weightMax = tileEntity.getPlanDetails().getTotalWeight();
+            int weightMax = ((IMachinePlan) (tileEntity.getPlanBase())).getPlanMaxWeight(TechLevel.byMeta(tileEntity.getCurrentTechLevel()));
             int weightTotal = tileEntity.getTotalWeight();
             int weightProgressColor = colorProgressBackground;
 
@@ -156,7 +173,7 @@ public class GuiBuilder extends GuiBase {
         }
 
         if (tileEntity.getPlanItem() != null && tileEntity.getTicksRemaining() > 0 && tileEntity.getBlockMetadata() != TechLevel.CREATIVE.getMeta()) {
-            int timeMax = tileEntity.getTotalTicks();
+            int timeMax = tileEntity.getTicksTotal();
             int timeCurrent = tileEntity.getTicksRemaining();
             int timeProgressColor = colorProgressBackground;
 
@@ -183,7 +200,7 @@ public class GuiBuilder extends GuiBase {
         btnStartBuilder.enabled = tileEntity.isMeetingBuildRequirements();
 
         if (tileEntity.getBlockMetadata() > 0) {
-            btnSelectTechLevel.displayString = LanguageHelper.NONE.translateMessage(TechLevel.byMeta(tileEntity.getSelectedTechLevel()).getUnlocalizedName());
+            btnSelectTechLevel.displayString = LanguageHelper.NONE.translateMessage(TechLevel.byMeta(tileEntity.getCurrentTechLevel()).getUnlocalizedName());
         }
     }
 
@@ -195,13 +212,30 @@ public class GuiBuilder extends GuiBase {
         if (slot == null)
             return;
 
-        PlanDetails planDetails = tileEntity.getPlanDetails();
-        if (planDetails != null) {
-            List<PlanRequiredMaterials> requiredMaterials = planDetails.getRequiredMaterialsList();
-            if (slot instanceof SlotBuilderInventory && slot.getSlotIndex() > 0 && slot.getSlotIndex() <= requiredMaterials.size() && !slot.getHasStack()) {
-                renderItemStackToolTip(requiredMaterials.get(slot.getSlotIndex() - 1), mouseX, mouseY);
-            }
+        List<BuilderSlotDetails> builderSlotDetailsList = tileEntity.getBuilderSlotDetailsList();
+
+        if (slot instanceof SlotBuilderInventory && slot.getSlotIndex() > 0 && slot.getSlotIndex() <= builderSlotDetailsList.size()) {
+            renderItemStackToolTip(builderSlotDetailsList.get(slot.getSlotIndex() - 1), mouseX, mouseY);
         }
+    }
+
+    @Override
+    protected void renderToolTip(ItemStack stack, int x, int y) {
+        Slot slot = getSlotUnderMouse();
+        if (slot == null) {
+            super.renderToolTip(stack, x, y);
+            return;
+        }
+
+//        PlanDetails planDetails = tileEntity.getPlanDetails();
+//        if (planDetails != null) {
+//            List<PlanRequiredMaterials> requiredMaterials = planDetails.getRequiredMaterialsList();
+//            if (slot instanceof SlotBuilderInventory && slot.getSlotIndex() > 0 && slot.getSlotIndex() <= requiredMaterials.size()){
+//                return;
+//            }
+//        }
+
+        super.renderToolTip(stack, x, y);
     }
 
     @Override
@@ -209,5 +243,12 @@ public class GuiBuilder extends GuiBase {
         UUID playerUUID = Minecraft.getMinecraft().thePlayer.getUniqueID();
         PacketButtonClick packetButtonClick = new PacketButtonClick(button.id, tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ(), playerUUID);
         PacketHandler.INSTANCE.sendToServer(packetButtonClick);
+    }
+
+    @Override
+    protected void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
+        super.handleMouseClick(slotIn, slotId, mouseButton, type);
+
+        LogHelper.info(">>> Slot Click: " + slotId);
     }
 }

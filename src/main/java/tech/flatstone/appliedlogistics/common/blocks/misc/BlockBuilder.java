@@ -20,7 +20,6 @@
 
 package tech.flatstone.appliedlogistics.common.blocks.misc;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
@@ -43,6 +42,7 @@ import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTechBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityBuilder;
+import tech.flatstone.appliedlogistics.common.util.EnumEventTypes;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
@@ -65,14 +65,16 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe {
         if (hitY == 1 &&
                 tileEntity != null &&
                 tileEntity.canAttachCrank() &&
-                ItemStack.areItemsEqual(playerIn.getHeldItemMainhand(), Blocks.BLOCK_MISC_CRANK.getStack()) &&
-                !(ItemStack.areItemsEqual(new ItemStack(worldIn.getBlockState(pos.up()).getBlock()), Blocks.BLOCK_MISC_CRANK.getStack()))
+                playerIn.getHeldItemMainhand() != null &&
+                playerIn.getHeldItemMainhand().getItem() == Blocks.BLOCK_MISC_CRANK.getStack().getItem() &&
+                worldIn.isAirBlock(pos.up())
                 )
             return false;
 
         if (worldIn.isRemote)
             return true;
 
+        worldIn.addBlockEvent(pos, this, EnumEventTypes.PLAN_SLOT_UPDATE.ordinal(), 0);
         playerIn.openGui(AppliedLogistics.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
@@ -107,12 +109,12 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe {
         return getMetaFromState(state);
     }
 
-    @Override
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
-        for (int i = 0; i < TechLevel.values().length; i++) {
-            list.add(new ItemStack(itemIn, 1, i));
-        }
-    }
+//    @Override
+//    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
+//        for (int i = 0; i < TechLevel.values().length; i++) {
+//            list.add(new ItemStack(itemIn, 1, i));
+//        }
+//    }
 
     @Override
     public void RegisterRecipes() {
@@ -133,19 +135,19 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe {
         return true;
     }
 
-    @Override
-    public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos) {
-        TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
+//    @Override
+//    public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos) {
+//        TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
+//
+//        return tileEntity.getComparatorOutput();
+//    }
 
-        return tileEntity.getComparatorOutput();
-    }
-
-    @Override
-    public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
-        TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
-        if (tileEntity == null)
-            return;
-
-        tileEntity.setBadCrankCount(0);
-    }
+//    @Override
+//    public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
+//        TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
+//        if (tileEntity == null)
+//            return;
+//
+//        tileEntity.setBadCrankCount(0);
+//    }
 }

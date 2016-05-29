@@ -29,7 +29,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
+import tech.flatstone.appliedlogistics.api.features.IUpgradeableMachine;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
+import tech.flatstone.appliedlogistics.api.features.plan.PlanSlot;
+import tech.flatstone.appliedlogistics.api.features.plan.SlotTechLevelProperties;
 import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCrank;
 import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaBodyMessage;
@@ -39,225 +42,112 @@ import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInv
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
 import tech.flatstone.appliedlogistics.common.util.*;
 
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class TileEntityBuilder extends TileEntityMachineBase implements ITickable, INetworkButton, IWailaBodyMessage, ICrankable {
-    private InternalInventory inventory = new InternalInventory(this, 56);
-    private HashMap<TechLevel, PlanDetails> planDetails = new HashMap<TechLevel, PlanDetails>();
-    private String planName = "";
+    private InternalInventory internalInventory = new InternalInventory(this, 56);
     private ItemStack planItem = null;
-    private int selectedTechLevel = -1;
-    private int buildingTechLevel = -1;
+    private int currentTechLevel = -1;
     private int ticksRemaining = 0;
     private boolean machineWorking = false;
-    private int badCrankCount = 0;
+    private int ticksTotal = 0;
+    private ItemStack outputItem = null;
+    private boolean upgradeMode = false;
 
-    @Override
-    public boolean canBeRotated() {
-        return true;
+    private List<BuilderSlotDetails> builderSlotDetailsList = new ArrayList<>();
+
+    public List<BuilderSlotDetails> getBuilderSlotDetailsList() {
+        return builderSlotDetailsList;
     }
 
-    public int getTotalWeight() {
-        int weight = 0;
-        int invSlot = 1;
-
-        for (PlanRequiredMaterials material : getPlanDetails().getRequiredMaterialsList()) {
-            int materialWeight = material.getItemWeight();
-            int itemCount = 0;
-            ItemStack itemInSlot = inventory.getStackInSlot(invSlot);
-            if (itemInSlot != null)
-                itemCount = itemInSlot.stackSize;
-            weight += (materialWeight * itemCount);
-
-            invSlot++;
-        }
-
-        return weight;
-    }
-
-    public void setBadCrankCount(int badCrankCount) {
-        this.badCrankCount = badCrankCount;
-    }
-
-    public boolean isMeetingBuildRequirements() {
-        int invSlot = 1;
-
-        if (planDetails == null)
-            return false;
-
-        if (inventory.getStackInSlot(28) != null)
-            return false;
-
-        if (ticksRemaining > 0)
-            return false;
-
-        if (getPlanDetails() == null)
-            return false;
-
-        if (getBlockMetadata() == TechLevel.CREATIVE.getMeta())
-            return true;
-
-        for (PlanRequiredMaterials material : getPlanDetails().getRequiredMaterialsList()) {
-            if (material.getMinCount() > 0) {
-                ItemStack itemInSlot = inventory.getStackInSlot(invSlot);
-                if (itemInSlot == null)
-                    return false;
-
-                if (itemInSlot.stackSize < material.getMinCount())
-                    return false;
-            }
-
-            invSlot++;
-        }
-
-        return !(planDetails != null && getTotalWeight() > getPlanDetails().getTotalWeight());
-
-    }
-
-    public int getSelectedTechLevel() {
-        return selectedTechLevel;
+    public boolean isMachineWorking() {
+        return machineWorking;
     }
 
     public int getTicksRemaining() {
         return ticksRemaining;
     }
 
-    public int getBuildingTechLevel() {
-        return buildingTechLevel;
+    public int getCurrentTechLevel() {
+        return currentTechLevel;
     }
 
-    public Set<TechLevel> getTechLevels() {
-        return planDetails.keySet();
-    }
-
-    public PlanDetails getPlanDetails(TechLevel techLevel) {
-        if (planDetails.containsKey(techLevel))
-            return planDetails.get(techLevel);
-
-        return null;
-    }
-
-    public PlanDetails getPlanDetails() {
-        if (planDetails.containsKey(TechLevel.byMeta(selectedTechLevel)))
-            return planDetails.get(TechLevel.byMeta(selectedTechLevel));
-
-        return null;
+    public int getTicksTotal() {
+        return ticksTotal;
     }
 
     public ItemStack getPlanItem() {
-        return planItem;
+        if (getPlanBase() == null)
+            return null;
+
+        return this.planItem;
+    }
+
+    public boolean isUpgradeMode() {
+        return upgradeMode;
+    }
+
+    public ItemPlanBase getPlanBase() {
+        if (this.planItem == null)
+            return null;
+
+        if (!(this.planItem.hasTagCompound()))
+            return null;
+
+        if (!(this.planItem.getTagCompound().hasKey("PlanType")))
+            return null;
+
+        // Setup the Slot List
+        String planName = this.planItem.getTagCompound().getString("PlanType");
+        ItemPlanBase planBase = (ItemPlanBase) PlanRegistry.getPlanAsItem(planName);
+
+        if (planBase == null)
+            return null;
+
+        if (!(planBase instanceof IMachinePlan))
+            return null;
+
+        return planBase;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound) {
         super.readFromNBT(nbtTagCompound);
 
-        selectedTechLevel = nbtTagCompound.getInteger("selectedTechLevel");
+        currentTechLevel = nbtTagCompound.getInteger("currentTechLevel");
         ticksRemaining = nbtTagCompound.getInteger("ticksRemaining");
         machineWorking = nbtTagCompound.getBoolean("machineWorking");
-        buildingTechLevel = nbtTagCompound.getInteger("buildingTechLevel");
+        ticksTotal = nbtTagCompound.getInteger("ticksTotal");
+        upgradeMode = nbtTagCompound.getBoolean("upgradeMode");
+
+        if (nbtTagCompound.hasKey("outputItem")) {
+            NBTTagCompound outputItemStack = nbtTagCompound.getCompoundTag("outputItem");
+            outputItem = ItemStack.loadItemStackFromNBT(outputItemStack);
+        }
     }
 
     @Override
     public void writeToNBT(NBTTagCompound nbtTagCompound) {
         super.writeToNBT(nbtTagCompound);
 
-        nbtTagCompound.setInteger("selectedTechLevel", selectedTechLevel);
+        nbtTagCompound.setInteger("currentTechLevel", currentTechLevel);
         nbtTagCompound.setInteger("ticksRemaining", ticksRemaining);
         nbtTagCompound.setBoolean("machineWorking", machineWorking);
-        nbtTagCompound.setInteger("buildingTechLevel", buildingTechLevel);
-    }
+        nbtTagCompound.setInteger("ticksTotal", ticksTotal);
+        nbtTagCompound.setBoolean("upgradeMode", upgradeMode);
 
-    private void updatePlanDetails() {
-        ItemStack itemStack = inventory.getStackInSlot(0);
-
-        if (!ItemStack.areItemStacksEqual(planItem, itemStack)) {
-            planItem = null;
-        }
-
-        if (planItem == null && !planDetails.isEmpty()) {
-            planDetails.clear();
-            planName = "";
-            planChange();
-            return;
-        }
-
-        if (itemStack == null)
-            return;
-
-        if (!planDetails.isEmpty())
-            return;
-
-        if (!itemStack.hasTagCompound() || !itemStack.getTagCompound().hasKey("PlanType"))
-            return;
-
-        planName = itemStack.getTagCompound().getString("PlanType");
-        ItemPlanBase planBase = (ItemPlanBase) PlanRegistry.getPlanAsItem(planName);
-
-        if (planBase == null) {
-            // todo: invalidate item
-            LogHelper.warn("Plan no longer matches an item, either a mod has changed, or something else bad happened...");
-            LogHelper.warn("Plan raw name is: " + planName);
-            return;
-        }
-
-        if (!(planBase instanceof IMachinePlan))
-            return;
-
-        for (int i = getBlockMetadata(); i >= 0; i--) {
-            TechLevel techLevel = TechLevel.byMeta(i);
-            PlanDetails details = ((IMachinePlan) planBase).getTechLevels(techLevel);
-            if (details != null)
-                planDetails.put(techLevel, details);
-        }
-
-        if (planDetails.isEmpty()) {
-            LogHelper.fatal("The plan that was inserted has no techlevel recipes... this is probably not good...");
-            LogHelper.fatal("Plan Name: " + planName);
-            return;
-        }
-
-        planItem = itemStack;
-        planChange();
-    }
-
-    private void planChange() {
-        if (planItem == null && Platform.isServer()) {
-            TileHelper.DropItems(this, 1, 27);
-        }
-
-        if (planItem == null) {
-            selectedTechLevel = -1;
-            return;
-        }
-
-        if (selectedTechLevel == -1) {
-            for (TechLevel techLevel : planDetails.keySet()) {
-                if (techLevel.getMeta() > selectedTechLevel)
-                    selectedTechLevel = techLevel.getMeta();
-            }
-        }
-
-        this.markForUpdate();
-        this.markDirty();
-    }
-
-    @Override
-    public IInventory getInternalInventory() {
-        return inventory;
-    }
-
-    @Override
-    public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
-        if (slot == 28) {
-            badCrankCount = 0;
+        if (outputItem != null) {
+            NBTTagCompound outputItemStack = new NBTTagCompound();
+            outputItem.writeToNBT(outputItemStack);
+            nbtTagCompound.setTag("outputItem", outputItemStack);
         }
     }
 
     @Override
-    public int[] getAccessibleSlotsBySide(EnumFacing side) {
-        return new int[0];
+    public boolean canBeRotated() {
+        return true;
     }
 
     @Override
@@ -267,60 +157,14 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
 
     @Override
     public void update() {
-        updatePlanDetails();
 
-        if (getTotalTicks() > 0 && machineWorking) {
-            //ticksRemaining--;
-
-            if (getBlockMetadata() == TechLevel.CREATIVE.getMeta()) {
-                ticksRemaining = 0;
-            }
-        }
-
-        if (ticksRemaining <= 0 && machineWorking) {
-            machineWorking = false;
-            ticksRemaining = 0;
-            // Machine is done...
-            if (Platform.isClient())
-                return;
-
-            if (getPlanDetails() == null)
-                return;
-
-            ItemStack outputItem = getPlanDetails(TechLevel.byMeta(buildingTechLevel)).getItemOutput().copy();
-            buildingTechLevel = -1;
-
-            NBTTagCompound tagMachineItems = new NBTTagCompound();
-            NBTTagCompound tagCompound = new NBTTagCompound();
-            int j = 0;
-            for (int i = 29; i < 56; i++) {
-                NBTTagCompound item = new NBTTagCompound();
-                ItemStack itemStack = this.getStackInSlot(i);
-                if (itemStack != null) {
-                    itemStack.writeToNBT(item);
-                    tagCompound.setTag("item_" + j, item);
-                    j++;
-                }
-            }
-            tagMachineItems.setTag("MachineItemData", tagCompound);
-            outputItem.setTagCompound(tagMachineItems);
-
-            this.inventory.setInventorySlotContents(28, outputItem);
-
-            for (int i = 29; i < 56; i++) {
-                inventory.setInventorySlotContents(i, null);
-            }
-
-            this.markForUpdate();
-            this.markDirty();
-        }
     }
 
     @Override
     public List<String> getWailaBodyToolTip(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
         List<String> newTooltip = currentTip;
 
-        if (planDetails == null || getPlanDetails() == null || planItem == null)
+        if (getPlanBase() == null || planItem == null)
             return newTooltip;
 
         newTooltip.add(String.format("%s: %s",
@@ -331,7 +175,8 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
         if (ticksRemaining == 0)
             return newTooltip;
 
-        float timePercent = ((((float) getTotalTicks() - (float) ticksRemaining) / (float) getTotalTicks())) * 100;
+        float timePercent = (((float) this.ticksTotal - (float) this.ticksRemaining) / (float) this.ticksTotal) * 100;
+
         int secondsLeft = (ticksRemaining / 20) * 1000;
 
         newTooltip.add(String.format("%s: %s (%d%%)",
@@ -344,146 +189,287 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
     }
 
     @Override
-    public void actionPerformed(int buttonID, UUID playerUUID) {
-        switch (buttonID) {
-            case 0: // Build
-                inventoryToInternal();
-                buildingTechLevel = selectedTechLevel;
-                ticksRemaining = getTotalTicks();
-                machineWorking = true;
-                this.markForUpdate();
-                this.markDirty();
-                break;
+    public IInventory getInternalInventory() {
+        return internalInventory;
+    }
 
-            case 1: // Select Tech Level
-                changeLevel(getNextTechLevel());
-                break;
+    @Override
+    public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
+        if (operation == InventoryOperation.markDirty)
+            return;
+
+        if (this.worldObj == null)
+            return;
+
+        if (slot == 0) { // Change in the input slot...
+            currentTechLevel = this.getBlockMetadata();
+            this.markDirty();
+            this.markForUpdate();
+
+            this.worldObj.addBlockEvent(this.pos, this.blockType, EnumEventTypes.PLAN_SLOT_UPDATE.ordinal(), 0);
+
+            TileHelper.DropItems(this, 1, 27);
         }
     }
 
-    public int getNextTechLevel() {
-        int nextTechLevel = selectedTechLevel;
-        for (int i = selectedTechLevel + 1; i <= this.getBlockMetadata(); i++) {
-            if (planDetails.containsKey(TechLevel.byMeta(i)))
-                return i;
-        }
-        for (int i = 0; i <= this.getBlockMetadata(); i++) {
-            if (planDetails.containsKey(TechLevel.byMeta(i)))
-                return i;
-        }
-        return nextTechLevel;
-    }
-
-    private void changeLevel(int newTechLevel) {
-        selectedTechLevel = newTechLevel;
-        TileHelper.DropItems(this, 1, 27);
-        this.markForUpdate();
-        this.markDirty();
-    }
-
-    private void inventoryToInternal() {
-        int invSlot = 1;
-
-        for (PlanRequiredMaterials material : getPlanDetails().getRequiredMaterialsList()) {
-            ItemStack itemIn = inventory.getStackInSlot(invSlot);
-            if (itemIn != null) {
-                inventory.setInventorySlotContents(invSlot + 28, itemIn);
-                inventory.setInventorySlotContents(invSlot, null);
-            }
-            invSlot++;
-        }
-    }
-
-    public int getTotalTicks() {
-        int ticks = 0;
-        int invSlot = 28;
-
-        if (getPlanDetails() == null)
-            return 0;
-
-        for (PlanRequiredMaterials material : getPlanDetails(TechLevel.byMeta(buildingTechLevel)).getRequiredMaterialsList()) {
-            int tickTime = material.getAddTime();
-            int itemCount = 0;
-            ItemStack itemInSlot = inventory.getStackInSlot(invSlot);
-            if (itemInSlot != null)
-                itemCount = itemInSlot.stackSize;
-            ticks += (tickTime * itemCount);
-
-            invSlot++;
-        }
-
-        return ticks;
-    }
-
-    public int getComparatorOutput() {
-        if (planDetails == null)
-            return 0;
-
-        if (planItem == null)
-            return 0;
-
-        if (getPlanDetails() == null)
-            return 0;
-
-        // Check to see if overweight
-        if (getTotalWeight() > getPlanDetails().getTotalWeight())
-            return 15;
-
-        // Done Building
-        if (inventory.getStackInSlot(28) != null)
-            return 4;
-
-        // Building...
-        if (ticksRemaining > 0)
-            return 3;
-
-        // Ok to Build
-        if (isMeetingBuildRequirements())
-            return 2;
-
-        // Valid Plan
-        return 1;
-    }
-
-    public String getPlanDetailedDescription() {
-        ItemPlanBase planBase = (ItemPlanBase) PlanRegistry.getPlanAsItem(planName);
-
-        if (planBase == null || !(planBase instanceof IMachinePlan))
-            return "";
-
-        List<ItemStack> inventory = new ArrayList<ItemStack>();
-        for (int i = 1; i < 27; i++) {
-            inventory.add(getInternalInventory().getStackInSlot(i));
-        }
-
-        return ((IMachinePlan) planBase).getMachineDetails(TechLevel.byMeta(selectedTechLevel), inventory);
+    @Override
+    public int[] getAccessibleSlotsBySide(EnumFacing side) {
+        return new int[0];
     }
 
     @Override
     public void doCrank() {
-        if (ticksRemaining > 0 && machineWorking) {
+        if (ticksRemaining > 0) {
             ticksRemaining = ticksRemaining - 20;
-            this.markForUpdate();
+
             this.markDirty();
+            this.markForUpdate();
+
+            if (ticksRemaining <= 0) {
+                finishBuilding();
+            }
         }
     }
 
     @Override
     public boolean canAttachCrank() {
-        return getBlockMetadata() == 0 || getBlockMetadata() == 1;
+        return getBlockMetadata() < 2;
     }
 
     @Override
     public boolean canCrank() {
-        if (ticksRemaining > 0 && machineWorking)
+        if (ticksRemaining > 0)
             return true;
 
-        badCrankCount++;
-        if (badCrankCount > 5) {
-            badCrankCount = 0;
-            ((BlockCrank) this.worldObj.getBlockState(pos.up()).getBlock()).breakCrank(this.worldObj, this.pos.up(), false);
+        return false;
+    }
+
+    @Override
+    public void actionPerformed(int buttonID, UUID playerUUID) {
+        switch (buttonID) {
+            case 0:
+                initBuild();
+                break;
+            case 1:
+                if (currentTechLevel == -1)
+                    return;
+
+                currentTechLevel++;
+                if (currentTechLevel > this.getBlockMetadata())
+                    currentTechLevel = 0;
+
+                this.markDirty();
+                this.markForUpdate();
+
+                this.worldObj.addBlockEvent(this.pos, this.blockType, EnumEventTypes.PLAN_SLOT_UPDATE.ordinal(), 0);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void initPlanSlotChange() {
+        this.planItem = this.internalInventory.getStackInSlot(0);
+        builderSlotDetailsList.clear();
+
+        if (this.planItem == null) {
+            currentTechLevel = -1;
+            this.upgradeMode = false;
+
+            this.markDirty();
+            this.markForUpdate();
+
+            return;
         }
 
-        return false;
+        ItemPlanBase planBase = getPlanBase();
+
+        if (planBase == null)
+            return;
+
+        List<PlanSlot> planSlots = ((IMachinePlan) planBase).getPlanSlots();
+
+        for (PlanSlot slot : planSlots) {
+            int minCount = -1;
+            int maxCount = -1;
+            SlotTechLevelProperties techLevelProperties = slot.getSlotProperties().get(TechLevel.byMeta(currentTechLevel));
+            if (techLevelProperties != null) {
+                minCount = techLevelProperties.getItemMinCount();
+                maxCount = techLevelProperties.getItemMaxCount();
+            }
+
+            BuilderSlotDetails slotDetails = new BuilderSlotDetails(slot.getSlotMaterial(), slot.getSlotDescription(), minCount, maxCount, slot.getSlotMaterialWeight(), slot.getSlotMaterialTimeToAdd());
+
+            if (minCount == -1)
+                slotDetails.setSlotIncorrectTechLevel(true);
+
+            if (this.upgradeMode) {
+                //todo: fix with real nbt data...
+                slotDetails.setSlotMaterialCount(10);
+            }
+
+            builderSlotDetailsList.add(slotDetails);
+        }
+
+        if (this.planItem.getItem() instanceof IUpgradeableMachine)
+            this.upgradeMode = true;
+
+        this.markDirty();
+        this.markForUpdate();
+    }
+
+    public String getBuilderDetails() {
+        //todo: replace "" with unlocalized stuff
+
+        ItemPlanBase planBase = getPlanBase();
+        if (planBase == null)
+            return "";
+
+        List<ItemStack> inventory = new ArrayList<>();
+        for (int i = 1; i < 27; i++) {
+            inventory.add(getInternalInventory().getStackInSlot(i));
+        }
+
+        return ((IMachinePlan) planBase).getPlanDetails(TechLevel.byMeta(this.currentTechLevel), inventory);
+    }
+
+    @Override
+    public boolean receiveClientEvent(int id, int type) {
+        switch (EnumEventTypes.values()[id]) {
+            case PLAN_SLOT_UPDATE:
+                initPlanSlotChange();
+                break;
+            default:
+                break;
+        }
+
+        return true;
+    }
+
+    public boolean isMeetingBuildRequirements() {
+        if (getPlanBase() == null)
+            return false;
+
+        if (this.internalInventory.getStackInSlot(28) != null)
+            return false;
+
+        if (ticksRemaining > 0)
+            return false;
+
+        if (builderSlotDetailsList.size() == 0)
+            return false;
+
+        if (getBlockMetadata() == TechLevel.CREATIVE.getMeta())
+            return true;
+
+        int slotID = 0;
+        for (BuilderSlotDetails slotDetails : builderSlotDetailsList) {
+            slotID++;
+
+            if (slotDetails.getSlotMaterialMaxCount() == -1)
+                continue;
+
+            ItemStack itemInSlot = this.internalInventory.getStackInSlot(slotID);
+            if (itemInSlot == null && slotDetails.getSlotMaterialMinCount() > 0)
+                return false;
+
+
+            if (itemInSlot != null && itemInSlot.stackSize < slotDetails.getSlotMaterialMinCount())
+                return false;
+        }
+
+        if (getTotalWeight() > ((IMachinePlan) getPlanBase()).getPlanMaxWeight(TechLevel.byMeta(currentTechLevel)))
+            return false;
+
+        return true;
+    }
+
+    public int getTotalWeight() {
+        int slotID = 0;
+        int totalWeight = 0;
+        for (BuilderSlotDetails slotDetails : builderSlotDetailsList) {
+            slotID++;
+
+            if (slotDetails.getSlotMaterialMaxCount() == -1)
+                continue;
+
+            ItemStack itemInSlot = this.internalInventory.getStackInSlot(slotID);
+
+            if (itemInSlot == null)
+                continue;
+
+            totalWeight += (slotDetails.getSlotMaterialWeight() * itemInSlot.stackSize);
+        }
+
+        return totalWeight;
+    }
+
+    public int getTotalTicks() {
+        int slotID = 0;
+        int totalTicks = 0;
+        for (BuilderSlotDetails slotDetails : builderSlotDetailsList) {
+            slotID++;
+
+            if (slotDetails.getSlotMaterialMaxCount() == -1)
+                continue;
+
+            ItemStack itemInSlot = this.internalInventory.getStackInSlot(slotID);
+
+            if (itemInSlot == null)
+                continue;
+
+            totalTicks += (slotDetails.getSlotMaterialTimeToAdd() * itemInSlot.stackSize);
+        }
+
+        return totalTicks;
+    }
+
+    public void initBuild() {
+        int totalTicks = getTotalTicks();
+
+        this.ticksRemaining = totalTicks;
+        this.ticksTotal = totalTicks;
+
+        int slotID = 0;
+        for (BuilderSlotDetails slotDetails : builderSlotDetailsList) {
+            slotID++;
+
+            if (slotDetails.getSlotMaterialMaxCount() == -1)
+                continue;
+
+            ItemStack itemInSlot = this.internalInventory.getStackInSlot(slotID);
+
+            this.internalInventory.setInventorySlotContents(slotID + 28, itemInSlot);
+            this.internalInventory.setInventorySlotContents(slotID, null);
+        }
+
+        this.outputItem = ((IMachinePlan) (getPlanBase())).getPlanItem(TechLevel.byMeta(currentTechLevel));
+
+        if (outputItem.getItem() instanceof IUpgradeableMachine) {
+            NBTTagCompound tagMachineItems = new NBTTagCompound();
+            NBTTagCompound tagCompound = new NBTTagCompound();
+            for (int i = 29; i < 56; i++) {
+                NBTTagCompound item = new NBTTagCompound();
+                ItemStack itemStack = this.getStackInSlot(i);
+                if (itemStack != null) {
+                    itemStack.writeToNBT(item);
+                    tagCompound.setTag("item_" + (i - 29), item);
+                }
+            }
+            tagMachineItems.setTag("MachineItemData", tagCompound);
+
+            String planName = this.planItem.getTagCompound().getString("PlanType");
+            tagMachineItems.setString("PlanType", planName);
+
+            this.outputItem.setTagCompound(tagMachineItems);
+        }
+
+        this.markDirty();
+        this.markForUpdate();
+    }
+
+    private void finishBuilding() {
+        this.internalInventory.setInventorySlotContents(28, this.outputItem);
+        this.outputItem = null;
     }
 }

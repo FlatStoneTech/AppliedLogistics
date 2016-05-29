@@ -21,31 +21,70 @@
 package tech.flatstone.appliedlogistics.api.features;
 
 import net.minecraft.item.ItemStack;
-import tech.flatstone.appliedlogistics.common.util.PlanDetails;
+import tech.flatstone.appliedlogistics.api.features.plan.PlanSlot;
 
 import java.util.List;
 
 public interface IMachinePlan {
     /**
-     * Gets the unlocalized name for the description
+     * Get the max weight for this plan
      *
-     * @return
+     * @param techLevel Current Tech Level
+     * @return Max weight for the plan
      */
-    String getLocalizedPlanDescription();
+    int getPlanMaxWeight(TechLevel techLevel);
 
     /**
-     * Gets the tech levels for the plan
+     * Get the output item for this plan
      *
-     * @return
+     * @param techLevel Current Tech Level
+     * @return ItemStack with item that was built
      */
-    PlanDetails getTechLevels(TechLevel techLevel);
-
-    String getMachineDetails(TechLevel techLevel, List<ItemStack> inventory);
+    ItemStack getPlanItem(TechLevel techLevel);
 
     /**
-     * Optional experence required to craft plan
+     * Get the slots used for the plan
      *
-     * @return experence in int
+     * @return List of all the slots
+     */
+    List<PlanSlot> getPlanSlots();
+
+    /**
+     * Get the details for the plan, this will show on the right side
+     *
+     * @param techLevel Current Tech Level
+     * @param inventory Currnet Inventory in Builder
+     * @return String of the plan details
+     */
+    String getPlanDetails(TechLevel techLevel, List<ItemStack> inventory);
+
+    /**
+     * Gets the description for the plan
+     *
+     * @return Description
+     */
+    String getPlanDescription();
+
+    /**
+     * Gets the items to show in the creative tab
+     *
+     * @return Creative Tab Items
+     */
+    List<ItemStack> getCreativeTabItemStack();
+
+    /**
+     * XP required to craft plan
+     *
+     * @return The XP required to get the plan from the plan library
      */
     int getPlanRequiredXP();
+
+    /**
+     * Get the hover text for the item stack
+     *
+     * @param techLevel The items tech level
+     * @param inventory The items used to build the item
+     * @return List of Strings to be used for the hover text
+     */
+    List<String> getItemDescription(TechLevel techLevel, List<ItemStack> inventory);
 }

@@ -166,7 +166,7 @@ description.appliedlogistics.plan.pulverizer=Box of tiny hammers that destroys r
 #########################################
 
 itemGroup.appliedlogistics.general=Applied Logistics Items
-itemGroup.appliedlogistics.ores=Applied Logistics Ores
+itemGroup.appliedlogistics.materials=Applied Logistics Materials
 itemGroup.appliedlogistics.machines=Applied Logistics Machines
 itemGroup.appliedlogistics.plans=Applied Logistics Plans
 

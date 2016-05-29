@@ -92,7 +92,7 @@ public class PlanItem extends ItemPlanBase {
         Item plan = PlanRegistry.getPlanAsItem(getTagForPlan(stack));
 
         if (plan != null && plan instanceof IMachinePlan) {
-            String planDescription = ((IMachinePlan) plan).getLocalizedPlanDescription();
+            String planDescription = ((IMachinePlan) plan).getPlanDescription();
             for (String message : Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(planDescription, 150)) {
                 tooltip.add(String.format("%s%s%s",
                         TextFormatting.YELLOW,

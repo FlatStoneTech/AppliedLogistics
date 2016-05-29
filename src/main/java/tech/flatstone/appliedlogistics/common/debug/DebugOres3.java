@@ -12,7 +12,7 @@ public class DebugOres3 implements IDebugChest {
     public ItemStack getDebugChest() {
         DebugItemHelper debugChest = new DebugItemHelper("Ores 3/4");
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 1; i++) {
 
             if (EnumOres.byMeta(i + 9).isTypeSet(EnumOreType.ORE))
                 debugChest.setItem(i, Blocks.BLOCK_ORE.getStack(1, i + 9));

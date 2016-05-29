@@ -75,17 +75,18 @@ public class GuiPulverizer extends GuiBase {
          */
         GL11.glPushMatrix();
 
-        // Bronze Gear :: number of ores that can be processed at one time
-        guiHelper.drawItemStack(new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.BRONZE.getMeta()), 190, 20);  // x = 190 to 206 // y = 20 to 36
-        guiHelper.drawCenteredString(190, 38, 16, tileEntity.getMaxProcessCount() + "x", 4210752);
-
-        // Stone Gear :: Chance Percent
-        guiHelper.drawItemStack(new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.COBBLESTONE.getMeta()), 190, 49); // x = 190 to 206 // y = 49 to 65
-        guiHelper.drawCenteredString(190, 67, 16, "160%", 4210752);
-
-        // Wood Gear :: Speed Percent
-        guiHelper.drawItemStack(new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.WOOD.getMeta()), 190, 78); // x = 190 to 206 // y = 78 to 94
-        guiHelper.drawCenteredString(190, 96, 16, "0%", 4210752);
+        //Todo fix all this
+//        // Bronze Gear :: number of ores that can be processed at one time
+//        guiHelper.drawItemStack(new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.BRONZE.getMeta()), 190, 20);  // x = 190 to 206 // y = 20 to 36
+//        guiHelper.drawCenteredString(190, 38, 16, tileEntity.getMaxProcessCount() + "x", 4210752);
+//
+//        // Stone Gear :: Chance Percent
+//        guiHelper.drawItemStack(new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.COBBLESTONE.getMeta()), 190, 49); // x = 190 to 206 // y = 49 to 65
+//        guiHelper.drawCenteredString(190, 67, 16, "160%", 4210752);
+//
+//        // Wood Gear :: Speed Percent
+//        guiHelper.drawItemStack(new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.WOOD.getMeta()), 190, 78); // x = 190 to 206 // y = 78 to 94
+//        guiHelper.drawCenteredString(190, 96, 16, "0%", 4210752);
 
         GL11.glPopMatrix();
 
