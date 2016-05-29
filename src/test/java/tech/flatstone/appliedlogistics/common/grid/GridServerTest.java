@@ -102,7 +102,7 @@ public class GridServerTest {
 
         gridServer.gridTick();
 
-        assertFalse(gridServer.removeEdge(null,vertex1));
+        assertFalse(gridServer.removeEdge(null, vertex1));
     }
 
 }
