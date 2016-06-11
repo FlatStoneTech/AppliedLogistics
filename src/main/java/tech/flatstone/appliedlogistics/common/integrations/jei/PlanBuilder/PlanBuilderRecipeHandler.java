@@ -41,6 +41,12 @@ public class PlanBuilderRecipeHandler implements IRecipeHandler<PlanBuilderRecip
 
     @Nonnull
     @Override
+    public String getRecipeCategoryUid(@Nonnull PlanBuilderRecipeJEI planBuilderRecipeJEI) {
+        return null;
+    }
+
+    @Nonnull
+    @Override
     public IRecipeWrapper getRecipeWrapper(@Nonnull PlanBuilderRecipeJEI planBuilderRecipeJEI) {
         return planBuilderRecipeJEI;
     }

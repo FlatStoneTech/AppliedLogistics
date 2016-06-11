@@ -20,6 +20,7 @@
 
 package tech.flatstone.appliedlogistics.common.items.cards;
 
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -32,7 +33,7 @@ public class ItemKitAutomation extends ItemBase implements IProvideRecipe {
     public ItemKitAutomation() {
         super("cards/kit_automation");
         this.setMaxStackSize(8);
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabGeneral);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.GENERAL);
         this.setInternalName("kit_automation");
     }
 
@@ -42,7 +43,7 @@ public class ItemKitAutomation extends ItemBase implements IProvideRecipe {
                 " h ",
                 "rxr",
                 "grg",
-                'h', new ItemStack(net.minecraft.init.Blocks.hopper),
+                'h', new ItemStack(Blocks.HOPPER),
                 'r', "dustRedstone",
                 'x', new ItemStack(Items.ITEM_CARD_BLANK.getItem()),
                 'g', "dyeGreen"

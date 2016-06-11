@@ -17,8 +17,8 @@ public class DebugOres3 implements IDebugChest {
             if (EnumOres.byMeta(i + 9).isTypeSet(EnumOreType.ORE))
                 debugChest.setItem(i, Blocks.BLOCK_ORE.getStack(1, i + 9));
 
-            if (EnumOres.byMeta(i + 9).isTypeSet(EnumOreType.BLOCK))
-                debugChest.setItem(i + 9, Blocks.BLOCK_ORE_BLOCK.getStack(1, i + 9));
+            if (EnumOres.byMeta(i + 9).isTypeSet(EnumOreType.STORAGE_BLOCK))
+                debugChest.setItem(i + 9, Blocks.BLOCK_ORE_STORAGE_BLOCK.getStack(1, i + 9));
 
             if (EnumOres.byMeta(i + 9).isTypeSet(EnumOreType.INGOT))
                 debugChest.setItem(i + 18, new ItemStack(Items.ITEM_ORE_INGOT.getItem(), 1, i + 9));

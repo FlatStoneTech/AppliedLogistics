@@ -42,10 +42,10 @@ import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 public class BlockPlanChest extends BlockTileBase {
     public BlockPlanChest() {
-        super(Material.rock, "misc/planChest");
+        super(Material.ROCK, "misc/planChest");
         this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityPlanChest.class);
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabMachines);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.MACHINES);
         this.setInternalName("plan_chest");
     }
 

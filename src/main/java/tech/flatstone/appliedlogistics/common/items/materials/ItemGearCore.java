@@ -10,7 +10,7 @@ import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 public class ItemGearCore extends ItemBase implements IProvideRecipe {
     public ItemGearCore() {
         super("materials/gear_core");
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabGeneral);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.GENERAL);
         this.setInternalName("material_gear_core");
     }
 

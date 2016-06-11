@@ -59,7 +59,7 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
     public ItemHammer() {
         super(3.0F, 1.0F, toolMaterialHammer, blocksEffectiveAgainst, "tools/toolHammer");
         this.setUnlocalizedName("tool_hammer");
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabGeneral);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.GENERAL);
         this.setInternalName("tool_hammer");
     }
 
@@ -85,7 +85,7 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
         IBlockState iBlockState = world.getBlockState(pos);
         Block block = iBlockState.getBlock();
         ItemStack blockItemStack = new ItemStack(block, 1, block.getMetaFromState(iBlockState));
-        int fortune = EnchantmentHelper.getMaxEnchantmentLevel(Enchantments.fortune, player);
+        int fortune = EnchantmentHelper.getMaxEnchantmentLevel(Enchantments.FORTUNE, player);
 
         boolean valid = false;
 
@@ -123,7 +123,7 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
 
         if (!world.isRemote) {
             world.setBlockToAir(pos);
-            world.playAuxSFX(2001, pos, 1);
+            world.playBroadcastSound(2001, pos, 1);
         }
 
         return valid;

@@ -155,12 +155,14 @@ public class TileEntityCrank extends TileEntityBase implements ITickable, IWaila
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
         super.writeToNBT(nbtTagCompound);
 
         nbtTagCompound.setBoolean("rotating", this.rotating);
         nbtTagCompound.setInteger("badCrankCount", this.badCrankCount);
         nbtTagCompound.setInteger("crankTickCounter", this.crankTickCounter);
+
+        return nbtTagCompound;
     }
 
     @Override

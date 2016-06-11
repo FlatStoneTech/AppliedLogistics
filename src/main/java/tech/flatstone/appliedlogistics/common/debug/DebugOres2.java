@@ -26,7 +26,7 @@ public class DebugOres2 implements IDebugChest {
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.VANILLA)) {
                 switch (i) {
                     case 1:
-                        debugChest.setItem(i, new ItemStack(net.minecraft.init.Items.gold_nugget));
+                        debugChest.setItem(i, new ItemStack(net.minecraft.init.Items.GOLD_NUGGET));
                         break;
                     default:
                         break;

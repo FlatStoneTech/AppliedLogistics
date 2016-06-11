@@ -8,10 +8,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum EnumAlloys implements IStringSerializable {
-    TITANIUM("Titanium", 0, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.FLUID),
-    BRONZE("Bronze", 1, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.FLUID),
-    ELECTRUM("Electrum", 2, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.FLUID),
-    STEEL("Steel", 3, EnumOreType.BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.FLUID),
+    TITANIUM("Titanium", 0, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.FLUID),
+    BRONZE("Bronze", 1, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.FLUID),
+    ELECTRUM("Electrum", 2, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.FLUID),
+    STEEL("Steel", 3, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.FLUID),
     ;
 
     public static final EnumAlloys[] META_LOOKUP = new EnumAlloys[values().length];

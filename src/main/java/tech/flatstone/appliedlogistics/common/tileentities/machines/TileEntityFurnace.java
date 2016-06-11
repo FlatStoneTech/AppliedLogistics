@@ -67,10 +67,10 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
                     if (ItemStack.areItemsEqual(item, Items.ITEM_MATERIAL_GEAR.getStack(1, EnumOres.IRON.getMeta())))
                         gearCount = item.stackSize;
 
-                    if (ItemStack.areItemsEqual(item, new ItemStack(Blocks.furnace)))
+                    if (ItemStack.areItemsEqual(item, new ItemStack(Blocks.FURNACE)))
                         furnaceCount = item.stackSize;
 
-                    if (ItemStack.areItemsEqual(item, new ItemStack(Blocks.chest)))
+                    if (ItemStack.areItemsEqual(item, new ItemStack(Blocks.CHEST)))
                         upgradeExtraSlots = true;
                 }
             }
@@ -256,7 +256,7 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
         super.writeToNBT(nbtTagCompound);
 
         nbtTagCompound.setInteger("fuelRemaining", fuelRemaining);
@@ -267,6 +267,8 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
         nbtTagCompound.setBoolean("upgradeExtraSlots", upgradeExtraSlots);
         nbtTagCompound.setIntArray("smeltProgress", smeltProgress);
         nbtTagCompound.setInteger("maxProcessItems", maxProcessItems);
+
+        return nbtTagCompound;
     }
 
     /**

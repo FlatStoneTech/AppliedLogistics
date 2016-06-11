@@ -20,7 +20,6 @@
 
 package tech.flatstone.appliedlogistics.client.gui.misc;
 
-import com.fireball1725.firecore.common.util.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;

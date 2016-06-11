@@ -62,7 +62,7 @@ public abstract class ItemBaseTool extends ItemBase {
         this.efficiencyOnProperMaterial = p_i46745_3_.getEfficiencyOnProperMaterial();
         this.damageVsEntity = p_i46745_1_ + p_i46745_3_.getDamageVsEntity();
         this.attackSpeed = p_i46745_2_;
-        this.setCreativeTab(CreativeTabs.tabTools);
+        this.setCreativeTab(CreativeTabs.TOOLS);
     }
 
     protected ItemBaseTool(Item.ToolMaterial p_i46746_1_, Set<Block> p_i46746_2_, String texture) {

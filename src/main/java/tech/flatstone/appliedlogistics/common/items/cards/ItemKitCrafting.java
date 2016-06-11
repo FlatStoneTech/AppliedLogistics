@@ -20,6 +20,7 @@
 
 package tech.flatstone.appliedlogistics.common.items.cards;
 
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
@@ -33,7 +34,7 @@ public class ItemKitCrafting extends ItemBase implements IProvideRecipe {
     public ItemKitCrafting() {
         super("cards/kit_crafting");
         this.setMaxStackSize(8);
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabGeneral);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.GENERAL);
         this.setInternalName("kit_crafting");
     }
 
@@ -43,7 +44,7 @@ public class ItemKitCrafting extends ItemBase implements IProvideRecipe {
                 " c ",
                 "rxr",
                 "grg",
-                'c', OreDictionary.getOres("craftingTableWood").size() == 0 ? new ItemStack(net.minecraft.init.Blocks.crafting_table) : "craftingTableWood",
+                'c', OreDictionary.getOres("craftingTableWood").size() == 0 ? new ItemStack(Blocks.CRAFTING_TABLE) : "craftingTableWood",
                 'r', "dustRedstone",
                 'x', new ItemStack(Items.ITEM_CARD_BLANK.getItem()),
                 'g', "dyeGreen"

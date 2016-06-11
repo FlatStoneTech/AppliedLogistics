@@ -32,7 +32,7 @@ public class ItemKitCard extends ItemBase implements IProvideRecipe {
     public ItemKitCard() {
         super("cards/card_base");
         this.setMaxStackSize(16);
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabGeneral);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.GENERAL);
         this.setInternalName("card_blank");
     }
 
@@ -42,7 +42,7 @@ public class ItemKitCard extends ItemBase implements IProvideRecipe {
                 "prp",
                 "prp",
                 "pgp",
-                'p', new ItemStack(Items.paper),
+                'p', new ItemStack(Items.PAPER),
                 'r', "dustRedstone",
                 'g', "gearCopper"
         ));

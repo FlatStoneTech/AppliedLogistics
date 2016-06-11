@@ -20,7 +20,6 @@
 
 package tech.flatstone.appliedlogistics.proxy;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
@@ -66,8 +65,8 @@ public abstract class CommonProxy implements IProxy {
                 OreDictionary.registerOre("ore" + oreName, Blocks.BLOCK_ORE.getStack(1, meta));
 
             // Register Ore Block
-            if (ores.isTypeSet(EnumOreType.BLOCK))
-                OreDictionary.registerOre("block" + oreName, Blocks.BLOCK_ORE_BLOCK.getStack(1, meta));
+            if (ores.isTypeSet(EnumOreType.STORAGE_BLOCK))
+                OreDictionary.registerOre("block" + oreName, Blocks.BLOCK_ORE_STORAGE_BLOCK.getStack(1, meta));
 
             // Register Ingot
             if (ores.isTypeSet(EnumOreType.INGOT))
@@ -91,8 +90,8 @@ public abstract class CommonProxy implements IProxy {
                 OreDictionary.registerOre("ore" + oreName, Blocks.BLOCK_ALLOY.getStack(1, meta));
 
             // Register Ore Block
-            if (ores.isTypeSet(EnumOreType.BLOCK))
-                OreDictionary.registerOre("block" + oreName, Blocks.BLOCK_ALLOY_BLOCK.getStack(1, meta));
+            if (ores.isTypeSet(EnumOreType.STORAGE_BLOCK))
+                OreDictionary.registerOre("block" + oreName, Blocks.BLOCK_ALLOY_STORAGE_BLOCK.getStack(1, meta));
 
             // Register Ingot
             if (ores.isTypeSet(EnumOreType.INGOT))
@@ -148,41 +147,41 @@ public abstract class CommonProxy implements IProxy {
         // Add other misc vanilla things
 
         // Coal
-        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), Items.ITEM_ORE_NUGGET.getStack(1, EnumOres.DIAMOND.getMeta()), 0.005f, 0.01f);
-        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(net.minecraft.init.Items.coal, 2), 1.0f, 0.5f);
-        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(net.minecraft.init.Items.coal, 1), 0.5f, 0.5f);
-        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(net.minecraft.init.Items.coal, 1), 0.5f, 0.5f);
-        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), Items.ITEM_ORE_NUGGET.getStack(1, EnumOres.DIAMOND.getMeta()), 0.05f, true);
-        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.coal_ore), new ItemStack(net.minecraft.init.Items.coal, 2), 1.5f, true);
+        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.COAL_ORE), Items.ITEM_ORE_NUGGET.getStack(1, EnumOres.DIAMOND.getMeta()), 0.005f, 0.01f);
+        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.COAL_ORE), new ItemStack(net.minecraft.init.Items.COAL, 2), 1.0f, 0.5f);
+        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.COAL_ORE), new ItemStack(net.minecraft.init.Items.COAL, 1), 0.5f, 0.5f);
+        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.COAL_ORE), new ItemStack(net.minecraft.init.Items.COAL, 1), 0.5f, 0.5f);
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.COAL_ORE), Items.ITEM_ORE_NUGGET.getStack(1, EnumOres.DIAMOND.getMeta()), 0.05f, true);
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.COAL_ORE), new ItemStack(net.minecraft.init.Items.COAL, 2), 1.5f, true);
 
         // Redstone
-        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 6), 1.0f, 0.5f);
-        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 4), 0.1f, 0.1f);
-        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 2), 0.0f, 0.5f);
-        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 4), 4.0f, true);
-        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.lit_redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 6), 1.0f, 0.5f);
-        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.lit_redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 4), 0.1f, 0.1f);
-        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.lit_redstone_ore), new ItemStack(net.minecraft.init.Items.redstone, 2), 0.0f, 0.5f);
+        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.REDSTONE_ORE), new ItemStack(net.minecraft.init.Items.REDSTONE, 6), 1.0f, 0.5f);
+        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.REDSTONE_ORE), new ItemStack(net.minecraft.init.Items.REDSTONE, 4), 0.1f, 0.1f);
+        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.REDSTONE_ORE), new ItemStack(net.minecraft.init.Items.REDSTONE, 2), 0.0f, 0.5f);
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.REDSTONE_ORE), new ItemStack(net.minecraft.init.Items.REDSTONE, 4), 4.0f, true);
+        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.LIT_REDSTONE_ORE), new ItemStack(net.minecraft.init.Items.REDSTONE, 6), 1.0f, 0.5f);
+        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.LIT_REDSTONE_ORE), new ItemStack(net.minecraft.init.Items.REDSTONE, 4), 0.1f, 0.1f);
+        HammerRegistry.register(new ItemStack(net.minecraft.init.Blocks.LIT_REDSTONE_ORE), new ItemStack(net.minecraft.init.Items.REDSTONE, 2), 0.0f, 0.5f);
 
         // Stone
-        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.stone), new ItemStack(net.minecraft.init.Blocks.cobblestone), 1.0f, false);
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.STONE), new ItemStack(net.minecraft.init.Blocks.COBBLESTONE), 1.0f, false);
 
         // Cobblestone
-        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.cobblestone), new ItemStack(net.minecraft.init.Blocks.gravel), 1.0f, false);
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.COBBLESTONE), new ItemStack(net.minecraft.init.Blocks.GRAVEL), 1.0f, false);
 
         // Gravel
-        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.gravel), new ItemStack(net.minecraft.init.Blocks.sand), 1.0f, false);
-        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.gravel), new ItemStack(net.minecraft.init.Items.flint), 0.1f, true);
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.GRAVEL), new ItemStack(net.minecraft.init.Blocks.SAND), 1.0f, false);
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.GRAVEL), new ItemStack(net.minecraft.init.Items.FLINT), 0.1f, true);
 
         // Sand
-        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.sand), Blocks.BLOCKS_MATERIAL_SILICA.getStack(), 1.0f, false);
-        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.sandstone), new ItemStack(net.minecraft.init.Blocks.sand), 4.0f, false);
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.SAND), Blocks.BLOCK_MISC.getStack(1, EnumMisc.SILICA.getMeta()), 1.0f, false);
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.SANDSTONE), new ItemStack(net.minecraft.init.Blocks.SAND), 4.0f, false);
 
         // Silica
-        //PulverizerRegistry.register(Blocks.BLOCK_ORE.getStack(1, EnumOres.SILICA.getMeta()), Items.ITEM_ORE_DUST.getStack(1, EnumOres.SILICA.getMeta()), 1.0f, false);
+        PulverizerRegistry.register(Blocks.BLOCK_MISC.getStack(1, EnumMisc.SILICA.getMeta()), Items.ITEM_MISC_DUST.getStack(1, EnumMisc.SILICA.getMeta()), 1.0f, false);
 
         // Clay
-        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.clay), new ItemStack(net.minecraft.init.Items.clay_ball), 4.0f, true);
+        PulverizerRegistry.register(new ItemStack(net.minecraft.init.Blocks.CLAY), new ItemStack(net.minecraft.init.Items.CLAY_BALL), 4.0f, true);
     }
 
     @Override

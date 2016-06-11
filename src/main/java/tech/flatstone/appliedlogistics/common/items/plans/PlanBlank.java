@@ -31,7 +31,7 @@ import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 public class PlanBlank extends ItemPlanBase implements IProvideRecipe {
     public PlanBlank() {
         this.setMaxStackSize(16);
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabPlans);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.PLANS);
         this.setInternalName("plan_blank");
     }
 
@@ -43,7 +43,7 @@ public class PlanBlank extends ItemPlanBase implements IProvideRecipe {
                 "xyx",
                 'x', "stickWood",
                 'y', "plankWood",
-                'z', new ItemStack(Items.paper)
+                'z', new ItemStack(Items.PAPER)
         ));
     }
 }

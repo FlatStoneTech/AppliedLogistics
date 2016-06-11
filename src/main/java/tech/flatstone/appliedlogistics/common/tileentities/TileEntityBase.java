@@ -40,6 +40,7 @@ import tech.flatstone.appliedlogistics.common.util.IOrientable;
 import tech.flatstone.appliedlogistics.common.util.IRotatable;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOrientable, IRotatable {
@@ -48,8 +49,9 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
     private NBTTagCompound machineItemData;
     private EnumFacing forward = EnumFacing.NORTH;
 
+    @Nullable
     @Override
-    public Packet getDescriptionPacket() {
+    public SPacketUpdateTileEntity getUpdatePacket() {
         NBTTagCompound data = new NBTTagCompound();
         writeToNBT(data);
         initMachineData();
@@ -137,7 +139,7 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
         super.writeToNBT(nbtTagCompound);
 
         if (this.customName != null)
@@ -149,6 +151,8 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
         if (canBeRotated()) {
             nbtTagCompound.setInteger("forward", this.forward.ordinal());
         }
+
+        return nbtTagCompound;
     }
 
     @Override

@@ -38,9 +38,9 @@ public class BlockOre extends BlockBase {
     public static PropertyEnum MATERIAL = PropertyEnum.create("material", EnumOres.class);
 
     public BlockOre() {
-        super(Material.rock, "ores/ore");
+        super(Material.ROCK, "ores/ore");
         this.setDefaultState(this.blockState.getBaseState().withProperty(MATERIAL, EnumOres.byMeta(0)));
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabMaterials);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.MATERIALS);
         this.setInternalName("ore");
         setHarvestLevel("pickaxe", 0);
     }

@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum EnumMisc implements IStringSerializable {
-
+    SILICA("Silica", 0, EnumOreType.GRAVITY, EnumOreType.BLOCK, EnumOreType.DUST),
     ;
 
     public static final EnumMisc[] META_LOOKUP = new EnumMisc[values().length];

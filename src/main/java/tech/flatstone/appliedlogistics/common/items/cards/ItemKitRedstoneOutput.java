@@ -33,7 +33,7 @@ public class ItemKitRedstoneOutput extends ItemBase implements IProvideRecipe, I
     public ItemKitRedstoneOutput() {
         super("cards/kit_redstone_output");
         this.setMaxStackSize(8);
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabGeneral);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.GENERAL);
         this.setInternalName("kit_redstone_output");
     }
 
@@ -43,7 +43,7 @@ public class ItemKitRedstoneOutput extends ItemBase implements IProvideRecipe, I
                 " c ",
                 "rxr",
                 "grg",
-                'c', new ItemStack(net.minecraft.init.Items.comparator),
+                'c', new ItemStack(net.minecraft.init.Items.COMPARATOR),
                 'r', "dustRedstone",
                 'x', new ItemStack(Items.ITEM_CARD_BLANK.getItem()),
                 'g', "dyeGreen"

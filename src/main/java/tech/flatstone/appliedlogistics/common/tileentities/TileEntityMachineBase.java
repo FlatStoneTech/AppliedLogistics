@@ -73,13 +73,15 @@ public abstract class TileEntityMachineBase extends TileEntityInventoryBase {
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
         super.writeToNBT(nbtTagCompound);
 
         nbtTagCompound.setBoolean("comparatorEnabled", comparatorEnabled);
         nbtTagCompound.setBoolean("sidedEnabled", sidedEnabled);
         nbtTagCompound.setBoolean("craftingEnabled", craftingEnabled);
         nbtTagCompound.setBoolean("redstoneEnabled", redstoneEnabled);
+
+        return nbtTagCompound;
     }
 
     public boolean isComparatorEnabled() {

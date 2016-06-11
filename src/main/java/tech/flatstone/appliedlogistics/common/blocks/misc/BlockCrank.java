@@ -26,7 +26,7 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
@@ -67,10 +67,10 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
     public static final PropertyEnum META = PropertyEnum.create("material", EnumCrankMaterials.class);
 
     public BlockCrank() {
-        super(Material.wood, "misc/crank");
+        super(Material.WOOD, "misc/crank");
         this.setTileEntity(TileEntityCrank.class);
         //this.setHarvestLevel("Axe", 0); //todo fix from enumore level..
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabGeneral);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.GENERAL);
         this.setInternalName("misc_crank");
         this.setDefaultState(this.blockState.getBaseState().withProperty(META, EnumCrankMaterials.WOOD));
     }
@@ -154,13 +154,18 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
     }
 
     @Override
-    public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
+    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn) {
         TileEntity tileEntity = TileHelper.getTileEntity(worldIn, pos.down(), TileEntity.class);
         if (tileEntity == null)
             breakCrank(worldIn, pos, true);
 
         if (!(tileEntity instanceof ICrankable))
             breakCrank(worldIn, pos, true);
+    }
+
+    @Override
+    public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {
+
     }
 
     public void breakCrank(World worldIn, BlockPos pos, boolean dropItem) {
@@ -315,7 +320,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean addDestroyEffects(World world, BlockPos pos, EffectRenderer effectRenderer) {
+    public boolean addDestroyEffects(World world, BlockPos pos, ParticleManager manager) {
         TileEntityCrank tileEntity = TileHelper.getTileEntity(world, pos, TileEntityCrank.class);
         assert tileEntity != null;
         EnumFacing crankRotation = tileEntity.getCrankRotation();
@@ -335,18 +340,18 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
                     double d1 = pos.getY() + (k + 0.5D) / i;
                     double d2 = pos.getZ() + (l + 0.5D) / i;
                     Vec3d vec = new Vec3d(d0, d1, d2);
-                    addMaskedDestroyEffects(pos, effectRenderer, stateID, vec, crankTop, crankShaft);
+                    addMaskedDestroyEffects(pos, manager, stateID, vec, crankTop, crankShaft);
                 }
             }
         }
         return true;
     }
 
-    private void addMaskedDestroyEffects(BlockPos pos, EffectRenderer effectRenderer, int stateID, Vec3d vec, AxisAlignedBB... masks) {
+    private void addMaskedDestroyEffects(BlockPos pos, ParticleManager manager, int stateID, Vec3d vec, AxisAlignedBB... masks) {
 
         for (AxisAlignedBB mask : masks) {
             if (mask.isVecInside(vec)) {
-                effectRenderer.spawnEffectParticle(EnumParticleTypes.BLOCK_CRACK.getParticleID(), vec.xCoord, vec.yCoord, vec.zCoord, vec.xCoord - pos.getX() - 0.5D, vec.yCoord - pos.getY() - 0.5D, vec.zCoord - pos.getZ() - 0.5D, stateID);
+                manager.spawnEffectParticle(EnumParticleTypes.BLOCK_CRACK.getParticleID(), vec.xCoord, vec.yCoord, vec.zCoord, vec.xCoord - pos.getX() - 0.5D, vec.yCoord - pos.getY() - 0.5D, vec.zCoord - pos.getZ() - 0.5D, stateID);
                 break;
             }
         }

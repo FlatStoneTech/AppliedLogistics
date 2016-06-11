@@ -30,7 +30,7 @@ import tech.flatstone.appliedlogistics.common.util.DebugItemHelper;
 import java.util.List;
 
 public class AppliedLogisticsCreativeTabs {
-    public static final CreativeTabs tabGeneral = new CreativeTabs(ModInfo.MOD_ID) {
+    public static final CreativeTabs GENERAL = new CreativeTabs(ModInfo.MOD_ID) {
         @Override
         public Item getTabIconItem() {
             return Items.ITEM_TOOL_HAMMER.getItem();
@@ -41,7 +41,7 @@ public class AppliedLogisticsCreativeTabs {
             return ModInfo.MOD_ID + ".general";
         }
     };
-    public static final CreativeTabs tabMaterials = new CreativeTabs(ModInfo.MOD_ID) {
+    public static final CreativeTabs MATERIALS = new CreativeTabs(ModInfo.MOD_ID) {
         @Override
         public Item getTabIconItem() {
             return Items.ITEM_ORE_DUST.getItem();
@@ -52,7 +52,7 @@ public class AppliedLogisticsCreativeTabs {
             return ModInfo.MOD_ID + ".materials";
         }
     };
-    public static final CreativeTabs tabMachines = new CreativeTabs(ModInfo.MOD_ID) {
+    public static final CreativeTabs MACHINES = new CreativeTabs(ModInfo.MOD_ID) {
         @Override
         public Item getTabIconItem() {
             return Items.ITEM_MATERIAL_GEAR.getItem();
@@ -63,7 +63,7 @@ public class AppliedLogisticsCreativeTabs {
             return ModInfo.MOD_ID + ".machines";
         }
     };
-    public static final CreativeTabs tabPlans = new CreativeTabs(ModInfo.MOD_ID) {
+    public static final CreativeTabs PLANS = new CreativeTabs(ModInfo.MOD_ID) {
         @Override
         public Item getTabIconItem() {
             return Items.ITEM_PLAN.getItem();
@@ -74,10 +74,10 @@ public class AppliedLogisticsCreativeTabs {
             return ModInfo.MOD_ID + ".plans";
         }
     };
-    public static final CreativeTabs tabDebug = new CreativeTabs(ModInfo.MOD_ID) {
+    public static final CreativeTabs DEBUG = new CreativeTabs(ModInfo.MOD_ID) {
         @Override
         public Item getTabIconItem() {
-            return Item.getItemFromBlock(Blocks.command_block);
+            return Item.getItemFromBlock(Blocks.COMMAND_BLOCK);
         }
 
         @Override
@@ -90,10 +90,10 @@ public class AppliedLogisticsCreativeTabs {
             p_78018_1_.addAll(0, DebugItemHelper.init());
         }
     };
-    public static final CreativeTabs tabFluids = new CreativeTabs(ModInfo.MOD_ID) {
+    public static final CreativeTabs FLUIDS = new CreativeTabs(ModInfo.MOD_ID) {
         @Override
         public Item getTabIconItem() {
-            return net.minecraft.init.Items.bucket;
+            return net.minecraft.init.Items.BUCKET;
         }
 
         @Override

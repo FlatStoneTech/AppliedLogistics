@@ -32,7 +32,7 @@ public class ItemKitRedstoneInput extends ItemBase implements IProvideRecipe {
     public ItemKitRedstoneInput() {
         super("cards/kit_redstone_input");
         this.setMaxStackSize(8);
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabGeneral);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.GENERAL);
         this.setInternalName("kit_redstone_input");
     }
 

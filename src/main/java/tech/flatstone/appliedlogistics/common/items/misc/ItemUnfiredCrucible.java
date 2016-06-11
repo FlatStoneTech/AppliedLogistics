@@ -3,7 +3,6 @@ package tech.flatstone.appliedlogistics.common.items.misc;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.common.items.ItemBase;
@@ -14,7 +13,7 @@ public class ItemUnfiredCrucible extends ItemBase implements IProvideRecipe {
     public ItemUnfiredCrucible() {
         super("misc/unfired_crucible");
         this.setMaxStackSize(64);
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabGeneral);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.GENERAL);
         this.setInternalName("unfired_crucible");
     }
 
@@ -24,7 +23,7 @@ public class ItemUnfiredCrucible extends ItemBase implements IProvideRecipe {
                 "???",
                 "???",
                 "???",
-                '?', new ItemStack(Items.clay_ball)
+                '?', new ItemStack(Items.CLAY_BALL)
         ));
     }
 }

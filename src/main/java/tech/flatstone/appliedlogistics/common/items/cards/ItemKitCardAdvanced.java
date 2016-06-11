@@ -12,7 +12,7 @@ public class ItemKitCardAdvanced extends ItemBase implements IProvideRecipe {
     public ItemKitCardAdvanced() {
         super("cards/card_advanced_base");
         this.setMaxStackSize(16);
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabGeneral);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.GENERAL);
         this.setInternalName("card_blank_advanced");
     }
 

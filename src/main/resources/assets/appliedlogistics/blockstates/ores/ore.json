@@ -38,6 +38,11 @@
         "textures": {
           "all": "appliedlogistics:blocks/ores/ores/Rutile"
         }
+      },
+      "aluminum": {
+        "textures": {
+          "all": "appliedlogistics:blocks/ores/ores/Aluminum"
+        }
       }
     }
   }

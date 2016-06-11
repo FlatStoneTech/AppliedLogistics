@@ -24,10 +24,10 @@ public class BlockKiln extends BlockTechBase {
     private static final PropertyBool WORKING = PropertyBool.create("working");
 
     public BlockKiln() {
-        super(Material.rock, "machines/kiln", TechLevel.STONE_AGE);
+        super(Material.ROCK, "machines/kiln", TechLevel.STONE_AGE);
         this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE).withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityKiln.class);
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabMachines);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.MACHINES);
         this.setInternalName("machine_kiln");
     }
 

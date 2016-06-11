@@ -42,6 +42,12 @@ public class BuilderRecipeHandler implements IRecipeHandler<BuilderRecipeJEI> {
 
     @Nonnull
     @Override
+    public String getRecipeCategoryUid(@Nonnull BuilderRecipeJEI builderRecipeJEI) {
+        return null;
+    }
+
+    @Nonnull
+    @Override
     public IRecipeWrapper getRecipeWrapper(@Nonnull BuilderRecipeJEI builderRecipeJEI) {
         return builderRecipeJEI;
     }

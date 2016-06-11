@@ -58,10 +58,12 @@ public class TileEntityPlanLibrary extends TileEntityMachineBase implements INet
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
         super.writeToNBT(nbtTagCompound);
 
         nbtTagCompound.setInteger("selectedPlan", selectedPlan);
+
+        return nbtTagCompound;
     }
 
     @Override

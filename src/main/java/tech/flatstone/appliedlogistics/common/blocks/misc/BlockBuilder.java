@@ -24,9 +24,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -46,16 +44,14 @@ import tech.flatstone.appliedlogistics.common.util.EnumEventTypes;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-import java.util.List;
-
 public class BlockBuilder extends BlockTechBase implements IProvideRecipe {
     public static final PropertyEnum TECHLEVEL = PropertyEnum.create("tech", TechLevel.class);
 
     public BlockBuilder() {
-        super(Material.rock, "misc/builder", TechLevel.all());
+        super(Material.ROCK, "misc/builder", TechLevel.all());
         this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE).withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityBuilder.class);
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabMachines);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.MACHINES);
         this.setInternalName("builder");
     }
 
@@ -122,7 +118,7 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe {
                 "cwc",
                 "wgw",
                 "cxc",
-                'c', OreDictionary.getOres("craftingTableWood").size() == 0 ? new ItemStack(net.minecraft.init.Blocks.crafting_table) : "craftingTableWood",
+                'c', OreDictionary.getOres("craftingTableWood").size() == 0 ? new ItemStack(net.minecraft.init.Blocks.CRAFTING_TABLE) : "craftingTableWood",
                 'w', "logWood",
                 'g', "gearStone",
                 'x', "chestWood"

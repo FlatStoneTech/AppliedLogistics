@@ -42,9 +42,9 @@ public class BlockOreBlock extends BlockBase implements IProvideRecipe {
     public static final PropertyEnum<EnumOres> MATERIAL = PropertyEnum.create("material", EnumOres.class);
 
     public BlockOreBlock() {
-        super(Material.rock, "ores/oreBlock");
+        super(Material.ROCK, "ores/oreBlock");
         this.setDefaultState(this.blockState.getBaseState().withProperty(MATERIAL, EnumOres.byMeta(0)));
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabMaterials);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.MATERIALS);
         this.setInternalName("ore_block");
     }
 
@@ -81,7 +81,7 @@ public class BlockOreBlock extends BlockBase implements IProvideRecipe {
     public void RegisterRecipes() {
         for (EnumOres ore : EnumOres.values()) {
             if (ore.isTypeSet(EnumOreType.BLOCK) && ore.isTypeSet(EnumOreType.INGOT)) {
-                GameRegistry.addRecipe(new ShapedOreRecipe(Blocks.BLOCK_ORE_BLOCK.getStack(1, ore.getMeta()),
+                GameRegistry.addRecipe(new ShapedOreRecipe(Blocks.BLOCK_ORE_STORAGE_BLOCK.getStack(1, ore.getMeta()),
                         "xxx",
                         "xxx",
                         "xxx",

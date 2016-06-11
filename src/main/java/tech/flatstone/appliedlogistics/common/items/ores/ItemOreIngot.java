@@ -44,7 +44,7 @@ public class ItemOreIngot extends ItemBase implements IProvideRecipe, IProvideSm
     public ItemOreIngot() {
         super("ores/ingot");
         this.setHasSubtypes(true);
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabMaterials);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.MATERIALS);
         this.setInternalName("ore_ingot");
     }
 
@@ -82,7 +82,7 @@ public class ItemOreIngot extends ItemBase implements IProvideRecipe, IProvideSm
     public void RegisterRecipes() {
         for (EnumOres ore : EnumOres.values()) {
             // Block -> 9x Ingots
-            if (ore.isTypeSet(EnumOreType.INGOT) && ore.isTypeSet(EnumOreType.BLOCK)) {
+            if (ore.isTypeSet(EnumOreType.INGOT) && ore.isTypeSet(EnumOreType.STORAGE_BLOCK)) {
                 GameRegistry.addRecipe(new ShapelessOreRecipe(Items.ITEM_ORE_INGOT.getStack(9, ore.getMeta()), "block" + ore.getOreName()));
             }
 
@@ -98,7 +98,7 @@ public class ItemOreIngot extends ItemBase implements IProvideRecipe, IProvideSm
 
             // 9x Iron Nuggets -> Iron Ingot
             if (ore == EnumOres.IRON) {
-                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(net.minecraft.init.Items.iron_ingot),
+                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(net.minecraft.init.Items.IRON_INGOT),
                         "xxx",
                         "xxx",
                         "xxx",
@@ -108,7 +108,7 @@ public class ItemOreIngot extends ItemBase implements IProvideRecipe, IProvideSm
 
             // 9x Diamond Nuggets -> Diamond
             if (ore == EnumOres.DIAMOND) {
-                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(net.minecraft.init.Items.diamond),
+                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(net.minecraft.init.Items.DIAMOND),
                         "xxx",
                         "xxx",
                         "xxx",

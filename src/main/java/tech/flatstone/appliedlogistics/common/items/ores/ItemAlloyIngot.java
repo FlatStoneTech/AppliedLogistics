@@ -35,7 +35,6 @@ import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.items.ItemBase;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.EnumAlloys;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.IProvideSmelting;
 
@@ -45,7 +44,7 @@ public class ItemAlloyIngot extends ItemBase implements IProvideRecipe, IProvide
     public ItemAlloyIngot() {
         super("ores/ingot");
         this.setHasSubtypes(true);
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabMaterials);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.MATERIALS);
         this.setInternalName("alloy_ingot");
     }
 
@@ -83,7 +82,7 @@ public class ItemAlloyIngot extends ItemBase implements IProvideRecipe, IProvide
     public void RegisterRecipes() {
         for (EnumAlloys ore : EnumAlloys.values()) {
             // Block -> 9x Ingots
-            if (ore.isTypeSet(EnumOreType.INGOT) && ore.isTypeSet(EnumOreType.BLOCK)) {
+            if (ore.isTypeSet(EnumOreType.INGOT) && ore.isTypeSet(EnumOreType.STORAGE_BLOCK)) {
                 GameRegistry.addRecipe(new ShapelessOreRecipe(Items.ITEM_ALLOY_INGOT.getStack(9, ore.getMeta()), "block" + ore.getAlloyName()));
             }
 

@@ -27,7 +27,7 @@ import net.minecraft.block.state.pattern.BlockMatcher;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -52,7 +52,7 @@ public class WorldGen implements IWorldGenerator {
     private boolean retrogenEnable = true;
 
     public static OreGen addOreGen(String name, IBlockState block, ConfigWorldGen.OreConfig oreConfig) {
-        OreGen oreGen = new OreGen(name, block, Blocks.stone, oreConfig);
+        OreGen oreGen = new OreGen(name, block, Blocks.STONE, oreConfig);
         oreSpawnList.add(oreGen);
         return oreGen;
     }
@@ -141,7 +141,7 @@ public class WorldGen implements IWorldGenerator {
 
                 counter++;
 
-                ChunkCoordIntPair chunkCoordIntPair = chunks.get(index).getCoordIntPair();
+                ChunkPos chunkCoordIntPair = chunks.get(index).getCoordIntPair();
                 long worldSeed = event.world.getSeed();
                 Random fmlRandom = new Random(worldSeed);
                 long xSeed = fmlRandom.nextLong() >> 3;
@@ -185,15 +185,15 @@ public class WorldGen implements IWorldGenerator {
     }
 
     private static class ChunkInfo {
-        private ChunkCoordIntPair coordIntPair;
+        private ChunkPos coordIntPair;
         private NBTTagCompound tagCompound;
 
-        public ChunkInfo(ChunkCoordIntPair coordIntPair, NBTTagCompound tagCompound) {
+        public ChunkInfo(ChunkPos coordIntPair, NBTTagCompound tagCompound) {
             this.coordIntPair = coordIntPair;
             this.tagCompound = tagCompound;
         }
 
-        public ChunkCoordIntPair getCoordIntPair() {
+        public ChunkPos getCoordIntPair() {
             return coordIntPair;
         }
 

@@ -40,7 +40,7 @@ public class PlanItem extends ItemPlanBase {
     public PlanItem() {
         this.setHasSubtypes(true);
         this.maxStackSize = 1;
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabPlans);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.PLANS);
         this.setInternalName("plan_item");
     }
 

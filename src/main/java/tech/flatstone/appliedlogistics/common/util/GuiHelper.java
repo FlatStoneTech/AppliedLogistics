@@ -258,17 +258,17 @@ public class GuiHelper extends GuiScreen {
         int iconX = x;
 
         if (tileEntity.isComparatorEnabled()) {
-            drawMiniItemStack(new ItemStack(Items.comparator), iconX, y);
+            drawMiniItemStack(new ItemStack(Items.COMPARATOR), iconX, y);
             iconX = iconX - 18;
         }
 
         if (tileEntity.isRedstoneEnabled()) {
-            drawMiniItemStack(new ItemStack(Items.redstone), iconX, y);
+            drawMiniItemStack(new ItemStack(Items.REDSTONE), iconX, y);
             iconX = iconX - 18;
         }
 
         if (tileEntity.isSidedEnabled()) {
-            drawMiniItemStack(new ItemStack(Blocks.hopper), iconX, y);
+            drawMiniItemStack(new ItemStack(Blocks.HOPPER), iconX, y);
         }
     }
 

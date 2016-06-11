@@ -20,6 +20,7 @@
 
 package tech.flatstone.appliedlogistics.common.tileentities.misc;
 
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -47,7 +48,7 @@ public class TileEntityPlanChest extends TileEntityMachineBase {
                 if (machineItemData.hasKey("item_" + i)) {
                     ItemStack item = ItemStack.loadItemStackFromNBT(machineItemData.getCompoundTag("item_" + i));
 
-                    if (ItemStack.areItemsEqual(item, new ItemStack(net.minecraft.init.Blocks.chest)))
+                    if (ItemStack.areItemsEqual(item, new ItemStack(Blocks.CHEST)))
                         slotRows = item.stackSize;
                 }
             }
@@ -101,10 +102,12 @@ public class TileEntityPlanChest extends TileEntityMachineBase {
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
         super.writeToNBT(nbtTagCompound);
 
         nbtTagCompound.setInteger("slotRows", slotRows);
+
+        return nbtTagCompound;
     }
 
     @Override

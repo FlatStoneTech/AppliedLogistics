@@ -17,8 +17,8 @@ public class DebugOres1 implements IDebugChest {
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.ORE))
                 debugChest.setItem(i, Blocks.BLOCK_ORE.getStack(1, i));
 
-            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.BLOCK))
-                debugChest.setItem(i + 9, Blocks.BLOCK_ORE_BLOCK.getStack(1, i));
+            if (EnumOres.byMeta(i).isTypeSet(EnumOreType.STORAGE_BLOCK))
+                debugChest.setItem(i + 9, Blocks.BLOCK_ORE_STORAGE_BLOCK.getStack(1, i));
 
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT))
                 debugChest.setItem(i + 18, Items.ITEM_ORE_INGOT.getStack(1, i));
@@ -26,19 +26,19 @@ public class DebugOres1 implements IDebugChest {
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.VANILLA)) {
                 switch (i) {
                     case 0:
-                        debugChest.setItem(i, new ItemStack(net.minecraft.init.Blocks.iron_ore));
-                        debugChest.setItem(i + 9, new ItemStack(net.minecraft.init.Blocks.iron_block));
-                        debugChest.setItem(i + 18, new ItemStack(net.minecraft.init.Items.iron_ingot));
+                        debugChest.setItem(i, new ItemStack(net.minecraft.init.Blocks.IRON_ORE));
+                        debugChest.setItem(i + 9, new ItemStack(net.minecraft.init.Blocks.IRON_BLOCK));
+                        debugChest.setItem(i + 18, new ItemStack(net.minecraft.init.Items.IRON_INGOT));
                         break;
                     case 1:
-                        debugChest.setItem(i, new ItemStack(net.minecraft.init.Blocks.gold_ore));
-                        debugChest.setItem(i + 9, new ItemStack(net.minecraft.init.Blocks.gold_block));
-                        debugChest.setItem(i + 18, new ItemStack(net.minecraft.init.Items.gold_ingot));
+                        debugChest.setItem(i, new ItemStack(net.minecraft.init.Blocks.GOLD_ORE));
+                        debugChest.setItem(i + 9, new ItemStack(net.minecraft.init.Blocks.GOLD_BLOCK));
+                        debugChest.setItem(i + 18, new ItemStack(net.minecraft.init.Items.GOLD_INGOT));
                         break;
                     case 2:
-                        debugChest.setItem(i, new ItemStack(net.minecraft.init.Blocks.diamond_ore));
-                        debugChest.setItem(i + 9, new ItemStack(net.minecraft.init.Blocks.diamond_block));
-                        debugChest.setItem(i + 18, new ItemStack(net.minecraft.init.Items.diamond));
+                        debugChest.setItem(i, new ItemStack(net.minecraft.init.Blocks.DIAMOND_ORE));
+                        debugChest.setItem(i + 9, new ItemStack(net.minecraft.init.Blocks.DIAMOND_BLOCK));
+                        debugChest.setItem(i + 18, new ItemStack(net.minecraft.init.Items.DIAMOND));
                         break;
                     default:
                         break;

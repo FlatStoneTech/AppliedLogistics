@@ -34,7 +34,6 @@ import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.util.EnumAlloys;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 
 import java.util.List;
@@ -43,9 +42,9 @@ public class BlockAlloyBlock extends BlockBase implements IProvideRecipe {
     public static final PropertyEnum<EnumAlloys> MATERIAL = PropertyEnum.create("material", EnumAlloys.class);
 
     public BlockAlloyBlock() {
-        super(Material.rock, "ores/oreBlock");
+        super(Material.ROCK, "ores/oreBlock");
         this.setDefaultState(this.blockState.getBaseState().withProperty(MATERIAL, EnumAlloys.byMeta(0)));
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabMaterials);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.MATERIALS);
         this.setInternalName("alloy_block");
     }
 
@@ -82,7 +81,7 @@ public class BlockAlloyBlock extends BlockBase implements IProvideRecipe {
     public void RegisterRecipes() {
         for (EnumAlloys ore : EnumAlloys.values()) {
             if (ore.isTypeSet(EnumOreType.BLOCK) && ore.isTypeSet(EnumOreType.INGOT)) {
-                GameRegistry.addRecipe(new ShapedOreRecipe(Blocks.BLOCK_ALLOY_BLOCK.getStack(1, ore.getMeta()),
+                GameRegistry.addRecipe(new ShapedOreRecipe(Blocks.BLOCK_ALLOY_STORAGE_BLOCK.getStack(1, ore.getMeta()),
                         "xxx",
                         "xxx",
                         "xxx",

@@ -129,7 +129,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
         super.writeToNBT(nbtTagCompound);
 
         nbtTagCompound.setInteger("currentTechLevel", currentTechLevel);
@@ -143,6 +143,8 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
             outputItem.writeToNBT(outputItemStack);
             nbtTagCompound.setTag("outputItem", outputItemStack);
         }
+
+        return nbtTagCompound;
     }
 
     @Override

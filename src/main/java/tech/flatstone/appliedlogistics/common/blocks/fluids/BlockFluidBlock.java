@@ -8,8 +8,8 @@ import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 
 public class BlockFluidBlock extends BlockFluidClassic {
     public BlockFluidBlock(Fluid fluid) {
-        super(fluid, Material.lava);
-        setCreativeTab(AppliedLogisticsCreativeTabs.tabFluids);
+        super(fluid, Material.LAVA);
+        setCreativeTab(AppliedLogisticsCreativeTabs.FLUIDS);
     }
 
     @Override

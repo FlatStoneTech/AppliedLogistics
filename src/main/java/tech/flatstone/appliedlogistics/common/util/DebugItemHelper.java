@@ -18,7 +18,7 @@ public class DebugItemHelper {
         this.inventory = new ItemStack[27];
 
         for (int i = 0; i < inventory.length; i++) {
-            inventory[i] = new ItemStack(Blocks.barrier);
+            inventory[i] = new ItemStack(Blocks.BARRIER);
         }
     }
 
@@ -43,7 +43,7 @@ public class DebugItemHelper {
     }
 
     public ItemStack registerItem() {
-        ItemStack itemStack = new ItemStack(Blocks.chest);
+        ItemStack itemStack = new ItemStack(Blocks.CHEST);
 
         NBTTagCompound chestNBT = new NBTTagCompound();
 

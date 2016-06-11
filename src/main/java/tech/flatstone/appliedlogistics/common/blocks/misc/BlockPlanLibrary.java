@@ -24,6 +24,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -43,10 +44,10 @@ import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 public class BlockPlanLibrary extends BlockTileBase implements IProvideRecipe {
     public BlockPlanLibrary() {
-        super(Material.rock, "misc/planLibrary");
+        super(Material.ROCK, "misc/planLibrary");
         this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityPlanLibrary.class);
-        this.setCreativeTab(AppliedLogisticsCreativeTabs.tabMachines);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.MACHINES);
         this.setInternalName("plan_library");
     }
 
@@ -89,7 +90,7 @@ public class BlockPlanLibrary extends BlockTileBase implements IProvideRecipe {
                 "cxc",
                 "wgw",
                 "cxc",
-                'c', OreDictionary.getOres("craftingTableWood").size() == 0 ? new ItemStack(net.minecraft.init.Blocks.crafting_table) : "craftingTableWood",
+                'c', OreDictionary.getOres("craftingTableWood").size() == 0 ? new ItemStack(Blocks.CRAFTING_TABLE) : "craftingTableWood",
                 'w', "logWood",
                 'g', "gearStone",
                 'x', "chestWood"
