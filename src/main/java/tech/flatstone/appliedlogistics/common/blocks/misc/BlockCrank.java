@@ -190,12 +190,23 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
         RayTraceResult crankTopPos = crankTop.calculateIntercept(start, end);
         RayTraceResult crankShaftPos = crankShaft.calculateIntercept(start, end);
 
+        RayTraceResult lookObject = null;
+        double distance = Double.MAX_VALUE;
+
         if (crankTopPos != null) {
-            return new RayTraceResult(start.addVector((double) pos.getX(), (double) pos.getY(), (double) pos.getZ()), crankTopPos.sideHit, pos);
+            lookObject = crankTopPos;
+            distance = start.distanceTo(crankTopPos.hitVec);
         }
 
-        if (crankShaftPos != null)
-            return new RayTraceResult(start.addVector((double) pos.getX(), (double) pos.getY(), (double) pos.getZ()), crankShaftPos.sideHit, pos);
+        if (crankShaftPos != null && start.distanceTo(crankShaftPos.hitVec) < distance)
+        {
+            lookObject = crankShaftPos;
+        }
+        
+        if (lookObject != null)
+        {
+            return new RayTraceResult(lookObject.hitVec.addVector(pos.getX(), pos.getY(), pos.getZ()), lookObject.sideHit, pos);
+        }
 
         return null;
     }
