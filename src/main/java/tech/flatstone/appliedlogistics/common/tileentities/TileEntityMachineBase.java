@@ -74,7 +74,7 @@ public abstract class TileEntityMachineBase extends TileEntityInventoryBase {
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
-        super.writeToNBT(nbtTagCompound);
+        nbtTagCompound = super.writeToNBT(nbtTagCompound);
 
         nbtTagCompound.setBoolean("comparatorEnabled", comparatorEnabled);
         nbtTagCompound.setBoolean("sidedEnabled", sidedEnabled);

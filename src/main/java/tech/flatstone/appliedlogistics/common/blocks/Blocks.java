@@ -53,6 +53,7 @@ public enum Blocks {
     BLOCK_PLAN_CHEST(BlockPlanChest.class),
 
     BLOCK_MISC_CRANK(BlockCrank.class, ItemCrank.class),
+    BLOCK_MISC_CAULDRON(BlockCauldron.class),
 
     BLOCK_MACHINE_PULVERIZER(BlockPulverizer.class, ItemPulverizer.class),
     BLOCK_MACHINE_FURNACE(BlockFurnace.class, ItemFurnace.class),

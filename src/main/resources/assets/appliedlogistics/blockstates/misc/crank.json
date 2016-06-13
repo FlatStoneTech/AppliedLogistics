@@ -1,7 +1,8 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "appliedlogistics:misc/crank"
+    "model": "appliedlogistics:misc/crank",
+    "transform": "forge:default-block"
   },
   "variants": {
     "material": {

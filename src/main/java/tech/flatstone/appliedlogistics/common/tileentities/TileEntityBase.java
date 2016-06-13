@@ -38,6 +38,7 @@ import net.minecraft.world.EnumSkyBlock;
 import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaHeadMessage;
 import tech.flatstone.appliedlogistics.common.util.IOrientable;
 import tech.flatstone.appliedlogistics.common.util.IRotatable;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 import javax.annotation.Nullable;
@@ -49,17 +50,21 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
     private NBTTagCompound machineItemData;
     private EnumFacing forward = EnumFacing.NORTH;
 
+    @Override
+    public NBTTagCompound getUpdateTag() {
+        return writeToNBT(new NBTTagCompound());
+    }
+
     @Nullable
     @Override
     public SPacketUpdateTileEntity getUpdatePacket() {
-        NBTTagCompound data = new NBTTagCompound();
-        writeToNBT(data);
-        initMachineData();
-        return new SPacketUpdateTileEntity(this.pos, 1, data);
+        initMachineData(); //todo: look for somewhere else for this...
+        return new SPacketUpdateTileEntity(pos, 0, getUpdateTag());
     }
 
     @Override
     public void onDataPacket(NetworkManager networkManager, SPacketUpdateTileEntity s35PacketUpdateTileEntity) {
+        super.onDataPacket(networkManager, s35PacketUpdateTileEntity);
         readFromNBT(s35PacketUpdateTileEntity.getNbtCompound());
         worldObj.markBlockRangeForRenderUpdate(this.pos, this.pos);
         markForUpdate();
@@ -140,7 +145,7 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
-        super.writeToNBT(nbtTagCompound);
+        nbtTagCompound = super.writeToNBT(nbtTagCompound);
 
         if (this.customName != null)
             nbtTagCompound.setString("CustomName", this.customName);
@@ -149,6 +154,7 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
             nbtTagCompound.setTag("MachineItemData", machineItemData);
 
         if (canBeRotated()) {
+            LogHelper.info(">>> Write NBT: " + this.forward.ordinal());
             nbtTagCompound.setInteger("forward", this.forward.ordinal());
         }
 
@@ -163,6 +169,7 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
         this.machineItemData = nbtTagCompound.hasKey("MachineItemData") ? nbtTagCompound.getCompoundTag("MachineItemData") : null;
 
         if (canBeRotated()) {
+            LogHelper.info(">>> Read NBT: " + nbtTagCompound.getInteger("forward"));
             this.forward = EnumFacing.values()[nbtTagCompound.getInteger("forward")];
         }
     }

@@ -1,0 +1,28 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "appliedlogistics:misc/cauldron",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": [
+      {
+        
+      }
+    ],
+    "facing": {
+      "west": {
+        "y": 180
+      },
+      "east": {
+        "y": 0
+      },
+      "north": {
+        "y": -90
+      },
+      "south": {
+        "y": 90
+      }
+    }
+  }
+}
