@@ -21,9 +21,12 @@
 package tech.flatstone.appliedlogistics.common.util;
 
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.item.ItemStack;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nullable;
@@ -108,5 +111,11 @@ public class Platform {
     public static boolean isDevEnv() {
         return (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
         //return !FMLForgePlugin.RUNTIME_DEOBF;
+    }
+
+    public static void playSound(SoundEvent sound) {
+        if (sound == null)
+            return;
+        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(sound, 1.0F));
     }
 }

@@ -39,9 +39,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.common.network.PacketHandler;
+import tech.flatstone.appliedlogistics.common.network.messages.PacketBlockRotated;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
 import tech.flatstone.appliedlogistics.common.util.*;
 
@@ -191,6 +194,7 @@ public abstract class BlockBase extends Block implements IBlockRenderer {
         if (rotatable != null && rotatable.canBeRotated()) {
             if (this.hasCustomRotation()) {
                 this.customRotateBlock(rotatable, axis);
+                sendTileRotation(world, pos);
                 return true;
             } else {
                 EnumFacing forward = rotatable.getForward();
@@ -200,6 +204,7 @@ public abstract class BlockBase extends Block implements IBlockRenderer {
 
                     if (this.isValidOrientation(world, pos, forward)) {
                         rotatable.setOrientation(forward);
+                        sendTileRotation(world, pos);
                         return true;
                     }
                 }
@@ -207,6 +212,13 @@ public abstract class BlockBase extends Block implements IBlockRenderer {
         }
 
         return super.rotateBlock(world, pos, axis);
+    }
+
+    private void sendTileRotation(World world, BlockPos pos) {
+        TileEntityBase tileEntity = TileHelper.getTileEntity(world, pos, TileEntityBase.class);
+        if (tileEntity != null)
+            tileEntity.onRotated();
+        PacketHandler.INSTANCE.sendToAllAround(new PacketBlockRotated(pos), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 100));
     }
 
     protected boolean hasCustomRotation() {

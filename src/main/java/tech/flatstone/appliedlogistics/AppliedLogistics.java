@@ -75,6 +75,7 @@ public class AppliedLogistics {
         // Register Blocks
         proxy.registerBlocks();
         proxy.registerItems();
+        proxy.registerSounds();
 
         proxy.registerGUIs();
 

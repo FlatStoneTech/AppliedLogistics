@@ -75,5 +75,7 @@ public interface IProxy {
     void registerConfiguration(File configFile);
 
     void registerFluids();
+
+    void registerSounds();
 }
 

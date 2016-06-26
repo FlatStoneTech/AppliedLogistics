@@ -3,10 +3,13 @@ package tech.flatstone.appliedlogistics.common.util;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
 import tech.flatstone.appliedlogistics.common.items.ItemBase;
+import tech.flatstone.appliedlogistics.common.sounds.SoundBase;
 
 import java.util.Locale;
 
@@ -84,5 +87,25 @@ public class RegistrationHelper {
         }
 
         return item;
+    }
+
+    public static SoundEvent RegisterSound(Class<? extends SoundBase> soundClass) {
+        SoundEvent soundEvent = null;
+
+        try {
+            SoundBase soundBase = soundClass.getConstructor().newInstance();
+
+            soundEvent = new SoundEvent(new ResourceLocation(ModInfo.MOD_ID, soundBase.getResourcePath()));
+            soundEvent.setRegistryName(ModInfo.MOD_ID, soundBase.getInternalName());
+
+            GameRegistry.register(soundEvent);
+
+            LogHelper.info(String.format("Registered sound (%s)", soundClass.getCanonicalName()));
+        } catch (Exception ex) {
+            LogHelper.fatal(String.format("Fatal Error while registering sound (%s)", soundClass.getCanonicalName()));
+            ex.printStackTrace();
+        }
+
+        return soundEvent;
     }
 }

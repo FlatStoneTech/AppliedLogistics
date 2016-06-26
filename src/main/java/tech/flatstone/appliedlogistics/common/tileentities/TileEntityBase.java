@@ -222,4 +222,9 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
     public EnumFacing getDirection() {
         return getForward();
     }
+
+    @Override
+    public void onRotated() {
+
+    }
 }

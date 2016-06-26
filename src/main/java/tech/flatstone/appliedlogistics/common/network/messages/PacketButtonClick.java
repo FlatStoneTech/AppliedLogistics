@@ -22,7 +22,9 @@ package tech.flatstone.appliedlogistics.common.network.messages;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -70,6 +72,14 @@ public class PacketButtonClick implements IMessage, IMessageHandler<PacketButton
 
     @Override
     public IMessage onMessage(PacketButtonClick message, MessageContext ctx) {
+//        IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.worldObj;
+//        mainThread.addScheduledTask(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//            }
+//        });
+//
         TileEntity tileEntity = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(new BlockPos(message.blockX, message.blockY, message.blockZ));
 
         if (tileEntity == null)
