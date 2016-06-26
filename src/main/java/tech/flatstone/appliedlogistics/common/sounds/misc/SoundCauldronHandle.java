@@ -1,7 +1,9 @@
 package tech.flatstone.appliedlogistics.common.sounds.misc;
 
-/**
- * Created by fireball1725 on 6/26/16.
- */
-public class SoundCauldronHandle {
+import tech.flatstone.appliedlogistics.common.sounds.SoundBase;
+
+public class SoundCauldronHandle extends SoundBase {
+    public SoundCauldronHandle() {
+        super("CauldronHandle");
+    }
 }
