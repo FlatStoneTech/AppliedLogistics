@@ -2,18 +2,26 @@ package tech.flatstone.appliedlogistics.common.blocks.misc;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -21,17 +29,18 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
+import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCauldron;
-import tech.flatstone.appliedlogistics.common.util.IProvideEvent;
-import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
-import tech.flatstone.appliedlogistics.common.util.TileHelper;
+import tech.flatstone.appliedlogistics.common.util.*;
 
 import javax.annotation.Nullable;
-import java.util.List;
+import java.util.*;
 
 public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IProvideEvent {
     protected static final AxisAlignedBB AABB_LEG_1_SEGMENT_1 = new AxisAlignedBB(0.125, 0.1875, 0.1875, 0.1875, 0.25, 0.3125);
@@ -56,6 +65,8 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
     public static final AxisAlignedBB AABB_PRECIPITATE = new AxisAlignedBB(0.1875, 0.3125, 0.1875, 0.8125, 0.375, 0.8125);
     protected static final AxisAlignedBB AABB_BOUNDING_BOX = new AxisAlignedBB(0.125, 0.1875, 0.125, 0.875, 0.875, 0.875);
 
+    private static final PropertyBool CAULDRON_LIT = PropertyBool.create("cauldron_lit");
+
     public BlockCauldron() {
         super(Material.ROCK, "misc/cauldron");
         setTileEntity(TileEntityCauldron.class);
@@ -69,18 +80,39 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
         //GameRegistry.addShapelessRecipe(new ItemStack(this), new ItemStack(Blocks.CAULDRON));
     }
 
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void registerBlockItemRenderer() {
+        final String resourcePath = String.format("%s:%s", ModInfo.MOD_ID, this.resourcePath);
+
+        List<ItemStack> subBlocks = new ArrayList<ItemStack>();
+        getSubBlocks(Item.getItemFromBlock(this), null, subBlocks);
+
+        //todo: remove this into a class, duplicated code...
+        for (ItemStack itemStack : subBlocks) {
+            IBlockState blockState = this.getStateFromMeta(itemStack.getItemDamage());
+            Map<IProperty<?>, Comparable<? >> properties = new HashMap<>();
+            for (Map.Entry<IProperty<?>, Comparable<?>> entry : blockState.getProperties().entrySet()) {
+                if (entry.getKey() != FACING && entry.getKey() != CAULDRON_LIT)
+                    properties.put(entry.getKey(), entry.getValue());
+            }
+
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), itemStack.getItemDamage(), new ModelResourceLocation(resourcePath, Platform.getPropertyString(properties)));
+        }
+    }
+
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntityCauldron tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityCauldron.class);
         if (tileEntity != null) {
-            return state.withProperty(FACING, tileEntity.getForward());
+            return state.withProperty(FACING, tileEntity.getForward()).withProperty(CAULDRON_LIT, tileEntity.isFireLit());
         }
-        return state.withProperty(FACING, EnumFacing.NORTH);
+        return state.withProperty(FACING, EnumFacing.NORTH).withProperty(CAULDRON_LIT, false);
     }
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, FACING);
+        return new BlockStateContainer(this, FACING, CAULDRON_LIT);
     }
 
     @Override
@@ -174,8 +206,24 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
         }
     }
 
+    @Override
+    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
+        IBlockState blockState = getActualState(getDefaultState(), world, pos);
+        return blockState.getValue(CAULDRON_LIT) ? 10 : 0;
+    }
 
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+        TileEntityCauldron tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityCauldron.class);
+        if (tileEntity == null)
+            return true;
 
+        tileEntity.setFireLit(true);
+        tileEntity.markDirty();
+        tileEntity.markForLightUpdate();
+
+        return false;
+    }
 
     private ExtendedRayTraceResult getExtendedRayTraceResultFromPlayer(EntityPlayer player, BlockPos pos) {
         double reach = 5;
@@ -218,6 +266,42 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
             super(rayTraceResult.hitVec, rayTraceResult.sideHit, rayTraceResult.getBlockPos());
             this.isLookingAtLogs = isLookingAtLogs;
             this.isLookingAtPrecipitate = isLookingAtPrecipitate;
+        }
+    }
+
+    public void spawnParticlesForLogs(World worldIn, BlockPos pos, ExtendedRayTraceResult lookObject, int particleCount, IParticleFactory... particleFactories) {
+        if (!worldIn.isRemote)
+            return;
+        Vec3d particlePos;
+        if (lookObject != null) {
+            Vec3d hit = lookObject.hitVec;
+            particlePos = new Vec3d(hit.xCoord + Math.random() * 0.02 - 0.01, hit.yCoord + Math.random() * 0.02 - 0.01, hit.zCoord + Math.random() * 0.01);
+            for (IParticleFactory particleFactory : particleFactories) {
+                Platform.spawnParticle(worldIn, particlePos, particleFactory);
+            }
+        }
+        Vec3d logXZCenter = new Vec3d(0.5, 0, 0.5);
+        Vec3d particleXZPos;
+        for (int k = 0; k < particleCount; ++k) {
+            while (true) {
+                particleXZPos = new Vec3d(Math.random(), 0, Math.random());
+                if (particleXZPos.distanceTo(logXZCenter) > (AABB_WOOD.maxZ - AABB_WOOD.minZ) / 2)
+                    continue;
+                AxisAlignedBB boundBox = AABB_WOOD;
+                particlePos = new Vec3d(pos.getX() + particleXZPos.xCoord, pos.getY() + Math.random() * (boundBox.contract(0.03125).maxY - boundBox.contract(0.125).minY) + boundBox.contract(0.125).minY, pos.getZ() + particleXZPos.zCoord);
+                for (IParticleFactory particleFactory : particleFactories) {
+                    Platform.spawnParticle(worldIn, particlePos, particleFactory);
+                }
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void randomDisplayTick(IBlockState stateIn, World worldIn, BlockPos pos, Random rand) {
+        IBlockState blockState = getActualState(getDefaultState(), worldIn, pos);
+        if (blockState.getValue(CAULDRON_LIT) && rand.nextDouble() < 0.1D) {
+            worldIn.playSound(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, SoundEvents.BLOCK_FURNACE_FIRE_CRACKLE, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
         }
     }
 }

@@ -1,7 +1,10 @@
 package tech.flatstone.appliedlogistics.common.tileentities.misc;
 
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -9,6 +12,9 @@ import net.minecraft.util.SoundCategory;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
+import tech.flatstone.appliedlogistics.client.particles.ParticleCauldronFlame;
+import tech.flatstone.appliedlogistics.client.particles.ParticleCauldronSmokeNormal;
+import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCauldron;
 import tech.flatstone.appliedlogistics.common.sounds.Sounds;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityInventoryBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
@@ -24,7 +30,32 @@ public class TileEntityCauldron extends TileEntityInventoryBase implements IFlui
     private static final float MAX_HANDLE_ROTATION = -0.43F;
     private float handleRotation = MAX_HANDLE_ROTATION;
     private boolean handleRebounded, handleHasEnergy;
+    private boolean fireLit = false;
     private int tickCounter;
+
+    public boolean isFireLit() {
+        return fireLit;
+    }
+
+    public void setFireLit(boolean fireLit) {
+        this.fireLit = fireLit;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTagCompound) {
+        super.readFromNBT(nbtTagCompound);
+
+        fireLit = nbtTagCompound.getBoolean("fireLit");
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
+        nbtTagCompound = super.writeToNBT(nbtTagCompound);
+
+        nbtTagCompound.setBoolean("fireLit", this.fireLit);
+
+        return nbtTagCompound;
+    }
 
     @Override
     public IInventory getInternalInventory() {
@@ -93,7 +124,6 @@ public class TileEntityCauldron extends TileEntityInventoryBase implements IFlui
             if (handleHasEnergy) {
                 if (wasLifted && !handleRebounded) {
                     handleRebounded = true;
-                    //Platform.playSound(Sounds.CAULDRON_HANDLE.getSound());
                     worldObj.playSound(pos.getX(), pos.getY(), pos.getZ(), Sounds.CAULDRON_HANDLE.getSound(), SoundCategory.MASTER, 0.6F, 1.0F, true);
                 } else {
                     handleRotation += 0.1F;
@@ -120,6 +150,21 @@ public class TileEntityCauldron extends TileEntityInventoryBase implements IFlui
         if (worldObj.isRemote) {
             if (tickCounter > 1 && (handleRotation > MAX_HANDLE_ROTATION || handleHasEnergy))
                 rotateHandle();
+        }
+
+        IBlockState state = worldObj.getBlockState(getPos());
+        if (!(state.getBlock() instanceof BlockCauldron))
+            return;
+
+        BlockCauldron blockCauldron = (BlockCauldron) state.getBlock();
+
+        if (this.fireLit && worldObj.isRemote && (tickCounter >= 400 || worldObj.rand.nextInt() < tickCounter)) {
+            IParticleFactory[] particles = new IParticleFactory[4];
+            particles[0] = new ParticleCauldronFlame.Factory();
+            for (int i = 1; i < 4; i++) {
+                particles[i] = new ParticleCauldronSmokeNormal.Factory();
+            }
+            blockCauldron.spawnParticlesForLogs(worldObj, pos, null, 5, particles);
         }
     }
 

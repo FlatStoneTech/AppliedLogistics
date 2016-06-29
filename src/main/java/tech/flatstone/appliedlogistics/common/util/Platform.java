@@ -23,10 +23,14 @@ package tech.flatstone.appliedlogistics.common.util;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.item.ItemStack;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nullable;
@@ -117,5 +121,13 @@ public class Platform {
         if (sound == null)
             return;
         Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(sound, 1.0F));
+    }
+
+    public static void spawnParticle(World worldIn, Vec3d particlePos, IParticleFactory particleFactory) {
+        Minecraft.getMinecraft().effectRenderer.addEffect(particleFactory.getEntityFX(0, worldIn, particlePos.xCoord, particlePos.yCoord, particlePos.zCoord, 0.0D, 0.0D, 0.0D, new int[0]));
+    }
+
+    public static void spawnParticle(Particle particle) {
+        Minecraft.getMinecraft().effectRenderer.addEffect(particle);
     }
 }

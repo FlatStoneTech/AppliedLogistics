@@ -1,7 +1,6 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "appliedlogistics:misc/cauldron",
     "transform": "forge:default-block"
   },
   "variants": {
@@ -22,6 +21,14 @@
       },
       "south": {
         "y": 90
+      }
+    },
+    "cauldron_lit": {
+      "true": {
+        "model": "appliedlogistics:misc/cauldron"
+      },
+      "false": {
+        "model": "appliedlogistics:misc/cauldron"
       }
     }
   }
