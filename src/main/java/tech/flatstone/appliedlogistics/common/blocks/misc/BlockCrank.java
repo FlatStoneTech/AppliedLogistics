@@ -183,19 +183,28 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
         EnumFacing crankRotation = tileEntity.getCrankRotation();
 
         AxisAlignedBB crankTop = new AxisAlignedBB(7 / 16d, 10 / 16d, 2 / 16d, 9 / 16d, 12 / 16d, 14 / 16d);
-        AxisAlignedBB crankShaft = new AxisAlignedBB(7 / 16d, 0, 7 / 16d, 9 / 16d, 10 / 16d, 9 / 16d).offset(pos.getX(), pos.getY(), pos.getZ());
+        AxisAlignedBB crankShaft = new AxisAlignedBB(7 / 16d, 0, 7 / 16d, 9 / 16d, 10 / 16d, 9 / 16d).offset(pos);
 
-        crankTop = RotationHelper.rotateBB(crankTop, crankRotation).offset(pos.getX(), pos.getY(), pos.getZ());
+        crankTop = RotationHelper.rotateBB(crankTop, crankRotation).offset(pos);
 
         RayTraceResult crankTopPos = crankTop.calculateIntercept(start, end);
         RayTraceResult crankShaftPos = crankShaft.calculateIntercept(start, end);
 
+        RayTraceResult lookObject = null;
+        double distance = Double.MAX_VALUE;
+
         if (crankTopPos != null) {
-            return new RayTraceResult(start.addVector((double) pos.getX(), (double) pos.getY(), (double) pos.getZ()), crankTopPos.sideHit, pos);
+            lookObject = crankTopPos;
+            distance = start.distanceTo(crankTopPos.hitVec);
         }
 
-        if (crankShaftPos != null)
-            return new RayTraceResult(start.addVector((double) pos.getX(), (double) pos.getY(), (double) pos.getZ()), crankShaftPos.sideHit, pos);
+        if (crankShaftPos != null && start.distanceTo(crankShaftPos.hitVec) < distance) {
+            lookObject = crankShaftPos;
+        }
+ 
+        if (lookObject != null) {
+            return new RayTraceResult(lookObject.hitVec.addVector(pos.getX(), pos.getY(), pos.getZ()), lookObject.sideHit, pos);
+        }
 
         return null;
     }
@@ -302,9 +311,9 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
         EnumFacing crankRotation = tileEntity.getCrankRotation();
 
         AxisAlignedBB crankTop = new AxisAlignedBB(7 / 16d, 10 / 16d, 2 / 16d, 9 / 16d, 12 / 16d, 14 / 16d);
-        AxisAlignedBB crankShaft = new AxisAlignedBB(7 / 16d, 0, 7 / 16d, 9 / 16d, 10 / 16d, 9 / 16d).offset(pos.getX(), pos.getY(), pos.getZ());
+        AxisAlignedBB crankShaft = new AxisAlignedBB(7 / 16d, 0, 7 / 16d, 9 / 16d, 10 / 16d, 9 / 16d).offset(pos);
 
-        crankTop = RotationHelper.rotateBB(crankTop, crankRotation).offset(pos.getX(), pos.getY(), pos.getZ());
+        crankTop = RotationHelper.rotateBB(crankTop, crankRotation).offset(pos);
 
         if (mask != null && crankTop.intersectsWith(mask))
             list.add(crankTop);
@@ -326,9 +335,9 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
         EnumFacing crankRotation = tileEntity.getCrankRotation();
 
         AxisAlignedBB crankTop = new AxisAlignedBB(7 / 16d, 10 / 16d, 2 / 16d, 9 / 16d, 12 / 16d, 14 / 16d);
-        AxisAlignedBB crankShaft = new AxisAlignedBB(7 / 16d, 0, 7 / 16d, 9 / 16d, 10 / 16d, 9 / 16d).offset(pos.getX(), pos.getY(), pos.getZ());
+        AxisAlignedBB crankShaft = new AxisAlignedBB(7 / 16d, 0, 7 / 16d, 9 / 16d, 10 / 16d, 9 / 16d).offset(pos);
 
-        crankTop = RotationHelper.rotateBB(crankTop, crankRotation).offset(pos.getX(), pos.getY(), pos.getZ());
+        crankTop = RotationHelper.rotateBB(crankTop, crankRotation).offset(pos);
 
         int stateID = Block.getStateId(getDefaultState().getActualState(world, pos));
         double i = 9;
