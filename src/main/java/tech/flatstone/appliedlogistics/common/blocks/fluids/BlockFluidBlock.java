@@ -7,8 +7,8 @@ import net.minecraftforge.fluids.FluidRegistry;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 
 public class BlockFluidBlock extends BlockFluidClassic {
-    public BlockFluidBlock(Fluid fluid) {
-        super(fluid, Material.LAVA);
+    public BlockFluidBlock(Fluid fluid, Material material) {
+        super(fluid, material);
         setCreativeTab(AppliedLogisticsCreativeTabs.FLUIDS);
     }
 

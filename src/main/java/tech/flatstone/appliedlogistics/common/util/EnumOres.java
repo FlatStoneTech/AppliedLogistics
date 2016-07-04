@@ -29,18 +29,18 @@ import java.util.List;
 
 public enum EnumOres implements IStringSerializable {
     // Vanilla Ores
-    IRON("Iron", 0, EnumOreType.NUGGET, EnumOreType.DUST, EnumOreType.VANILLA, EnumOreType.FLUID),
-    GOLD("Gold", 1, EnumOreType.DUST, EnumOreType.VANILLA, EnumOreType.FLUID),
+    IRON("Iron", 0, EnumOreType.NUGGET, EnumOreType.DUST, EnumOreType.VANILLA, EnumOreType.HOT_FLUID),
+    GOLD("Gold", 1, EnumOreType.DUST, EnumOreType.VANILLA, EnumOreType.HOT_FLUID),
     DIAMOND("Diamond", 2, EnumOreType.NUGGET, EnumOreType.VANILLA),
 
     // Base Ores
-    COPPER("Copper", 3, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.FLUID),
-    TIN("Tin", 4, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.FLUID),
-    SILVER("Silver", 5, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.FLUID),
-    LEAD("Lead", 6, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.FLUID),
-    NICKEL("Nickel", 7, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.FLUID),
-    RUTILE("Rutile", 8, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.FLUID),
-    ALUMINUM("Aluminum", 9, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.FLUID),
+    COPPER("Copper", 3, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.HOT_FLUID),
+    TIN("Tin", 4, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.HOT_FLUID),
+    SILVER("Silver", 5, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.HOT_FLUID),
+    LEAD("Lead", 6, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.HOT_FLUID),
+    NICKEL("Nickel", 7, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.HOT_FLUID),
+    RUTILE("Rutile", 8, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.HOT_FLUID),
+    ALUMINUM("Aluminum", 9, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.HOT_FLUID),
     ;
 
     private static final EnumOres[] META_LOOKUP = new EnumOres[values().length];

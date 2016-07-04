@@ -20,13 +20,16 @@
 
 package tech.flatstone.appliedlogistics.proxy;
 
+import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.BlockFluidClassic;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
+import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.api.registries.HammerRegistry;
 import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
@@ -112,6 +115,10 @@ public abstract class CommonProxy implements IProxy {
                 OreDictionary.registerOre("nugget" + oreName, Items.ITEM_ALLOY_NUGGET.getStack(1, meta));
         }
 
+        for (EnumMisc ores : EnumMisc.values()) {
+            //todo: when needed
+        }
+
         // Register Gears
         for (EnumMaterialsGear gear : EnumMaterialsGear.values()) {
             OreDictionary.registerOre("gear" + gear.getOreName(), Items.ITEM_MATERIAL_GEAR.getStack(1, gear.getMeta()));
@@ -120,18 +127,31 @@ public abstract class CommonProxy implements IProxy {
 
     @Override
     public void registerFluids() {
-        //todo: make this better once we figure out fluids...
         for (EnumOres ores : EnumOres.values()) {
-            int meta = ores.getMeta();
-            String oreName = ores.getName();
-
-            if (ores.isTypeSet(EnumOreType.FLUID)) {
-                Fluid fluid = FluidHelper.createFluid(oreName, "appliedlogistics:fluids." + oreName, false);
-                FluidRegistry.addBucketForFluid(fluid);
-
-                FluidHelper.registerFluidBlock(new BlockFluidBlock(fluid));
+            if (ores.isTypeSet(EnumOreType.HOT_FLUID) || ores.isTypeSet(EnumOreType.COLD_FLUID)) {
+                registerFluid(ores.getName(), ores.isTypeSet(EnumOreType.HOT_FLUID) ? Material.LAVA : Material.WATER, true);
             }
         }
+
+        for (EnumAlloys ores : EnumAlloys.values()) {
+            if (ores.isTypeSet(EnumOreType.HOT_FLUID) || ores.isTypeSet(EnumOreType.COLD_FLUID)) {
+                registerFluid(ores.getName(), ores.isTypeSet(EnumOreType.HOT_FLUID) ? Material.LAVA : Material.WATER, true);
+            }
+        }
+
+        for (EnumMisc ores : EnumMisc.values()) {
+            if (ores.isTypeSet(EnumOreType.HOT_FLUID) || ores.isTypeSet(EnumOreType.COLD_FLUID)) {
+                registerFluid(ores.getName(), ores.isTypeSet(EnumOreType.HOT_FLUID) ? Material.LAVA : Material.WATER, true);
+            }
+        }
+    }
+
+    private void registerFluid(String name, Material material, boolean hasFlowIcon) {
+        //Fluid fluid = FluidHelper.createFluid(name, String.format("%s:fluids.%s", ModInfo.MOD_ID, name), hasFlowIcon);
+        Fluid fluid = FluidHelper.createFluid(name, material, hasFlowIcon);
+        FluidRegistry.addBucketForFluid(fluid);
+        //FluidHelper.registerFluidBlock(new BlockFluidBlock(fluid, material));
+        //FluidHelper.registerFluidBlock(new BlockFluidClassic(fluid, material));
     }
 
     @Override

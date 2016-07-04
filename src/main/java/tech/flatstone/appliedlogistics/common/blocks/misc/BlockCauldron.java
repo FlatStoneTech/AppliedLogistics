@@ -8,6 +8,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.client.particle.ParticleFlame;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -15,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -35,6 +37,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.client.particles.ParticleCauldronSmokeLarge;
+import tech.flatstone.appliedlogistics.client.particles.ParticleCauldronSmokeNormal;
+import tech.flatstone.appliedlogistics.client.particles.ParticleCauldronSplash;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCauldron;
 import tech.flatstone.appliedlogistics.common.util.*;
@@ -218,10 +223,55 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
         if (tileEntity == null)
             return true;
 
-        tileEntity.setFireLit(true);
-        tileEntity.markDirty();
-        tileEntity.markForLightUpdate();
+        ExtendedRayTraceResult lookObject = getExtendedRayTraceResultFromPlayer(playerIn, pos);
 
+        if (heldItem == null)
+            return true;
+
+        if (tileEntity.isEmpty()) {
+
+        }
+
+        Item item = heldItem.getItem();
+
+        if (lookObject != null && lookObject.isLookingAtLogs) {
+            return interactWithLogs(worldIn, pos, tileEntity, playerIn, hand, heldItem, item, lookObject);
+        }
+
+        return false;
+    }
+
+    private boolean interactWithLogs(World worldIn, BlockPos pos, TileEntityCauldron tileEntity, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, Item item, ExtendedRayTraceResult lookObject) {
+        if (item == Items.WATER_BUCKET) {
+            worldIn.playSound(playerIn, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            int n = tileEntity.isFireLit() ? 4 : 3;
+            IParticleFactory[] particles = new IParticleFactory[n];
+            for (int i = 0; i < 3; i++) {
+                particles[i] = new ParticleCauldronSplash.Factory();
+            }
+            if (tileEntity.isFireLit()) {
+                particles[3] = new ParticleCauldronSmokeLarge.Factory();
+                worldIn.playSound(playerIn, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (worldIn.rand.nextFloat() - worldIn.rand.nextFloat()) * 0.8F);
+                tileEntity.setFireLit(false);
+                tileEntity.markDirty();
+                tileEntity.markForLightUpdate();
+            }
+            spawnParticlesForLogs(worldIn, pos, lookObject, 25, particles);
+            if (!worldIn.isRemote) {
+                if (!playerIn.capabilities.isCreativeMode) {
+                    playerIn.setHeldItem(hand, new ItemStack(Items.BUCKET));
+                }
+            }
+            return true;
+        } else if (item == Items.FLINT_AND_STEEL) {
+            worldIn.playSound(playerIn, pos, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0F, worldIn.rand.nextFloat() * 0.4F + 0.8F);
+            spawnParticlesForLogs(worldIn, pos, lookObject, 16, new ParticleFlame.Factory(), new ParticleCauldronSmokeNormal.Factory());
+            heldItem.damageItem(1, playerIn);
+            tileEntity.setFireLit(true);
+            tileEntity.markDirty();
+            tileEntity.markForLightUpdate();
+            return true;
+        }
         return false;
     }
 
