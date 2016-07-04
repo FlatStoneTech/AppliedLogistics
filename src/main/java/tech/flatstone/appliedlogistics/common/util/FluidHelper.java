@@ -21,10 +21,10 @@ public class FluidHelper {
 
         Fluid fluid = new Fluid(name, still, flowing);
         fluid.setUnlocalizedName(ModInfo.MOD_ID + "." + name);
-        FluidRegistry.registerFluid(fluid);
+        FluidRegistry.addBucketForFluid(fluid);
 
         BlockFluidClassic fluidBlock = new BlockFluidClassic(fluid, material);
-        fluidBlock.setRegistryName(name);
+        fluidBlock.setRegistryName(String.format("fluid.%s", name));
         fluidBlock.setUnlocalizedName(fluidBlock.getRegistryName().toString());
         fluidBlock.setCreativeTab(AppliedLogisticsCreativeTabs.FLUIDS);
         GameRegistry.register(fluidBlock);
@@ -32,27 +32,4 @@ public class FluidHelper {
 
         return fluid;
     }
-
-    public static <T extends Block & IFluidBlock> T registerFluidBlock(T block) {
-        String fluidName = block.getFluid().getUnlocalizedName();
-        block.setUnlocalizedName(fluidName);
-        block.setRegistryName(fluidName);
-        GameRegistry.register(block);
-
-        ItemBlock itemBlock = new ItemBlock(block);
-        itemBlock.setRegistryName(fluidName);
-        GameRegistry.register(itemBlock);
-
-        return block;
-    }
-
-
-    /*
-            block.setRegistryName(name);
-        block.setUnlocalizedName(block.getRegistryName().toString());
-        if (setCreativeTab)
-            block.setCreativeTab(CreativeTabKaoliniteTest.CREATIVE_TAB);
-        GameRegistry.register(block);
-        GameRegistry.register((new ItemBlock(block)).setRegistryName(block.getRegistryName()));
-     */
 }

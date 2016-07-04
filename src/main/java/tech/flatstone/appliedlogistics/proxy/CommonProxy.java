@@ -129,29 +129,21 @@ public abstract class CommonProxy implements IProxy {
     public void registerFluids() {
         for (EnumOres ores : EnumOres.values()) {
             if (ores.isTypeSet(EnumOreType.HOT_FLUID) || ores.isTypeSet(EnumOreType.COLD_FLUID)) {
-                registerFluid(ores.getName(), ores.isTypeSet(EnumOreType.HOT_FLUID) ? Material.LAVA : Material.WATER, true);
+                FluidHelper.createFluid(ores.getName(), ores.isTypeSet(EnumOreType.HOT_FLUID) ? Material.LAVA : Material.WATER, true);
             }
         }
 
         for (EnumAlloys ores : EnumAlloys.values()) {
             if (ores.isTypeSet(EnumOreType.HOT_FLUID) || ores.isTypeSet(EnumOreType.COLD_FLUID)) {
-                registerFluid(ores.getName(), ores.isTypeSet(EnumOreType.HOT_FLUID) ? Material.LAVA : Material.WATER, true);
+                FluidHelper.createFluid(ores.getName(), ores.isTypeSet(EnumOreType.HOT_FLUID) ? Material.LAVA : Material.WATER, true);
             }
         }
 
         for (EnumMisc ores : EnumMisc.values()) {
             if (ores.isTypeSet(EnumOreType.HOT_FLUID) || ores.isTypeSet(EnumOreType.COLD_FLUID)) {
-                registerFluid(ores.getName(), ores.isTypeSet(EnumOreType.HOT_FLUID) ? Material.LAVA : Material.WATER, true);
+                FluidHelper.createFluid(ores.getName(), ores.isTypeSet(EnumOreType.HOT_FLUID) ? Material.LAVA : Material.WATER, true);
             }
         }
-    }
-
-    private void registerFluid(String name, Material material, boolean hasFlowIcon) {
-        //Fluid fluid = FluidHelper.createFluid(name, String.format("%s:fluids.%s", ModInfo.MOD_ID, name), hasFlowIcon);
-        Fluid fluid = FluidHelper.createFluid(name, material, hasFlowIcon);
-        FluidRegistry.addBucketForFluid(fluid);
-        //FluidHelper.registerFluidBlock(new BlockFluidBlock(fluid, material));
-        //FluidHelper.registerFluidBlock(new BlockFluidClassic(fluid, material));
     }
 
     @Override
