@@ -20,11 +20,13 @@
 
 package tech.flatstone.appliedlogistics.proxy;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import tech.flatstone.appliedlogistics.client.render.RenderCauldron;
 import tech.flatstone.appliedlogistics.client.render.RenderCrank;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCauldron;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCrank;
+import tech.flatstone.appliedlogistics.common.util.FluidHelper;
 
 public class ClientProxy extends CommonProxy {
     @Override
@@ -32,4 +34,11 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrank.class, new RenderCrank());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCauldron.class, new RenderCauldron());
     }
+
+	@Override
+	public void registerFluids()
+	{
+		super.registerFluids();
+		MinecraftForge.EVENT_BUS.register(new FluidHelper());
+	}
 }
