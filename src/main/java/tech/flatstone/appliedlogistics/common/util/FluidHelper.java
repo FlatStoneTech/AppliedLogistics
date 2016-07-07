@@ -1,6 +1,5 @@
 package tech.flatstone.appliedlogistics.common.util;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelBakery;
@@ -12,11 +11,74 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import org.apache.commons.lang3.StringUtils;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.common.blocks.*;
+import tech.flatstone.appliedlogistics.common.blocks.BlockFluidBase;
+import tech.flatstone.appliedlogistics.common.fluids.FluidBase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FluidHelper {
-    public static Fluid createFluid(String name, Material material, boolean hasFlowIcon) {
+    private static List<Class<? extends FluidBase>> fluidClasses = new ArrayList<>();
+    private static List<Class<? extends BlockFluidBase>> fluidBlockClasses = new ArrayList<>();
+
+    public static void registerFluidBlock(Class<? extends BlockFluidBase> tClass) {
+        fluidBlockClasses.add(tClass);
+    }
+
+    public static void registerFluid(Class<? extends FluidBase> tClass) {
+        fluidClasses.add(tClass);
+    }
+
+    public static void initFluids() {
+        for (Class<? extends FluidBase> tClass : fluidClasses) {
+            try {
+                tClass.newInstance();
+            } catch (Exception e) {
+                LogHelper.fatal("Exception registering fluid");
+                e.printStackTrace();
+            }
+        }
+
+        initBlockFluids();
+    }
+
+    public static void initBlockFluids() {
+        for (Class<? extends BlockFluidBase> tClass : fluidBlockClasses) {
+
+            BlockFluidClassic fluidBlock = null;
+
+            try {
+                fluidBlock = tClass.newInstance();
+            } catch (Exception e) {
+                LogHelper.fatal("Exception registering fluid");
+                e.printStackTrace();
+            }
+
+            if (fluidBlock == null)
+                return;
+
+            fluidBlock.setRegistryName(String.format("fluid.%s", fluidBlock.getFluid().getName()));
+            fluidBlock.setUnlocalizedName(fluidBlock.getRegistryName().toString());
+            fluidBlock.setCreativeTab(AppliedLogisticsCreativeTabs.FLUIDS);
+
+            GameRegistry.register(fluidBlock);
+            GameRegistry.register((new ItemBlock(fluidBlock)).setRegistryName(fluidBlock.getRegistryName()));
+
+            Item fluidItem = Item.getItemFromBlock(fluidBlock);
+            ModelBakery.registerItemVariants(fluidItem);
+
+            if (fluidBlock instanceof IBlockRenderer && Platform.isClient()) {
+                ((IBlockRenderer) fluidBlock).registerBlockRenderer();
+                ((IBlockRenderer) fluidBlock).registerBlockItemRenderer();
+            }
+        }
+    }
+
+    public static Fluid createFluid(String name, boolean hasFlowIcon) {
         String texturePrefix = ModInfo.MOD_ID + ":fluids/";
 
         ResourceLocation still = new ResourceLocation(String.format("%s%s_still", texturePrefix, name));
@@ -26,29 +88,6 @@ public class FluidHelper {
         fluid.setUnlocalizedName(ModInfo.MOD_ID + "." + name);
         FluidRegistry.addBucketForFluid(fluid);
 
-        BlockFluidClassic fluidBlock = new BlockFluidClassic(fluid, material);
-        fluidBlock.setRegistryName(String.format("fluid.%s", name));
-        fluidBlock.setUnlocalizedName(fluidBlock.getRegistryName().toString());
-        fluidBlock.setCreativeTab(AppliedLogisticsCreativeTabs.FLUIDS);
-        GameRegistry.register(fluidBlock);
-        GameRegistry.register((new ItemBlock(fluidBlock)).setRegistryName(fluidBlock.getRegistryName()));
-
-        Item fluidItem = Item.getItemFromBlock(fluidBlock);
-        ModelBakery.registerItemVariants(fluidItem);
-
-        final String resourcePath = String.format("%s:fluids", ModInfo.MOD_ID, fluidBlock.getFluid().getName());
-        ModelLoader.setCustomStateMapper(fluidBlock, new StateMapperBase() {
-            @Override
-            protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
-                return new ModelResourceLocation(resourcePath, getPropertyString(state.getProperties()));
-            }
-        });
-
         return fluid;
     }
-
-
-
-
-
 }

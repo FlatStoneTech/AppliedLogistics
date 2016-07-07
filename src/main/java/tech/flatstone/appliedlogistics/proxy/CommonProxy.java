@@ -20,23 +20,17 @@
 
 package tech.flatstone.appliedlogistics.proxy;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.BlockFluidClassic;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
-import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.api.registries.HammerRegistry;
 import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
 import tech.flatstone.appliedlogistics.api.registries.PulverizerRegistry;
 import tech.flatstone.appliedlogistics.client.gui.GuiHandler;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
-import tech.flatstone.appliedlogistics.common.blocks.fluids.BlockFluidBlock;
 import tech.flatstone.appliedlogistics.common.config.Config;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.plans.PlanMachineFurnace;
@@ -128,22 +122,21 @@ public abstract class CommonProxy implements IProxy {
     @Override
     public void registerFluids() {
         for (EnumOres ores : EnumOres.values()) {
-            if (ores.isTypeSet(EnumOreType.HOT_FLUID) || ores.isTypeSet(EnumOreType.COLD_FLUID)) {
-                FluidHelper.createFluid(ores.getName(), ores.isTypeSet(EnumOreType.HOT_FLUID) ? Material.LAVA : Material.WATER, true);
-            }
+            if (ores.getFluidClass() != null)
+                FluidHelper.registerFluid(ores.getFluidClass());
         }
 
         for (EnumAlloys ores : EnumAlloys.values()) {
-            if (ores.isTypeSet(EnumOreType.HOT_FLUID) || ores.isTypeSet(EnumOreType.COLD_FLUID)) {
-                FluidHelper.createFluid(ores.getName(), ores.isTypeSet(EnumOreType.HOT_FLUID) ? Material.LAVA : Material.WATER, true);
-            }
+            if (ores.getFluidClass() != null)
+                FluidHelper.registerFluid(ores.getFluidClass());
         }
 
         for (EnumMisc ores : EnumMisc.values()) {
-            if (ores.isTypeSet(EnumOreType.HOT_FLUID) || ores.isTypeSet(EnumOreType.COLD_FLUID)) {
-                FluidHelper.createFluid(ores.getName(), ores.isTypeSet(EnumOreType.HOT_FLUID) ? Material.LAVA : Material.WATER, true);
-            }
+            if (ores.getFluidClass() != null)
+                FluidHelper.registerFluid(ores.getFluidClass());
         }
+
+        FluidHelper.initFluids();
     }
 
     @Override

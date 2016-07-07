@@ -2,16 +2,17 @@ package tech.flatstone.appliedlogistics.common.util;
 
 import net.minecraft.util.IStringSerializable;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
+import tech.flatstone.appliedlogistics.common.fluids.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public enum EnumAlloys implements IStringSerializable {
-    TITANIUM("Titanium", 0, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.HOT_FLUID),
-    BRONZE("Bronze", 1, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.HOT_FLUID),
-    ELECTRUM("Electrum", 2, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.HOT_FLUID),
-    STEEL("Steel", 3, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.HOT_FLUID),
+    TITANIUM("Titanium", 0, FluidTitanium.class, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST),
+    BRONZE("Bronze", 1, FluidBronze.class, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST),
+    ELECTRUM("Electrum", 2, FluidElectrum.class, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST),
+    STEEL("Steel", 3, FluidSteel.class, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST),
     ;
 
     public static final EnumAlloys[] META_LOOKUP = new EnumAlloys[values().length];
@@ -25,11 +26,20 @@ public enum EnumAlloys implements IStringSerializable {
     private final String name;
     private final int meta;
     private final EnumOreType[] enumOreTypeList;
+    private final Class<? extends FluidBase> fluidClass;
 
     EnumAlloys(String name, int meta, EnumOreType... oreTypes) {
         this.name = name;
         this.meta = meta;
         this.enumOreTypeList = oreTypes;
+        this.fluidClass = null;
+    }
+
+    EnumAlloys(String name, int meta, Class<? extends FluidBase> fluidClass, EnumOreType... oreTypes) {
+        this.name = name;
+        this.meta = meta;
+        this.enumOreTypeList = oreTypes;
+        this.fluidClass = fluidClass;
     }
 
     public static EnumAlloys byMeta(int meta) {
@@ -74,5 +84,9 @@ public enum EnumAlloys implements IStringSerializable {
 
     public boolean isTypeSet(EnumOreType enumOreType) {
         return Arrays.asList(enumOreTypeList).contains(enumOreType);
+    }
+
+    public Class<? extends FluidBase> getFluidClass() {
+        return fluidClass;
     }
 }

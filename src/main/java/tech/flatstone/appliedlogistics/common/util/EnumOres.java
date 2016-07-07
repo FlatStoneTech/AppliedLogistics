@@ -22,6 +22,7 @@ package tech.flatstone.appliedlogistics.common.util;
 
 import net.minecraft.util.IStringSerializable;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
+import tech.flatstone.appliedlogistics.common.fluids.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,18 +30,18 @@ import java.util.List;
 
 public enum EnumOres implements IStringSerializable {
     // Vanilla Ores
-    IRON("Iron", 0, EnumOreType.NUGGET, EnumOreType.DUST, EnumOreType.VANILLA, EnumOreType.HOT_FLUID),
-    GOLD("Gold", 1, EnumOreType.DUST, EnumOreType.VANILLA, EnumOreType.HOT_FLUID),
+    IRON("Iron", 0, FluidIron.class, EnumOreType.NUGGET, EnumOreType.DUST, EnumOreType.VANILLA),
+    GOLD("Gold", 1, FluidGold.class, EnumOreType.DUST, EnumOreType.VANILLA),
     DIAMOND("Diamond", 2, EnumOreType.NUGGET, EnumOreType.VANILLA),
 
     // Base Ores
-    COPPER("Copper", 3, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.HOT_FLUID),
-    TIN("Tin", 4, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.HOT_FLUID),
-    SILVER("Silver", 5, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.HOT_FLUID),
-    LEAD("Lead", 6, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.HOT_FLUID),
-    NICKEL("Nickel", 7, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.HOT_FLUID),
-    RUTILE("Rutile", 8, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.HOT_FLUID),
-    ALUMINUM("Aluminum", 9, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE, EnumOreType.HOT_FLUID),
+    COPPER("Copper", 3, FluidCopper.class, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE),
+    TIN("Tin", 4, FluidTin.class, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE),
+    SILVER("Silver", 5, FluidSilver.class, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE),
+    LEAD("Lead", 6, FluidLead.class, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE),
+    NICKEL("Nickel", 7, FluidNickel.class, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE),
+    RUTILE("Rutile", 8, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE),
+    ALUMINUM("Aluminum", 9, FluidAluminum.class, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE),
     ;
 
     private static final EnumOres[] META_LOOKUP = new EnumOres[values().length];
@@ -54,11 +55,20 @@ public enum EnumOres implements IStringSerializable {
     private final String name;
     private final int meta;
     private final EnumOreType[] enumOresTypeList;
+    private final Class<? extends FluidBase> fluidClass;
 
     EnumOres(String name, int meta, EnumOreType... oreTypes) {
         this.name = name;
         this.meta = meta;
         this.enumOresTypeList = oreTypes;
+        this.fluidClass = null;
+    }
+
+    EnumOres(String name, int meta, Class<? extends FluidBase> fluidClass, EnumOreType... oreTypes) {
+        this.name = name;
+        this.meta = meta;
+        this.enumOresTypeList = oreTypes;
+        this.fluidClass = fluidClass;
     }
 
     public static EnumOres byMeta(int meta) {
@@ -103,5 +113,9 @@ public enum EnumOres implements IStringSerializable {
 
     public boolean isTypeSet(EnumOreType enumOreType) {
         return Arrays.asList(enumOresTypeList).contains(enumOreType);
+    }
+
+    public Class<? extends FluidBase> getFluidClass() {
+        return fluidClass;
     }
 }

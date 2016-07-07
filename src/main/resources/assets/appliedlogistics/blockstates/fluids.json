@@ -1,7 +1,7 @@
 {
   "forge_marker": 1,
   "variants": {
-    "fluid.precursor": {
+    "precursor": {
       "model": "forge:fluid",
       "custom": {
         "fluid": "precursor"
