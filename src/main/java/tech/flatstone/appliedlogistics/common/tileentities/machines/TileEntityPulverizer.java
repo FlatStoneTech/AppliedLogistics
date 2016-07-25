@@ -229,9 +229,9 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
 
                 if (!crushPaused) {
                     if (itemFortune)
-                        this.randomItemCount = RandomHelper.CalculatePulverizer(itemChance, fortuneMultiplier);
+                        this.randomItemCount = RandomHelper.calculateYield(itemChance, fortuneMultiplier);
                     if (!itemFortune)
-                        this.randomItemCount = RandomHelper.CalculatePulverizer(itemChance, 0);
+                        this.randomItemCount = RandomHelper.calculateYield(itemChance, 60);
                 }
 
                 outItem.stackSize = this.randomItemCount;
