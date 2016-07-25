@@ -15,7 +15,7 @@ public class RandomHelper {
         }
     }
     
-    public static int calcyield(double itemchance, double fortunemultiplier) {
+    public static int calculateYield(double itemchance, double fortunemultiplier) {
 	if (itemchance % 1 > 0.0d) {
 		double Bonuschance = (itemchance % 1) * 100;
 		double result =  (rng.nextFloat() * fortunemultiplier * 1 / ((100.d - Bonuschance) / 100.0d))/(itemchance * fortunemultiplier);
