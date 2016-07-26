@@ -5,7 +5,7 @@ import net.minecraft.util.math.MathHelper;
 import java.util.Random;
 
 public class RandomHelper {
-    private static Ramdom rng = new Random();
+    private static Random rng = new Random();
     public static int CalculatePulverizer(float itemValue, float fortuneValue) {
         if (fortuneValue == 0) {
             return (int) Math.ceil(itemValue);
