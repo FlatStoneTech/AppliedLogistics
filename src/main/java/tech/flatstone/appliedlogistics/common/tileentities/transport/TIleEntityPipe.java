@@ -2,14 +2,31 @@ package tech.flatstone.appliedlogistics.common.tileentities.transport;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
 
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 public class TIleEntityPipe extends TileEntityMachineBase implements ITickable {
+    private UUID nodeUUID;
+
+    @Override
+    public void validate(){
+        super.validate();
+        nodeUUID = AppliedLogistics.instance.transportGrid.createTransportNode();
+    }
+
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        AppliedLogistics.instance.transportGrid.removeNode(nodeUUID);
+    }
+
     @Override
     public IInventory getInternalInventory() {
         return null;
@@ -42,5 +59,18 @@ public class TIleEntityPipe extends TileEntityMachineBase implements ITickable {
     @Override
     public void update() {
 
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
+        super.writeToNBT(nbtTagCompound);
+        nbtTagCompound.setUniqueId("nodeUUID", nodeUUID);
+        return nbtTagCompound;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTagCompound) {
+        super.readFromNBT(nbtTagCompound);
+        nodeUUID = nbtTagCompound.getUniqueId("nodeUUID");
     }
 }

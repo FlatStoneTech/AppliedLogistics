@@ -16,7 +16,7 @@ public class BlockEntry extends BlockTechBase {
     private static final PropertyBool WORKING = PropertyBool.create("working");
 
     public BlockEntry() {
-        super(Material.ROCK, "transport/entry", TechLevel.STONE_AGE,TechLevel.BRONZE_AGE,TechLevel.INDUSTRIAL_AGE, TechLevel.MECHANICAL_AGE, TechLevel.DIGITAL_AGE);
+        super(Material.ROCK, "transport/entry", TechLevel.STONE_AGE, TechLevel.BRONZE_AGE, TechLevel.INDUSTRIAL_AGE, TechLevel.MECHANICAL_AGE, TechLevel.DIGITAL_AGE);
         this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE).withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityEntry.class);
         this.setCreativeTab(AppliedLogisticsCreativeTabs.TRANSPORT);

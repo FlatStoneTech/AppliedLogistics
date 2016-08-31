@@ -10,15 +10,13 @@ import net.minecraft.world.IBlockAccess;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTechBase;
-import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityFurnace;
 import tech.flatstone.appliedlogistics.common.tileentities.transport.TIleEntityPipe;
-import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 public class BlockPipe extends BlockTechBase {
     private static final PropertyBool WORKING = PropertyBool.create("working");
 
     public BlockPipe() {
-        super(Material.ROCK, "transport/pipe", TechLevel.STONE_AGE,TechLevel.BRONZE_AGE,TechLevel.INDUSTRIAL_AGE, TechLevel.MECHANICAL_AGE, TechLevel.DIGITAL_AGE);
+        super(Material.ROCK, "transport/pipe", TechLevel.STONE_AGE, TechLevel.BRONZE_AGE, TechLevel.INDUSTRIAL_AGE, TechLevel.MECHANICAL_AGE, TechLevel.DIGITAL_AGE);
         this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE).withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TIleEntityPipe.class);
         this.setCreativeTab(AppliedLogisticsCreativeTabs.TRANSPORT);

@@ -5,7 +5,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
 
-public class ItemPipe extends ItemBlock{
+public class ItemPipe extends ItemBlock {
     public ItemPipe(Block block) {
         super(block);
         this.setHasSubtypes(true);

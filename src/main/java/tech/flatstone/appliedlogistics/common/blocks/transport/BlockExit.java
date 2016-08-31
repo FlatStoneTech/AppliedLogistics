@@ -16,7 +16,7 @@ public class BlockExit extends BlockTechBase {
     private static final PropertyBool WORKING = PropertyBool.create("working");
 
     public BlockExit() {
-        super(Material.ROCK, "transport/exit", TechLevel.STONE_AGE,TechLevel.BRONZE_AGE,TechLevel.INDUSTRIAL_AGE, TechLevel.MECHANICAL_AGE, TechLevel.DIGITAL_AGE);
+        super(Material.ROCK, "transport/exit", TechLevel.STONE_AGE, TechLevel.BRONZE_AGE, TechLevel.INDUSTRIAL_AGE, TechLevel.MECHANICAL_AGE, TechLevel.DIGITAL_AGE);
         this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE).withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityExit.class);
         this.setCreativeTab(AppliedLogisticsCreativeTabs.TRANSPORT);
