@@ -1,56 +1,27 @@
 package tech.flatstone.appliedlogistics.common.tileentities.transport;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
-import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
-import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
+import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
 
-import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class TIleEntityPipe extends TileEntityMachineBase implements ITickable {
+public class TIleEntityPipe extends TileEntityBase implements ITickable {
     private UUID nodeUUID;
+    private boolean loaded = false;
 
     @Override
     public void validate(){
         super.validate();
-        nodeUUID = AppliedLogistics.instance.transportGrid.createTransportNode();
+        if (!loaded)
+            nodeUUID = AppliedLogistics.instance.transportGrid.createTransportNode();
     }
 
     @Override
     public void invalidate() {
         super.invalidate();
         AppliedLogistics.instance.transportGrid.removeNode(nodeUUID);
-    }
-
-    @Override
-    public IInventory getInternalInventory() {
-        return null;
-    }
-
-    @Override
-    public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
-
-    }
-
-    @Override
-    public int[] getAccessibleSlotsBySide(EnumFacing side) {
-        return new int[0];
-    }
-
-    /**
-     * Removes a stack from the given slot and returns it.
-     *
-     * @param index
-     */
-    @Nullable
-    @Override
-    public ItemStack removeStackFromSlot(int index) {
-        return null;
     }
 
     /**
@@ -63,7 +34,7 @@ public class TIleEntityPipe extends TileEntityMachineBase implements ITickable {
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
-        super.writeToNBT(nbtTagCompound);
+        nbtTagCompound = super.writeToNBT(nbtTagCompound);
         nbtTagCompound.setUniqueId("nodeUUID", nodeUUID);
         return nbtTagCompound;
     }
@@ -72,5 +43,6 @@ public class TIleEntityPipe extends TileEntityMachineBase implements ITickable {
     public void readFromNBT(NBTTagCompound nbtTagCompound) {
         super.readFromNBT(nbtTagCompound);
         nodeUUID = nbtTagCompound.getUniqueId("nodeUUID");
+        loaded = true;
     }
 }

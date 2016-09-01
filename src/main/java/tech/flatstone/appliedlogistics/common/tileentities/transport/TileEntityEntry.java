@@ -5,14 +5,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
+import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
 
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 public class TileEntityEntry extends TileEntityMachineBase implements ITickable {
+    private InternalInventory inventory = new InternalInventory(this, 1);
+    private UUID nodeUUID;
+    private boolean loaded = false;
+
     @Override
     public IInventory getInternalInventory() {
-        return null;
+        return inventory;
     }
 
     @Override

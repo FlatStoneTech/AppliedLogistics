@@ -115,6 +115,8 @@ public class AppliedLogistics {
 
         MinecraftForge.EVENT_BUS.register(this);
 
+        transportGrid = new TransportGrid();
+
         // Init Integrations
         IntegrationsManager.instance().init();
 
