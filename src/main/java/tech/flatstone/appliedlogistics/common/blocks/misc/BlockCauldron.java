@@ -72,7 +72,7 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
         setTileEntity(TileEntityCauldron.class);
         setCreativeTab(AppliedLogisticsCreativeTabs.GENERAL);
         this.setInternalName("cauldron");
-        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+//        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
     }
 
     @Override
@@ -93,7 +93,7 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
             IBlockState blockState = this.getStateFromMeta(itemStack.getItemDamage());
             Map<IProperty<?>, Comparable<? >> properties = new HashMap<>();
             for (Map.Entry<IProperty<?>, Comparable<?>> entry : blockState.getProperties().entrySet()) {
-                if (entry.getKey() != FACING && entry.getKey() != CAULDRON_LIT)
+                if ( entry.getKey() != CAULDRON_LIT)//entry.getKey() != FACING
                     properties.put(entry.getKey(), entry.getValue());
             }
 
@@ -105,14 +105,15 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntityCauldron tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityCauldron.class);
         if (tileEntity != null) {
-            return state.withProperty(FACING, tileEntity.getForward()).withProperty(CAULDRON_LIT, tileEntity.isFireLit());
+            return state.withProperty(CAULDRON_LIT, tileEntity.isFireLit());
+            //.withProperty(FACING, tileEntity.getForward())
         }
-        return state.withProperty(FACING, EnumFacing.NORTH).withProperty(CAULDRON_LIT, false);
+        return state.withProperty(CAULDRON_LIT, false);
     }
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, FACING, CAULDRON_LIT);
+        return new BlockStateContainer(this, CAULDRON_LIT);
     }
 
     @Override

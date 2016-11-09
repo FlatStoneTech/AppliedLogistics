@@ -26,7 +26,7 @@ public class BlockFurnace extends BlockTechBase {
 
     public BlockFurnace() {
         super(Material.ROCK, "machines/furnace", TechLevel.STONE_AGE, TechLevel.BRONZE_AGE, TechLevel.INDUSTRIAL_AGE, TechLevel.MECHANICAL_AGE, TechLevel.DIGITAL_AGE);
-        this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE).withProperty(FACING, EnumFacing.NORTH));
+        this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE));//.withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityFurnace.class);
         this.setCreativeTab(AppliedLogisticsCreativeTabs.MACHINES);
         this.setInternalName("machine_furnace");
@@ -53,14 +53,16 @@ public class BlockFurnace extends BlockTechBase {
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntityFurnace tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityFurnace.class);
         if (tileEntity != null && tileEntity.canBeRotated()) {
-            return state.withProperty(FACING, tileEntity.getForward()).withProperty(WORKING, tileEntity.getIntTemperature() > 0);
+            return state.withProperty(WORKING, tileEntity.getIntTemperature() > 0);
+            //.withProperty(FACING, tileEntity.getForward())
         }
-        return state.withProperty(FACING, EnumFacing.NORTH).withProperty(WORKING, false);
+//        return state.withProperty(FACING, EnumFacing.NORTH).withProperty(WORKING, false);
+        return state.withProperty(WORKING,false);
     }
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, TECHLEVEL, FACING, WORKING);
+        return new BlockStateContainer(this, TECHLEVEL, WORKING);
     }
 
     @Override
