@@ -28,13 +28,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.EnumSkyBlock;
+import tech.flatstone.appliedlogistics.api.Rotation.Rotation.Face;
+import tech.flatstone.appliedlogistics.api.Rotation.Rotation.IRotationState;
+import tech.flatstone.appliedlogistics.api.Rotation.impl.RotationProperty;
+import tech.flatstone.appliedlogistics.api.Rotation.impl.basicRotationState;
+import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaHeadMessage;
 import tech.flatstone.appliedlogistics.common.util.IOrientable;
 import tech.flatstone.appliedlogistics.common.util.IRotatable;
@@ -42,17 +46,23 @@ import tech.flatstone.appliedlogistics.common.util.LogHelper;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 
-public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOrientable, IRotatable {
+public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOrientable, IRotatable, tech.flatstone.appliedlogistics.api.Rotation.Rotation.IRotatable {
     private String customName;
     private int renderedFragment = 0;
     private NBTTagCompound machineItemData;
     private EnumFacing forward = EnumFacing.NORTH;
+    private IRotationState RTstate = CreateRTstate();
 
     @Override
     public NBTTagCompound getUpdateTag() {
         return writeToNBT(new NBTTagCompound());
+    }
+
+    protected IRotationState CreateRTstate() {
+        return new basicRotationState();
     }
 
     @Nullable
@@ -158,6 +168,7 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
             nbtTagCompound.setInteger("forward", this.forward.ordinal());
         }
 
+        nbtTagCompound.setIntArray("Sides", RTstate.Save());
         return nbtTagCompound;
     }
 
@@ -172,6 +183,7 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
             LogHelper.info(">>> Read NBT: " + nbtTagCompound.getInteger("forward"));
             this.forward = EnumFacing.values()[nbtTagCompound.getInteger("forward")];
         }
+        RTstate.Load(nbtTagCompound.getIntArray("Sides"));
     }
 
     public NBTTagCompound getMachineItemData() {
@@ -204,7 +216,8 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
 
     @Override
     public EnumFacing getForward() {
-        return forward;
+        return RTstate.getbyside(Face.Front);
+//        return forward;
     }
 
     @Override
@@ -226,5 +239,47 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
     @Override
     public void onRotated() {
 
+    }
+
+    @Override
+    public boolean handleRotation(Face side, EnumFacing face, BlockPos pos) {
+        if (RTstate.getbyside(side).equals(face)) return false;
+        RTstate.applyRT(side, face);
+        if (!Arrays.equals(RTstate.Save(), RTstate.getDefaults())
+                && !getBlockState().getProperties().get(BlockTileBase.getRotationProperty()).equals(RotationProperty.parseValue(RTstate)))
+            worldObj.setBlockState(pos, getBlockState().getBlock().getDefaultState().
+                    withProperty(BlockTileBase.getRotationProperty(), RotationProperty.parseValue(RTstate)));
+        else
+            worldObj.setBlockState(pos, getBlockState().getBlock().getDefaultState());
+        markDirty();
+        return true;
+    }
+
+    @Override
+    public boolean handleSetFront(EnumFacing side, BlockPos pos) {
+        if (RTstate.getbyside(Face.Front).equals(side)) return false;
+        RTstate.applyRT(Face.Front, side);
+        if (!Arrays.equals(RTstate.Save(), RTstate.getDefaults()))
+            worldObj.setBlockState(pos, getBlockState().getBlock().getDefaultState().
+                    withProperty(BlockTileBase.getRotationProperty(), RotationProperty.parseValue(RTstate)));
+        else
+            worldObj.setBlockState(pos, getBlockState().getBlock().getDefaultState());
+        markDirty();
+        return true;
+    }
+
+    @Override
+    public Face getbyEF(EnumFacing facing) {
+        return RTstate.getbyEF(facing);
+    }
+
+    @Override
+    public EnumFacing getbyside(Face side) {
+        return getbyside(side);
+    }
+
+    @Override
+    public IRotationState getRTstate() {
+        return RTstate;
     }
 }

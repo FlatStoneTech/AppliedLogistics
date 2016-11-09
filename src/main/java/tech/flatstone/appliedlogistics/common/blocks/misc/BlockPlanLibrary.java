@@ -45,7 +45,7 @@ import tech.flatstone.appliedlogistics.common.util.TileHelper;
 public class BlockPlanLibrary extends BlockTileBase implements IProvideRecipe {
     public BlockPlanLibrary() {
         super(Material.ROCK, "misc/planLibrary");
-        this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+//        this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityPlanLibrary.class);
         this.setCreativeTab(AppliedLogisticsCreativeTabs.MACHINES);
         this.setInternalName("plan_library");
@@ -64,14 +64,15 @@ public class BlockPlanLibrary extends BlockTileBase implements IProvideRecipe {
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntityPlanLibrary tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityPlanLibrary.class);
         if (tileEntity != null) {
-            return state.withProperty(FACING, tileEntity.getForward());
+//            return state.withProperty(FACING, tileEntity.getForward());
         }
-        return state.withProperty(FACING, EnumFacing.NORTH);
+//        return state.withProperty(FACING, EnumFacing.NORTH);
+        return state;
     }
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, FACING);
+        return new BlockStateContainer(this, ROTATION);
     }
 
     @Override

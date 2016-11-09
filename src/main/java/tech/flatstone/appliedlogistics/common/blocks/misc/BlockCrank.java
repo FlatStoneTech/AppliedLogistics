@@ -98,7 +98,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, META);
+        return new BlockStateContainer(this,ROTATION, META);
     }
 
     @Override
