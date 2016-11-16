@@ -48,10 +48,11 @@ import java.util.UUID;
 
 public class GuiBuilder extends GuiBase {
     TileEntityBuilder tileEntity;
-    GuiHelper guiHelper;
+    private GuiHelper guiHelper;
     private GuiButton btnStartBuilder;
     private GuiButton btnSelectTechLevel;
-
+    private GuiBuilderRecipeList recipeList;
+    private GuiBuilderRecipeListEntry selectedEntry;
 
     public GuiBuilder(InventoryPlayer inventoryPlayer, TileEntityBuilder tileEntity) {
         super(new ContainerBuilder(inventoryPlayer, tileEntity));
@@ -61,9 +62,15 @@ public class GuiBuilder extends GuiBase {
         this.tileEntity = tileEntity;
     }
 
+    public GuiHelper getGuiHelper() {
+        return guiHelper;
+    }
+
     @Override
     public void initGui() {
         super.initGui();
+        this.recipeList = new GuiBuilderRecipeList(this, this.mc, this.width, this.height, 32, this.height - 34, 36);
+
         this.btnStartBuilder = new GuiButton(0, guiLeft + 185, guiTop + 117, 64, 20, LanguageHelper.LABEL.translateMessage("build"));
         this.btnSelectTechLevel = new GuiButton(1, guiLeft + 185, guiTop + 139, 64, 20, "");
 
@@ -207,6 +214,8 @@ public class GuiBuilder extends GuiBase {
     public void drawScreen(int mouseX, int mouseY, float btn) {
         super.drawScreen(mouseX, mouseY, btn);
 
+        this.recipeList.drawScreen(mouseX, mouseY, btn);
+
         Slot slot = getSlotUnderMouse();
         if (slot == null)
             return;
@@ -249,5 +258,23 @@ public class GuiBuilder extends GuiBase {
         super.handleMouseClick(slotIn, slotId, mouseButton, type);
 
         LogHelper.info(">>> Slot Click: " + slotId);
+    }
+
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+        this.recipeList.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
+    protected void mouseReleased(int mouseX, int mouseY, int state) {
+        super.mouseReleased(mouseX, mouseY, state);
+        this.recipeList.mouseReleased(mouseX, mouseY, state);
+    }
+
+    @Override
+    public void handleMouseInput() throws IOException {
+        super.handleMouseInput();
+        this.recipeList.handleMouseInput();
     }
 }

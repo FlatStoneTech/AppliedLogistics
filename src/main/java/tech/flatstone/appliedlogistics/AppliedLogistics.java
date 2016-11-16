@@ -72,9 +72,11 @@ public class AppliedLogistics {
 
         PacketHandler.init();
 
-        // Register Blocks
+        // Register all the things...
         proxy.registerBlocks();
+
         proxy.registerItems();
+
         proxy.registerSounds();
 
         proxy.registerGUIs();
@@ -93,6 +95,7 @@ public class AppliedLogistics {
 
         proxy.registerFluids();
 
+        // Setup Integrations Manager
         IntegrationsManager.instance().index();
         IntegrationsManager.instance().preInit();
 
@@ -103,6 +106,7 @@ public class AppliedLogistics {
     public void init(FMLInitializationEvent event) {
         final Stopwatch stopwatch = Stopwatch.createStarted();
         LogHelper.info("Initialization (Started)");
+        // Handle Recipes
         proxy.registerRecipes();
 
         proxy.registerCrusherRecipes();
@@ -129,7 +133,7 @@ public class AppliedLogistics {
         Map<String, Fluid> fluids = FluidRegistry.getRegisteredFluids();
         for (String key : fluids.keySet()) {
             Fluid fluid = fluids.get(key);
-            LogHelper.info(">>> Fluid Name: " + key + " (" + fluid.getUnlocalizedName() + ")");
+            LogHelper.internal(">>> Fluid Name: " + key + " (" + fluid.getUnlocalizedName() + ")");
         }
 
         LogHelper.info("Post Initialization (Ended after " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + "ms)");
