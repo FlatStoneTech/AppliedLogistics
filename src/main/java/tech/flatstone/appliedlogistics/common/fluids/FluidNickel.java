@@ -8,5 +8,7 @@ public class FluidNickel extends FluidBase {
     public FluidNickel() {
         super("nickel", BlockFluidNickel.class, true);
         INSTANCE = this;
+        this.getFluid().setLuminosity(15);
+        this.getFluid().setViscosity(5000);
     }
 }

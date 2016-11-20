@@ -6,7 +6,5 @@ import net.minecraftforge.fluids.Fluid;
 public class BlockFluidMetalBase extends BlockFluidBase {
     public BlockFluidMetalBase(Fluid fluid) {
         super(fluid, Material.LAVA);
-        this.setDensity(10);
-        this.setLightLevel(15);
     }
 }

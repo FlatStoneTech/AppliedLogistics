@@ -8,5 +8,7 @@ public class FluidIron extends FluidBase {
     public FluidIron() {
         super("iron", BlockFluidIron.class, true);
         INSTANCE = this;
+        this.getFluid().setLuminosity(15);
+        this.getFluid().setViscosity(5000);
     }
 }

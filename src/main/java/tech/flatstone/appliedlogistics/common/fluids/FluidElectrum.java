@@ -8,5 +8,7 @@ public class FluidElectrum extends FluidBase {
     public FluidElectrum() {
         super("electrum", BlockFluidElectrum.class, true);
         INSTANCE = this;
+        this.getFluid().setLuminosity(15);
+        this.getFluid().setViscosity(5000);
     }
 }

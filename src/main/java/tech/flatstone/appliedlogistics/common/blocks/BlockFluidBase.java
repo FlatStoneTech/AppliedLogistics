@@ -59,13 +59,13 @@ public class BlockFluidBase extends BlockFluidClassic implements IBlockRenderer 
 
         // Check to see if surrounding blocks are flammable...
         if (this.blockMaterial == Material.LAVA) {
-            int i = rand.nextInt(3);
+            int i = rand.nextInt(10);
 
             if (i > 0) {
                 BlockPos blockPos = pos;
 
                 for (int j = 0; j < i; ++j) {
-                    blockPos = blockPos.add(rand.nextInt(3) - 1, 1, rand.nextInt(3) - 1);
+                    blockPos = blockPos.add(rand.nextInt(4) - 1, 1, rand.nextInt(4) - 1);
 
                     if (blockPos.getY() >= 0 && blockPos.getY() < world.getHeight() && !world.isBlockLoaded(blockPos))
                         return;
@@ -82,8 +82,8 @@ public class BlockFluidBase extends BlockFluidClassic implements IBlockRenderer 
                     }
                 }
             } else {
-                for (int j = 0; j < 3; ++j) {
-                    BlockPos blockPos1 = pos.add(rand.nextInt(3) - 1, 0, rand.nextInt(3) - 1);
+                for (int j = 0; j < 10; ++j) {
+                    BlockPos blockPos1 = pos.add(rand.nextInt(4) - 1, 0, rand.nextInt(4) - 1);
 
                     if (blockPos1.getY() >= 0 && blockPos1.getY() < 256 && !world.isBlockLoaded(blockPos1))
                         return;
@@ -110,16 +110,11 @@ public class BlockFluidBase extends BlockFluidClassic implements IBlockRenderer 
     }
 
     protected boolean isSurroundingBlockFlammable(World worldIn, BlockPos pos) {
-        for (EnumFacing enumFacing : EnumFacing.values()) {
-            if (this.getCanBlockBurn(worldIn, pos.offset(enumFacing)))
-                return true;
-        }
-
-        return false;
+        return getCanBlockBurn(worldIn, pos);
     }
 
     private boolean getCanBlockBurn(World worldIn, BlockPos pos) {
-        return pos.getY() >= 0 && pos.getY() < 256 && !worldIn.isBlockLoaded(pos) ? false : worldIn.getBlockState(pos).getMaterial().getCanBurn();
+        return true;
     }
 
     public boolean checkForMixing(World worldIn, BlockPos pos, IBlockState state)
@@ -129,14 +124,17 @@ public class BlockFluidBase extends BlockFluidClassic implements IBlockRenderer 
             boolean flag = false;
 
             for (EnumFacing enumfacing : EnumFacing.values()) {
-                Material blockMaterial2 = worldIn.getBlockState(pos.offset(enumfacing)).getMaterial();
+                IBlockState blockState = worldIn.getBlockState(pos.offset(enumfacing));
 
-                if (enumfacing != EnumFacing.DOWN && blockMaterial2 == Material.WATER) {
+                if (enumfacing != EnumFacing.DOWN && blockState.getMaterial() == Material.WATER) {
                     flag = true;
                     break;
                 }
 
-                //todo: Check molten metal vs molten metal, do something...
+                if (enumfacing != EnumFacing.DOWN && blockState.getMaterial().isLiquid() && !blockState.getBlock().equals(this)) {
+                    flag = true;
+                    break;
+                }
             }
 
             if (flag) {

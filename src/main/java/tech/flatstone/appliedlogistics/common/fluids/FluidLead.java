@@ -8,5 +8,7 @@ public class FluidLead extends FluidBase {
     public FluidLead() {
         super("lead", BlockFluidLead.class, true);
         INSTANCE = this;
+        this.getFluid().setLuminosity(15);
+        this.getFluid().setViscosity(5000);
     }
 }

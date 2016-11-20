@@ -8,5 +8,7 @@ public class FluidAluminum extends FluidBase {
     public FluidAluminum() {
         super("aluminum", BlockFluidAluminum.class, true);
         INSTANCE = this;
+        this.getFluid().setLuminosity(15);
+        this.getFluid().setViscosity(5000);
     }
 }

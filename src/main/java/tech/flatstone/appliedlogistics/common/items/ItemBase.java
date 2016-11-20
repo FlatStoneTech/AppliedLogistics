@@ -73,9 +73,4 @@ public abstract class ItemBase extends Item implements IItemRenderer {
 
         ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(resourcePath, "inventory"));
     }
-
-    @Override
-    public boolean onEntityItemUpdate(EntityItem entityItem) {
-        return super.onEntityItemUpdate(entityItem);
-    }
 }

@@ -8,5 +8,7 @@ public class FluidGold extends FluidBase {
     public FluidGold() {
         super("gold", BlockFluidGold.class, true);
         INSTANCE = this;
+        this.getFluid().setLuminosity(15);
+        this.getFluid().setViscosity(5000);
     }
 }

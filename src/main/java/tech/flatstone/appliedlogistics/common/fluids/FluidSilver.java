@@ -8,5 +8,7 @@ public class FluidSilver extends FluidBase {
     public FluidSilver() {
         super("silver", BlockFluidSilver.class, true);
         INSTANCE = this;
+        this.getFluid().setLuminosity(15);
+        this.getFluid().setViscosity(5000);
     }
 }

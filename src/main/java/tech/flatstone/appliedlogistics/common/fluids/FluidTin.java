@@ -8,5 +8,7 @@ public class FluidTin extends FluidBase {
     public FluidTin() {
         super("tin", BlockFluidTin.class, true);
         INSTANCE = this;
+        this.getFluid().setLuminosity(15);
+        this.getFluid().setViscosity(5000);
     }
 }

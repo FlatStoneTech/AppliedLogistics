@@ -20,10 +20,7 @@
 
 package tech.flatstone.appliedlogistics.common.integrations.jei;
 
-import mezz.jei.api.BlankModPlugin;
-import mezz.jei.api.IJeiHelpers;
-import mezz.jei.api.IModRegistry;
-import mezz.jei.api.JEIPlugin;
+import mezz.jei.api.*;
 import tech.flatstone.appliedlogistics.common.integrations.jei.Builder.BuilderCategory;
 import tech.flatstone.appliedlogistics.common.integrations.jei.Builder.BuilderRecipeHandler;
 import tech.flatstone.appliedlogistics.common.integrations.jei.Builder.BuilderRecipeMaker;
@@ -34,7 +31,7 @@ import tech.flatstone.appliedlogistics.common.integrations.jei.PlanBuilder.PlanB
 import javax.annotation.Nonnull;
 
 @JEIPlugin
-public class AppliedLogisticsPlugin extends BlankModPlugin {
+public class AppliedLogisticsPlugin implements IModPlugin {
     public static IJeiHelpers jeiHelper;
 
     @Override
@@ -47,7 +44,10 @@ public class AppliedLogisticsPlugin extends BlankModPlugin {
 
         registry.addRecipes(PlanBuilderRecipeMaker.getRecipes());
         registry.addRecipes(BuilderRecipeMaker.getRecipes());
+    }
 
-        super.register(registry);
+    @Override
+    public void onRuntimeAvailable(@Nonnull IJeiRuntime jeiRuntime) {
+
     }
 }

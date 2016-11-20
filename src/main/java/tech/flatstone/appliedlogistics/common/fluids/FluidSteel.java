@@ -8,5 +8,7 @@ public class FluidSteel extends FluidBase {
     public FluidSteel() {
         super("steel", BlockFluidSteel.class, true);
         INSTANCE = this;
+        this.getFluid().setLuminosity(15);
+        this.getFluid().setViscosity(5000);
     }
 }

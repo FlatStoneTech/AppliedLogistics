@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
 import tech.flatstone.appliedlogistics.common.items.ItemBase;
+import tech.flatstone.appliedlogistics.common.items.ItemBaseTool;
 import tech.flatstone.appliedlogistics.common.sounds.SoundBase;
 
 import java.util.Locale;
@@ -58,12 +59,16 @@ public class RegistrationHelper {
 
     public static Item registerItem(Class<? extends Item> itemClass) {
         Item item = null;
-        String internalName;
+        String internalName = "";
 
         try {
             item = itemClass.getConstructor().newInstance();
 
-            internalName = ((ItemBase) item).getInternalName();
+            if (item instanceof ItemBase)
+                internalName = ((ItemBase) item).getInternalName();
+
+            if (item instanceof ItemBaseTool)
+                internalName = ((ItemBaseTool) item).getInternalName();
 
             if (!internalName.equals(internalName.toLowerCase(Locale.US)))
                 throw new IllegalArgumentException(String.format("Unlocalized names need to be all lowercase! Item: %s", internalName));

@@ -8,5 +8,7 @@ public class FluidCopper extends FluidBase {
     public FluidCopper() {
         super("copper", BlockFluidCopper.class, true);
         INSTANCE = this;
+        this.getFluid().setLuminosity(15);
+        this.getFluid().setViscosity(5000);
     }
 }
