@@ -1,7 +1,11 @@
 package com.fireball1725.corelib.guimaker.objects;
 
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,6 +20,11 @@ public abstract class GuiObject implements IGuiObject {
     protected int guiHeight;
     protected int guiX;
     protected int guiY;
+    protected ResourceLocation textureSheet;
+
+    public void setTextureSheet(ResourceLocation textureSheet) {
+        this.textureSheet = textureSheet;
+    }
 
     public void setGuiWidth(int guiWidth) {
         this.guiWidth = guiWidth;
@@ -81,7 +90,7 @@ public abstract class GuiObject implements IGuiObject {
     }
 
     @Override
-    public void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    public void drawGuiContainerBackgroundLayer(GuiContainer guiContainer, float partialTicks, int mouseX, int mouseY) {
 
     }
 
@@ -136,9 +145,34 @@ public abstract class GuiObject implements IGuiObject {
     }
 
     @Override
-    public List<Slot> initContainer() {
+    public List<Slot> initContainer(InventoryPlayer player, IInventory inventory) {
         return new ArrayList<>();
     }
 
+    protected void drawSlot(GuiContainer guiContainer, int x, int y) {
+        x += guiContainer.guiLeft;
+        y += guiContainer.guiTop;
 
+        guiContainer.drawTexturedModalRect(x, y, 15, 0, 5, 5);
+        guiContainer.drawTexturedModalRect(x + 13, y, 25, 0, 5, 5);
+        guiContainer.drawTexturedModalRect(x, y + 13, 15, 10, 5, 5);
+        guiContainer.drawTexturedModalRect(x + 13, y + 13, 25, 10, 5, 5);
+
+        guiContainer.drawTexturedModalRect(x + 5, y, 20, 0, 5, 5);
+        guiContainer.drawTexturedModalRect(x + 10, y, 20, 0, 5, 5);
+
+        guiContainer.drawTexturedModalRect(x + 5, y + 13, 20, 10, 5, 5);
+        guiContainer.drawTexturedModalRect(x + 10, y + 13, 20, 10, 5, 5);
+
+        guiContainer.drawTexturedModalRect(x, y + 5, 15, 5, 5, 5);
+        guiContainer.drawTexturedModalRect(x, y + 10, 15, 5, 5, 5);
+
+        guiContainer.drawTexturedModalRect(x + 13, y + 5, 25, 5, 5, 5);
+        guiContainer.drawTexturedModalRect(x + 13, y + 10, 25, 5, 5, 5);
+
+        guiContainer.drawTexturedModalRect(x + 5, y + 5, 20, 5, 5, 5);
+        guiContainer.drawTexturedModalRect(x + 10, y + 5, 20, 5, 5, 5);
+        guiContainer.drawTexturedModalRect(x + 5, y + 10, 20, 5, 5, 5);
+        guiContainer.drawTexturedModalRect(x + 10, y + 10, 20, 5, 5, 5);
+    }
 }

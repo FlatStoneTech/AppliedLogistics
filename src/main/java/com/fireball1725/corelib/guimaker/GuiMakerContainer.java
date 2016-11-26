@@ -28,13 +28,12 @@ public class GuiMakerContainer extends Container {
     }
 
     public void initContainer() {
-        LogHelper.info(">>> Clearing inventory and setting up stuff");
         this.inventoryItemStacks.clear();
         this.inventorySlots.clear();
 
         for(GuiObject guiObject : guiMaker.getGuiObjects()) {
             List<Slot> slotList;
-            slotList = guiObject.initContainer();
+            slotList = guiObject.initContainer(inventoryPlayer, (IInventory)tileEntity);
             for (Slot slot : slotList) {
                 this.addSlotToContainer(slot);
             }

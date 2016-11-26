@@ -1,6 +1,9 @@
 package com.fireball1725.corelib.guimaker.objects;
 
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 
 import java.io.IOException;
@@ -26,7 +29,7 @@ public interface IGuiObject {
     /**
      * Draws the background layer of this container (behind the items).
      */
-    void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY);
+    void drawGuiContainerBackgroundLayer(GuiContainer guiContainer, float partialTicks, int mouseX, int mouseY);
 
     /**
      * Draws the given slot: any item in it, the slot's background, the hovered highlight, etc.
@@ -83,5 +86,5 @@ public interface IGuiObject {
      */
     void updateScreen();
 
-    List<Slot> initContainer();
+    List<Slot> initContainer(InventoryPlayer player, IInventory inventory);
 }

@@ -131,13 +131,13 @@ public class GuiMakerGuiContainer extends GuiContainer {
             guiObject.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
-    @Override
-    public void drawSlot(Slot slotIn) {
-        super.drawSlot(slotIn);
-        for(GuiObject guiObject : guiMaker.getGuiObjects())
-            guiObject.drawSlot(slotIn);
-    }
-
+//    @Override
+//    public void drawSlot(Slot slotIn) {
+//        super.drawSlot(slotIn);
+//        for(GuiObject guiObject : guiMaker.getGuiObjects())
+//            guiObject.drawSlot(slotIn);
+//    }
+//
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
@@ -167,60 +167,60 @@ public class GuiMakerGuiContainer extends GuiContainer {
         for(GuiObject guiObject : guiMaker.getGuiObjects())
             guiObject.mouseClicked(mouseX, mouseY, mouseButton);
     }
-
-    @Override
-    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-        for(GuiObject guiObject : guiMaker.getGuiObjects())
-            guiObject.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-    }
-
-    @Override
-    protected void mouseReleased(int mouseX, int mouseY, int state) {
-        super.mouseReleased(mouseX, mouseY, state);
-        for(GuiObject guiObject : guiMaker.getGuiObjects())
-            guiObject.mouseReleased(mouseX, mouseY, state);
-    }
-
-    @Override
-    protected boolean isPointInRegion(int rectX, int rectY, int rectWidth, int rectHeight, int pointX, int pointY) {
+//
+//    @Override
+//    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
+//        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
 //        for(GuiObject guiObject : guiMaker.getGuiObjects())
-//            guiObject.isPointInRegion(rectX, rectY, rectWidth, rectHeight, pointX, pointY);
-        return super.isPointInRegion(rectX, rectY, rectWidth, rectHeight, pointX, pointY);
-    }
-
-    @Override
-    protected void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
-        super.handleMouseClick(slotIn, slotId, mouseButton, type);
-        for(GuiObject guiObject : guiMaker.getGuiObjects())
-            guiObject.handleMouseClick(slotIn, slotId, mouseButton, type);
-    }
-
-    @Override
-    protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        super.keyTyped(typedChar, keyCode);
-        for(GuiObject guiObject : guiMaker.getGuiObjects())
-            guiObject.keyTyped(typedChar, keyCode);
-    }
-
-    @Override
-    protected boolean checkHotbarKeys(int keyCode) {
+//            guiObject.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+//    }
+//
+//    @Override
+//    protected void mouseReleased(int mouseX, int mouseY, int state) {
+//        super.mouseReleased(mouseX, mouseY, state);
 //        for(GuiObject guiObject : guiMaker.getGuiObjects())
-//            guiObject.checkHotbarKeys(keyCode);
-        return super.checkHotbarKeys(keyCode);
-    }
-
-    @Override
-    public void onGuiClosed() {
-        super.onGuiClosed();
-        for(GuiObject guiObject : guiMaker.getGuiObjects())
-            guiObject.onGuiClosed();
-    }
-
-    @Override
-    public boolean doesGuiPauseGame() {
-        return super.doesGuiPauseGame();
-    }
+//            guiObject.mouseReleased(mouseX, mouseY, state);
+//    }
+//
+//    @Override
+//    protected boolean isPointInRegion(int rectX, int rectY, int rectWidth, int rectHeight, int pointX, int pointY) {
+////        for(GuiObject guiObject : guiMaker.getGuiObjects())
+////            guiObject.isPointInRegion(rectX, rectY, rectWidth, rectHeight, pointX, pointY);
+//        return super.isPointInRegion(rectX, rectY, rectWidth, rectHeight, pointX, pointY);
+//    }
+//
+//    @Override
+//    protected void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
+//        super.handleMouseClick(slotIn, slotId, mouseButton, type);
+//        for(GuiObject guiObject : guiMaker.getGuiObjects())
+//            guiObject.handleMouseClick(slotIn, slotId, mouseButton, type);
+//    }
+//
+//    @Override
+//    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+//        super.keyTyped(typedChar, keyCode);
+//        for(GuiObject guiObject : guiMaker.getGuiObjects())
+//            guiObject.keyTyped(typedChar, keyCode);
+//    }
+//
+//    @Override
+//    protected boolean checkHotbarKeys(int keyCode) {
+////        for(GuiObject guiObject : guiMaker.getGuiObjects())
+////            guiObject.checkHotbarKeys(keyCode);
+//        return super.checkHotbarKeys(keyCode);
+//    }
+//
+//    @Override
+//    public void onGuiClosed() {
+//        super.onGuiClosed();
+//        for(GuiObject guiObject : guiMaker.getGuiObjects())
+//            guiObject.onGuiClosed();
+//    }
+//
+//    @Override
+//    public boolean doesGuiPauseGame() {
+//        return super.doesGuiPauseGame();
+//    }
 
     @Override
     public void updateScreen() {
@@ -239,11 +239,11 @@ public class GuiMakerGuiContainer extends GuiContainer {
             guiObject.updateScreen();
     }
 
-    //todo: look at this one...
-    @Override
-    public Slot getSlotUnderMouse() {
-        return super.getSlotUnderMouse();
-    }
+//    //todo: look at this one...
+//    @Override
+//    public Slot getSlotUnderMouse() {
+//        return super.getSlotUnderMouse();
+//    }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
@@ -323,9 +323,10 @@ public class GuiMakerGuiContainer extends GuiContainer {
             }
         }
 
-        for(GuiObject guiObject : guiMaker.getGuiObjects())
-            guiObject.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
-
+        for(GuiObject guiObject : guiMaker.getGuiObjects()) {
+            guiObject.setTextureSheet(resourceLocation);
+            guiObject.drawGuiContainerBackgroundLayer(this, partialTicks, mouseX, mouseY);
+        }
     }
 
     private void drawTab(int x, int y, boolean selected) {

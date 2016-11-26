@@ -58,7 +58,7 @@ import java.util.Random;
 public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImplementsGuiMaker {
     public static final PropertyEnum TECHLEVEL = PropertyEnum.create("tech", TechLevel.class);
     private GuiMaker guiMaker = new GuiMaker(this);
-    private GuiLabel labelTest = new GuiLabel(40, 40, 0x00FF00, "Hello World :D");
+    private GuiLabel labelInputSlotStatus = new GuiLabel(26, 13, 0x00FF00, "test...");
     private GuiCenteredLabel labelInfoArray = new GuiCenteredLabel(6, 6, 244, 0xffffff);
     private static final String ABOUT_LABEL = "§l§nAbout the Builder§r\n\nThe builder is Applied Logistic's main tool for building all Applied Logistic items.\n\nThis is a pretty cool block that does a lot of things...";
 
@@ -86,8 +86,6 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
             return true;
 
         worldIn.addBlockEvent(pos, this, EnumEventTypes.PLAN_SLOT_UPDATE.ordinal(), 0);
-
-        tileEntity.setInventorySlotContents(0, new ItemStack(net.minecraft.init.Items.APPLE));
 
         guiMaker.setGuiTitle(tileEntity.hasCustomName() ? tileEntity.getCustomName() : LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()));
         guiMaker.show(AppliedLogistics.instance, worldIn, playerIn, pos);
@@ -153,8 +151,20 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
 
     @Override
     public void DrawGui(TileEntity tileEntity) {
-        Random r = new Random();
-        labelTest.setText(">>> Random Number: " + r.nextInt(10000));
+//        if (!(tileEntity instanceof TileEntityBuilder))
+//            return;
+//        TileEntityBuilder tileEntityBuilder = (TileEntityBuilder)tileEntity;
+//
+//        ItemStack itemPlan = tileEntityBuilder.getPlanItem();
+//
+////        if (tileEntity.getPlanItem() == null) {
+////            this.fontRendererObj.drawString(TextFormatting.RED + LanguageHelper.MESSAGE.translateMessage("plan.insert"), 36, 26, 4210752);
+//        if (itemPlan != null && tileEntityBuilder.isUpgradeMode()) {
+//            labelInputSlotStatus.setText(LanguageHelper.LABEL.translateMessage("upgrade") + " " + LanguageHelper.NONE.translateMessage(itemPlan.getUnlocalizedName() + ".name"));
+//        } else if (itemPlan != null) {
+//            labelInputSlotStatus.setText(LanguageHelper.NONE.translateMessage(itemPlan.getUnlocalizedName() + ".name"));
+//        }
+
 
         if (guiMaker.getSelectedTab() == 0)
             guiMaker.setGuiMakerStatusIcon(GuiMakerStatusIcon.EMPTY);
@@ -175,30 +185,15 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
         guiMaker.clearGuiTabs();
 
         GuiTab tabGeneral = new GuiTab("General", Items.ITEM_MATERIAL_GEAR.getStack(1, 2));
-        tabGeneral.addGuiObject(new GuiLabel(6, 6, 0xFFFFFF, "Whats up Doc..."));
-        tabGeneral.addGuiObject(new GuiLabel(10, 18, 0xFF0000, "I'm red..."));
-        //tabGeneral.addGuiObject(new GuiSlot(30, 30, 0, (IInventory)tileEntity));
-        //tabGeneral.addGuiObject(new GuiSlot(60, 30, 0, (IInventory)tileEntity));
-        tabGeneral.addGuiObject(labelTest);
+        tabGeneral.addGuiObject(labelInfoArray);
+        tabGeneral.addGuiObject(new GuiSlot(5, 5, 0));
+        tabGeneral.addGuiObject(new GuiInventorySlots(5, 139));
         guiMaker.addGuiTab(tabGeneral);
 
-
-        GuiTab tabGeneral2 = new GuiTab("Tab #2", Items.ITEM_MATERIAL_GEAR.getStack(1, 3));
-        tabGeneral2.addGuiObject(new GuiLabel(20, 20, 0xFFFFFF, "Whats up Doc #2..."));
-        //tabGeneral2.addGuiObject(new GuiSlot(60, 30, 0, (IInventory)tileEntity));
-        guiMaker.addGuiTab(tabGeneral2);
-
-
-        GuiTab tabGeneral3 = new GuiTab("this is a special tab...", Items.ITEM_MATERIAL_GEAR.getStack(1, 4));
-        tabGeneral3.addGuiObject(new GuiLabel(40, 40, 0xFFFFFF, "Whats up Doc #2..."));
-        tabGeneral3.addGuiObject(new GuiInventorySlots(10, 60, inventoryPlayer));
-        guiMaker.addGuiTab(tabGeneral3);
-
-
-        GuiTab tabGeneral4 = new GuiTab("About", 1);
+        GuiTab tabAbout = new GuiTab("About", 1);
         labelInfoArray.setText(ABOUT_LABEL);
-        tabGeneral4.addGuiObject(labelInfoArray);
-        guiMaker.addGuiTab(tabGeneral4);
+        tabAbout.addGuiObject(labelInputSlotStatus);
+        guiMaker.addGuiTab(tabAbout);
     }
 
 //    @Override
