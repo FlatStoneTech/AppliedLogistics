@@ -20,6 +20,8 @@
 
 package tech.flatstone.appliedlogistics.proxy;
 
+import com.fireball1725.corelib.guimaker.GuiMaker;
+import com.fireball1725.corelib.guimaker.GuiMakerGuiHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
@@ -31,7 +33,6 @@ import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.api.registries.HammerRegistry;
 import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
 import tech.flatstone.appliedlogistics.api.registries.PulverizerRegistry;
-import tech.flatstone.appliedlogistics.client.gui.GuiHandler;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.blocks.fluids.BlockFluidBlock;
 import tech.flatstone.appliedlogistics.common.config.Config;
@@ -237,7 +238,7 @@ public abstract class CommonProxy implements IProxy {
 
     @Override
     public void registerGUIs() {
-        NetworkRegistry.INSTANCE.registerGuiHandler(AppliedLogistics.instance, new GuiHandler());
+        NetworkRegistry.INSTANCE.registerGuiHandler(AppliedLogistics.instance, new GuiMakerGuiHandler());
     }
 
     @Override

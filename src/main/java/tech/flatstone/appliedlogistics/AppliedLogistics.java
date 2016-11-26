@@ -71,6 +71,7 @@ public class AppliedLogistics {
         proxy.registerConfiguration(event.getSuggestedConfigurationFile());
 
         PacketHandler.init();
+        com.fireball1725.corelib.guimaker.network.PacketHandler.init();
 
         // Register all the things...
         proxy.registerBlocks();

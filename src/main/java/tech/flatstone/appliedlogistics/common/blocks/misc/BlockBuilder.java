@@ -20,12 +20,19 @@
 
 package tech.flatstone.appliedlogistics.common.blocks.misc;
 
+import com.fireball1725.corelib.guimaker.GuiMaker;
+import com.fireball1725.corelib.guimaker.GuiMakerStatusIcon;
+import com.fireball1725.corelib.guimaker.objects.*;
+import com.fireball1725.corelib.guimaker.IImplementsGuiMaker;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -39,13 +46,21 @@ import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTechBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
+import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityBuilder;
 import tech.flatstone.appliedlogistics.common.util.EnumEventTypes;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
+import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-public class BlockBuilder extends BlockTechBase implements IProvideRecipe {
+import java.util.Random;
+
+public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImplementsGuiMaker {
     public static final PropertyEnum TECHLEVEL = PropertyEnum.create("tech", TechLevel.class);
+    private GuiMaker guiMaker = new GuiMaker(this);
+    private GuiLabel labelTest = new GuiLabel(40, 40, 0x00FF00, "Hello World :D");
+    private GuiCenteredLabel labelInfoArray = new GuiCenteredLabel(6, 6, 244, 0xffffff);
+    private static final String ABOUT_LABEL = "§l§nAbout the Builder§r\n\nThe builder is Applied Logistic's main tool for building all Applied Logistic items.\n\nThis is a pretty cool block that does a lot of things...";
 
     public BlockBuilder() {
         super(Material.ROCK, "misc/builder", TechLevel.all());
@@ -71,7 +86,12 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe {
             return true;
 
         worldIn.addBlockEvent(pos, this, EnumEventTypes.PLAN_SLOT_UPDATE.ordinal(), 0);
-        playerIn.openGui(AppliedLogistics.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
+
+        tileEntity.setInventorySlotContents(0, new ItemStack(net.minecraft.init.Items.APPLE));
+
+        guiMaker.setGuiTitle(tileEntity.hasCustomName() ? tileEntity.getCustomName() : LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()));
+        guiMaker.show(AppliedLogistics.instance, worldIn, playerIn, pos);
+
         return true;
     }
 
@@ -129,6 +149,56 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe {
     public boolean hasComparatorInputOverride(IBlockState state) {
         //todo: fix this later
         return true;
+    }
+
+    @Override
+    public void DrawGui(TileEntity tileEntity) {
+        Random r = new Random();
+        labelTest.setText(">>> Random Number: " + r.nextInt(10000));
+
+        if (guiMaker.getSelectedTab() == 0)
+            guiMaker.setGuiMakerStatusIcon(GuiMakerStatusIcon.EMPTY);
+
+        if (guiMaker.getSelectedTab() == 1)
+            guiMaker.setGuiMakerStatusIcon(GuiMakerStatusIcon.GOOD);
+
+        if (guiMaker.getSelectedTab() == 2)
+            guiMaker.setGuiMakerStatusIcon(GuiMakerStatusIcon.WARN);
+
+        if (guiMaker.getSelectedTab() == 3)
+            guiMaker.setGuiMakerStatusIcon(GuiMakerStatusIcon.FAIL);
+
+    }
+
+    @Override
+    public void InitGui(TileEntity tileEntity, InventoryPlayer inventoryPlayer) {
+        guiMaker.clearGuiTabs();
+
+        GuiTab tabGeneral = new GuiTab("General", Items.ITEM_MATERIAL_GEAR.getStack(1, 2));
+        tabGeneral.addGuiObject(new GuiLabel(6, 6, 0xFFFFFF, "Whats up Doc..."));
+        tabGeneral.addGuiObject(new GuiLabel(10, 18, 0xFF0000, "I'm red..."));
+        //tabGeneral.addGuiObject(new GuiSlot(30, 30, 0, (IInventory)tileEntity));
+        //tabGeneral.addGuiObject(new GuiSlot(60, 30, 0, (IInventory)tileEntity));
+        tabGeneral.addGuiObject(labelTest);
+        guiMaker.addGuiTab(tabGeneral);
+
+
+        GuiTab tabGeneral2 = new GuiTab("Tab #2", Items.ITEM_MATERIAL_GEAR.getStack(1, 3));
+        tabGeneral2.addGuiObject(new GuiLabel(20, 20, 0xFFFFFF, "Whats up Doc #2..."));
+        //tabGeneral2.addGuiObject(new GuiSlot(60, 30, 0, (IInventory)tileEntity));
+        guiMaker.addGuiTab(tabGeneral2);
+
+
+        GuiTab tabGeneral3 = new GuiTab("this is a special tab...", Items.ITEM_MATERIAL_GEAR.getStack(1, 4));
+        tabGeneral3.addGuiObject(new GuiLabel(40, 40, 0xFFFFFF, "Whats up Doc #2..."));
+        tabGeneral3.addGuiObject(new GuiInventorySlots(10, 60, inventoryPlayer));
+        guiMaker.addGuiTab(tabGeneral3);
+
+
+        GuiTab tabGeneral4 = new GuiTab("About", 1);
+        labelInfoArray.setText(ABOUT_LABEL);
+        tabGeneral4.addGuiObject(labelInfoArray);
+        guiMaker.addGuiTab(tabGeneral4);
     }
 
 //    @Override
