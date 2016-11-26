@@ -9,11 +9,10 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Slot;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
+import net.minecraftforge.fml.client.config.GuiUtils;
+import org.lwjgl.opengl.GLSync;
 
 import java.awt.*;
 import java.io.IOException;
@@ -30,10 +29,10 @@ public class GuiMakerGuiContainer extends GuiContainer {
 
         guiMaker.setServerGuiTab(0, inventoryPlayer.player);
 
-        this.xSize = 256;
-        this.ySize = 220;
+        this.xSize = guiMaker.getGuiWidth();
+        this.ySize = guiMaker.getGuiHeight();
 
-        this.guiMaker.getGuiMakerInstance().DrawGui(tileEntity);
+        this.guiMaker.getGuiMakerInstance().drawGui(tileEntity);
 
         this.tileEntity = tileEntity;
 
@@ -48,6 +47,7 @@ public class GuiMakerGuiContainer extends GuiContainer {
     @Override
     public void initGui() {
         super.initGui();
+        //this.fontRendererObj.setUnicodeFlag(true);
     }
 
     @Override
@@ -58,10 +58,10 @@ public class GuiMakerGuiContainer extends GuiContainer {
         if (guiMaker.getGuiTabs().size() > 1) {
             int tabNumber = 0;
             for (GuiTab guiTabs : guiMaker.getGuiTabs()) {
-                int x = this.guiLeft + this.xSize + 3;
-                int y = this.guiTop + 13 + (tabNumber * 27);
-                int w = 20;
-                int h = 20;
+                int x = this.guiLeft + this.xSize;
+                int y = this.guiTop + 11 + (tabNumber * 25);
+                int w = 21;
+                int h = 24;
 
                 Rectangle r = new Rectangle(w, h);
                 if (r.contains(mouseX - x, mouseY - y)) {
@@ -102,9 +102,9 @@ public class GuiMakerGuiContainer extends GuiContainer {
             for (GuiTab guiTabs : guiMaker.getGuiTabs()) {
                 if (guiTabs.getTabIcon() != null) {
                     if (tabNumber == guiMaker.getSelectedTab()) {
-                        this.itemRender.renderItemAndEffectIntoGUI(guiTabs.getTabIcon(), this.xSize + 3, 14 + (tabNumber * 27));
+                        this.itemRender.renderItemAndEffectIntoGUI(guiTabs.getTabIcon(), this.xSize, 14 + (tabNumber * 25));
                     } else {
-                        this.itemRender.renderItemAndEffectIntoGUI(guiTabs.getTabIcon(), this.xSize + 4, 14 + (tabNumber * 27));
+                        this.itemRender.renderItemAndEffectIntoGUI(guiTabs.getTabIcon(), this.xSize + 1, 14 + (tabNumber * 25));
                     }
                 } else {
                     ResourceLocation resourceLocation = new ResourceLocation("firelib", "textures/gui/Darkskin.png");
@@ -113,9 +113,9 @@ public class GuiMakerGuiContainer extends GuiContainer {
                     //todo: make work with icon Number, instead of hard coding for icon 1
 
                     if (tabNumber == guiMaker.getSelectedTab()) {
-                        drawTexturedModalRect(this.xSize + 3, 14 + (tabNumber * 27), 128, 0, 16, 16);
+                        drawTexturedModalRect(this.xSize, 14 + (tabNumber * 25), 128, 0, 16, 16);
                     } else {
-                        drawTexturedModalRect(this.xSize + 4, 14 + (tabNumber * 27), 128, 0, 16, 16);
+                        drawTexturedModalRect(this.xSize + 1, 14 + (tabNumber * 25), 128, 0, 16, 16);
                     }
                 }
                 tabNumber++;
@@ -123,9 +123,6 @@ public class GuiMakerGuiContainer extends GuiContainer {
 
             GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
         }
-
-
-
 
         for(GuiObject guiObject : guiMaker.getGuiObjects())
             guiObject.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -147,10 +144,10 @@ public class GuiMakerGuiContainer extends GuiContainer {
             if (mouseButton == 0) {
                 int tabNumber = 0;
                 for (GuiTab guiTabs : guiMaker.getGuiTabs()) {
-                    int x = this.guiLeft + this.xSize + 3;
-                    int y = this.guiTop + 13 + (tabNumber * 27);
-                    int w = 20;
-                    int h = 20;
+                    int x = this.guiLeft + this.xSize + 1;
+                    int y = this.guiTop + 11 + (tabNumber * 25);
+                    int w = 21;
+                    int h = 24;
 
                     Rectangle r = new Rectangle(w, h);
                     if (r.contains(mouseX - x, mouseY - y)) {
@@ -233,7 +230,7 @@ public class GuiMakerGuiContainer extends GuiContainer {
             guiObject.setGuiY(this.guiTop);
         }
 
-        this.guiMaker.getGuiMakerInstance().DrawGui(this.tileEntity);
+        this.guiMaker.getGuiMakerInstance().drawGui(this.tileEntity);
 
         for(GuiObject guiObject : guiMaker.getGuiObjects())
             guiObject.updateScreen();
@@ -247,109 +244,36 @@ public class GuiMakerGuiContainer extends GuiContainer {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        ResourceLocation resourceLocation = new ResourceLocation("firelib", "textures/gui/Darkskin.png");
-        this.mc.getTextureManager().bindTexture(resourceLocation);
-
-        drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, 5, 5);
-        drawTexturedModalRect(this.guiLeft + this.xSize - 5, this.guiTop, 10, 0, 5, 5);
-        drawTexturedModalRect(this.guiLeft, this.guiTop + this.ySize - 5, 0, 10, 5, 5);
-        drawTexturedModalRect(this.guiLeft + this.xSize - 5, this.guiTop + this.ySize - 5, 10, 10, 5, 5);
-
-        for (int i = 0; i < this.xSize - 9 - 5; i+= 5 ) {
-            drawTexturedModalRect(this.guiLeft + i + 5, this.guiTop, 5, 0, 5, 5);
-            drawTexturedModalRect(this.guiLeft + i + 5, this.guiTop + this.ySize - 5, 5, 10, 5, 5);
-        }
-        drawTexturedModalRect(this.guiLeft + this.xSize - 5 - 5, this.guiTop, 5, 0, 5, 5);
-        drawTexturedModalRect(this.guiLeft + this.xSize - 5 - 5, this.guiTop + this.ySize - 5, 5, 10, 5, 5);
-
-
-        for (int i = 0; i < this.ySize - 9 - 5; i+= 5) {
-            drawTexturedModalRect(this.guiLeft, this.guiTop + i + 5, 0, 5, 5, 5);
-            drawTexturedModalRect(this.guiLeft + this.xSize - 5, this.guiTop + i + 5, 10, 5, 5, 5);
-        }
-        drawTexturedModalRect(this.guiLeft, this.guiTop + this.ySize - 5 - 5, 0, 5, 5, 5);
-        drawTexturedModalRect(this.guiLeft + this.xSize - 5, this.guiTop + this.ySize -5 - 5, 10, 5, 5, 5);
-
-        for (int i = 0; i < this.xSize - 9 - 5; i+=5) {
-            for (int j = 0; j < this.ySize - 9 - 5; j+=5) {
-                drawTexturedModalRect(this.guiLeft + i + 5, this.guiTop + j + 5, 5, 5, 5, 5);
-            }
-        }
-
-        for (int i = 0; i < this.xSize - 9 - 5; i+=5) {
-            drawTexturedModalRect(this.guiLeft + i + 5, this.guiTop + this.ySize -5 - 5, 5, 5, 5, 5);
-        }
-
-        for (int i = 0; i < this.ySize - 9 - 5; i+=5) {
-            drawTexturedModalRect(this.guiLeft + this.xSize - 5 - 5, this.guiTop + i + 5, 5, 5, 5, 5);
-        }
+        GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize, 16, 16, 4, this.zLevel);
 
         if (!guiMaker.getGuiTitle().isEmpty()) {
-            drawTexturedModalRect(this.guiLeft - 9, this.guiTop + 5, 0, 15, 5, 5);
-            drawTexturedModalRect(this.guiLeft - 4, this.guiTop + 5, 5, 15, 5, 5);
-
             int textY = this.fontRendererObj.getStringWidth(guiMaker.getGuiTitle());
 
             if (guiMaker.getGuiMakerStatusIcon() != GuiMakerStatusIcon.EMPTY) {
-                textY += 9;
-            }
+                GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.guiLeft - 9, this.guiTop + 5, 0, 16, 12, textY + 5 + 9, 12, 16, 4, this.zLevel);
 
-            for (int i = 0; i < textY - 8; i+=5) {
-                drawTexturedModalRect(this.guiLeft - 9, this.guiTop + 10 + i, 0, 20, 5, 5);
-                drawTexturedModalRect(this.guiLeft - 4, this.guiTop + 10 + i, 5, 20, 5, 5);
-            }
-
-            drawTexturedModalRect(this.guiLeft - 9, this.guiTop + textY + 5, 0, 25, 5, 5);
-            drawTexturedModalRect(this.guiLeft - 4, this.guiTop + textY + 5, 5, 25, 5, 5);
-
-            drawTexturedModalRect(this.guiLeft - 9, this.guiTop + textY, 0, 20, 5, 5);
-            drawTexturedModalRect(this.guiLeft - 4, this.guiTop + textY, 5, 20, 5, 5);
-
-            if (guiMaker.getGuiMakerStatusIcon() != GuiMakerStatusIcon.EMPTY) {
+                this.mc.getTextureManager().bindTexture(GuiMaker.resourceLocation);
                 drawTexturedModalRect(this.guiLeft - 9 + 3, this.guiTop + 5 + 3, 235 + ((guiMaker.getGuiMakerStatusIcon().ordinal() - 1) * 7), 0, 7, 7);
+            } else {
+                GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.guiLeft - 9, this.guiTop + 5, 0, 16, 12, textY + 5, 12, 16, 4, this.zLevel);
             }
         }
 
-        // Draw Tabs
         if (guiMaker.getGuiTabs().size() > 1) {
             int tabNumber = 0;
-            for (GuiTab guiTabs : guiMaker.getGuiTabs()) {
+            for (GuiTab guiTab : guiMaker.getGuiTabs()) {
                 if (tabNumber == guiMaker.getSelectedTab()) {
-                    drawTab(this.guiLeft + this.xSize - 1, this.guiTop + 10 + (tabNumber * 27), true);
+                    GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.guiLeft + this.xSize - 1, this.guiTop + 10 + (tabNumber * 25), 20, 16, 21, 24, 12, 16, 4, this.zLevel);
                 } else {
-                    drawTab(this.guiLeft + this.xSize, this.guiTop + 10 + (tabNumber * 27), false);
+                    GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.guiLeft + this.xSize, this.guiTop + 10 + (tabNumber * 25), 20, 16, 21, 24, 12, 16, 4, this.zLevel);
                 }
                 tabNumber++;
             }
         }
 
         for(GuiObject guiObject : guiMaker.getGuiObjects()) {
-            guiObject.setTextureSheet(resourceLocation);
+            //guiObject.setTextureSheet(GuiMaker.resourceLocation);
             guiObject.drawGuiContainerBackgroundLayer(this, partialTicks, mouseX, mouseY);
-        }
-    }
-
-    private void drawTab(int x, int y, boolean selected) {
-        for (int i = 0; i < 24; i+=5) {
-            if (selected)
-                drawTexturedModalRect(x, y + i, 10, 20, 5, 5);
-
-            if (i > 1 && i < 20) {
-                for (int j = 0; j < 19; j+=5) {
-                    drawTexturedModalRect(x + j, y + i, 15, 20, 5, 5);
-                }
-                drawTexturedModalRect(x + 20, y + i, 20, 20, 5, 5);
-            } else if (i == 0) {
-                for (int j = 0; j < 19; j+=5) {
-                    drawTexturedModalRect(x + j, y + i, 15, 15, 5, 5);
-                }
-                drawTexturedModalRect(x + 20, y + i, 20, 15, 5, 5);
-            } else if (i == 20) {
-                for (int j = 0; j < 19; j+=5) {
-                    drawTexturedModalRect(x + j, y + i, 15, 25, 5, 5);
-                }
-                drawTexturedModalRect(x + 20, y + i, 20, 25, 5, 5);
-            }
         }
     }
 }

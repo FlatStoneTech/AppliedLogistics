@@ -6,15 +6,16 @@ import com.fireball1725.corelib.guimaker.objects.GuiObject;
 import com.fireball1725.corelib.guimaker.objects.GuiTab;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GuiMaker {
     private static List<GuiMaker> guiInstances = new ArrayList<>();
+    public static ResourceLocation resourceLocation = new ResourceLocation("firelib", "textures/gui/Darkskin.png");
 
     //region Things set in stone
     /**
@@ -23,22 +24,22 @@ public class GuiMaker {
     private final int guiId;
 
     /**
-     * Height of the Gui Window
-     */
-    private final int guiHeight = 0;
-
-    /**
-     * Width of the Gui Window
-     */
-    private final int guiWidth = 0;
-
-    /**
      * GuiMaker Parent Instance
      */
     private final IImplementsGuiMaker guiMakerInstance;
     //endregion
 
     //region Things that can be adjusted or set during run-time
+    /**
+     * Height of the Gui Window
+     */
+    private int guiHeight;
+
+    /**
+     * Width of the Gui Window
+     */
+    private int guiWidth;
+
     /**
      * Currently selected tab (Default = 0)
      */
@@ -66,9 +67,11 @@ public class GuiMaker {
      *
      * @param instance
      */
-    public GuiMaker(IImplementsGuiMaker instance) {
+    public GuiMaker(IImplementsGuiMaker instance, int windowWidth, int windowHeight) {
         this.guiMakerInstance = instance;
         this.guiId = guiInstances.size();
+        this.guiWidth = windowWidth;
+        this.guiHeight = windowHeight;
         guiInstances.add(this);
     }
     //endregion
@@ -97,13 +100,23 @@ public class GuiMaker {
     public void show(Object mod, World world, EntityPlayer player, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
 
-        guiMakerInstance.InitGui(tileEntity, player.inventory);
+        guiMakerInstance.initGui(tileEntity, player.inventory);
         if (guiTabs.size() == 0)
             return;
 
         selectedTab = 0;
 
         player.openGui(mod, this.guiId, world, pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    /**
+     * Set the window size
+     * @param windowWidth
+     * @param windowHeight
+     */
+    public void setGuiSize(int windowWidth, int windowHeight) {
+        this.guiWidth = windowWidth;
+        this.guiHeight = windowHeight;
     }
 
     /**
@@ -178,6 +191,22 @@ public class GuiMaker {
      */
     public IImplementsGuiMaker getGuiMakerInstance() {
         return guiMakerInstance;
+    }
+
+    /**
+     * Get the window Height
+     * @return
+     */
+    public int getGuiHeight() {
+        return guiHeight;
+    }
+
+    /**
+     * Get the window Width
+     * @return
+     */
+    public int getGuiWidth() {
+        return guiWidth;
     }
 
     //endregion

@@ -36,6 +36,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -57,8 +58,8 @@ import java.util.Random;
 
 public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImplementsGuiMaker {
     public static final PropertyEnum TECHLEVEL = PropertyEnum.create("tech", TechLevel.class);
-    private GuiMaker guiMaker = new GuiMaker(this);
-    private GuiLabel labelInputSlotStatus = new GuiLabel(26, 13, 0x00FF00, "test...");
+    private GuiMaker guiMaker = new GuiMaker(this, 256, 220);
+    private GuiLabel labelInputSlotStatus = new GuiLabel(26, 13, 0x00FF00, "");
     private GuiCenteredLabel labelInfoArray = new GuiCenteredLabel(6, 6, 244, 0xffffff);
     private static final String ABOUT_LABEL = "§l§nAbout the Builder§r\n\nThe builder is Applied Logistic's main tool for building all Applied Logistic items.\n\nThis is a pretty cool block that does a lot of things...";
 
@@ -150,20 +151,20 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
     }
 
     @Override
-    public void DrawGui(TileEntity tileEntity) {
-//        if (!(tileEntity instanceof TileEntityBuilder))
-//            return;
-//        TileEntityBuilder tileEntityBuilder = (TileEntityBuilder)tileEntity;
-//
-//        ItemStack itemPlan = tileEntityBuilder.getPlanItem();
-//
-////        if (tileEntity.getPlanItem() == null) {
-////            this.fontRendererObj.drawString(TextFormatting.RED + LanguageHelper.MESSAGE.translateMessage("plan.insert"), 36, 26, 4210752);
-//        if (itemPlan != null && tileEntityBuilder.isUpgradeMode()) {
-//            labelInputSlotStatus.setText(LanguageHelper.LABEL.translateMessage("upgrade") + " " + LanguageHelper.NONE.translateMessage(itemPlan.getUnlocalizedName() + ".name"));
-//        } else if (itemPlan != null) {
-//            labelInputSlotStatus.setText(LanguageHelper.NONE.translateMessage(itemPlan.getUnlocalizedName() + ".name"));
-//        }
+    public void drawGui(TileEntity tileEntity) {
+        if (!(tileEntity instanceof TileEntityBuilder))
+            return;
+        TileEntityBuilder tileEntityBuilder = (TileEntityBuilder)tileEntity;
+
+        ItemStack itemPlan = tileEntityBuilder.getPlanItem();
+
+        if (tileEntityBuilder.getPlanItem() == null) {
+            labelInputSlotStatus.setText(TextFormatting.RED + LanguageHelper.MESSAGE.translateMessage("plan.insert"));
+        } else if (itemPlan != null && tileEntityBuilder.isUpgradeMode()) {
+            labelInputSlotStatus.setText(LanguageHelper.LABEL.translateMessage("upgrade") + " " + LanguageHelper.NONE.translateMessage(itemPlan.getUnlocalizedName() + ".name"));
+        } else if (itemPlan != null) {
+            labelInputSlotStatus.setText(LanguageHelper.NONE.translateMessage(itemPlan.getUnlocalizedName() + ".name"));
+        }
 
 
         if (guiMaker.getSelectedTab() == 0)
@@ -181,18 +182,18 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
     }
 
     @Override
-    public void InitGui(TileEntity tileEntity, InventoryPlayer inventoryPlayer) {
+    public void initGui(TileEntity tileEntity, InventoryPlayer inventoryPlayer) {
         guiMaker.clearGuiTabs();
 
         GuiTab tabGeneral = new GuiTab("General", Items.ITEM_MATERIAL_GEAR.getStack(1, 2));
-        tabGeneral.addGuiObject(labelInfoArray);
+        tabGeneral.addGuiObject(labelInputSlotStatus);
         tabGeneral.addGuiObject(new GuiSlot(5, 5, 0));
         tabGeneral.addGuiObject(new GuiInventorySlots(5, 139));
         guiMaker.addGuiTab(tabGeneral);
 
         GuiTab tabAbout = new GuiTab("About", 1);
         labelInfoArray.setText(ABOUT_LABEL);
-        tabAbout.addGuiObject(labelInputSlotStatus);
+        tabAbout.addGuiObject(labelInfoArray);
         guiMaker.addGuiTab(tabAbout);
     }
 

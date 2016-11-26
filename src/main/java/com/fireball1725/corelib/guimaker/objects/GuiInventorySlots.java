@@ -34,8 +34,6 @@ public class GuiInventorySlots extends GuiObject {
 
     @Override
     public void drawGuiContainerBackgroundLayer(GuiContainer guiContainer, float partialTicks, int mouseX, int mouseY) {
-        guiContainer.mc.getTextureManager().bindTexture(this.textureSheet);
-
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
                 drawSlot(guiContainer, j * 18 + this.locX, i * 18 + this.locY);

@@ -1,11 +1,13 @@
 package com.fireball1725.corelib.guimaker.objects;
 
+import com.fireball1725.corelib.guimaker.GuiMaker;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.client.config.GuiUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -153,26 +155,14 @@ public abstract class GuiObject implements IGuiObject {
         x += guiContainer.guiLeft;
         y += guiContainer.guiTop;
 
-        guiContainer.drawTexturedModalRect(x, y, 15, 0, 5, 5);
-        guiContainer.drawTexturedModalRect(x + 13, y, 25, 0, 5, 5);
-        guiContainer.drawTexturedModalRect(x, y + 13, 15, 10, 5, 5);
-        guiContainer.drawTexturedModalRect(x + 13, y + 13, 25, 10, 5, 5);
-
-        guiContainer.drawTexturedModalRect(x + 5, y, 20, 0, 5, 5);
-        guiContainer.drawTexturedModalRect(x + 10, y, 20, 0, 5, 5);
-
-        guiContainer.drawTexturedModalRect(x + 5, y + 13, 20, 10, 5, 5);
-        guiContainer.drawTexturedModalRect(x + 10, y + 13, 20, 10, 5, 5);
-
-        guiContainer.drawTexturedModalRect(x, y + 5, 15, 5, 5, 5);
-        guiContainer.drawTexturedModalRect(x, y + 10, 15, 5, 5, 5);
-
-        guiContainer.drawTexturedModalRect(x + 13, y + 5, 25, 5, 5, 5);
-        guiContainer.drawTexturedModalRect(x + 13, y + 10, 25, 5, 5, 5);
-
-        guiContainer.drawTexturedModalRect(x + 5, y + 5, 20, 5, 5, 5);
-        guiContainer.drawTexturedModalRect(x + 10, y + 5, 20, 5, 5, 5);
-        guiContainer.drawTexturedModalRect(x + 5, y + 10, 20, 5, 5, 5);
-        guiContainer.drawTexturedModalRect(x + 10, y + 10, 20, 5, 5, 5);
+        GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, x, y, 16, 0, 18, 18, 16, 16, 1, 0);
     }
+
+    protected void drawLargeSlot(GuiContainer guiContainer, int x, int y) {
+        x += guiContainer.guiLeft;
+        y += guiContainer.guiTop;
+
+        GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, x, y, 16, 0, 26, 26, 16, 16, 1, 0);
+    }
+
 }

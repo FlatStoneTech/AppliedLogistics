@@ -27,8 +27,6 @@ public class GuiSlot extends GuiObject {
 
     @Override
     public void drawGuiContainerBackgroundLayer(GuiContainer guiContainer, float partialTicks, int mouseX, int mouseY) {
-        guiContainer.mc.getTextureManager().bindTexture(this.textureSheet);
-
         drawSlot(guiContainer, this.locX, this.locY);
     }
 }

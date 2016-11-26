@@ -1,11 +1,19 @@
 package tech.flatstone.appliedlogistics.common.blocks.machines;
 
+import com.fireball1725.corelib.guimaker.GuiMaker;
+import com.fireball1725.corelib.guimaker.IImplementsGuiMaker;
+import com.fireball1725.corelib.guimaker.objects.GuiInventorySlots;
+import com.fireball1725.corelib.guimaker.objects.GuiLabel;
+import com.fireball1725.corelib.guimaker.objects.GuiSlot;
+import com.fireball1725.corelib.guimaker.objects.GuiTab;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
@@ -16,13 +24,17 @@ import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTechBase;
+import tech.flatstone.appliedlogistics.common.blocks.Blocks;
+import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityFurnace;
+import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 import java.util.Random;
 
-public class BlockFurnace extends BlockTechBase {
+public class BlockFurnace extends BlockTechBase implements IImplementsGuiMaker {
     private static final PropertyBool WORKING = PropertyBool.create("working");
+    private GuiMaker guiMaker = new GuiMaker(this, 220, 174);
 
     public BlockFurnace() {
         super(Material.ROCK, "machines/furnace", TechLevel.STONE_AGE, TechLevel.BRONZE_AGE, TechLevel.INDUSTRIAL_AGE, TechLevel.MECHANICAL_AGE, TechLevel.DIGITAL_AGE);
@@ -70,7 +82,9 @@ public class BlockFurnace extends BlockTechBase {
         if (worldIn.isRemote)
             return true;
 
-        playerIn.openGui(AppliedLogistics.instance, 4, worldIn, pos.getX(), pos.getY(), pos.getZ());
+        guiMaker.setGuiTitle(tileEntity.hasCustomName() ? tileEntity.getCustomName() : LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()));
+        guiMaker.show(AppliedLogistics.instance, worldIn, playerIn, pos);
+
         return true;
     }
 
@@ -128,5 +142,57 @@ public class BlockFurnace extends BlockTechBase {
     @Override
     public int damageDropped(IBlockState state) {
         return getMetaFromState(state);
+    }
+
+    @Override
+    public void drawGui(TileEntity tileEntity) {
+
+    }
+
+    @Override
+    public void initGui(TileEntity tileEntity, InventoryPlayer inventoryPlayer) {
+        guiMaker.clearGuiTabs();
+
+        GuiTab tabGeneral = new GuiTab("General", Blocks.BLOCK_MACHINE_FURNACE.getStack(1, tileEntity.getBlockMetadata()));
+        //tabGeneral.addGuiObject(labelInputSlotStatus);
+        // Slots...
+        tabGeneral.addGuiObject(new GuiSlot(5, 5, 0));
+        tabGeneral.addGuiObject(new GuiSlot(23, 5, 0));
+        tabGeneral.addGuiObject(new GuiSlot(95, 5, 0));
+        tabGeneral.addGuiObject(new GuiSlot(113, 5, 0));
+        tabGeneral.addGuiObject(new GuiSlot(131, 5, 0));
+        tabGeneral.addGuiObject(new GuiSlot(149, 5, 0));
+
+        tabGeneral.addGuiObject(new GuiSlot(5, 23, 0));
+        tabGeneral.addGuiObject(new GuiSlot(23, 23, 0));
+        tabGeneral.addGuiObject(new GuiSlot(95, 23, 0));
+        tabGeneral.addGuiObject(new GuiSlot(113, 23, 0));
+        tabGeneral.addGuiObject(new GuiSlot(131, 23, 0));
+        tabGeneral.addGuiObject(new GuiSlot(149, 23, 0));
+
+        tabGeneral.addGuiObject(new GuiSlot(5, 41, 0));
+        tabGeneral.addGuiObject(new GuiSlot(23, 41, 0));
+        tabGeneral.addGuiObject(new GuiSlot(95, 41, 0));
+        tabGeneral.addGuiObject(new GuiSlot(113, 41, 0));
+        tabGeneral.addGuiObject(new GuiSlot(131, 41, 0));
+        tabGeneral.addGuiObject(new GuiSlot(149, 41, 0));
+
+        tabGeneral.addGuiObject(new GuiSlot(5, 59, 0));
+        tabGeneral.addGuiObject(new GuiSlot(23, 59, 0));
+        tabGeneral.addGuiObject(new GuiSlot(95, 59, 0));
+        tabGeneral.addGuiObject(new GuiSlot(113, 59, 0));
+        tabGeneral.addGuiObject(new GuiSlot(131, 59, 0));
+        tabGeneral.addGuiObject(new GuiSlot(149, 59, 0));
+
+        // Player's Inventory
+        tabGeneral.addGuiObject(new GuiLabel(8, 83, 0xFFFFFF, "Inventory"));
+        tabGeneral.addGuiObject(new GuiInventorySlots(5, 93));
+        guiMaker.addGuiTab(tabGeneral);
+
+        GuiTab tabAbout = new GuiTab("About", 1);
+        //labelInfoArray.setText(ABOUT_LABEL);
+        //tabAbout.addGuiObject(labelInfoArray);
+        guiMaker.addGuiTab(tabAbout);
+
     }
 }
