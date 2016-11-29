@@ -2,8 +2,10 @@ package tech.flatstone.appliedlogistics.common.tileentities.transport;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
@@ -17,18 +19,33 @@ public class TileEntityEntry extends TileEntityMachineBase implements ITickable 
     private boolean loaded = false;
 
     @Override
+    public void validate() {
+        super.validate();
+        if (!loaded)
+            nodeUUID = AppliedLogistics.instance.transportGrid.createTransportNode();
+    }
+
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        AppliedLogistics.instance.transportGrid.removeNode(nodeUUID);
+    }
+
+    @Override
     public IInventory getInternalInventory() {
         return inventory;
     }
 
     @Override
     public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
+        if ((operation == InventoryOperation.setInventorySlotContents) && (added != null))
+            AppliedLogistics.instance.transportGrid.insertObjectToGrid(nodeUUID, added.getUnlocalizedName(), added);
 
     }
 
     @Override
     public int[] getAccessibleSlotsBySide(EnumFacing side) {
-        return new int[0];
+        return new int[]{0};
     }
 
     /**
@@ -48,5 +65,19 @@ public class TileEntityEntry extends TileEntityMachineBase implements ITickable 
     @Override
     public void update() {
 
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
+        nbtTagCompound = super.writeToNBT(nbtTagCompound);
+        nbtTagCompound.setUniqueId("nodeUUID", nodeUUID);
+        return nbtTagCompound;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTagCompound) {
+        super.readFromNBT(nbtTagCompound);
+        nodeUUID = nbtTagCompound.getUniqueId("nodeUUID");
+        loaded = true;
     }
 }

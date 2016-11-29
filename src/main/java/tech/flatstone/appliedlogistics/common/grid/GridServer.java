@@ -85,8 +85,8 @@ class GridServer implements Runnable {
 
     }
 
-    void addCargo(TransportContainer objectContainer) {
-        this.incomingCargo.offer(objectContainer);
+    boolean addCargo(TransportContainer objectContainer) {
+        return this.incomingCargo.offer(objectContainer);
     }
 
     TransportContainer getCargo(UUID exitNode) {

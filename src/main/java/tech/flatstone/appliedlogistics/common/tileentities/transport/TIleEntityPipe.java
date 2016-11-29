@@ -12,7 +12,7 @@ public class TIleEntityPipe extends TileEntityBase implements ITickable {
     private boolean loaded = false;
 
     @Override
-    public void validate(){
+    public void validate() {
         super.validate();
         if (!loaded)
             nodeUUID = AppliedLogistics.instance.transportGrid.createTransportNode();
