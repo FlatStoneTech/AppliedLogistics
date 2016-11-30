@@ -1,12 +1,13 @@
 package com.fireball1725.corelib.guimaker.objects;
 
 import com.fireball1725.corelib.guimaker.GuiMaker;
+import com.fireball1725.corelib.network.PacketHandler;
+import com.fireball1725.corelib.network.messages.PacketGuiObjectClicked;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.config.GuiUtils;
 
 import java.io.IOException;
@@ -14,66 +15,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class GuiObject implements IGuiObject {
-    protected int locX;
-    protected int locY;
-    protected int width;
-    protected int height;
-    protected int guiWidth;
-    protected int guiHeight;
-    protected int guiX;
-    protected int guiY;
-    protected ResourceLocation textureSheet;
 
-    public void setTextureSheet(ResourceLocation textureSheet) {
-        this.textureSheet = textureSheet;
+    protected int x, y, w, h;
+
+    protected int guiX, guiY, guiW, guiH;
+
+    protected final int controlID;
+
+    protected GuiMaker guiMakerObj;
+
+    protected boolean visible = true;
+    protected boolean disabled = false;
+    protected boolean selected = false;
+
+    public GuiObject(int controlID) {
+        this.controlID = controlID;
     }
 
-    public void setGuiWidth(int guiWidth) {
-        this.guiWidth = guiWidth;
+    public void updateGuiObject(GuiMaker guiMakerObj) {
+        this.guiMakerObj = guiMakerObj;
     }
 
-    public void setGuiHeight(int guiHeight) {
-        this.guiHeight = guiHeight;
+    public void updateGuiSize(int x, int y, int w, int h) {
+        this.guiX = x;
+        this.guiY = y;
+        this.guiW = w;
+        this.guiH = h;
     }
 
-    public void setGuiX(int guiX) {
-        this.guiX = guiX;
+    public void guiObjectClicked() {
+        PacketHandler.INSTANCE.sendToServer(new PacketGuiObjectClicked(guiMakerObj.getGuiId(), this.controlID));
     }
 
-    public void setGuiY(int guiY) {
-        this.guiY = guiY;
-    }
-
-    public int getLocX() {
-        return locX;
-    }
-
-    public void setLocX(int locX) {
-        this.locX = locX;
-    }
-
-    public int getLocY() {
-        return locY;
-    }
-
-    public void setLocY(int locY) {
-        this.locY = locY;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
+    public void guiObjectUpdated() {
+        this.guiMakerObj.guiObjectUpdated(this.controlID);
     }
 
     @Override
@@ -82,12 +57,12 @@ public abstract class GuiObject implements IGuiObject {
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    public void drawScreen(GuiContainer guiContainer, int mouseX, int mouseY, float partialTicks, float zLevel) {
 
     }
 
     @Override
-    public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+    public void drawGuiContainerForegroundLayer(GuiContainer guiContainer, int mouseX, int mouseY) {
 
     }
 
@@ -102,7 +77,7 @@ public abstract class GuiObject implements IGuiObject {
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+    public void mouseClicked(GuiContainer guiContainer, int mouseX, int mouseY, int mouseButton) throws IOException {
 
     }
 
@@ -151,18 +126,34 @@ public abstract class GuiObject implements IGuiObject {
         return new ArrayList<>();
     }
 
-    protected void drawSlot(GuiContainer guiContainer, int x, int y) {
-        x += guiContainer.guiLeft;
-        y += guiContainer.guiTop;
+    protected void drawSlot(int x, int y, int w, int h) {
+        x += this.guiX;
+        y += this.guiY;
 
-        GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, x, y, 16, 0, 18, 18, 16, 16, 1, 0);
+        GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, x, y, 0, 16, w, h, 16, 16, 1, 0);
     }
 
-    protected void drawLargeSlot(GuiContainer guiContainer, int x, int y) {
-        x += guiContainer.guiLeft;
-        y += guiContainer.guiTop;
-
-        GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, x, y, 16, 0, 26, 26, 16, 16, 1, 0);
+    public boolean isVisible() {
+        return visible;
     }
 
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
 }

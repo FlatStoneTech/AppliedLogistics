@@ -9,4 +9,7 @@ public class GuiTextBox extends GuiObject {
     protected int fontColor;
 
 
+    public GuiTextBox(int controlID) {
+        super(controlID);
+    }
 }

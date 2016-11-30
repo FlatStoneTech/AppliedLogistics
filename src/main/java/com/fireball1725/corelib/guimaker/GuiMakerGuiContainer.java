@@ -12,11 +12,12 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.config.GuiUtils;
-import org.lwjgl.opengl.GLSync;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class GuiMakerGuiContainer extends GuiContainer {
     private TileEntity tileEntity;
@@ -37,22 +38,32 @@ public class GuiMakerGuiContainer extends GuiContainer {
         this.tileEntity = tileEntity;
 
         for(GuiObject guiObject : guiMaker.getGuiObjects()) {
-            guiObject.setGuiHeight(ySize);
-            guiObject.setGuiWidth(xSize);
-            guiObject.setGuiX(this.guiLeft);
-            guiObject.setGuiY(this.guiTop);
+            guiObject.updateGuiSize(this.guiLeft, this.guiTop, xSize, ySize);
         }
     }
 
     @Override
     public void initGui() {
         super.initGui();
-        //this.fontRendererObj.setUnicodeFlag(true);
+
+        for(GuiObject guiObject : guiMaker.getGuiObjects()) {
+            guiObject.updateGuiSize(this.guiLeft, this.guiTop, xSize, ySize);
+        }
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
+
+        this.zLevel = -1;
+
+        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+        RenderHelper.enableGUIStandardItemLighting();
+
+        for(GuiObject guiObject : guiMaker.getGuiObjects())
+            guiObject.drawScreen(this, mouseX, mouseY, partialTicks, this.zLevel);
+
+        this.zLevel = 0;
 
         // Draw Tab Tooltip
         if (guiMaker.getGuiTabs().size() > 1) {
@@ -71,9 +82,6 @@ public class GuiMakerGuiContainer extends GuiContainer {
                 tabNumber++;
             }
         }
-
-        for(GuiObject guiObject : guiMaker.getGuiObjects())
-            guiObject.drawScreen(mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -84,9 +92,9 @@ public class GuiMakerGuiContainer extends GuiContainer {
             GlStateManager.rotate(90, 0, 0, 90);
 
             if (guiMaker.getGuiMakerStatusIcon() != GuiMakerStatusIcon.EMPTY)
-                Minecraft.getMinecraft().fontRendererObj.drawString(guiMaker.getGuiTitle(), 8 + 9, -1, 0xd5d5d5);
+                this.fontRendererObj.drawString(guiMaker.getGuiTitle(), 8 + 9, -1, 0xd5d5d5);
             else
-                Minecraft.getMinecraft().fontRendererObj.drawString(guiMaker.getGuiTitle(), 8, -1, 0xd5d5d5);
+                this.fontRendererObj.drawString(guiMaker.getGuiTitle(), 8, -1, 0xd5d5d5);
 
             GlStateManager.rotate(-90, 0, 0, 90);
         }
@@ -100,11 +108,11 @@ public class GuiMakerGuiContainer extends GuiContainer {
 
             int tabNumber = 0;
             for (GuiTab guiTabs : guiMaker.getGuiTabs()) {
-                if (guiTabs.getTabIcon() != null) {
+                if (guiTabs.getTabIconStack() != null) {
                     if (tabNumber == guiMaker.getSelectedTab()) {
-                        this.itemRender.renderItemAndEffectIntoGUI(guiTabs.getTabIcon(), this.xSize, 14 + (tabNumber * 25));
+                        this.itemRender.renderItemAndEffectIntoGUI(guiTabs.getTabIconStack(), this.xSize, 14 + (tabNumber * 25));
                     } else {
-                        this.itemRender.renderItemAndEffectIntoGUI(guiTabs.getTabIcon(), this.xSize + 1, 14 + (tabNumber * 25));
+                        this.itemRender.renderItemAndEffectIntoGUI(guiTabs.getTabIconStack(), this.xSize + 1, 14 + (tabNumber * 25));
                     }
                 } else {
                     ResourceLocation resourceLocation = new ResourceLocation("firelib", "textures/gui/Darkskin.png");
@@ -125,7 +133,7 @@ public class GuiMakerGuiContainer extends GuiContainer {
         }
 
         for(GuiObject guiObject : guiMaker.getGuiObjects())
-            guiObject.drawGuiContainerForegroundLayer(mouseX, mouseY);
+            guiObject.drawGuiContainerForegroundLayer(this, mouseX, mouseY);
     }
 
 //    @Override
@@ -162,7 +170,7 @@ public class GuiMakerGuiContainer extends GuiContainer {
         }
 
         for(GuiObject guiObject : guiMaker.getGuiObjects())
-            guiObject.mouseClicked(mouseX, mouseY, mouseButton);
+            guiObject.mouseClicked(this, mouseX, mouseY, mouseButton);
     }
 //
 //    @Override
@@ -224,10 +232,7 @@ public class GuiMakerGuiContainer extends GuiContainer {
         super.updateScreen();
 
         for(GuiObject guiObject : guiMaker.getGuiObjects()) {
-            guiObject.setGuiHeight(ySize);
-            guiObject.setGuiWidth(xSize);
-            guiObject.setGuiX(this.guiLeft);
-            guiObject.setGuiY(this.guiTop);
+            guiObject.updateGuiSize(this.guiLeft, this.guiTop, xSize, ySize);
         }
 
         this.guiMaker.getGuiMakerInstance().drawGui(this.tileEntity);
@@ -250,12 +255,12 @@ public class GuiMakerGuiContainer extends GuiContainer {
             int textY = this.fontRendererObj.getStringWidth(guiMaker.getGuiTitle());
 
             if (guiMaker.getGuiMakerStatusIcon() != GuiMakerStatusIcon.EMPTY) {
-                GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.guiLeft - 9, this.guiTop + 5, 0, 16, 12, textY + 5 + 9, 12, 16, 4, this.zLevel);
+                GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.guiLeft - 9, this.guiTop + 5, 0, 32, 12, textY + 5 + 9, 12, 16, 4, this.zLevel);
 
                 this.mc.getTextureManager().bindTexture(GuiMaker.resourceLocation);
                 drawTexturedModalRect(this.guiLeft - 9 + 3, this.guiTop + 5 + 3, 235 + ((guiMaker.getGuiMakerStatusIcon().ordinal() - 1) * 7), 0, 7, 7);
             } else {
-                GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.guiLeft - 9, this.guiTop + 5, 0, 16, 12, textY + 5, 12, 16, 4, this.zLevel);
+                GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.guiLeft - 9, this.guiTop + 5, 0, 32, 12, textY + 5, 12, 16, 4, this.zLevel);
             }
         }
 
@@ -263,9 +268,9 @@ public class GuiMakerGuiContainer extends GuiContainer {
             int tabNumber = 0;
             for (GuiTab guiTab : guiMaker.getGuiTabs()) {
                 if (tabNumber == guiMaker.getSelectedTab()) {
-                    GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.guiLeft + this.xSize - 1, this.guiTop + 10 + (tabNumber * 25), 20, 16, 21, 24, 12, 16, 4, this.zLevel);
+                    GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.guiLeft + this.xSize - 1, this.guiTop + 10 + (tabNumber * 25), 4, 48, 21, 24, 12, 16, 4, this.zLevel);
                 } else {
-                    GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.guiLeft + this.xSize, this.guiTop + 10 + (tabNumber * 25), 20, 16, 21, 24, 12, 16, 4, this.zLevel);
+                    GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.guiLeft + this.xSize, this.guiTop + 10 + (tabNumber * 25), 4, 48, 21, 24, 12, 16, 4, this.zLevel);
                 }
                 tabNumber++;
             }
@@ -275,5 +280,16 @@ public class GuiMakerGuiContainer extends GuiContainer {
             //guiObject.setTextureSheet(GuiMaker.resourceLocation);
             guiObject.drawGuiContainerBackgroundLayer(this, partialTicks, mouseX, mouseY);
         }
+    }
+
+    public List<Rectangle> getExtaGuiAreas() {
+        List<Rectangle> areas = new ArrayList<Rectangle>();
+
+        if (guiMaker.getGuiTabs().size() > 1) {
+            Rectangle tabArea = new Rectangle(this.guiLeft + this.xSize, this.guiTop + 9, 24, (25 * guiMaker.getGuiTabs().size()) + 1);
+            areas.add(tabArea);
+        }
+
+        return areas;
     }
 }

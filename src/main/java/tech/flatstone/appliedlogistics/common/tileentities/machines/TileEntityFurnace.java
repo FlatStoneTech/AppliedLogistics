@@ -206,14 +206,11 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
     }
 
     public int getFuelOffset() {
-        if (fuelTotal == 0)
-            return +12;
-
-        return Math.round((((float) fuelTotal - (float) fuelRemaining) / (float) fuelTotal) * 11);
+        return Math.round(((((float) fuelRemaining) / (float) fuelTotal)) * 100);
     }
 
     public int getSmeltProgress(int row) {
-        return Math.round(((float) smeltProgress[row] / (float) 300) * 22);
+        return Math.round(((float) smeltProgress[row] / (float) 300) * 100);
     }
 
     private boolean canSmelt(ItemStack stack) {

@@ -1,61 +1,54 @@
 package com.fireball1725.corelib.guimaker.objects;
 
-import com.fireball1725.corelib.guimaker.objects.GuiObject;
+import com.fireball1725.corelib.guimaker.GuiMaker;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.FMLSecurityManager;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GuiTab {
-    private String tabName;
-    private List<GuiObject> guiObjects = new ArrayList<>();
-    private ItemStack tabIcon;
-    private int tabIconNumber = 0;
+    private final GuiMaker guiMakerObj;
+    private List<GuiObject> guiObjectList = new ArrayList<>();
 
-    public int getTabIconNumber() {
-        return tabIconNumber;
-    }
+    private final String tabName;
+    private final ItemStack tabIconStack;
+    private final int tabIconNumber;
 
-    public void setTabIconNumber(int tabIconNumber) {
-        this.tabIconNumber = tabIconNumber;
-    }
-
-    public GuiTab(String tabName, ItemStack tabIcon) {
+    public GuiTab(GuiMaker guiMakerObj, String tabName, int tabIconNumber) {
+        this.guiMakerObj = guiMakerObj;
         this.tabName = tabName;
-        this.tabIcon = tabIcon;
+        this.tabIconNumber = tabIconNumber;
+        this.tabIconStack = null;
     }
 
-    public GuiTab(String tabName, int tabIconNumber) {
+    public GuiTab(GuiMaker guiMakerObj, String tabName, ItemStack tabIconStack) {
+        this.guiMakerObj = guiMakerObj;
         this.tabName = tabName;
-        this.tabIcon = null;
-        this.tabIconNumber = tabIconNumber;
+        this.tabIconNumber = 0;
+        this.tabIconStack = tabIconStack;
     }
 
     public void addGuiObject(GuiObject guiObject) {
-        guiObjects.add(guiObject);
+        guiObject.updateGuiObject(this.guiMakerObj);
+        guiObjectList.add(guiObject);
     }
 
-    public ItemStack getTabIcon() {
-        return tabIcon;
-    }
-
-    public void setTabIcon(ItemStack tabIcon) {
-        this.tabIcon = tabIcon;
+    public List<GuiObject> getGuiObjectList() {
+        return guiObjectList;
     }
 
     public String getTabName() {
         return tabName;
     }
 
-    public void setTabName(String tabName) {
-        this.tabName = tabName;
+    public ItemStack getTabIconStack() {
+        return tabIconStack;
     }
 
-    public List<GuiObject> getGuiObjects() {
-        return guiObjects;
-    }
-
-    public void setGuiObjects(List<GuiObject> guiObjects) {
-        this.guiObjects = guiObjects;
+    public int getTabIconNumber() {
+        return tabIconNumber;
     }
 }

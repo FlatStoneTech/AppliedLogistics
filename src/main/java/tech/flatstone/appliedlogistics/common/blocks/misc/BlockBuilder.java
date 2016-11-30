@@ -30,7 +30,6 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -49,18 +48,19 @@ import tech.flatstone.appliedlogistics.common.blocks.BlockTechBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityBuilder;
-import tech.flatstone.appliedlogistics.common.util.EnumEventTypes;
-import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
-import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
-import tech.flatstone.appliedlogistics.common.util.TileHelper;
-
-import java.util.Random;
+import tech.flatstone.appliedlogistics.common.util.*;
 
 public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImplementsGuiMaker {
     public static final PropertyEnum TECHLEVEL = PropertyEnum.create("tech", TechLevel.class);
-    private GuiMaker guiMaker = new GuiMaker(this, 256, 220);
+    private GuiMaker guiMaker;
     private GuiLabel labelInputSlotStatus = new GuiLabel(26, 13, 0x00FF00, "");
     private GuiCenteredLabel labelInfoArray = new GuiCenteredLabel(6, 6, 244, 0xffffff);
+    private GuiCheckBox checkBox1 = new GuiCheckBox(10, 70, 100, true);
+    private GuiCheckBox checkBox2 = new GuiCheckBox(11, 10, 40, false);
+    private GuiCheckBox checkBox3 = new GuiCheckBox(12, 30, 40, true);
+    private GuiCheckBox checkBox4 = new GuiCheckBox(13, 50, 40, false);
+    private GuiButton guiButton1 = new GuiButton(1, 10, 70, 140, "Hello World...");
+
     private static final String ABOUT_LABEL = "§l§nAbout the Builder§r\n\nThe builder is Applied Logistic's main tool for building all Applied Logistic items.\n\nThis is a pretty cool block that does a lot of things...";
 
     public BlockBuilder() {
@@ -69,6 +69,38 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
         this.setTileEntity(TileEntityBuilder.class);
         this.setCreativeTab(AppliedLogisticsCreativeTabs.MACHINES);
         this.setInternalName("builder");
+
+        guiMaker = new GuiMaker(this, 256, 220) {
+            @Override
+            public void guiObjectClicked(int controlID) {
+                switch(controlID) {
+                    default:
+                        LogHelper.info(">>> " + controlID);
+                        break;
+                    case 10:
+                        checkBox1.setSelected(!checkBox1.isSelected());
+                        break;
+                    case 11:
+                        checkBox2.setSelected(!checkBox2.isSelected());
+                        checkBox1.setDisabled(checkBox2.isSelected());
+                        guiButton1.setDisabled(checkBox2.isSelected());
+                        break;
+                    case 12:
+                        checkBox3.setSelected(!checkBox3.isSelected());
+                        guiButton1.setVisible(checkBox3.isSelected());
+                        checkBox1.setVisible(checkBox3.isSelected());
+                        break;
+                    case 13:
+                        checkBox4.setSelected(!checkBox4.isSelected());
+                        guiButton1.setSelected(checkBox4.isSelected());
+                }
+            }
+
+            @Override
+            public void guiObjectUpdated(int controlID) {
+
+            }
+        };
     }
 
     @Override
@@ -185,13 +217,22 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
     public void initGui(TileEntity tileEntity, InventoryPlayer inventoryPlayer) {
         guiMaker.clearGuiTabs();
 
-        GuiTab tabGeneral = new GuiTab("General", Items.ITEM_MATERIAL_GEAR.getStack(1, 2));
+        GuiTab tabGeneral = new GuiTab(this.guiMaker, "General", Items.ITEM_MATERIAL_GEAR.getStack(1, 2));
         tabGeneral.addGuiObject(labelInputSlotStatus);
         tabGeneral.addGuiObject(new GuiSlot(5, 5, 0));
         tabGeneral.addGuiObject(new GuiInventorySlots(5, 139));
+        tabGeneral.addGuiObject(checkBox2);
+        tabGeneral.addGuiObject(checkBox3);
+        tabGeneral.addGuiObject(checkBox4);
+        tabGeneral.addGuiObject(guiButton1);
+        tabGeneral.addGuiObject(new GuiButton(1, 10, 95, 40, "Hello World..."));
+        tabGeneral.addGuiObject(checkBox1);
+        tabGeneral.addGuiObject(new GuiProgressArrow(10, 115, 50));
+        tabGeneral.addGuiObject(new GuiProgressFire(40, 115, 25));
+        tabGeneral.addGuiObject(new GuiSlot(100, 100, 30, 30, 0));
         guiMaker.addGuiTab(tabGeneral);
 
-        GuiTab tabAbout = new GuiTab("About", 1);
+        GuiTab tabAbout = new GuiTab(this.guiMaker, "About", 1);
         labelInfoArray.setText(ABOUT_LABEL);
         tabAbout.addGuiObject(labelInfoArray);
         guiMaker.addGuiTab(tabAbout);

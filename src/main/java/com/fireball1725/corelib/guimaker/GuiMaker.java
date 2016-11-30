@@ -1,7 +1,7 @@
 package com.fireball1725.corelib.guimaker;
 
-import com.fireball1725.corelib.guimaker.network.PacketHandler;
-import com.fireball1725.corelib.guimaker.network.messages.PacketUpdateGuiContainer;
+import com.fireball1725.corelib.network.PacketHandler;
+import com.fireball1725.corelib.network.messages.PacketUpdateGuiContainer;
 import com.fireball1725.corelib.guimaker.objects.GuiObject;
 import com.fireball1725.corelib.guimaker.objects.GuiTab;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiMaker {
+public abstract class GuiMaker {
     private static List<GuiMaker> guiInstances = new ArrayList<>();
     public static ResourceLocation resourceLocation = new ResourceLocation("firelib", "textures/gui/Darkskin.png");
 
@@ -209,11 +209,18 @@ public class GuiMaker {
         return guiWidth;
     }
 
+    /**
+     * Get the Gui ID
+     * @return
+     */
+    public int getGuiId() {
+        return guiId;
+    }
     //endregion
 
     //region Gui Tabs
     public List<GuiObject> getGuiObjects() {
-        return guiTabs.get(selectedTab).getGuiObjects();
+        return guiTabs.get(selectedTab).getGuiObjectList();
     }
 
     public void addGuiTab(GuiTab guiTab) {
@@ -227,5 +234,13 @@ public class GuiMaker {
     public void clearGuiTabs() {
         guiTabs.clear();
     }
+    //endregion
+
+    //region Callbacks
+
+    abstract public void guiObjectClicked(int controlID);
+
+    abstract public void guiObjectUpdated(int controlID);
+
     //endregion
 }

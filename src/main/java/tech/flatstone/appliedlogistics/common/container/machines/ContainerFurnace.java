@@ -74,5 +74,6 @@ public class ContainerFurnace extends ContainerBase {
          * 20           Output Slot (3/3)
          * 21           Output Slot (3/4)
          */
+        /** for (int i = 0; i < 24; i++) { tabGeneral.addGuiObject(new GuiSlot(5 + (i % 6) * 18 + (i % 6 > 1 ? 54 : 0), 5 + (i / 6) * 18, 0)); } **/
     }
 }

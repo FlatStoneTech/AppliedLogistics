@@ -33,7 +33,7 @@ import tech.flatstone.appliedlogistics.common.integrations.jei.PlanBuilder.PlanB
 
 import javax.annotation.Nonnull;
 
-@JEIPlugin
+
 public class AppliedLogisticsPlugin extends BlankModPlugin {
     public static IJeiHelpers jeiHelper;
 

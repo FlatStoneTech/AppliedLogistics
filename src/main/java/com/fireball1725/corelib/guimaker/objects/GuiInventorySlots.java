@@ -11,8 +11,9 @@ import java.util.List;
 public class GuiInventorySlots extends GuiObject {
 
     public GuiInventorySlots(int x, int y) {
-        this.locX = x;
-        this.locY = y;
+        super(-999);
+        this.x = x;
+        this.y = y;
     }
 
     @Override
@@ -21,12 +22,12 @@ public class GuiInventorySlots extends GuiObject {
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                slotList.add(new Slot(inventoryPlayer, j + i * 9 + 9, 1 + j * 18 + this.locX, 1 + i * 18 + this.locY));
+                slotList.add(new Slot(inventoryPlayer, j + i * 9 + 9, 1 + j * 18 + this.x, 1 + i * 18 + this.y));
             }
         }
 
         for (int i = 0; i < 9; i++) {
-            slotList.add(new Slot(inventoryPlayer, i, 1 + i * 18 + this.locX, 1 + 58 + this.locY));
+            slotList.add(new Slot(inventoryPlayer, i, 1 + i * 18 + this.x, 1 + 58 + this.y));
         }
 
         return slotList;
@@ -36,12 +37,12 @@ public class GuiInventorySlots extends GuiObject {
     public void drawGuiContainerBackgroundLayer(GuiContainer guiContainer, float partialTicks, int mouseX, int mouseY) {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                drawSlot(guiContainer, j * 18 + this.locX, i * 18 + this.locY);
+                drawSlot(j * 18 + this.x, i * 18 + this.y, 18, 18);
             }
         }
 
         for (int i = 0; i < 9; i++) {
-            drawSlot(guiContainer, i * 18 + this.locX, this.locY + 58);
+            drawSlot(i * 18 + this.x, this.y + 58, 18, 18);
         }
     }
 }

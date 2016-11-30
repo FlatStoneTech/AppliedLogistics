@@ -19,12 +19,12 @@ public interface IGuiObject {
     /**
      * Draws the screen and all the components in it.
      */
-    void drawScreen(int mouseX, int mouseY, float partialTicks);
+    void drawScreen(GuiContainer guiContainer, int mouseX, int mouseY, float partialTicks, float zLevel);
 
     /**
      * Draw the foreground layer for the GuiContainer (everything in front of the items)
      */
-    void drawGuiContainerForegroundLayer(int mouseX, int mouseY);
+    void drawGuiContainerForegroundLayer(GuiContainer guiContainer, int mouseX, int mouseY);
 
     /**
      * Draws the background layer of this container (behind the items).
@@ -39,7 +39,7 @@ public interface IGuiObject {
     /**
      * Called when the mouse is clicked. Args : mouseX, mouseY, clickedButton
      */
-    void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException;
+    void mouseClicked(GuiContainer guiContainer, int mouseX, int mouseY, int mouseButton) throws IOException;
 
     /**
      * Called when a mouse button is pressed and the mouse is moved around. Parameters are : mouseX, mouseY,
