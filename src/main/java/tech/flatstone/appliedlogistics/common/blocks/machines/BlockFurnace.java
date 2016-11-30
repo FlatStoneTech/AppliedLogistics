@@ -45,6 +45,7 @@ public class BlockFurnace extends BlockTechBase implements IImplementsGuiMaker {
     private GuiProgressArrow progressArrow4 = new GuiProgressArrow(52, 60, 0);
     private GuiProgressFire progressFire1 = new GuiProgressFire(176, 127, 0);
     private GuiCenteredLabel labelIntTemp = new GuiCenteredLabel(178, 113, 20, 0xa1a1a1, 0.5f, "?°C");
+    private GuiImage imageTempBar = new GuiImage(new ResourceLocation(ModInfo.MOD_ID, "textures/gui/tempbar.png"), 180, 6, 0, 0, 16, 104, 16, 104, 50, 200);
 
     public BlockFurnace() {
         super(Material.ROCK, "machines/furnace", TechLevel.STONE_AGE, TechLevel.BRONZE_AGE, TechLevel.INDUSTRIAL_AGE, TechLevel.MECHANICAL_AGE, TechLevel.DIGITAL_AGE);
@@ -177,6 +178,19 @@ public class BlockFurnace extends BlockTechBase implements IImplementsGuiMaker {
         progressFire1.setProgress(tileEntityFurnace.getFuelOffset());
 
         labelIntTemp.setText(String.format("%d°C", tileEntityFurnace.getIntTemperature() + 20));
+
+        float colorRangeFraction = 0.2F; //blue to (1.0F = red ; 0.75F = yellow ; 0.5F = green ; 0.25F = turquoise)
+        int colorRange = (int) (240 * colorRangeFraction);
+        float tempFraction = tileEntityFurnace.getIntTemperature() / (float) tileEntityFurnace.getMaxTemp();
+
+        int height = (int) (104 * tempFraction);
+        int textureHeight = (int) (colorRange * tempFraction);
+
+        //new GuiImage(new ResourceLocation(ModInfo.MOD_ID, "textures/gui/tempbar.png"), 180, 6 + 104 - height, 0, 240 - textureHeight, 50, textureHeight, 16, height, 50, 240);
+        imageTempBar.setY(6 + 104 - height);
+        imageTempBar.setV(240 - textureHeight);
+        imageTempBar.setvHeight(textureHeight);
+        imageTempBar.setH(height);
     }
 
     @Override
@@ -251,8 +265,8 @@ public class BlockFurnace extends BlockTechBase implements IImplementsGuiMaker {
         int height = (int) (104 * tempFraction);
         int textureHeight = (int) (colorRange * tempFraction);
 
-        tabGeneral.addGuiObject(new GuiImage(new ResourceLocation(ModInfo.MOD_ID, "textures/gui/tempbar.png"), 180, 6 + 104 - height, 0, 240 - textureHeight, 50, textureHeight, 16, height, 50, 240));
-
+        //tabGeneral.addGuiObject(new GuiImage(new ResourceLocation(ModInfo.MOD_ID, "textures/gui/tempbar.png"), 180, 6 + 104 - height, 0, 240 - textureHeight, 50, textureHeight, 16, height, 50, 240));
+        tabGeneral.addGuiObject(imageTempBar);
 
         guiMaker.addGuiTab(tabGeneral);
 
