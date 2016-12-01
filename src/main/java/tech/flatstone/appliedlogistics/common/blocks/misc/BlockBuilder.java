@@ -236,6 +236,14 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
         labelInfoArray.setText(ABOUT_LABEL);
         tabAbout.addGuiObject(labelInfoArray);
         guiMaker.addGuiTab(tabAbout);
+
+        GuiTab tabTest = new GuiTab(this.guiMaker, "Test", 1);
+        GuiScrollBox scrollBox = new GuiScrollBox(20, 20, 150, 150);
+        scrollBox.addGuiObject(new GuiWindow(30, 10, 18, 100));
+
+        tabTest.addGuiObject(scrollBox);
+
+        guiMaker.addGuiTab(tabTest);
     }
 
 //    @Override

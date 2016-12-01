@@ -1,0 +1,3 @@
+Blank Plan per Tech Level
+Limited # of uses (hover shows number of uses left)
+Can copy plan for XP based on tech level and orginal XP cost in plan copier

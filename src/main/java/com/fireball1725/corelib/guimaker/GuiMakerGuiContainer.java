@@ -48,6 +48,7 @@ public class GuiMakerGuiContainer extends GuiContainer {
 
         for(GuiObject guiObject : guiMaker.getGuiObjects()) {
             guiObject.updateGuiSize(this.guiLeft, this.guiTop, xSize, ySize);
+            guiObject.initGui();
         }
     }
 

@@ -20,6 +20,8 @@
 
 package tech.flatstone.appliedlogistics.proxy;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.shader.Framebuffer;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import tech.flatstone.appliedlogistics.client.render.RenderCauldron;
 import tech.flatstone.appliedlogistics.client.render.RenderCrank;
@@ -31,5 +33,12 @@ public class ClientProxy extends CommonProxy {
     public void registerRenderers() {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrank.class, new RenderCrank());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCauldron.class, new RenderCauldron());
+    }
+
+    @Override
+    public void enableStencil() {
+        Framebuffer frameBuffer = Minecraft.getMinecraft().getFramebuffer();
+        if (!frameBuffer.isStencilEnabled())
+            frameBuffer.enableStencil();
     }
 }

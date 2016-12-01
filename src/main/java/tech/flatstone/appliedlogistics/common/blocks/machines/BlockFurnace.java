@@ -45,7 +45,7 @@ public class BlockFurnace extends BlockTechBase implements IImplementsGuiMaker {
     private GuiProgressArrow progressArrow4 = new GuiProgressArrow(52, 60, 0);
     private GuiProgressFire progressFire1 = new GuiProgressFire(176, 127, 0);
     private GuiCenteredLabel labelIntTemp = new GuiCenteredLabel(178, 113, 20, 0xa1a1a1, 0.5f, "?°C");
-    private GuiImage imageTempBar = new GuiImage(new ResourceLocation(ModInfo.MOD_ID, "textures/gui/tempbar.png"), 180, 6, 0, 0, 16, 104, 16, 104, 50, 200);
+    private GuiImage imageTempBar = new GuiImage(new ResourceLocation(ModInfo.MOD_ID, "textures/gui/tempbar.png"), 180, 6, 0, 0, 16, 104, 16, 104, 50, 240);
 
     public BlockFurnace() {
         super(Material.ROCK, "machines/furnace", TechLevel.STONE_AGE, TechLevel.BRONZE_AGE, TechLevel.INDUSTRIAL_AGE, TechLevel.MECHANICAL_AGE, TechLevel.DIGITAL_AGE);
@@ -177,9 +177,9 @@ public class BlockFurnace extends BlockTechBase implements IImplementsGuiMaker {
         //progressArrow4.setProgress(tileEntityFurnace.getSmeltProgress(0));
         progressFire1.setProgress(tileEntityFurnace.getFuelOffset());
 
-        labelIntTemp.setText(String.format("%d°C", tileEntityFurnace.getIntTemperature() + 20));
+        labelIntTemp.setText(String.format("%d\u00B0C", tileEntityFurnace.getIntTemperature() + 20));
 
-        float colorRangeFraction = 0.2F; //blue to (1.0F = red ; 0.75F = yellow ; 0.5F = green ; 0.25F = turquoise)
+        float colorRangeFraction = tileEntityFurnace.getMaxTemp() / (float) TileEntityFurnace.HIGHEST_MAX_TEMP;
         int colorRange = (int) (240 * colorRangeFraction);
         float tempFraction = tileEntityFurnace.getIntTemperature() / (float) tileEntityFurnace.getMaxTemp();
 
@@ -252,20 +252,6 @@ public class BlockFurnace extends BlockTechBase implements IImplementsGuiMaker {
         tabGeneral.addGuiObject(new GuiLabel(172, 53, 0xa1a1a1, 0.5f, "2x"));
         tabGeneral.addGuiObject(new GuiLine(171, 76, 25, 1, 0xffa1a1a1));
         tabGeneral.addGuiObject(new GuiLabel(172, 71, 0xa1a1a1, 0.5f, "1x"));
-
-        //tabGeneral.addGuiObject(new GuiImage(new ResourceLocation(ModInfo.MOD_ID, "textures/gui/tempbar.png"), 180, 6, 0, 0, 16, 104, 16, 104));
-
-        //tabGeneral.addGuiObject(new GuiImage(new ResourceLocation(ModInfo.MOD_ID, "textures/gui/tempbar.png"), 180, 6 + 104 - height, 0, 240 - height, 50, height, 16, height, 50, 240));
-
-
-        float colorRangeFraction = 0.2F; //blue to (1.0F = red ; 0.75F = yellow ; 0.5F = green ; 0.25F = turquoise)
-        int colorRange = (int) (240 * colorRangeFraction);
-        float tempFraction = 200 / (float) 400;
-
-        int height = (int) (104 * tempFraction);
-        int textureHeight = (int) (colorRange * tempFraction);
-
-        //tabGeneral.addGuiObject(new GuiImage(new ResourceLocation(ModInfo.MOD_ID, "textures/gui/tempbar.png"), 180, 6 + 104 - height, 0, 240 - textureHeight, 50, textureHeight, 16, height, 50, 240));
         tabGeneral.addGuiObject(imageTempBar);
 
         guiMaker.addGuiTab(tabGeneral);

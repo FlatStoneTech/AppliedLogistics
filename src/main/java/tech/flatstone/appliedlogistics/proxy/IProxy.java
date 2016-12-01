@@ -77,5 +77,7 @@ public interface IProxy {
     void registerFluids();
 
     void registerSounds();
+
+    void enableStencil();
 }
 

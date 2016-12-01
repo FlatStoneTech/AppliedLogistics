@@ -255,4 +255,9 @@ public abstract class CommonProxy implements IProxy {
     public void registerConfiguration(File configFile) {
         AppliedLogistics.configuration = Config.initConfig(configFile);
     }
+
+    @Override
+    public void enableStencil() {
+
+    }
 }

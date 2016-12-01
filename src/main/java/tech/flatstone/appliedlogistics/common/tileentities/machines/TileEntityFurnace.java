@@ -22,7 +22,28 @@ import tech.flatstone.appliedlogistics.common.util.InventoryHelper;
 import java.util.List;
 
 public class TileEntityFurnace extends TileEntityMachineBase implements ITickable, IWailaBodyMessage {
+    public static final float HIGHEST_MAX_TEMP = 380;
+    public static final float LOWEST_MAX_TEMP = 23;
+
     private InternalInventory inventory = new InternalInventory(this, 100);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     private int fuelRemaining = 0;
     private int fuelTotal = 0;
     private double intTemperature = 0;
@@ -152,6 +173,8 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
 
                 if (smeltProgress[i] > 300) {
                     smeltProgress[i] = 300;
+                    if (FurnaceRecipes.instance().getSmeltingResult(processItem.copy()) == null)
+                        continue;
                     ItemStack outputStack = FurnaceRecipes.instance().getSmeltingResult(processItem.copy()).copy();
                     outputStack.stackSize = processItem.stackSize * outputStack.stackSize;
                     int slotsToCheck = upgradeExtraSlots ? 4 : 1;
@@ -182,19 +205,7 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
     }
 
     public int getMaxTemp() {
-        switch (TechLevel.byMeta(getBlockMetadata())) {
-            case STONE_AGE:
-            default:
-                return 200;
-            case BRONZE_AGE:
-                return 300;
-            case MECHANICAL_AGE:
-                return 400;
-            case INDUSTRIAL_AGE:
-                return 500;
-            case DIGITAL_AGE:
-                return 600;
-        }
+        return 200;
     }
 
     public int getFurnaceRows() {
@@ -285,5 +296,53 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
      * > Multiple Processing: min 1, max 2
      * > Increased productivity: +20%
      * > Additional Output Slots: Chest (double the slots)
+     */
+
+    /**
+     * Additional Furnace Notes:
+     *
+     * Stone Furnace:
+     * Base Max Temp: 120C
+     * Max Temp: 120C
+     * Base Input Slots: 1
+     * Base Output Slots: 2
+     * Max Input Slots: 1
+     * Max Output Slots: 4
+     * Base Furnaces: 1
+     * Max Furnaces: 2
+     * Max Speed: 1x
+     *
+     * Bronze Furnace:
+     * Base Max Temp: 160C
+     * Max Temp: 200C
+     * Base Input Slots: 2
+     * Base Output Slots: 2
+     * Max Input Slots: 2
+     * Max Output Slots: 4
+     * Base Furnaces: 1
+     * Max Furnaces: 2
+     * Max Speed: 2x
+     *
+     * Mechanical Furnace:
+     * Base Max Temp: 240C
+     * Max Temp: 300C
+     * Base Input Slots: 2
+     * Base Output Slots: 2
+     * Max Input Slots: 2
+     * Max Output Slots: 4
+     * Base Furnaces: 1
+     * Max Furnaces: 3
+     * Max Speed: 4x
+     *
+     * Industrial / Digital Furnace:
+     * Base Max Temp: 300C
+     * Max Temp: 380C
+     * Base Input Slots: 2
+     * Base Output Slots: 2
+     * Max Input Slots: 2
+     * Max Output Slots: 4
+     * Base Furnaces: 1
+     * Max Furnaces: 4
+     * Max Speed: 8x
      */
 }
