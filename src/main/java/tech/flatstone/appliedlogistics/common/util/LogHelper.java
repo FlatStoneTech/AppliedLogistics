@@ -29,7 +29,7 @@ public class LogHelper {
     private static Logger logger = LogManager.getLogger(ModInfo.MOD_NAME);
 
     public static void log(Level logLevel, String message) {
-        logger.log(logLevel, "[" + ModInfo.MOD_NAME + "] " + message);
+        logger.log(logLevel, message);
         //FMLLog.log(ModInfo.MOD_NAME, logLevel, String.valueOf(object));
     }
 

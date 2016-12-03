@@ -11,6 +11,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraftforge.fml.client.config.GuiUtils;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,9 @@ public abstract class GuiObject extends Gui implements IGuiObject {
 
     protected int x, y, w, h;
 
-    protected int fX = 0, fY = 0;
+    private int parentX = 0, parentY = 0;
+
+    private int offsetX = 0, offsetY = 0;
 
     protected int guiX, guiY, guiW, guiH;
 
@@ -41,18 +44,6 @@ public abstract class GuiObject extends Gui implements IGuiObject {
         this.guiMakerObj = guiMakerObj;
     }
 
-    public void updateGuiSize(int x, int y, int w, int h) {
-        this.guiX = x;
-        this.guiY = y;
-        this.guiW = w;
-        this.guiH = h;
-    }
-
-    public void updateForegroundSize(int x, int y) {
-        this.fX = x;
-        this.fY = y;
-    }
-
     public void updateMouse(int mouseX, int mouseY) {
         this.mouseX = mouseX;
         this.mouseY = mouseY;
@@ -64,6 +55,23 @@ public abstract class GuiObject extends Gui implements IGuiObject {
 
     public void guiObjectUpdated() {
         this.guiMakerObj.guiObjectUpdated(this.controlID);
+    }
+
+    protected void setOffset(int x, int y) {
+        this.offsetX = x;
+        this.offsetY = y;
+    }
+
+    protected void setParent(int x, int y) {
+        this.parentX = x;
+        this.parentY = y;
+    }
+
+    public void updateGuiSize(int x, int y, int w, int h) {
+        this.guiX = x;
+        this.guiY = y;
+        this.guiW = w;
+        this.guiH = h;
     }
 
     @Override
@@ -126,6 +134,20 @@ public abstract class GuiObject extends Gui implements IGuiObject {
     @Override
     public void handleMouseInput() {
 
+    }
+
+    public Point getWindowXY(boolean includeScreenOffset) {
+        int tempX = this.x, tempY = this.y;
+
+        tempX += offsetX + parentX;
+        tempY += offsetY + parentY;
+
+        if (includeScreenOffset) {
+            tempX += this.guiX;
+            tempY += this.guiY;
+        }
+
+        return new Point(tempX, tempY);
     }
 
     public boolean isVisible() {

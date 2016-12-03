@@ -11,6 +11,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import java.awt.*;
+
 public class GuiLabel extends GuiObject {
     protected int color;
     protected String labelText;
@@ -37,8 +39,10 @@ public class GuiLabel extends GuiObject {
     @Override
     @SideOnly(Side.CLIENT)
     public void drawGuiContainerForegroundLayer(GuiContainer guiContainer, int mouseX, int mouseY) {
-        int scaledX = (int)Math.floor((this.x + this.fX) / this.scale);
-        int scaledY = (int)Math.floor((this.y + this.fY) / this.scale);
+        Point p = this.getWindowXY(false);
+
+        int scaledX = (int)Math.floor(p.getX() / this.scale);
+        int scaledY = (int)Math.floor(p.getY() / this.scale);
 
         GL11.glScalef(this.scale, this.scale, 1);
         Minecraft.getMinecraft().fontRendererObj.drawString(this.labelText, scaledX, scaledY, this.color);

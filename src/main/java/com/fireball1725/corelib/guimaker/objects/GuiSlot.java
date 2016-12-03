@@ -6,6 +6,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import tech.flatstone.appliedlogistics.common.container.slot.SlotNormal;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 

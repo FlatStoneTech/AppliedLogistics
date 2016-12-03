@@ -24,29 +24,33 @@ public class GuiCheckBox extends GuiObject {
     public void drawGuiContainerBackgroundLayer(GuiContainer guiContainer, float partialTicks, int mouseX, int mouseY) {
         if (!this.visible)
             return;
+        
+        Point p = this.getWindowXY(true);
 
-        GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.x + guiContainer.guiLeft, this.y + guiContainer.guiTop, 0, 64, 11, 11, 11, 11, 1, 0);
+        GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, p.x, p.y, 0, 64, 11, 11, 11, 11, 1, 0);
 
         if (disabled && selected)
-            GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.x + guiContainer.guiLeft, this.y + guiContainer.guiTop, 48, 64, 11, 11, 11, 11, 1, 0);
+            GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, p.x, p.y, 48, 64, 11, 11, 11, 11, 1, 0);
 
         if (!disabled && selected)
-            GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.x + guiContainer.guiLeft, this.y + guiContainer.guiTop, 32, 64, 11, 11, 11, 11, 1, 0);
+            GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, p.x, p.y, 32, 64, 11, 11, 11, 11, 1, 0);
     }
 
     @Override
     public void drawGuiContainerForegroundLayer(GuiContainer guiContainer, int mouseX, int mouseY) {
         if (!this.visible || disabled)
             return;
+        
+        Point p = this.getWindowXY(false);
 
-        Rectangle r = new Rectangle(this.x + guiContainer.guiLeft, this.y + guiContainer.guiTop, 11, 11);
+        Rectangle r = new Rectangle(p.x + this.guiX, p.y + this.guiY, 11, 11);
 
         if (r.contains(mouseX, mouseY)) {
-            GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.x, this.y, 16, 64, 11, 11, 11, 11, 1, 0);
+            GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, p.x, p.y, 16, 64, 11, 11, 11, 11, 1, 0);
         }
 
         if (selected) {
-            GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.x, this.y, 32, 64, 11, 11, 11, 11, 1, 0);
+            GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, p.x, p.y, 32, 64, 11, 11, 11, 11, 1, 0);
         }
     }
 
@@ -61,7 +65,9 @@ public class GuiCheckBox extends GuiObject {
         if (!this.visible || disabled)
             return;
 
-        Rectangle r = new Rectangle(this.x + guiContainer.guiLeft, this.y + guiContainer.guiTop, 11, 11);
+        Point p = this.getWindowXY(true);
+
+        Rectangle r = new Rectangle(p.x, p.y, 11, 11);
 
         if (!r.contains(mouseX, mouseY))
             return;

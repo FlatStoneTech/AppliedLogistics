@@ -11,8 +11,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-import sun.java2d.loops.DrawRect;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.awt.*;
 import java.io.IOException;
@@ -20,17 +18,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GuiScrollBox extends GuiObject {
+    private final GuiMaker guiMakerObj;
     private List<GuiObject> guiObjectList = new ArrayList<>();
     private int maxScrollY = 0;
     private int offsetScrollY = 0;
 
-    public GuiScrollBox(int x, int y, int w, int h) {
+    public GuiScrollBox(GuiMaker guiMakerObj, int x, int y, int w, int h) {
         super(-999);
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
         this.maxScrollY = h;
+        this.guiMakerObj = guiMakerObj;
     }
 
     public void setMaxScrollY(int maxScrollY) {
@@ -48,15 +48,17 @@ public class GuiScrollBox extends GuiObject {
     @Override
     public void initGui() {
         for (GuiObject guiObject : guiObjectList) {
-            guiObject.updateGuiSize(this.guiX + this.x, this.guiY + this.y - this.offsetScrollY, this.w, this.h);
+            guiObject.setParent(this.x, this.y);
+            guiObject.updateGuiSize(this.guiX, this.guiY, this.guiW, this.guiH);
         }
     }
 
     @Override
     public void drawScreen(GuiContainer guiContainer, int mouseX, int mouseY, float partialTicks, float zLevel) {
         for (GuiObject guiObject : guiObjectList) {
-            guiObject.updateGuiSize(this.guiX + this.x, this.guiY + this.y - this.offsetScrollY, this.w, this.h);
+            //guiObject.updateGuiSize(this.guiX + this.x, this.guiY + this.y - this.offsetScrollY, this.w, this.h);
             guiObject.updateMouse(this.mouseX, this.mouseY);
+            guiObject.setOffset(1, 1 + -offsetScrollY);
         }
 
         for (GuiObject guiObject : guiObjectList)
@@ -64,10 +66,10 @@ public class GuiScrollBox extends GuiObject {
     }
 
     private int getScrollBarHeight() {
-        int k1 = (this.h) * (this.h) / this.maxScrollY;
-        k1 = MathHelper.clamp_int(k1, 16, this.h - 2);
+        int scrollBarHeight = (int)((float)((this.h) * (this.h)) / (float)this.maxScrollY);
+        scrollBarHeight = MathHelper.clamp_int(scrollBarHeight, 16, this.h - 2);
 
-        return k1;
+        return scrollBarHeight;
     }
 
     @Override
@@ -75,7 +77,13 @@ public class GuiScrollBox extends GuiObject {
         GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.x + this.guiX, this.y + this.guiY, 16, 128, this.w, this.h, 16, 16, 1, 0);
         GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.x + this.guiX + this.w - 10, this.y + this.guiY, 32, 128, 10, this.h, 16, 16, 1, 0);
 
-        GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.x + this.guiX + this.w - 9, this.y + this.guiY + 1 + offsetScrollY, 0, 128, 8, getScrollBarHeight(), 8, 16, 1, 0);
+        int top = this.y + this.guiY + 1;
+
+        int scrollBarY = this.offsetScrollY * (this.h - getScrollBarHeight()) / this.getMaxScroll() + top;
+        if (scrollBarY < top)
+            scrollBarY = top;
+
+        GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.x + this.guiX + this.w - 9, scrollBarY, 0, 128, 8, getScrollBarHeight(), 8, 16, 1, 0);
 
         GL11.glEnable(GL11.GL_STENCIL_TEST);
         GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
@@ -102,29 +110,27 @@ public class GuiScrollBox extends GuiObject {
     public void handleMouseInput() {
         if (Mouse.isButtonDown(0)) {
             if (initialClickY == -1) {
-                if (!isMouseXYWithinScrollBar())
-                    return;
-
-                initialClickY = mouseY;
-                scrollMultiplier = -1.0F;
-
-                int k1 = this.getMaxScroll();
-                if (k1 < 1)
-                    k1 = 1;
-
-                int l1 = (int)((float)((this.h) * (this.h)) / (float)this.maxScrollY);
-                l1 = MathHelper.clamp_int(l1, 16, this.h - 2);
-                //this.scrollMultiplier /= (float)(this.h - l1) / (float)k1;
-
+                boolean flag1 = true;
+                if (isMouseXYWithinScrollBox()) {
+                    if (isMouseXYWithinScrollBar()) {
+                        this.scrollMultiplier = -1.0F;
+                        int l1 = (int)((float)((this.h) * (this.h)) / (float)this.maxScrollY);
+                        l1 = MathHelper.clamp_int(l1, 16, this.h - 2);
+                        this.scrollMultiplier /= (float)(this.h - l1) / Math.max(1, this.getMaxScroll());
+                    } else {
+                        this.scrollMultiplier = 1.0F;
+                    }
+                    if (flag1)
+                        this.initialClickY = this.mouseY;
+                    else
+                        this.initialClickY = -2;
+                } else {
+                    this.initialClickY = -2;
+                }
             } else if (this.initialClickY >= 0) {
-                this.offsetScrollY -= (float)(this.mouseY - this.initialClickY) * this.scrollMultiplier;
+                this.offsetScrollY -= (this.mouseY - this.initialClickY) * this.scrollMultiplier;
+                this.offsetScrollY = MathHelper.clamp_int(this.offsetScrollY, 0, this.maxScrollY - this.h);
                 this.initialClickY = this.mouseY;
-
-                if (offsetScrollY < 0)
-                    offsetScrollY = 0;
-
-                if (offsetScrollY > this.h - 2 - getScrollBarHeight())
-                    offsetScrollY = this.h - 2 - getScrollBarHeight();
             }
         } else {
             this.initialClickY = -1;
@@ -140,12 +146,7 @@ public class GuiScrollBox extends GuiObject {
                     i2 = 1;
 
                 this.offsetScrollY += (float)(i2 * 10);
-
-                if (offsetScrollY < 0)
-                    offsetScrollY = 0;
-
-                if (offsetScrollY > this.h - 2 - getScrollBarHeight())
-                    offsetScrollY = this.h - 2 - getScrollBarHeight();
+                this.offsetScrollY = MathHelper.clamp_int(this.offsetScrollY, 0, this.maxScrollY - this.h);
             }
         }
 
@@ -154,7 +155,12 @@ public class GuiScrollBox extends GuiObject {
     }
 
     private boolean isMouseXYWithinScrollBar() {
-        Rectangle r = new Rectangle(this.x + this.guiX + this.w - 9, this.y + this.guiY + 1 + offsetScrollY, 8, getScrollBarHeight());
+        int top = this.y + this.guiY + 1;
+        int scrollBarY = this.offsetScrollY * (this.h - getScrollBarHeight()) / this.getMaxScroll() + top;
+        if (scrollBarY < top)
+            scrollBarY = top;
+
+        Rectangle r = new Rectangle(this.x + this.guiX + this.w - 9, scrollBarY, 8, getScrollBarHeight());
         return r.contains(this.mouseX, this.mouseY);
     }
 
@@ -164,15 +170,27 @@ public class GuiScrollBox extends GuiObject {
     }
 
     private int getMaxScroll() {
-        return Math.max(0, this.maxScrollY - (this.h - 2));
+        return Math.max(0, this.maxScrollY - (this.h - 3));
     }
 
     @Override
     public void drawGuiContainerForegroundLayer(GuiContainer guiContainer, int mouseX, int mouseY) {
-        for (GuiObject guiObject : guiObjectList) {
-            guiObject.updateForegroundSize(this.x, this.y - offsetScrollY);
+        GL11.glEnable(GL11.GL_STENCIL_TEST);
+        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
+        GL11.glStencilMask(0xFF);
+        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
+        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);
+        GlStateManager.disableAlpha();
+
+        Gui.drawRect(this.x + 1, this.y + 1, this.w + this.x - 10, this.h + this.y - 1, 0);
+
+        GL11.glStencilMask(0x00);
+        GL11.glStencilFunc(GL11.GL_NOTEQUAL, 0, 0xFF);
+
+        for (GuiObject guiObject : guiObjectList)
             guiObject.drawGuiContainerForegroundLayer(guiContainer, mouseX, mouseY);
-        }
+
+        GL11.glDisable(GL11.GL_STENCIL_TEST);
     }
 
     @Override
@@ -201,8 +219,10 @@ public class GuiScrollBox extends GuiObject {
 
     @Override
     public void updateScreen() {
-        for (GuiObject guiObject : guiObjectList)
+        for (GuiObject guiObject : guiObjectList) {
+            guiObject.updateGuiSize(this.guiX, this.guiY, this.guiW, this.guiH);
             guiObject.updateScreen();
+        }
     }
 
     @Override

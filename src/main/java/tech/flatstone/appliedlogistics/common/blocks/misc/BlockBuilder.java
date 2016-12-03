@@ -59,6 +59,7 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
     private GuiCheckBox checkBox2 = new GuiCheckBox(11, 10, 40, false);
     private GuiCheckBox checkBox3 = new GuiCheckBox(12, 30, 40, true);
     private GuiCheckBox checkBox4 = new GuiCheckBox(13, 50, 40, false);
+    private GuiCheckBox checkBox5 = new GuiCheckBox(14, 50, 10, false);
     private GuiButton guiButton1 = new GuiButton(1, 10, 70, 140, "Hello World...");
 
     private static final String ABOUT_LABEL = "§l§nAbout the Builder§r\n\nThe builder is Applied Logistic's main tool for building all Applied Logistic items.\n\nThis is a pretty cool block that does a lot of things...";
@@ -93,6 +94,9 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
                     case 13:
                         checkBox4.setSelected(!checkBox4.isSelected());
                         guiButton1.setSelected(checkBox4.isSelected());
+                        break;
+                    case 14:
+                        checkBox5.setSelected(!checkBox5.isSelected());
                 }
             }
 
@@ -238,11 +242,11 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
         guiMaker.addGuiTab(tabAbout);
 
         GuiTab tabTest = new GuiTab(this.guiMaker, "Test", 1);
-        GuiScrollBox scrollBox = new GuiScrollBox(20, 20, 150, 150);
-        scrollBox.addGuiObject(new GuiWindow(30, 10, 18, 100));
+        GuiScrollBox scrollBox = new GuiScrollBox(this.guiMaker, 20, 20, 150, 150);
+        scrollBox.addGuiObject(new GuiWindow(0, 0, 18, 298));
         scrollBox.setMaxScrollY(300);
-        scrollBox.addGuiObject(new GuiLabel(2, 102, 0xFFFFFF, "Hello world, this is a label..."));
-        scrollBox.addGuiObject(checkBox1);
+        scrollBox.addGuiObject(new GuiLabel(0, 100, 0xFFFFFF, "Hello world, this is a label..."));
+        scrollBox.addGuiObject(checkBox5);
 
         tabTest.addGuiObject(scrollBox);
 
