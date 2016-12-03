@@ -240,6 +240,9 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
         GuiTab tabTest = new GuiTab(this.guiMaker, "Test", 1);
         GuiScrollBox scrollBox = new GuiScrollBox(20, 20, 150, 150);
         scrollBox.addGuiObject(new GuiWindow(30, 10, 18, 100));
+        scrollBox.setMaxScrollY(300);
+        scrollBox.addGuiObject(new GuiLabel(2, 102, 0xFFFFFF, "Hello world, this is a label..."));
+        scrollBox.addGuiObject(checkBox1);
 
         tabTest.addGuiObject(scrollBox);
 

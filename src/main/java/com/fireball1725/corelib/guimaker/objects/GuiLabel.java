@@ -37,8 +37,8 @@ public class GuiLabel extends GuiObject {
     @Override
     @SideOnly(Side.CLIENT)
     public void drawGuiContainerForegroundLayer(GuiContainer guiContainer, int mouseX, int mouseY) {
-        int scaledX = (int)Math.floor(this.x / this.scale);
-        int scaledY = (int)Math.floor(this.y / this.scale);
+        int scaledX = (int)Math.floor((this.x + this.fX) / this.scale);
+        int scaledY = (int)Math.floor((this.y + this.fY) / this.scale);
 
         GL11.glScalef(this.scale, this.scale, 1);
         Minecraft.getMinecraft().fontRendererObj.drawString(this.labelText, scaledX, scaledY, this.color);

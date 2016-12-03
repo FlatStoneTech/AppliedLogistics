@@ -3,6 +3,7 @@ package com.fireball1725.corelib.guimaker.objects;
 import com.fireball1725.corelib.guimaker.GuiMaker;
 import com.fireball1725.corelib.network.PacketHandler;
 import com.fireball1725.corelib.network.messages.PacketGuiObjectClicked;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
@@ -14,11 +15,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class GuiObject implements IGuiObject {
+public abstract class GuiObject extends Gui implements IGuiObject {
 
     protected int x, y, w, h;
 
+    protected int fX = 0, fY = 0;
+
     protected int guiX, guiY, guiW, guiH;
+
+    protected int mouseX, mouseY;
 
     protected final int controlID;
 
@@ -41,6 +46,16 @@ public abstract class GuiObject implements IGuiObject {
         this.guiY = y;
         this.guiW = w;
         this.guiH = h;
+    }
+
+    public void updateForegroundSize(int x, int y) {
+        this.fX = x;
+        this.fY = y;
+    }
+
+    public void updateMouse(int mouseX, int mouseY) {
+        this.mouseX = mouseX;
+        this.mouseY = mouseY;
     }
 
     public void guiObjectClicked() {
@@ -82,33 +97,8 @@ public abstract class GuiObject implements IGuiObject {
     }
 
     @Override
-    public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-
-    }
-
-    @Override
-    public void mouseReleased(int mouseX, int mouseY, int state) {
-
-    }
-
-    @Override
-    public boolean isPointInRegion(int rectX, int rectY, int rectWidth, int rectHeight, int pointX, int pointY) {
-        return false;
-    }
-
-    @Override
-    public void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
-
-    }
-
-    @Override
     public void keyTyped(char typedChar, int keyCode) throws IOException {
 
-    }
-
-    @Override
-    public boolean checkHotbarKeys(int keyCode) {
-        return false;
     }
 
     @Override
@@ -131,6 +121,11 @@ public abstract class GuiObject implements IGuiObject {
         y += this.guiY;
 
         GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, x, y, 0, 16, w, h, 16, 16, 1, 0);
+    }
+
+    @Override
+    public void handleMouseInput() {
+
     }
 
     public boolean isVisible() {
