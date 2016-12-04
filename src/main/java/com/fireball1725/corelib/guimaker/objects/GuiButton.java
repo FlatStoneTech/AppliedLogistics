@@ -1,5 +1,6 @@
 package com.fireball1725.corelib.guimaker.objects;
 
+import com.fireball1725.corelib.FireBallCoreLibrary;
 import com.fireball1725.corelib.guimaker.GuiMaker;
 import com.fireball1725.corelib.util.FontRendererExtended;
 import net.minecraft.client.Minecraft;
@@ -64,7 +65,7 @@ public class GuiButton extends GuiObject {
         }
 
         FontRenderer fontRendererObj = Minecraft.getMinecraft().fontRendererObj;
-        FontRendererExtended fontRendererExtendedObj = new FontRendererExtended(Minecraft.getMinecraft().fontRendererObj);
+        FontRendererExtended fontRendererExtendedObj = FireBallCoreLibrary.instance.fontRendererExtendedObj;
 
         int textY = (this.h >> 1) - (fontRendererObj.FONT_HEIGHT >> 1);
         textY += this.y;

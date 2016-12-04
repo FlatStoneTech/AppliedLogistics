@@ -1,10 +1,13 @@
 package com.fireball1725.corelib.guimaker.objects;
 
+import com.fireball1725.corelib.FireBallCoreLibrary;
 import com.fireball1725.corelib.util.FontRendererExtended;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.awt.*;
 
 public class GuiCenteredLabel extends GuiObject {
     protected int color;
@@ -54,9 +57,11 @@ public class GuiCenteredLabel extends GuiObject {
     @Override
     @SideOnly(Side.CLIENT)
     public void drawGuiContainerForegroundLayer(GuiContainer guiContainer, int mouseX, int mouseY) {
-        FontRendererExtended fontRendererExtended = new FontRendererExtended(Minecraft.getMinecraft().fontRendererObj);
+        Point p = this.getWindowXY(false);
 
-        fontRendererExtended.drawCenteredSplitString(this.labelText, this.x, this.y, this.w, this.scale, this.color);
+        FontRendererExtended fontRendererExtended = FireBallCoreLibrary.instance.fontRendererExtendedObj;
+
+        fontRendererExtended.drawCenteredSplitString(this.labelText, p.x, p.y, this.w, this.scale, this.color);
     }
 
     public void setText(String text) {

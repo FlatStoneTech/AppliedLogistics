@@ -20,6 +20,7 @@
 
 package tech.flatstone.appliedlogistics.proxy;
 
+import com.fireball1725.corelib.FireBallCoreLibrary;
 import com.fireball1725.corelib.guimaker.GuiMaker;
 import com.fireball1725.corelib.guimaker.GuiMakerGuiHandler;
 import net.minecraft.item.ItemStack;
@@ -254,10 +255,5 @@ public abstract class CommonProxy implements IProxy {
     @Override
     public void registerConfiguration(File configFile) {
         AppliedLogistics.configuration = Config.initConfig(configFile);
-    }
-
-    @Override
-    public void enableStencil() {
-
     }
 }

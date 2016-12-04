@@ -18,10 +18,14 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.proxy;
+package com.fireball1725.corelib.proxy;
 
+import com.fireball1725.corelib.FireBallCoreLibrary;
+import com.fireball1725.corelib.util.FontRendererExtended;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.shader.Framebuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import tech.flatstone.appliedlogistics.client.render.RenderCauldron;
 import tech.flatstone.appliedlogistics.client.render.RenderCrank;
@@ -30,8 +34,15 @@ import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCrank;
 
 public class ClientProxy extends CommonProxy {
     @Override
-    public void registerRenderers() {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrank.class, new RenderCrank());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCauldron.class, new RenderCauldron());
+    public void registerFontRendererExtended() {
+        FireBallCoreLibrary.instance.fontRendererExtendedObj = new FontRendererExtended(Minecraft.getMinecraft().gameSettings, new ResourceLocation("textures/font/ascii.png"), Minecraft.getMinecraft().renderEngine, false);
+
+        if (Minecraft.getMinecraft().gameSettings.language != null)
+        {
+            FireBallCoreLibrary.instance.fontRendererExtendedObj.setUnicodeFlag(Minecraft.getMinecraft().isUnicode());
+            FireBallCoreLibrary.instance.fontRendererExtendedObj.setBidiFlag(Minecraft.getMinecraft().getLanguageManager().isCurrentLanguageBidirectional());
+        }
+
+        ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(FireBallCoreLibrary.instance.fontRendererExtendedObj);
     }
 }

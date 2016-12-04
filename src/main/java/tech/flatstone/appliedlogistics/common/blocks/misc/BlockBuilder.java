@@ -54,7 +54,7 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
     public static final PropertyEnum TECHLEVEL = PropertyEnum.create("tech", TechLevel.class);
     private GuiMaker guiMaker;
     private GuiLabel labelInputSlotStatus = new GuiLabel(26, 13, 0x00FF00, "");
-    private GuiCenteredLabel labelInfoArray = new GuiCenteredLabel(6, 6, 244, 0xffffff);
+    private GuiCenteredLabel labelInfoArray = new GuiCenteredLabel(0, 6, 242, 0xffffff);
     private GuiCheckBox checkBox1 = new GuiCheckBox(10, 70, 100, true);
     private GuiCheckBox checkBox2 = new GuiCheckBox(11, 10, 40, false);
     private GuiCheckBox checkBox3 = new GuiCheckBox(12, 30, 40, true);
@@ -237,8 +237,10 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
         guiMaker.addGuiTab(tabGeneral);
 
         GuiTab tabAbout = new GuiTab(this.guiMaker, "About", 1);
+        GuiScrollBox tabAboutScrollBox = new GuiScrollBox(this.guiMaker, 3, 3, 250, 214, false);
         labelInfoArray.setText(ABOUT_LABEL);
-        tabAbout.addGuiObject(labelInfoArray);
+        tabAboutScrollBox.addGuiObject(labelInfoArray);
+        tabAbout.addGuiObject(tabAboutScrollBox);
         guiMaker.addGuiTab(tabAbout);
 
         GuiTab tabTest = new GuiTab(this.guiMaker, "Test", 1);
@@ -247,9 +249,9 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
         scrollBox.setMaxScrollY(300);
         scrollBox.addGuiObject(new GuiLabel(0, 100, 0xFFFFFF, "Hello world, this is a label..."));
         scrollBox.addGuiObject(checkBox5);
+        scrollBox.addGuiObject(new GuiCenteredLabel(1, 1, 140, 0xFFFFFF, "Hello world, this is a test label to see if this works properly, who know if it will, this again is just a test to see what happens, I just needed a really long label to test all of this, so yay for really long labels, ok i think i am done here, good bye everyone :D"));
 
         tabTest.addGuiObject(scrollBox);
-
         guiMaker.addGuiTab(tabTest);
     }
 

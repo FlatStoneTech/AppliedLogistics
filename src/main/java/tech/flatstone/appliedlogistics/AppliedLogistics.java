@@ -21,6 +21,7 @@
 package tech.flatstone.appliedlogistics;
 
 import com.fireball1725.corelib.truetyper.Test;
+import com.fireball1725.corelib.util.FontRendererExtended;
 import com.google.common.base.Stopwatch;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.shader.Framebuffer;
@@ -70,8 +71,6 @@ public class AppliedLogistics {
         if (!SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_1_7)) {
             throw new OutdatedJavaException(String.format("%s requires Java 7 or newer, Please update your java", ModInfo.MOD_NAME));
         }
-
-        proxy.enableStencil();
 
         proxy.registerConfiguration(event.getSuggestedConfigurationFile());
 

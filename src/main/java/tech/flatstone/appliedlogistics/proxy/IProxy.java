@@ -63,11 +63,6 @@ public interface IProxy {
      */
     void registerPlans();
 
-    /**
-     * Register GUIs
-     */
-    void registerGUIs();
-
     void registerRenderers();
 
     void registerWorldGen();
@@ -78,6 +73,6 @@ public interface IProxy {
 
     void registerSounds();
 
-    void enableStencil();
+    void registerGUIs();
 }
 

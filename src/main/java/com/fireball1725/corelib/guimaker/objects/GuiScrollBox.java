@@ -1,7 +1,9 @@
 package com.fireball1725.corelib.guimaker.objects;
 
 import com.fireball1725.corelib.guimaker.GuiMaker;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -22,6 +24,7 @@ public class GuiScrollBox extends GuiObject {
     private List<GuiObject> guiObjectList = new ArrayList<>();
     private int maxScrollY = 0;
     private int offsetScrollY = 0;
+    private boolean border;
 
     public GuiScrollBox(GuiMaker guiMakerObj, int x, int y, int w, int h) {
         super(-999);
@@ -31,6 +34,18 @@ public class GuiScrollBox extends GuiObject {
         this.h = h;
         this.maxScrollY = h;
         this.guiMakerObj = guiMakerObj;
+        this.border = true;
+    }
+
+    public GuiScrollBox(GuiMaker guiMakerObj, int x, int y, int w, int h, boolean border) {
+        super(-999);
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+        this.maxScrollY = h;
+        this.guiMakerObj = guiMakerObj;
+        this.border = border;
     }
 
     public void setMaxScrollY(int maxScrollY) {
@@ -74,8 +89,10 @@ public class GuiScrollBox extends GuiObject {
 
     @Override
     public void drawGuiContainerBackgroundLayer(GuiContainer guiContainer, float partialTicks, int mouseX, int mouseY) {
-        GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.x + this.guiX, this.y + this.guiY, 16, 128, this.w, this.h, 16, 16, 1, 0);
-        GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.x + this.guiX + this.w - 10, this.y + this.guiY, 32, 128, 10, this.h, 16, 16, 1, 0);
+        if (border) {
+            GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.x + this.guiX, this.y + this.guiY, 16, 128, this.w, this.h, 16, 16, 1, 0);
+            GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.x + this.guiX + this.w - 10, this.y + this.guiY, 32, 128, 10, this.h, 16, 16, 1, 0);
+        }
 
         int top = this.y + this.guiY + 1;
 
@@ -85,22 +102,26 @@ public class GuiScrollBox extends GuiObject {
 
         GuiUtils.drawContinuousTexturedBox(GuiMaker.resourceLocation, this.x + this.guiX + this.w - 9, scrollBarY, 0, 128, 8, getScrollBarHeight(), 8, 16, 1, 0);
 
-        GL11.glEnable(GL11.GL_STENCIL_TEST);
-        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
-        GL11.glStencilMask(0xFF);
-        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
-        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);
-        GlStateManager.disableAlpha();
-
-        Gui.drawRect(this.x + this.guiX + 1, this.y + this.guiY + 1, this.w + this.guiX + this.x - 10, this.h + this.guiY + this.y - 1, 0);
-
-        GL11.glStencilMask(0x00);
-        GL11.glStencilFunc(GL11.GL_NOTEQUAL, 0, 0xFF);
+        scissorCut(this.x + this.guiX + 1, this.y + this.guiY + 1, this.w - 10, this.h - 2);
 
         for (GuiObject guiObject : guiObjectList)
             guiObject.drawGuiContainerBackgroundLayer(guiContainer, partialTicks, mouseX, mouseY);
 
-        GL11.glDisable(GL11.GL_STENCIL_TEST);
+        scissorEnd();
+    }
+
+    public static void scissorCut(int x, int y, int w, int h)
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+        ScaledResolution sr = new ScaledResolution(mc);
+        int scale = sr.getScaleFactor();
+        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+        GL11.glScissor(x * scale, mc.displayHeight - (y + h) * scale, w * scale, h * scale);
+    }
+
+    public static void scissorEnd()
+    {
+        GL11.glDisable(GL11.GL_SCISSOR_TEST);
     }
 
     private int initialClickY = -1;
@@ -175,22 +196,12 @@ public class GuiScrollBox extends GuiObject {
 
     @Override
     public void drawGuiContainerForegroundLayer(GuiContainer guiContainer, int mouseX, int mouseY) {
-        GL11.glEnable(GL11.GL_STENCIL_TEST);
-        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
-        GL11.glStencilMask(0xFF);
-        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
-        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);
-        GlStateManager.disableAlpha();
-
-        Gui.drawRect(this.x + 1, this.y + 1, this.w + this.x - 10, this.h + this.y - 1, 0);
-
-        GL11.glStencilMask(0x00);
-        GL11.glStencilFunc(GL11.GL_NOTEQUAL, 0, 0xFF);
+        scissorCut(this.x + 1 + guiX, this.y + 1 + guiY, this.w - 10, this.h - 2);
 
         for (GuiObject guiObject : guiObjectList)
             guiObject.drawGuiContainerForegroundLayer(guiContainer, mouseX, mouseY);
 
-        GL11.glDisable(GL11.GL_STENCIL_TEST);
+        scissorEnd();
     }
 
     @Override
