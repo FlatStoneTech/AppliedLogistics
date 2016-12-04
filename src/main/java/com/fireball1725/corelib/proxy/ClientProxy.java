@@ -21,12 +21,16 @@
 package com.fireball1725.corelib.proxy;
 
 import com.fireball1725.corelib.FireBallCoreLibrary;
+import com.fireball1725.corelib.render.Sword;
 import com.fireball1725.corelib.util.FontRendererExtended;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.client.render.RenderCauldron;
 import tech.flatstone.appliedlogistics.client.render.RenderCrank;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCauldron;
@@ -44,5 +48,13 @@ public class ClientProxy extends CommonProxy {
         }
 
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(FireBallCoreLibrary.instance.fontRendererExtendedObj);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void registerEvents() {
+        super.registerEvents();
+
+
     }
 }

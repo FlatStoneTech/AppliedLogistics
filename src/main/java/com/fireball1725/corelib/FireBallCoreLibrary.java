@@ -20,7 +20,7 @@ public class FireBallCoreLibrary {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-
+        proxy.registerEvents();
     }
 
     @Mod.EventHandler
