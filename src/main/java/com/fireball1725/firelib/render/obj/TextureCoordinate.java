@@ -1,4 +1,4 @@
-package com.fireball1725.corelib.render.obj;
+package com.fireball1725.firelib.render.obj;
 
 public class TextureCoordinate
 {

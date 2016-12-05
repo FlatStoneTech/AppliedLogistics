@@ -1,9 +1,7 @@
-package com.fireball1725.corelib.network.messages;
+package com.fireball1725.firelib.network.messages;
 
-import com.fireball1725.corelib.guimaker.GuiMaker;
+import com.fireball1725.firelib.guimaker.GuiMaker;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;

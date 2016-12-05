@@ -1,16 +1,12 @@
-package com.fireball1725.corelib.network.messages;
+package com.fireball1725.firelib.network.messages;
 
-import com.fireball1725.corelib.guimaker.GuiMaker;
-import com.fireball1725.corelib.guimaker.GuiMakerContainer;
+import com.fireball1725.firelib.guimaker.GuiMaker;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 public class PacketGuiObjectClicked implements IMessage, IMessageHandler<PacketGuiObjectClicked, IMessage> {
     private int objectID;

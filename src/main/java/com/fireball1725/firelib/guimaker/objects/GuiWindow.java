@@ -1,4 +1,4 @@
-package com.fireball1725.corelib.guimaker.objects;
+package com.fireball1725.firelib.guimaker.objects;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 

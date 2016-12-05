@@ -1,6 +1,6 @@
-package com.fireball1725.corelib.guimaker.integrations.jei;
+package com.fireball1725.firelib.guimaker.integrations.jei;
 
-import com.fireball1725.corelib.guimaker.GuiMakerGuiContainer;
+import com.fireball1725.firelib.guimaker.GuiMakerGuiContainer;
 import mezz.jei.api.IJeiRuntime;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;

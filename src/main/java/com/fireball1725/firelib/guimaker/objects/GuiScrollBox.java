@@ -1,11 +1,9 @@
-package com.fireball1725.corelib.guimaker.objects;
+package com.fireball1725.firelib.guimaker.objects;
 
-import com.fireball1725.corelib.guimaker.GuiMaker;
+import com.fireball1725.firelib.guimaker.GuiMaker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;

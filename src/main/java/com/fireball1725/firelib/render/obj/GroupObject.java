@@ -1,9 +1,8 @@
-package com.fireball1725.corelib.render.obj;
+package com.fireball1725.firelib.render.obj;
 
 import java.util.ArrayList;
 
-import org.lwjgl.opengl.GL11;
-
+import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fml.relauncher.Side;
@@ -32,12 +31,12 @@ public class GroupObject
     }
 
     @SideOnly(Side.CLIENT)
-    public void render()
+    public void render(int glDrawingMode)
     {
         if (faces.size() > 0)
         {
             Tessellator tessellator = Tessellator.getInstance();
-            tessellator.getBuffer().begin(4, DefaultVertexFormats.POSITION_TEX);
+            tessellator.getBuffer().begin(glDrawingMode, DefaultVertexFormats.POSITION_TEX);
             render(tessellator);
             tessellator.draw();
         }

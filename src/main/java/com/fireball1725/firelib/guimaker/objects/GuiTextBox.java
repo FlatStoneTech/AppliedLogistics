@@ -1,6 +1,4 @@
-package com.fireball1725.corelib.guimaker.objects;
-
-import net.minecraft.client.gui.inventory.GuiContainer;
+package com.fireball1725.firelib.guimaker.objects;
 
 public class GuiTextBox extends GuiObject {
     protected int width;

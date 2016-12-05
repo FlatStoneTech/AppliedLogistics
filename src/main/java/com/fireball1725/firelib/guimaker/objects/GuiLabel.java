@@ -1,15 +1,10 @@
-package com.fireball1725.corelib.guimaker.objects;
+package com.fireball1725.firelib.guimaker.objects;
 
-import com.fireball1725.corelib.truetyper.Test;
-import mcp.mobius.waila.overlay.DisplayUtil;
-import mcp.mobius.waila.overlay.OverlayConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import java.awt.*;
 

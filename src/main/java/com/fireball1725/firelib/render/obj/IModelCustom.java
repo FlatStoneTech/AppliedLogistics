@@ -1,4 +1,4 @@
-package com.fireball1725.corelib.render.obj;
+package com.fireball1725.firelib.render.obj;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

@@ -1,9 +1,9 @@
-package com.fireball1725.corelib.guimaker;
+package com.fireball1725.firelib.guimaker;
 
-import com.fireball1725.corelib.network.PacketHandler;
-import com.fireball1725.corelib.network.messages.PacketUpdateGuiContainer;
-import com.fireball1725.corelib.guimaker.objects.GuiObject;
-import com.fireball1725.corelib.guimaker.objects.GuiTab;
+import com.fireball1725.firelib.network.PacketHandler;
+import com.fireball1725.firelib.network.messages.PacketUpdateGuiContainer;
+import com.fireball1725.firelib.guimaker.objects.GuiObject;
+import com.fireball1725.firelib.guimaker.objects.GuiTab;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;

@@ -1,7 +1,7 @@
-package com.fireball1725.corelib.guimaker;
+package com.fireball1725.firelib.guimaker;
 
-import com.fireball1725.corelib.guimaker.objects.GuiObject;
-import com.fireball1725.corelib.guimaker.objects.GuiTab;
+import com.fireball1725.firelib.guimaker.objects.GuiObject;
+import com.fireball1725.firelib.guimaker.objects.GuiTab;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.inventory.GuiContainer;

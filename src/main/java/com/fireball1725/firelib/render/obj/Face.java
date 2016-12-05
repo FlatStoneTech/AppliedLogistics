@@ -1,7 +1,8 @@
-package com.fireball1725.corelib.render.obj;
+package com.fireball1725.firelib.render.obj;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -26,7 +27,7 @@ public class Face
             faceNormal = this.calculateFaceNormal();
         }
 
-        tessellator.getBuffer().normal(faceNormal.x, faceNormal.y, faceNormal.z);
+        //tessellator.getBuffer().normal(faceNormal.x, faceNormal.y, faceNormal.z);
 
         float averageU = 0F;
         float averageV = 0F;

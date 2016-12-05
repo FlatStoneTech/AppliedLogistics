@@ -1,4 +1,4 @@
-package com.fireball1725.corelib.render.obj;
+package com.fireball1725.firelib.render.obj;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -47,11 +47,10 @@ public class WavefrontObject implements IModelCustom
     private GroupObject currentGroupObject;
     private String fileName;
 
-    @SideOnly(Side.CLIENT)
     public WavefrontObject(ResourceLocation resource) throws ModelFormatException
     {
         this.fileName = resource.toString();
-        
+
         try
         {
             IResource res = Minecraft.getMinecraft().getResourceManager().getResource(resource);
@@ -62,7 +61,7 @@ public class WavefrontObject implements IModelCustom
             throw new ModelFormatException("IO Exception reading model format", e);
         }
     }
-    
+
     public WavefrontObject(String filename, InputStream inputStream) throws ModelFormatException
     {
         this.fileName = filename;
@@ -176,19 +175,13 @@ public class WavefrontObject implements IModelCustom
     @SideOnly(Side.CLIENT)
     public void renderAll()
     {
-        
-        Tessellator tessellator = Tessellator.getInstance();
 
+        Tessellator tessellator = Tessellator.getInstance();
         if (currentGroupObject != null)
-        {
-        	
             tessellator.getBuffer().begin(currentGroupObject.glDrawingMode, DefaultVertexFormats.POSITION_TEX);
-        }
         else
-        {
-        	
             tessellator.getBuffer().begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
-        }
+
         tessellateAll(tessellator);
 
         tessellator.draw();
@@ -213,7 +206,7 @@ public class WavefrontObject implements IModelCustom
             {
                 if (groupName.equalsIgnoreCase(groupObject.name))
                 {
-                    groupObject.render();
+                    groupObject.render(groupObject.glDrawingMode);
                 }
             }
         }
@@ -241,7 +234,7 @@ public class WavefrontObject implements IModelCustom
         {
             if (partName.equalsIgnoreCase(groupObject.name))
             {
-                groupObject.render();
+                groupObject.render(groupObject.glDrawingMode);
             }
         }
     }
@@ -273,7 +266,7 @@ public class WavefrontObject implements IModelCustom
             }
             if(!skipPart)
             {
-                groupObject.render();
+                groupObject.render(groupObject.glDrawingMode);
             }
         }
     }

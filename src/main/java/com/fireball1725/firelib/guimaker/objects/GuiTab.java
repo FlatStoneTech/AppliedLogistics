@@ -1,10 +1,7 @@
-package com.fireball1725.corelib.guimaker.objects;
+package com.fireball1725.firelib.guimaker.objects;
 
-import com.fireball1725.corelib.guimaker.GuiMaker;
-import net.minecraft.client.gui.FontRenderer;
+import com.fireball1725.firelib.guimaker.GuiMaker;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.FMLSecurityManager;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.util.ArrayList;
 import java.util.List;

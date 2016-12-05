@@ -1,4 +1,4 @@
-package com.fireball1725.corelib.render.obj;
+package com.fireball1725.firelib.render.obj;
 
 /**
  * Thrown if there is a problem parsing the model

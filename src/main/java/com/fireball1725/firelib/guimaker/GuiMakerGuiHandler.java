@@ -1,4 +1,4 @@
-package com.fireball1725.corelib.guimaker;
+package com.fireball1725.firelib.guimaker;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;

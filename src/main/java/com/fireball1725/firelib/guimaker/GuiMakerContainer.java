@@ -1,17 +1,14 @@
-package com.fireball1725.corelib.guimaker;
+package com.fireball1725.firelib.guimaker;
 
 
-import com.fireball1725.corelib.guimaker.objects.GuiObject;
+import com.fireball1725.firelib.guimaker.objects.GuiObject;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.tileentity.TileEntity;
-import tech.flatstone.appliedlogistics.common.container.slot.SlotNormal;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GuiMakerContainer extends Container {

@@ -1,8 +1,7 @@
-package com.fireball1725.corelib.guimaker.objects;
+package com.fireball1725.firelib.guimaker.objects;
 
-import com.fireball1725.corelib.guimaker.GuiMaker;
+import com.fireball1725.firelib.guimaker.GuiMaker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;

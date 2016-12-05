@@ -1,12 +1,11 @@
-package com.fireball1725.corelib.guimaker.objects;
+package com.fireball1725.firelib.guimaker.objects;
 
-import com.fireball1725.corelib.guimaker.GuiMaker;
-import com.fireball1725.corelib.network.PacketHandler;
-import com.fireball1725.corelib.network.messages.PacketGuiObjectClicked;
+import com.fireball1725.firelib.guimaker.GuiMaker;
+import com.fireball1725.firelib.network.PacketHandler;
+import com.fireball1725.firelib.network.messages.PacketGuiObjectClicked;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraftforge.fml.client.config.GuiUtils;
