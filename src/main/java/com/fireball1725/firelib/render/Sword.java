@@ -49,8 +49,8 @@ public class Sword implements LayerRenderer<AbstractClientPlayer> {
             return;
 
         if (entitylivingbaseIn.isSneaking()) {
-        	GlStateManager.translate(0.0f, 0.2f, 0.0f);
-        	GlStateManager.rotate(28.6479f, 1.0f, 0.0f, 0.0f);
+            GlStateManager.translate(0.0f, 0.2f, 0.0f);
+            GlStateManager.rotate(28.6479f, 1.0f, 0.0f, 0.0f);
         }
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(swordTex);
@@ -61,10 +61,10 @@ public class Sword implements LayerRenderer<AbstractClientPlayer> {
         swordModel.renderAllExcept("Benihime_Tassle");
 
         if (entitylivingbaseIn.isSneaking()) {
-        	GlStateManager.translate(0.25f, -0.14f, 0.05f);
+            GlStateManager.translate(0.25f, -0.14f, 0.05f);
             GlStateManager.rotate(38.0f, 0.0f, 1.0f, 0.0f);
-        	GlStateManager.rotate(-28.6479f, 1.0f, 0.0f, 0.0f);
-        	GlStateManager.translate(-0.25f, 0.14f, -0.05f);
+            GlStateManager.rotate(-28.6479f, 1.0f, 0.0f, 0.0f);
+            GlStateManager.translate(-0.25f, 0.14f, -0.05f);
             GlStateManager.rotate(-38.0f, 0.0f, 1.0f, 0.0f);
             GlStateManager.translate(0.026f, -0.021f, -0.101f);
         }
