@@ -1,15 +1,12 @@
-package com.fireball1725.corelib.util;
+package com.fireball1725.firelib.util;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
-import scala.collection.parallel.ParIterableLike;
 
 import java.util.List;
 

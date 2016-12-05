@@ -20,11 +20,7 @@
 
 package tech.flatstone.appliedlogistics;
 
-import com.fireball1725.corelib.truetyper.Test;
-import com.fireball1725.corelib.util.FontRendererExtended;
 import com.google.common.base.Stopwatch;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.shader.Framebuffer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fluids.Fluid;
@@ -75,7 +71,7 @@ public class AppliedLogistics {
         proxy.registerConfiguration(event.getSuggestedConfigurationFile());
 
         PacketHandler.init();
-        com.fireball1725.corelib.network.PacketHandler.init();
+        com.fireball1725.firelib.network.PacketHandler.init();
 
         // Register all the things...
         proxy.registerBlocks();

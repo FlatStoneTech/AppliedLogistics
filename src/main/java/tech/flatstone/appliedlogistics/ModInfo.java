@@ -32,8 +32,4 @@ public class ModInfo {
     public static final String FINGERPRINT = "@FINGERPRINT@";
     public static final String GUI_FACTORY = PACKAGE_NAME + MOD_ID + ".common.config.ConfigGuiFactory";
     public static final String PATH_INTEGRATIONS = PACKAGE_NAME + MOD_ID + ".common.integrations.";
-
-    private ModInfo() {
-
-    }
 }

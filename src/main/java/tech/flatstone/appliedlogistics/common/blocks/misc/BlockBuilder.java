@@ -20,10 +20,10 @@
 
 package tech.flatstone.appliedlogistics.common.blocks.misc;
 
-import com.fireball1725.corelib.guimaker.GuiMaker;
-import com.fireball1725.corelib.guimaker.GuiMakerStatusIcon;
-import com.fireball1725.corelib.guimaker.objects.*;
-import com.fireball1725.corelib.guimaker.IImplementsGuiMaker;
+import com.fireball1725.firelib.guimaker.GuiMaker;
+import com.fireball1725.firelib.guimaker.GuiMakerStatusIcon;
+import com.fireball1725.firelib.guimaker.objects.*;
+import com.fireball1725.firelib.guimaker.IImplementsGuiMaker;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;

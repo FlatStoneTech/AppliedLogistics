@@ -1,15 +1,12 @@
 package tech.flatstone.appliedlogistics.common.blocks.machines;
 
-import com.fireball1725.corelib.guimaker.GuiMaker;
-import com.fireball1725.corelib.guimaker.IImplementsGuiMaker;
-import com.fireball1725.corelib.guimaker.objects.*;
+import com.fireball1725.firelib.guimaker.GuiMaker;
+import com.fireball1725.firelib.guimaker.IImplementsGuiMaker;
+import com.fireball1725.firelib.guimaker.objects.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -21,19 +18,16 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.client.config.GuiUtils;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTechBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
-import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityFurnace;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-import java.awt.*;
 import java.util.Random;
 
 public class BlockFurnace extends BlockTechBase implements IImplementsGuiMaker {

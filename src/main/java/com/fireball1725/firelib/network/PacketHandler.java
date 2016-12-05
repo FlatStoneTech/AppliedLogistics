@@ -1,7 +1,7 @@
-package com.fireball1725.corelib.network;
+package com.fireball1725.firelib.network;
 
-import com.fireball1725.corelib.network.messages.PacketGuiObjectClicked;
-import com.fireball1725.corelib.network.messages.PacketUpdateGuiContainer;
+import com.fireball1725.firelib.network.messages.PacketGuiObjectClicked;
+import com.fireball1725.firelib.network.messages.PacketUpdateGuiContainer;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;

@@ -18,18 +18,44 @@
  * Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package com.fireball1725.corelib.proxy;
+package com.fireball1725.firelib.proxy;
 
-import java.io.File;
+import com.fireball1725.firelib.FireBallLibrary;
+import com.fireball1725.firelib.render.Sword;
+import com.fireball1725.firelib.util.FontRendererExtended;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public interface IProxy {
-    /**
-     * Register Events
-     */
-    void registerEvents();
+public class ClientProxy extends CommonProxy {
+    @Override
+    public void registerFontRendererExtended() {
+        FireBallLibrary.instance.fontRendererExtendedObj = new FontRendererExtended(Minecraft.getMinecraft().gameSettings, new ResourceLocation("textures/font/ascii.png"), Minecraft.getMinecraft().renderEngine, false);
 
-    void registerConfiguration(File configFile);
+        if (Minecraft.getMinecraft().gameSettings.language != null)
+        {
+            FireBallLibrary.instance.fontRendererExtendedObj.setUnicodeFlag(Minecraft.getMinecraft().isUnicode());
+            FireBallLibrary.instance.fontRendererExtendedObj.setBidiFlag(Minecraft.getMinecraft().getLanguageManager().isCurrentLanguageBidirectional());
+        }
 
-    void registerFontRendererExtended();
+        ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(FireBallLibrary.instance.fontRendererExtendedObj);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void registerEvents() {
+        super.registerEvents();
+    }
+
+    @Override
+    public void registerLayers() {
+        super.registerLayers();
+
+        for (RenderPlayer renderPlayer : Minecraft.getMinecraft().getRenderManager().getSkinMap().values()) {
+            renderPlayer.addLayer(new Sword(renderPlayer));
+        }
+    }
 }
-

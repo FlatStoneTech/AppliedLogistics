@@ -20,9 +20,7 @@
 
 package tech.flatstone.appliedlogistics.proxy;
 
-import com.fireball1725.corelib.FireBallCoreLibrary;
-import com.fireball1725.corelib.guimaker.GuiMaker;
-import com.fireball1725.corelib.guimaker.GuiMakerGuiHandler;
+import com.fireball1725.firelib.guimaker.GuiMakerGuiHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;

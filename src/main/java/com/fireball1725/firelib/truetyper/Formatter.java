@@ -1,4 +1,4 @@
-package com.fireball1725.corelib.truetyper;
+package com.fireball1725.firelib.truetyper;
 
 /**
  *	TrueTyper: Open Source TTF implementation for Minecraft.
