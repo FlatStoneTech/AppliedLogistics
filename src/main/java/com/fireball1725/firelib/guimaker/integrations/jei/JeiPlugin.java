@@ -9,7 +9,7 @@ import mezz.jei.api.gui.IAdvancedGuiHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.List;
 
 @JEIPlugin

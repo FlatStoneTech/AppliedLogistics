@@ -14,18 +14,18 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.config.GuiUtils;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class GuiMakerGuiContainer extends GuiContainer {
+    GuiMaker guiMaker;
     private TileEntity tileEntity;
     private InventoryPlayer player;
     private int mouseX = 0;
     private int mouseY = 0;
-    GuiMaker guiMaker;
 
     public GuiMakerGuiContainer(InventoryPlayer inventoryPlayer, TileEntity tileEntity, int id) {
         super(new GuiMakerContainer(inventoryPlayer, tileEntity, id));
@@ -40,7 +40,7 @@ public class GuiMakerGuiContainer extends GuiContainer {
 
         this.tileEntity = tileEntity;
 
-        for(GuiObject guiObject : guiMaker.getGuiObjects()) {
+        for (GuiObject guiObject : guiMaker.getGuiObjects()) {
             guiObject.updateGuiSize(this.guiLeft, this.guiTop, xSize, ySize);
         }
     }
@@ -57,7 +57,7 @@ public class GuiMakerGuiContainer extends GuiContainer {
     public void initGui() {
         super.initGui();
 
-        for(GuiObject guiObject : guiMaker.getGuiObjects()) {
+        for (GuiObject guiObject : guiMaker.getGuiObjects()) {
             guiObject.updateGuiSize(this.guiLeft, this.guiTop, xSize, ySize);
             guiObject.initGui();
         }
@@ -74,7 +74,7 @@ public class GuiMakerGuiContainer extends GuiContainer {
         GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
         RenderHelper.enableGUIStandardItemLighting();
 
-        for(GuiObject guiObject : guiMaker.getGuiObjects()) {
+        for (GuiObject guiObject : guiMaker.getGuiObjects()) {
             guiObject.updateMouse(mouseX, mouseY);
             guiObject.drawScreen(this, mouseX, mouseY, partialTicks, this.zLevel);
         }
@@ -148,7 +148,7 @@ public class GuiMakerGuiContainer extends GuiContainer {
             GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
         }
 
-        for(GuiObject guiObject : guiMaker.getGuiObjects())
+        for (GuiObject guiObject : guiMaker.getGuiObjects())
             guiObject.drawGuiContainerForegroundLayer(this, mouseX, mouseY);
     }
 
@@ -156,7 +156,7 @@ public class GuiMakerGuiContainer extends GuiContainer {
     public void drawSlot(Slot slotIn) {
         super.drawSlot(slotIn);
 
-        for(GuiObject guiObject : guiMaker.getGuiObjects())
+        for (GuiObject guiObject : guiMaker.getGuiObjects())
             guiObject.drawSlot(slotIn);
     }
 
@@ -186,21 +186,21 @@ public class GuiMakerGuiContainer extends GuiContainer {
             }
         }
 
-        for(GuiObject guiObject : guiMaker.getGuiObjects())
+        for (GuiObject guiObject : guiMaker.getGuiObjects())
             guiObject.mouseClicked(this, mouseX, mouseY, mouseButton);
     }
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
-        for(GuiObject guiObject : guiMaker.getGuiObjects())
+        for (GuiObject guiObject : guiMaker.getGuiObjects())
             guiObject.keyTyped(typedChar, keyCode);
     }
 
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
-        for(GuiObject guiObject : guiMaker.getGuiObjects())
+        for (GuiObject guiObject : guiMaker.getGuiObjects())
             guiObject.onGuiClosed();
     }
 
@@ -213,13 +213,13 @@ public class GuiMakerGuiContainer extends GuiContainer {
     public void updateScreen() {
         super.updateScreen();
 
-        for(GuiObject guiObject : guiMaker.getGuiObjects()) {
+        for (GuiObject guiObject : guiMaker.getGuiObjects()) {
             guiObject.updateGuiSize(this.guiLeft, this.guiTop, xSize, ySize);
         }
 
         this.guiMaker.getGuiMakerInstance().drawGui(this.tileEntity);
 
-        for(GuiObject guiObject : guiMaker.getGuiObjects())
+        for (GuiObject guiObject : guiMaker.getGuiObjects())
             guiObject.updateScreen();
     }
 
@@ -252,7 +252,7 @@ public class GuiMakerGuiContainer extends GuiContainer {
             }
         }
 
-        for(GuiObject guiObject : guiMaker.getGuiObjects()) {
+        for (GuiObject guiObject : guiMaker.getGuiObjects()) {
             //guiObject.setTextureSheet(GuiMaker.resourceLocation);
             guiObject.drawGuiContainerBackgroundLayer(this, partialTicks, mouseX, mouseY);
         }

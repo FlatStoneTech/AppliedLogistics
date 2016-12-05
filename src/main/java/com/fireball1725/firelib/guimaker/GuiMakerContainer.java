@@ -28,9 +28,9 @@ public class GuiMakerContainer extends Container {
         this.inventoryItemStacks.clear();
         this.inventorySlots.clear();
 
-        for(GuiObject guiObject : guiMaker.getGuiObjects()) {
+        for (GuiObject guiObject : guiMaker.getGuiObjects()) {
             List<Slot> slotList;
-            slotList = guiObject.initContainer(inventoryPlayer, (IInventory)tileEntity);
+            slotList = guiObject.initContainer(inventoryPlayer, (IInventory) tileEntity);
             for (Slot slot : slotList) {
                 this.addSlotToContainer(slot);
             }

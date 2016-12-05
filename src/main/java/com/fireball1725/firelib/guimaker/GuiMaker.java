@@ -1,9 +1,9 @@
 package com.fireball1725.firelib.guimaker;
 
-import com.fireball1725.firelib.network.PacketHandler;
-import com.fireball1725.firelib.network.messages.PacketUpdateGuiContainer;
 import com.fireball1725.firelib.guimaker.objects.GuiObject;
 import com.fireball1725.firelib.guimaker.objects.GuiTab;
+import com.fireball1725.firelib.network.PacketHandler;
+import com.fireball1725.firelib.network.messages.PacketUpdateGuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class GuiMaker {
-    private static List<GuiMaker> guiInstances = new ArrayList<>();
     public static ResourceLocation resourceLocation = new ResourceLocation("firelib", "textures/gui/Darkskin.png");
+    private static List<GuiMaker> guiInstances = new ArrayList<>();
 
     //region Things set in stone
     /**
@@ -62,6 +62,7 @@ public abstract class GuiMaker {
     //endregion
 
     //region Get Instance
+
     /**
      * Create new instance of GuiMaker
      *
@@ -77,6 +78,7 @@ public abstract class GuiMaker {
     //endregion
 
     //region Constructor
+
     /**
      * Get Gui Maker Instance from Registry
      *
@@ -89,6 +91,7 @@ public abstract class GuiMaker {
     //endregion
 
     //region Methods
+
     /**
      * Show Gui Instance
      *
@@ -111,6 +114,7 @@ public abstract class GuiMaker {
 
     /**
      * Set the window size
+     *
      * @param windowWidth
      * @param windowHeight
      */
@@ -130,16 +134,17 @@ public abstract class GuiMaker {
             // Update sever with new TabID
             PacketHandler.INSTANCE.sendToServer(new PacketUpdateGuiContainer(this.guiId, this.selectedTab));
             if (player.openContainer instanceof GuiMakerContainer)
-                ((GuiMakerContainer)player.openContainer).initContainer();
+                ((GuiMakerContainer) player.openContainer).initContainer();
         } else {
             // Init server side
             if (player.openContainer instanceof GuiMakerContainer)
-                ((GuiMakerContainer)player.openContainer).initContainer();
+                ((GuiMakerContainer) player.openContainer).initContainer();
         }
     }
     //endregion
 
     //region Getters and Setters
+
     /**
      * Get GuiMaker Status Icon
      *
@@ -187,6 +192,7 @@ public abstract class GuiMaker {
 
     /**
      * Get GuiMaker Parent Instance
+     *
      * @return
      */
     public IImplementsGuiMaker getGuiMakerInstance() {
@@ -195,6 +201,7 @@ public abstract class GuiMaker {
 
     /**
      * Get the window Height
+     *
      * @return
      */
     public int getGuiHeight() {
@@ -203,6 +210,7 @@ public abstract class GuiMaker {
 
     /**
      * Get the window Width
+     *
      * @return
      */
     public int getGuiWidth() {
@@ -211,6 +219,7 @@ public abstract class GuiMaker {
 
     /**
      * Get the Gui ID
+     *
      * @return
      */
     public int getGuiId() {

@@ -17,23 +17,16 @@ import java.util.List;
 
 public abstract class GuiObject extends Gui implements IGuiObject {
 
-    protected int x, y, w, h;
-
-    private int parentX = 0, parentY = 0;
-
-    private int offsetX = 0, offsetY = 0;
-
-    protected int guiX, guiY, guiW, guiH;
-
-    protected int mouseX, mouseY;
-
     protected final int controlID;
-
+    protected int x, y, w, h;
+    protected int guiX, guiY, guiW, guiH;
+    protected int mouseX, mouseY;
     protected GuiMaker guiMakerObj;
-
     protected boolean visible = true;
     protected boolean disabled = false;
     protected boolean selected = false;
+    private int parentX = 0, parentY = 0;
+    private int offsetX = 0, offsetY = 0;
 
     public GuiObject(int controlID) {
         this.controlID = controlID;

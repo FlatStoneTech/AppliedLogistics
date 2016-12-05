@@ -35,8 +35,7 @@ public class ClientProxy extends CommonProxy {
     public void registerFontRendererExtended() {
         FireBallLibrary.instance.fontRendererExtendedObj = new FontRendererExtended(Minecraft.getMinecraft().gameSettings, new ResourceLocation("textures/font/ascii.png"), Minecraft.getMinecraft().renderEngine, false);
 
-        if (Minecraft.getMinecraft().gameSettings.language != null)
-        {
+        if (Minecraft.getMinecraft().gameSettings.language != null) {
             FireBallLibrary.instance.fontRendererExtendedObj.setUnicodeFlag(Minecraft.getMinecraft().isUnicode());
             FireBallLibrary.instance.fontRendererExtendedObj.setBidiFlag(Minecraft.getMinecraft().getLanguageManager().isCurrentLanguageBidirectional());
         }
