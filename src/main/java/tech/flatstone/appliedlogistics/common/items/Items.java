@@ -31,6 +31,9 @@ import tech.flatstone.appliedlogistics.common.items.ores.*;
 import tech.flatstone.appliedlogistics.common.items.plans.PlanBlank;
 import tech.flatstone.appliedlogistics.common.items.plans.PlanItem;
 import tech.flatstone.appliedlogistics.common.items.tools.ItemHammer;
+import tech.flatstone.appliedlogistics.common.items.transport.ItemPipe;
+import tech.flatstone.appliedlogistics.common.items.transport.ItemPipeEntry;
+import tech.flatstone.appliedlogistics.common.items.transport.ItemPipeExit;
 import tech.flatstone.appliedlogistics.common.util.RegistrationHelper;
 
 public enum Items {
@@ -57,7 +60,12 @@ public enum Items {
     ITEM_TOOL_HAMMER(ItemHammer.class),
 
     ITEM_PLAN_BLANK(PlanBlank.class),
-    ITEM_PLAN(PlanItem.class);
+    ITEM_PLAN(PlanItem.class),
+
+    ITEM_TRANSPORT_EXIT(ItemPipeExit.class),
+    ITEM_TRANSPORT_ENTRY(ItemPipeEntry.class),
+    ITEM_TRANSPORT_PIPE(ItemPipe.class),
+    ;
 
     private final Class<? extends Item> itemClass;
     private Item item;

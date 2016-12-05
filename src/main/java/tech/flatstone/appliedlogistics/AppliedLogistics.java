@@ -37,6 +37,7 @@ import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
 import tech.flatstone.appliedlogistics.api.exceptions.OutdatedJavaException;
 import tech.flatstone.appliedlogistics.common.config.Config;
+import tech.flatstone.appliedlogistics.common.grid.TransportGrid;
 import tech.flatstone.appliedlogistics.common.integrations.IntegrationsManager;
 import tech.flatstone.appliedlogistics.common.network.PacketHandler;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
@@ -53,6 +54,7 @@ public class AppliedLogistics {
     @SidedProxy(clientSide = ModInfo.CLIENT_PROXY_CLASS, serverSide = ModInfo.SERVER_PROXY_CLASS)
     public static IProxy proxy;
     public static Configuration configuration;
+    public TransportGrid transportGrid;
 
     static {
         FluidRegistry.enableUniversalBucket();
@@ -112,6 +114,8 @@ public class AppliedLogistics {
         MinecraftForge.EVENT_BUS.register(worldGen);
 
         MinecraftForge.EVENT_BUS.register(this);
+
+        transportGrid = new TransportGrid();
 
         // Init Integrations
         IntegrationsManager.instance().init();
