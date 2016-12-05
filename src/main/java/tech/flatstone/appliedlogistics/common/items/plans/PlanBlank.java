@@ -20,19 +20,54 @@
 
 package tech.flatstone.appliedlogistics.common.items.plans;
 
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
+import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
+
+import java.util.List;
 
 public class PlanBlank extends ItemPlanBase implements IProvideRecipe {
     public PlanBlank() {
         this.setMaxStackSize(16);
+        this.setHasSubtypes(true);
         this.setCreativeTab(AppliedLogisticsCreativeTabs.PLANS);
         this.setInternalName("plan_blank");
+    }
+
+    @Override
+    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+        for (TechLevel techLevel : TechLevel.all()) {
+            subItems.add(new ItemStack(itemIn, 1, techLevel.getMeta()));
+        }
+    }
+
+    @Override
+    public int getMetadata(int damage) {
+        return damage;
+    }
+
+    @Override
+    public String getUnlocalizedName(ItemStack itemStack) {
+        String name = super.getUnlocalizedName();
+        String nameTechLevel = TechLevel.values()[itemStack.getItemDamage()].getName();
+        return name + "." + nameTechLevel;
+    }
+
+    @Override
+    public void registerItemRenderer() {
+        for (TechLevel techLevel : TechLevel.all()) {
+            ModelLoader.setCustomModelResourceLocation(this, techLevel.getMeta(), new ModelResourceLocation(ModInfo.MOD_ID + ":plans/plan-" + techLevel.getName(), "inventory"));
+        }
     }
 
     @Override
