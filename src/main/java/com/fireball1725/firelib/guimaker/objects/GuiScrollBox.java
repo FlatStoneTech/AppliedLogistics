@@ -23,6 +23,8 @@ public class GuiScrollBox extends GuiObject {
     private int maxScrollY = 0;
     private int offsetScrollY = 0;
     private boolean border;
+    private int initialClickY = -1;
+    private float scrollMultiplier;
 
     public GuiScrollBox(GuiMaker guiMakerObj, int x, int y, int w, int h) {
         super(-999);
@@ -44,6 +46,18 @@ public class GuiScrollBox extends GuiObject {
         this.maxScrollY = h;
         this.guiMakerObj = guiMakerObj;
         this.border = border;
+    }
+
+    public static void scissorCut(int x, int y, int w, int h) {
+        Minecraft mc = Minecraft.getMinecraft();
+        ScaledResolution sr = new ScaledResolution(mc);
+        int scale = sr.getScaleFactor();
+        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+        GL11.glScissor(x * scale, mc.displayHeight - (y + h) * scale, w * scale, h * scale);
+    }
+
+    public static void scissorEnd() {
+        GL11.glDisable(GL11.GL_SCISSOR_TEST);
     }
 
     public void setMaxScrollY(int maxScrollY) {
@@ -79,7 +93,7 @@ public class GuiScrollBox extends GuiObject {
     }
 
     private int getScrollBarHeight() {
-        int scrollBarHeight = (int)((float)((this.h) * (this.h)) / (float)this.maxScrollY);
+        int scrollBarHeight = (int) ((float) ((this.h) * (this.h)) / (float) this.maxScrollY);
         scrollBarHeight = MathHelper.clamp_int(scrollBarHeight, 16, this.h - 2);
 
         return scrollBarHeight;
@@ -108,23 +122,6 @@ public class GuiScrollBox extends GuiObject {
         scissorEnd();
     }
 
-    public static void scissorCut(int x, int y, int w, int h)
-    {
-        Minecraft mc = Minecraft.getMinecraft();
-        ScaledResolution sr = new ScaledResolution(mc);
-        int scale = sr.getScaleFactor();
-        GL11.glEnable(GL11.GL_SCISSOR_TEST);
-        GL11.glScissor(x * scale, mc.displayHeight - (y + h) * scale, w * scale, h * scale);
-    }
-
-    public static void scissorEnd()
-    {
-        GL11.glDisable(GL11.GL_SCISSOR_TEST);
-    }
-
-    private int initialClickY = -1;
-    private float scrollMultiplier;
-
     @Override
     public void handleMouseInput() {
         if (Mouse.isButtonDown(0)) {
@@ -133,9 +130,9 @@ public class GuiScrollBox extends GuiObject {
                 if (isMouseXYWithinScrollBox()) {
                     if (isMouseXYWithinScrollBar()) {
                         this.scrollMultiplier = -1.0F;
-                        int l1 = (int)((float)((this.h) * (this.h)) / (float)this.maxScrollY);
+                        int l1 = (int) ((float) ((this.h) * (this.h)) / (float) this.maxScrollY);
                         l1 = MathHelper.clamp_int(l1, 16, this.h - 2);
-                        this.scrollMultiplier /= (float)(this.h - l1) / Math.max(1, this.getMaxScroll());
+                        this.scrollMultiplier /= (float) (this.h - l1) / Math.max(1, this.getMaxScroll());
                     } else {
                         this.scrollMultiplier = 1.0F;
                     }
@@ -164,7 +161,7 @@ public class GuiScrollBox extends GuiObject {
                 else if (i2 < 0)
                     i2 = 1;
 
-                this.offsetScrollY += (float)(i2 * 10);
+                this.offsetScrollY += (float) (i2 * 10);
                 this.offsetScrollY = MathHelper.clamp_int(this.offsetScrollY, 0, this.maxScrollY - this.h);
             }
         }

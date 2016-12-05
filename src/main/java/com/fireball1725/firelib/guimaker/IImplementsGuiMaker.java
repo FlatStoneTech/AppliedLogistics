@@ -5,5 +5,6 @@ import net.minecraft.tileentity.TileEntity;
 
 public interface IImplementsGuiMaker {
     void drawGui(TileEntity tileEntity);
+
     void initGui(TileEntity tileEntity, InventoryPlayer inventoryPlayer);
 }

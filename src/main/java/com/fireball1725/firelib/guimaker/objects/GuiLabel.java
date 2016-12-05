@@ -36,12 +36,12 @@ public class GuiLabel extends GuiObject {
     public void drawGuiContainerForegroundLayer(GuiContainer guiContainer, int mouseX, int mouseY) {
         Point p = this.getWindowXY(false);
 
-        int scaledX = (int)Math.floor(p.getX() / this.scale);
-        int scaledY = (int)Math.floor(p.getY() / this.scale);
+        int scaledX = (int) Math.floor(p.getX() / this.scale);
+        int scaledY = (int) Math.floor(p.getY() / this.scale);
 
         GL11.glScalef(this.scale, this.scale, 1);
         Minecraft.getMinecraft().fontRendererObj.drawString(this.labelText, scaledX, scaledY, this.color);
-        GL11.glScalef(1/this.scale, 1/this.scale, 1);
+        GL11.glScalef(1 / this.scale, 1 / this.scale, 1);
     }
 
     public void setText(String text) {

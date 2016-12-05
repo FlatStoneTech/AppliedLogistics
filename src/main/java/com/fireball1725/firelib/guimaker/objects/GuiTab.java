@@ -8,11 +8,10 @@ import java.util.List;
 
 public class GuiTab {
     private final GuiMaker guiMakerObj;
-    private List<GuiObject> guiObjectList = new ArrayList<>();
-
     private final String tabName;
     private final ItemStack tabIconStack;
     private final int tabIconNumber;
+    private List<GuiObject> guiObjectList = new ArrayList<>();
 
     public GuiTab(GuiMaker guiMakerObj, String tabName, int tabIconNumber) {
         this.guiMakerObj = guiMakerObj;

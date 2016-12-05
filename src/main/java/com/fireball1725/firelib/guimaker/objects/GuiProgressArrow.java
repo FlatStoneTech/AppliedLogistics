@@ -26,15 +26,15 @@ public class GuiProgressArrow extends GuiObject {
         Minecraft.getMinecraft().getTextureManager().bindTexture(GuiMaker.resourceLocation);
         GuiUtils.drawTexturedModalRect(this.x + this.guiX, this.y + this.guiY, 128, 240, 32, 16, 0);
 
-        int progressX = (int)Math.floor((32.0d/100) * progress);
+        int progressX = (int) Math.floor((32.0d / 100) * progress);
         GuiUtils.drawTexturedModalRect(this.x + this.guiX, this.y + this.guiY, 160, 240, progressX, 16, 0);
-    }
-
-    public void setProgress(int progress) {
-        this.progress = progress;
     }
 
     public int getProgress() {
         return this.progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
     }
 }

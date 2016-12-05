@@ -26,15 +26,15 @@ public class GuiProgressFire extends GuiObject {
         Minecraft.getMinecraft().getTextureManager().bindTexture(GuiMaker.resourceLocation);
         GuiUtils.drawTexturedModalRect(this.x + this.guiX, this.y + this.guiY, 192, 240, 16, 16, 0);
 
-        int progressY = (int)Math.floor((16.0d/100) * progress);
-        GuiUtils.drawTexturedModalRect(this.x + this.guiX, this.y + this.guiY + 16 - progressY, 208, 256 - progressY , 16, progressY, 0);
-    }
-
-    public void setProgress(int progress) {
-        this.progress = progress;
+        int progressY = (int) Math.floor((16.0d / 100) * progress);
+        GuiUtils.drawTexturedModalRect(this.x + this.guiX, this.y + this.guiY + 16 - progressY, 208, 256 - progressY, 16, progressY, 0);
     }
 
     public int getProgress() {
         return this.progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
     }
 }

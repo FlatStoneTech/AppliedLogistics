@@ -43,16 +43,16 @@ public class FontRendererExtended extends FontRenderer {
 
     @SideOnly(Side.CLIENT)
     private void renderCenteredSplitString(String str, int x, int y, int wrapWidth, float scale, boolean addShadow) {
-        wrapWidth = (int)Math.floor(wrapWidth / scale);
-        x = (int)Math.floor(x / scale);
-        y = (int)Math.floor(y / scale);
+        wrapWidth = (int) Math.floor(wrapWidth / scale);
+        x = (int) Math.floor(x / scale);
+        y = (int) Math.floor(y / scale);
 
         GL11.glScalef(scale, scale, 1);
         for (String s : this.listFormattedStringToWidth(str, wrapWidth)) {
             this.renderCenteredStringAligned(s, x, y, wrapWidth, this.textColor, scale, addShadow);
             y += this.FONT_HEIGHT;
         }
-        GL11.glScalef(1/scale, 1/scale, 1);
+        GL11.glScalef(1 / scale, 1 / scale, 1);
     }
 
     @SideOnly(Side.CLIENT)
@@ -66,7 +66,7 @@ public class FontRendererExtended extends FontRenderer {
         x = x + ((width >> 1) - (w >> 1));
 
 
-        int result = this.renderString(text, (float)x, (float)y, color, dropShadow);
+        int result = this.renderString(text, (float) x, (float) y, color, dropShadow);
 
         return result;
     }
