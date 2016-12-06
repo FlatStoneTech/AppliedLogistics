@@ -51,6 +51,7 @@ public enum Blocks {
     BLOCK_BUILDER(BlockBuilder.class, ItemBuilder.class),
     BLOCK_PLAN_LIBRARY(BlockPlanLibrary.class),
     BLOCK_PLAN_CHEST(BlockPlanChest.class),
+    BLOCK_PATTERN_STAMPER(BlockPatternStamper.class),
 
     BLOCK_MISC_CRANK(BlockCrank.class, ItemCrank.class),
     BLOCK_MISC_CAULDRON(BlockCauldron.class),
