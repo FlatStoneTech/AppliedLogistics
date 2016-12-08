@@ -1,6 +1,5 @@
 package tech.flatstone.appliedlogistics.common.blocks;
 
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -200,7 +199,7 @@ public abstract class BlockTileBase extends BlockBase implements ITileEntityProv
 
         for (ItemStack itemStack : subBlocks) {
             IBlockState blockState = this.getStateFromMeta(itemStack.getItemDamage());
-            Map<IProperty<?>, Comparable<? >> properties = new HashMap<>();
+            Map<IProperty<?>, Comparable<?>> properties = new HashMap<>();
             for (Map.Entry<IProperty<?>, Comparable<?>> entry : blockState.getProperties().entrySet()) {
                 if (entry.getKey() != FACING)
                     properties.put(entry.getKey(), entry.getValue());

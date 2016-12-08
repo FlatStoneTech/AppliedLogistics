@@ -1,6 +1,5 @@
 package tech.flatstone.appliedlogistics.common.blocks.misc;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
@@ -20,7 +19,6 @@ import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
@@ -42,12 +40,18 @@ import tech.flatstone.appliedlogistics.client.particles.ParticleCauldronSmokeNor
 import tech.flatstone.appliedlogistics.client.particles.ParticleCauldronSplash;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCauldron;
-import tech.flatstone.appliedlogistics.common.util.*;
+import tech.flatstone.appliedlogistics.common.util.IProvideEvent;
+import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
+import tech.flatstone.appliedlogistics.common.util.Platform;
+import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
 public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IProvideEvent {
+    public static final AxisAlignedBB AABB_BASE = new AxisAlignedBB(0.125, 0.25, 0.125, 0.875, 0.3125, 0.875);
+    public static final AxisAlignedBB AABB_WATER = new AxisAlignedBB(0.1875, 0.3125, 0.1875, 0.8125, 0.8125, 0.8125);
+    public static final AxisAlignedBB AABB_PRECIPITATE = new AxisAlignedBB(0.1875, 0.3125, 0.1875, 0.8125, 0.375, 0.8125);
     protected static final AxisAlignedBB AABB_LEG_1_SEGMENT_1 = new AxisAlignedBB(0.125, 0.1875, 0.1875, 0.1875, 0.25, 0.3125);
     protected static final AxisAlignedBB AABB_LEG_1_SEGMENT_2 = new AxisAlignedBB(0.125, 0.1875, 0.125, 0.3125, 0.25, 0.1875);
     protected static final AxisAlignedBB AABB_LEG_2_SEGMENT_1 = new AxisAlignedBB(0.125, 0.1875, 0.6875, 0.1875, 0.25, 0.8125);
@@ -56,7 +60,6 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
     protected static final AxisAlignedBB AABB_LEG_3_SEGMENT_2 = new AxisAlignedBB(0.6875, 0.1875, 0.8125, 0.875, 0.25, 0.875);
     protected static final AxisAlignedBB AABB_LEG_4_SEGMENT_1 = new AxisAlignedBB(0.8125, 0.1875, 0.1875, 0.875, 0.25, 0.3125);
     protected static final AxisAlignedBB AABB_LEG_4_SEGMENT_2 = new AxisAlignedBB(0.6875, 0.1875, 0.125, 0.875, 0.25, 0.1875);
-    public static final AxisAlignedBB AABB_BASE = new AxisAlignedBB(0.125, 0.25, 0.125, 0.875, 0.3125, 0.875);
     protected static final AxisAlignedBB AABB_WALL_1 = new AxisAlignedBB(0.125, 0.3125, 0.1875, 0.1875, 0.875, 0.875);
     protected static final AxisAlignedBB AABB_WALL_2 = new AxisAlignedBB(0.8125, 0.3125, 0.125, 0.875, 0.875, 0.8125);
     protected static final AxisAlignedBB AABB_WALL_3 = new AxisAlignedBB(0.125, 0.3125, 0.125, 0.8125, 0.875, 0.1875);
@@ -66,8 +69,6 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
     protected static final AxisAlignedBB AABB_WOOD = new AxisAlignedBB(0.0625, 0.0, 0.0625, 0.9375, 0.1875, 0.9375);
     protected static final AxisAlignedBB[] BOXES = new AxisAlignedBB[]{AABB_LEG_1_SEGMENT_1, AABB_LEG_1_SEGMENT_2, AABB_LEG_2_SEGMENT_1, AABB_LEG_2_SEGMENT_2, AABB_LEG_3_SEGMENT_1,
             AABB_LEG_3_SEGMENT_2, AABB_LEG_4_SEGMENT_1, AABB_LEG_4_SEGMENT_2, AABB_BASE, AABB_WALL_1, AABB_WALL_2, AABB_WALL_3, AABB_WALL_4, AABB_WOOD};
-    public static final AxisAlignedBB AABB_WATER = new AxisAlignedBB(0.1875, 0.3125, 0.1875, 0.8125, 0.8125, 0.8125);
-    public static final AxisAlignedBB AABB_PRECIPITATE = new AxisAlignedBB(0.1875, 0.3125, 0.1875, 0.8125, 0.375, 0.8125);
     protected static final AxisAlignedBB AABB_BOUNDING_BOX = new AxisAlignedBB(0.125, 0.1875, 0.125, 0.875, 0.875, 0.875);
 
     private static final PropertyBool CAULDRON_LIT = PropertyBool.create("cauldron_lit");
@@ -96,7 +97,7 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
         //todo: remove this into a class, duplicated code...
         for (ItemStack itemStack : subBlocks) {
             IBlockState blockState = this.getStateFromMeta(itemStack.getItemDamage());
-            Map<IProperty<?>, Comparable<? >> properties = new HashMap<>();
+            Map<IProperty<?>, Comparable<?>> properties = new HashMap<>();
             for (Map.Entry<IProperty<?>, Comparable<?>> entry : blockState.getProperties().entrySet()) {
                 if (entry.getKey() != FACING && entry.getKey() != CAULDRON_LIT)
                     properties.put(entry.getKey(), entry.getValue());
@@ -183,7 +184,7 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
 
     @SubscribeEvent
     public void drawBlockHighlight(DrawBlockHighlightEvent event) {
-        if(!(event.getTarget().typeOfHit == RayTraceResult.Type.BLOCK && event.getPlayer().worldObj.getBlockState(event.getTarget().getBlockPos()).getBlock() instanceof BlockCauldron)) {
+        if (!(event.getTarget().typeOfHit == RayTraceResult.Type.BLOCK && event.getPlayer().worldObj.getBlockState(event.getTarget().getBlockPos()).getBlock() instanceof BlockCauldron)) {
             return;
         }
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;//ClientHelper.getPlayer();
@@ -309,16 +310,6 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
         return lookObject == null ? null : new ExtendedRayTraceResult(lookObject, index == 13, isLookingAtPrecipitate);
     }
 
-    private static class ExtendedRayTraceResult extends RayTraceResult {
-        private boolean isLookingAtLogs, isLookingAtPrecipitate;
-
-        public ExtendedRayTraceResult(RayTraceResult rayTraceResult, boolean isLookingAtLogs, boolean isLookingAtPrecipitate) {
-            super(rayTraceResult.hitVec, rayTraceResult.sideHit, rayTraceResult.getBlockPos());
-            this.isLookingAtLogs = isLookingAtLogs;
-            this.isLookingAtPrecipitate = isLookingAtPrecipitate;
-        }
-    }
-
     public void spawnParticlesForLogs(World worldIn, BlockPos pos, ExtendedRayTraceResult lookObject, int particleCount, IParticleFactory... particleFactories) {
         if (!worldIn.isRemote)
             return;
@@ -352,6 +343,16 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
         IBlockState blockState = getActualState(getDefaultState(), worldIn, pos);
         if (blockState.getValue(CAULDRON_LIT) && rand.nextDouble() < 0.1D) {
             worldIn.playSound(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, SoundEvents.BLOCK_FURNACE_FIRE_CRACKLE, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
+        }
+    }
+
+    private static class ExtendedRayTraceResult extends RayTraceResult {
+        private boolean isLookingAtLogs, isLookingAtPrecipitate;
+
+        public ExtendedRayTraceResult(RayTraceResult rayTraceResult, boolean isLookingAtLogs, boolean isLookingAtPrecipitate) {
+            super(rayTraceResult.hitVec, rayTraceResult.sideHit, rayTraceResult.getBlockPos());
+            this.isLookingAtLogs = isLookingAtLogs;
+            this.isLookingAtPrecipitate = isLookingAtPrecipitate;
         }
     }
 }

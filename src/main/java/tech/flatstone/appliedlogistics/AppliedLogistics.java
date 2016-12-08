@@ -54,11 +54,12 @@ public class AppliedLogistics {
     @SidedProxy(clientSide = ModInfo.CLIENT_PROXY_CLASS, serverSide = ModInfo.SERVER_PROXY_CLASS)
     public static IProxy proxy;
     public static Configuration configuration;
-    public TransportGrid transportGrid;
 
     static {
         FluidRegistry.enableUniversalBucket();
     }
+
+    public TransportGrid transportGrid;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {

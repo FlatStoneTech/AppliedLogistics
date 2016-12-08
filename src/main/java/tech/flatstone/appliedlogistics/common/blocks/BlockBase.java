@@ -20,11 +20,8 @@
 
 package tech.flatstone.appliedlogistics.common.blocks;
 
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
@@ -68,6 +65,12 @@ public abstract class BlockBase extends Block implements IBlockRenderer {
         this.resourcePath = resourcePath;
     }
 
+    public static boolean func_185759_i(IBlockState p_185759_0_) {
+        Block block = p_185759_0_.getBlock();
+        Material material = p_185759_0_.getMaterial();
+        return block == net.minecraft.init.Blocks.FIRE || material == Material.AIR || material == Material.WATER || material == Material.LAVA;
+    }
+
     @Override
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
         if (hasGravity(worldIn, pos))
@@ -101,7 +104,7 @@ public abstract class BlockBase extends Block implements IBlockRenderer {
 
             if (!fallInstantly && worldIn.isAreaLoaded(pos.add(-i, -i, -i), pos.add(i, i, i))) {
                 if (!worldIn.isRemote) {
-                    EntityFallingBlock entityfallingblock = new EntityFallingBlock(worldIn, (double)pos.getX() + 0.5D, (double)pos.getY(), (double)pos.getZ() + 0.5D, worldIn.getBlockState(pos));
+                    EntityFallingBlock entityfallingblock = new EntityFallingBlock(worldIn, (double) pos.getX() + 0.5D, (double) pos.getY(), (double) pos.getZ() + 0.5D, worldIn.getBlockState(pos));
                     this.onStartFalling(entityfallingblock);
                     worldIn.spawnEntityInWorld(entityfallingblock);
                 }
@@ -118,12 +121,6 @@ public abstract class BlockBase extends Block implements IBlockRenderer {
                 }
             }
         }
-    }
-
-    public static boolean func_185759_i(IBlockState p_185759_0_) {
-        Block block = p_185759_0_.getBlock();
-        Material material = p_185759_0_.getMaterial();
-        return block == net.minecraft.init.Blocks.FIRE || material == Material.AIR || material == Material.WATER || material == Material.LAVA;
     }
 
     protected void onStartFalling(EntityFallingBlock fallingEntity) {

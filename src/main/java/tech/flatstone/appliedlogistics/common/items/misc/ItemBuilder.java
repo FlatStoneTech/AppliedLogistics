@@ -23,7 +23,6 @@ package tech.flatstone.appliedlogistics.common.items.misc;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ITickable;
 import tech.flatstone.appliedlogistics.api.features.IUpgradeableMachine;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 

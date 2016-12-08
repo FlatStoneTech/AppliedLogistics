@@ -24,8 +24,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -275,24 +273,23 @@ public class GuiHelper extends GuiScreen {
     /**
      * Draws a textured rectangle at z = 0. Args: x, y, u, v, width, height, textureWidth, textureHeight
      *
-     * @param x X coordinate to start drawing at
-     * @param y Y coordinate to start drawing at
-     * @param textureX Position in the texture to start drawing at, in pixels.
-     * @param textureY Position in the texture to start drawing at, in pixels.
-     * @param textureWidth Width of the texture in the default texture pack, in pixels.
+     * @param x             X coordinate to start drawing at
+     * @param y             Y coordinate to start drawing at
+     * @param textureX      Position in the texture to start drawing at, in pixels.
+     * @param textureY      Position in the texture to start drawing at, in pixels.
+     * @param textureWidth  Width of the texture in the default texture pack, in pixels.
      * @param textureHeight Height of the texture in the default texture pack, in pixels.
      */
-    public void drawModalRectWithTexture(int x, int y, float textureX, float textureY, int width, int height, float textureWidth, float textureHeight)
-    {
+    public void drawModalRectWithTexture(int x, int y, float textureX, float textureY, int width, int height, float textureWidth, float textureHeight) {
         float f = 1.0F / textureWidth;
         float f1 = 1.0F / textureHeight;
         Tessellator tessellator = Tessellator.getInstance();
         VertexBuffer vertexbuffer = tessellator.getBuffer();
         vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        vertexbuffer.pos((double)(x), (double)(y + height), (double)this.zLevel).tex((double)((float)(textureX + 0) * f), (double)((float)(textureY + height) * f1)).endVertex();
-        vertexbuffer.pos((double)(x + width), (double)(y + height), (double)this.zLevel).tex((double)((float)(textureX + width) * f), (double)((float)(textureY + height) * f1)).endVertex();
-        vertexbuffer.pos((double)(x + width), (double)(y), (double)this.zLevel).tex((double)((float)(textureX + width) * f), (double)((float)(textureY + 0) * f1)).endVertex();
-        vertexbuffer.pos((double)(x), (double)(y), (double)this.zLevel).tex((double)((float)(textureX + 0) * f), (double)((float)(textureY + 0) * f1)).endVertex();
+        vertexbuffer.pos((double) (x), (double) (y + height), (double) this.zLevel).tex((double) ((float) (textureX + 0) * f), (double) ((float) (textureY + height) * f1)).endVertex();
+        vertexbuffer.pos((double) (x + width), (double) (y + height), (double) this.zLevel).tex((double) ((float) (textureX + width) * f), (double) ((float) (textureY + height) * f1)).endVertex();
+        vertexbuffer.pos((double) (x + width), (double) (y), (double) this.zLevel).tex((double) ((float) (textureX + width) * f), (double) ((float) (textureY + 0) * f1)).endVertex();
+        vertexbuffer.pos((double) (x), (double) (y), (double) this.zLevel).tex((double) ((float) (textureX + 0) * f), (double) ((float) (textureY + 0) * f1)).endVertex();
         tessellator.draw();
     }
 }

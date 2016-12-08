@@ -38,9 +38,6 @@ import tech.flatstone.appliedlogistics.common.network.PacketHandler;
 import tech.flatstone.appliedlogistics.common.network.messages.PacketButtonClick;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityBuilder;
 import tech.flatstone.appliedlogistics.common.util.*;
-import tech.flatstone.appliedlogistics.common.util.GuiHelper;
-import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.io.IOException;
 import java.util.List;

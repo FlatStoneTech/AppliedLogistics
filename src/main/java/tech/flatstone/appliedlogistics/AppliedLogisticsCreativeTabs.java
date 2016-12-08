@@ -108,7 +108,9 @@ public class AppliedLogisticsCreativeTabs {
         }
 
         @Override
-        public String getTabLabel() { return ModInfo.MOD_ID + ".transport"; }
+        public String getTabLabel() {
+            return ModInfo.MOD_ID + ".transport";
+        }
     };
 
     private AppliedLogisticsCreativeTabs() {

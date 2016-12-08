@@ -3,7 +3,6 @@ package tech.flatstone.appliedlogistics.common.util;
 import net.minecraft.util.IStringSerializable;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.fluids.FluidBase;
-import tech.flatstone.appliedlogistics.common.fluids.FluidBronze;
 import tech.flatstone.appliedlogistics.common.fluids.FluidPrecursor;
 
 import java.util.ArrayList;

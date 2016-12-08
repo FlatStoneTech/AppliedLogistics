@@ -2,7 +2,10 @@ package tech.flatstone.appliedlogistics.client.render;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BlockModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -12,15 +15,15 @@ import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.animation.FastTESR;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.opengl.GL11;
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector4f;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.client.util.ModelTransformer;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCauldron;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCauldron;
 import tech.flatstone.appliedlogistics.common.util.ModelRegistration;
+
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector4f;
 
 public class RenderCauldron extends FastTESR<TileEntityCauldron> {
     @Override

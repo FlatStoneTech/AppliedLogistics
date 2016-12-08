@@ -21,11 +21,6 @@
 package tech.flatstone.appliedlogistics.common.util;
 
 import net.minecraft.util.IStringSerializable;
-import tech.flatstone.appliedlogistics.api.features.EnumOreType;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public enum EnumCrankMaterials implements IStringSerializable {
     WOOD("Wood"),

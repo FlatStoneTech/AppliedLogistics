@@ -6,8 +6,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.*;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
@@ -21,7 +21,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.util.Random;
 
@@ -77,7 +76,7 @@ public class BlockFluidBase extends BlockFluidClassic implements IBlockRenderer 
                             world.setBlockState(blockPos, Blocks.FIRE.getDefaultState());
                             return;
                         }
-                    } else if (block.getMaterial(world.getBlockState(blockPos)).blocksMovement()){
+                    } else if (block.getMaterial(world.getBlockState(blockPos)).blocksMovement()) {
                         return;
                     }
                 }
@@ -117,10 +116,8 @@ public class BlockFluidBase extends BlockFluidClassic implements IBlockRenderer 
         return true;
     }
 
-    public boolean checkForMixing(World worldIn, BlockPos pos, IBlockState state)
-    {
-        if (this.blockMaterial == Material.LAVA)
-        {
+    public boolean checkForMixing(World worldIn, BlockPos pos, IBlockState state) {
+        if (this.blockMaterial == Material.LAVA) {
             boolean flag = false;
 
             for (EnumFacing enumfacing : EnumFacing.values()) {
@@ -138,7 +135,7 @@ public class BlockFluidBase extends BlockFluidClassic implements IBlockRenderer 
             }
 
             if (flag) {
-                Integer integer = (Integer)state.getValue(LEVEL);
+                Integer integer = (Integer) state.getValue(LEVEL);
 
                 if (integer.intValue() == 0) {
                     worldIn.setBlockState(pos, Blocks.OBSIDIAN.getDefaultState());
@@ -157,15 +154,13 @@ public class BlockFluidBase extends BlockFluidClassic implements IBlockRenderer 
         return false;
     }
 
-    protected void triggerMixEffects(World worldIn, BlockPos pos)
-    {
-        double d0 = (double)pos.getX();
-        double d1 = (double)pos.getY();
-        double d2 = (double)pos.getZ();
-        worldIn.playSound((EntityPlayer)null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (worldIn.rand.nextFloat() - worldIn.rand.nextFloat()) * 0.8F);
+    protected void triggerMixEffects(World worldIn, BlockPos pos) {
+        double d0 = (double) pos.getX();
+        double d1 = (double) pos.getY();
+        double d2 = (double) pos.getZ();
+        worldIn.playSound((EntityPlayer) null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (worldIn.rand.nextFloat() - worldIn.rand.nextFloat()) * 0.8F);
 
-        for (int i = 0; i < 8; ++i)
-        {
+        for (int i = 0; i < 8; ++i) {
             worldIn.spawnParticle(EnumParticleTypes.SMOKE_LARGE, d0 + Math.random(), d1 + 1.2D, d2 + Math.random(), 0.0D, 0.0D, 0.0D, new int[0]);
         }
     }

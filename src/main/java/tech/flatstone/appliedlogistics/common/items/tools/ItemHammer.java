@@ -189,8 +189,7 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
      * Return the enchantability factor of the item, most of the time is based on material.
      */
     @Override
-    public int getItemEnchantability()
-    {
+    public int getItemEnchantability() {
         return 5;
     }
 }

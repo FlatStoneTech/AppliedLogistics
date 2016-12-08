@@ -3,9 +3,7 @@ package tech.flatstone.appliedlogistics.common.network.messages;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -41,7 +39,7 @@ public class PacketBlockRotated implements IMessage, IMessageHandler<PacketBlock
             public void run() {
                 TileEntity tileEntity = Minecraft.getMinecraft().theWorld.getTileEntity(message.blockPos);
                 if (tileEntity != null && tileEntity instanceof IRotatable) {
-                    ((IRotatable)tileEntity).onRotated();
+                    ((IRotatable) tileEntity).onRotated();
                 }
             }
         });
