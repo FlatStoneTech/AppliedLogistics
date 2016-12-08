@@ -43,7 +43,7 @@ import tech.flatstone.appliedlogistics.common.util.TileHelper;
 public class BlockPlanChest extends BlockTileBase {
     public BlockPlanChest() {
         super(Material.ROCK, "misc/planChest");
-        this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+//        this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityPlanChest.class);
         this.setCreativeTab(AppliedLogisticsCreativeTabs.MACHINES);
         this.setInternalName("plan_chest");
@@ -72,15 +72,16 @@ public class BlockPlanChest extends BlockTileBase {
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntityPlanChest tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityPlanChest.class);
         if (tileEntity != null) {
-            return state.withProperty(FACING, tileEntity.getForward());
+//            return state.withProperty(FACING, tileEntity.getForward());
         }
-        return state.withProperty(FACING, EnumFacing.NORTH);
+//        return state.withProperty(FACING, EnumFacing.NORTH);
+        return state;
     }
-
-    @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, FACING);
-    }
+//
+//    @Override
+//    protected BlockStateContainer createBlockState() {
+//        return new BlockStateContainer(this, FACING);
+//    }
 
     @Override
     public IBlockState getStateFromMeta(int meta) {

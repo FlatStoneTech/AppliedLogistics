@@ -38,6 +38,8 @@ import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
+import tech.flatstone.appliedlogistics.api.Rotation.Rotation.IRotatable;
+import tech.flatstone.appliedlogistics.api.Rotation.impl.RotationHelper;
 import tech.flatstone.appliedlogistics.api.registries.HammerRegistry;
 import tech.flatstone.appliedlogistics.api.registries.helpers.Crushable;
 import tech.flatstone.appliedlogistics.common.items.ItemBaseTool;
@@ -170,7 +172,10 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
         if (block != null && !player.isSneaking()) {
             if (Platform.isClient())
                 return !world.isRemote ? EnumActionResult.FAIL : EnumActionResult.PASS;
-
+            if(world.getTileEntity(pos) instanceof IRotatable)
+                RotationHelper.rotateBlock(((IRotatable)world.getTileEntity(pos)) ,hitX,hitY,hitZ,side,pos);
+            if(block instanceof IRotatable)
+                RotationHelper.rotateBlock((IRotatable)block,hitX, hitY,hitZ,side,pos);
             if (block.rotateBlock(world, pos, side)) {
                 player.swingArm(hand);
                 return !world.isRemote ? EnumActionResult.FAIL : EnumActionResult.PASS;

@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.EntityLivingBase;
@@ -24,6 +23,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.ModInfo;
+import tech.flatstone.appliedlogistics.api.Rotation.impl.RotationProperty;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.IOrientable;
@@ -37,7 +37,14 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class BlockTileBase extends BlockBase implements ITileEntityProvider, IBlockRenderer {
-    protected static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+//    protected static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+    protected static final RotationProperty ROTATION = new RotationProperty("rotation");
+
+
+    public static RotationProperty getRotationProperty() {
+        return ROTATION;
+    }
+
 
     @Nonnull
     private Class<? extends TileEntity> tileEntityClass;
@@ -101,9 +108,10 @@ public abstract class BlockTileBase extends BlockBase implements ITileEntityProv
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntityBase tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBase.class);
         if (tileEntity != null && tileEntity.canBeRotated()) {
-            return state.withProperty(FACING, tileEntity.getForward());
+//            return state.withProperty(FACING, tileEntity.getForward());
         }
-        return state.withProperty(FACING, EnumFacing.NORTH);
+//        return state.withProperty(FACING, EnumFacing.NORTH);
+        return state;
     }
 
     @Override
@@ -201,7 +209,7 @@ public abstract class BlockTileBase extends BlockBase implements ITileEntityProv
             IBlockState blockState = this.getStateFromMeta(itemStack.getItemDamage());
             Map<IProperty<?>, Comparable<?>> properties = new HashMap<>();
             for (Map.Entry<IProperty<?>, Comparable<?>> entry : blockState.getProperties().entrySet()) {
-                if (entry.getKey() != FACING)
+//                if (entry.getKey() != FACING)
                     properties.put(entry.getKey(), entry.getValue());
             }
 
