@@ -64,6 +64,11 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
     }
 
     @Override
+    public int getItemEnchantability(ItemStack stack) {
+        return 5;
+    }
+
+    @Override
     public boolean canHarvestBlock(IBlockState blockIn) {
         canHarvest = HammerRegistry.containsBlock(new ItemStack(blockIn.getBlock(), 1, blockIn.getBlock().getMetaFromState(blockIn)));
         return canHarvest;
@@ -91,6 +96,9 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
 
         ArrayList<Crushable> drops = HammerRegistry.getDrops(blockItemStack);
 
+        if (player.capabilities.isCreativeMode && !player.isSneaking())
+            drops.clear();
+
         if (drops.size() > 0) {
             Iterator<Crushable> it = drops.iterator();
 
@@ -105,6 +113,7 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
                     entityItem.motionY = (0.2d);
                     entityItem.motionZ = world.rand.nextGaussian() * f3;
 
+                    entityItem.setDefaultPickupDelay();
                     world.spawnEntityInWorld(entityItem);
                 }
 
@@ -123,7 +132,10 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
 
         if (!world.isRemote) {
             world.setBlockToAir(pos);
-            world.playBroadcastSound(2001, pos, 1);
+        }
+
+        if (world.isRemote && valid) {
+            world.playEvent(player, 2001, pos, Block.getStateId(iBlockState));
         }
 
         return valid;
@@ -171,5 +183,14 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
     @Override
     public boolean doesSneakBypassUse(ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player) {
         return true;
+    }
+
+    /**
+     * Return the enchantability factor of the item, most of the time is based on material.
+     */
+    @Override
+    public int getItemEnchantability()
+    {
+        return 5;
     }
 }

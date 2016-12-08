@@ -22,8 +22,6 @@ package tech.flatstone.appliedlogistics.proxy;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
@@ -33,7 +31,6 @@ import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
 import tech.flatstone.appliedlogistics.api.registries.PulverizerRegistry;
 import tech.flatstone.appliedlogistics.client.gui.GuiHandler;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
-import tech.flatstone.appliedlogistics.common.blocks.fluids.BlockFluidBlock;
 import tech.flatstone.appliedlogistics.common.config.Config;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.plans.PlanMachineFurnace;
@@ -112,6 +109,10 @@ public abstract class CommonProxy implements IProxy {
                 OreDictionary.registerOre("nugget" + oreName, Items.ITEM_ALLOY_NUGGET.getStack(1, meta));
         }
 
+        for (EnumMisc ores : EnumMisc.values()) {
+            //todo: when needed
+        }
+
         // Register Gears
         for (EnumMaterialsGear gear : EnumMaterialsGear.values()) {
             OreDictionary.registerOre("gear" + gear.getOreName(), Items.ITEM_MATERIAL_GEAR.getStack(1, gear.getMeta()));
@@ -120,18 +121,22 @@ public abstract class CommonProxy implements IProxy {
 
     @Override
     public void registerFluids() {
-        //todo: make this better once we figure out fluids...
         for (EnumOres ores : EnumOres.values()) {
-            int meta = ores.getMeta();
-            String oreName = ores.getName();
-
-            if (ores.isTypeSet(EnumOreType.FLUID)) {
-                Fluid fluid = FluidHelper.createFluid(oreName, "appliedlogistics:fluids." + oreName, false);
-                FluidRegistry.addBucketForFluid(fluid);
-
-                FluidHelper.registerFluidBlock(new BlockFluidBlock(fluid));
-            }
+            if (ores.getFluidClass() != null)
+                FluidHelper.registerFluid(ores.getFluidClass());
         }
+
+        for (EnumAlloys ores : EnumAlloys.values()) {
+            if (ores.getFluidClass() != null)
+                FluidHelper.registerFluid(ores.getFluidClass());
+        }
+
+        for (EnumMisc ores : EnumMisc.values()) {
+            if (ores.getFluidClass() != null)
+                FluidHelper.registerFluid(ores.getFluidClass());
+        }
+
+        FluidHelper.initFluids();
     }
 
     @Override

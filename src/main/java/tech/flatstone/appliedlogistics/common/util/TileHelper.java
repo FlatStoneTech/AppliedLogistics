@@ -39,6 +39,29 @@ public class TileHelper {
         return !tClass.isInstance(tileEntity) ? null : (T) tileEntity;
     }
 
+    public static void DropItemStack(ItemStack itemStack, World world, BlockPos blockPos) {
+        if (itemStack != null && itemStack.stackSize > 0) {
+            Random rand = new Random();
+
+            float dX = rand.nextFloat() * 0.8F + 0.1F;
+            float dY = rand.nextFloat() * 0.8F + 0.1F;
+            float dZ = rand.nextFloat() * 0.8F + 0.1F;
+
+            EntityItem entityItem = new EntityItem(world, blockPos.getX() + dX, blockPos.getY() + dY, blockPos.getZ() + dZ, itemStack.copy());
+
+            if (itemStack.hasTagCompound()) {
+                entityItem.getEntityItem().setTagCompound((NBTTagCompound) itemStack.getTagCompound().copy());
+            }
+
+            float factor = 0.05F;
+            entityItem.motionX = rand.nextGaussian() * factor;
+            entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
+            entityItem.motionZ = rand.nextGaussian() * factor;
+            world.spawnEntityInWorld(entityItem);
+            itemStack.stackSize = 0;
+        }
+    }
+
     public static void DropItems(TileEntity tileEntity) {
         if (!(tileEntity instanceof IInventory))
             return;

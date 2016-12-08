@@ -22,6 +22,7 @@ package tech.flatstone.appliedlogistics.common.tileentities.misc;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -115,6 +116,10 @@ public class TileEntityCrank extends TileEntityBase implements ITickable, IWaila
         float randomFloat = rng.nextFloat();
         if (randomFloat <= 0.08 && this.getBlockMetadata() == EnumCrankMaterials.WOOD.getMeta()) { // todo: config Option for %
             ((BlockCrank) this.worldObj.getBlockState(this.pos).getBlock()).breakCrank(this.worldObj, this.pos, false);
+            // drop random amount of sticks, between 3 and 5 sticks.
+            Random random = new Random();
+            ItemStack randomSticks = new ItemStack(Items.STICK, random.nextInt(2) + 3);
+            TileHelper.DropItemStack(randomSticks, this.worldObj, this.pos);
             return;
         }
 

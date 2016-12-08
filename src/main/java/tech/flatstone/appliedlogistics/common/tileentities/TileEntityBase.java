@@ -154,7 +154,6 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
             nbtTagCompound.setTag("MachineItemData", machineItemData);
 
         if (canBeRotated()) {
-            LogHelper.info(">>> Write NBT: " + this.forward.ordinal());
             nbtTagCompound.setInteger("forward", this.forward.ordinal());
         }
 
@@ -169,7 +168,6 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
         this.machineItemData = nbtTagCompound.hasKey("MachineItemData") ? nbtTagCompound.getCompoundTag("MachineItemData") : null;
 
         if (canBeRotated()) {
-            LogHelper.info(">>> Read NBT: " + nbtTagCompound.getInteger("forward"));
             this.forward = EnumFacing.values()[nbtTagCompound.getInteger("forward")];
         }
     }
