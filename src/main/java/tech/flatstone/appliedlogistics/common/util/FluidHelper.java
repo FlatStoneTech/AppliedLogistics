@@ -1,26 +1,24 @@
 package tech.flatstone.appliedlogistics.common.util;
 
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelBakery;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.BlockFluidClassic;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import org.apache.commons.lang3.StringUtils;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.ModInfo;
-import tech.flatstone.appliedlogistics.common.blocks.*;
 import tech.flatstone.appliedlogistics.common.blocks.BlockFluidBase;
 import tech.flatstone.appliedlogistics.common.fluids.FluidBase;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@SideOnly(Side.CLIENT)
 public class FluidHelper {
     private static List<Class<? extends FluidBase>> fluidClasses = new ArrayList<>();
     private static List<Class<? extends BlockFluidBase>> fluidBlockClasses = new ArrayList<>();
@@ -46,7 +44,7 @@ public class FluidHelper {
         initBlockFluids();
     }
 
-    public static void initBlockFluids() {
+    private static void initBlockFluids() {
         for (Class<? extends BlockFluidBase> tClass : fluidBlockClasses) {
 
             BlockFluidClassic fluidBlock = null;
