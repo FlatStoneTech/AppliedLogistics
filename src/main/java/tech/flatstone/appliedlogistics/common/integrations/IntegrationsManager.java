@@ -33,20 +33,20 @@ import java.util.Map;
 
 public class IntegrationsManager {
     private static IntegrationsManager INSTANCE = new IntegrationsManager();
-    private final List<IIntegration> integrationMods = new ArrayList<IIntegration>();
+    private final List<IIntegration> integrationMods = new ArrayList<>();
 
     public static IntegrationsManager instance() {
         return INSTANCE;
     }
 
     public void index() {
-        Map<String, Class<? extends IIntegration>> integrationClasses = new HashMap<String, Class<? extends IIntegration>>();
+        Map<String, Class<? extends IIntegration>> integrationClasses = new HashMap<>();
 
         try {
             integrationClasses.put(IntegrationModIDs.RFTOOLS, RFTools.class);
             integrationClasses.put(IntegrationModIDs.WAILA, Waila.class);
-        } catch (Throwable ex) {
-            ex.printStackTrace();
+        } catch (RuntimeException ex) {
+            LogHelper.error(ex);
         }
 
         // hmm... configuration stuff?
@@ -56,9 +56,9 @@ public class IntegrationsManager {
                 try {
                     integrationMods.add(entry.getValue().newInstance());
                     LogHelper.info("Integration with " + entry.getKey() + ": Enabled");
-                } catch (Throwable ex) {
+                } catch (IllegalAccessException | InstantiationException ex) {
                     LogHelper.error("Failed to load integration correctly");
-                    ex.printStackTrace();
+                    LogHelper.error(ex);
                 }
             } else {
                 LogHelper.info("Integration with " + entry.getKey() + ": Disabled");
@@ -70,9 +70,9 @@ public class IntegrationsManager {
         for (IIntegration integration : integrationMods) {
             try {
                 integration.preInit();
-            } catch (Throwable ex) {
+            } catch (RuntimeException ex) {
                 LogHelper.error("(Pre Init) Unable to load integration from " + integration.getClass());
-                ex.printStackTrace();
+                LogHelper.error(ex);
             }
         }
     }
@@ -81,9 +81,9 @@ public class IntegrationsManager {
         for (IIntegration integration : integrationMods) {
             try {
                 integration.init();
-            } catch (Throwable ex) {
+            } catch (RuntimeException ex) {
                 LogHelper.error("(Init) Unable to load integration from " + integration.getClass());
-                ex.printStackTrace();
+                LogHelper.error(ex);
             }
         }
     }
@@ -92,9 +92,9 @@ public class IntegrationsManager {
         for (IIntegration integration : integrationMods) {
             try {
                 integration.postInit();
-            } catch (Throwable ex) {
+            } catch (RuntimeException ex) {
                 LogHelper.error("(Post Init) Unable to load integration from " + integration.getClass());
-                ex.printStackTrace();
+                LogHelper.error(ex);
             }
         }
     }
