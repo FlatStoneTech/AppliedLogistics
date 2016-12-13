@@ -27,7 +27,7 @@ import javax.vecmath.Vector4f;
 
 public class RenderCauldron extends FastTESR<TileEntityCauldron> {
     @Override
-    public void renderTileEntityFast(final TileEntityCauldron cauldronTE, double x, double y, double z, final float partialTicks, int destroyStage, VertexBuffer VertexBuffer) {
+    public void renderTileEntityFast(final TileEntityCauldron cauldronTE, double x, double y, double z, final float partialTicks, int destroyStage, VertexBuffer vertexBuffer) {
         IBlockState state = cauldronTE.getWorld().getBlockState(cauldronTE.getPos());
         if (!(state.getBlock() instanceof BlockCauldron))
             return;
@@ -64,7 +64,7 @@ public class RenderCauldron extends FastTESR<TileEntityCauldron> {
             }
 
             IBakedModel origModel = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelManager().getModel(ModelRegistration.CAULDRON_HANDLE);
-            VertexBuffer.setTranslation(x - cauldronTE.getPos().getX(), y - cauldronTE.getPos().getY(), z - cauldronTE.getPos().getZ());
+            vertexBuffer.setTranslation(x - cauldronTE.getPos().getX(), y - cauldronTE.getPos().getY(), z - cauldronTE.getPos().getZ());
 
             IBakedModel model = ModelTransformer.transform(origModel, new ModelTransformer.IVertexTransformer() {
                 @Override
@@ -86,7 +86,7 @@ public class RenderCauldron extends FastTESR<TileEntityCauldron> {
             }, null, 0);
 
             BlockModelRenderer modelRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer();
-            modelRenderer.renderModel(cauldronTE.getWorld(), model, state, cauldronTE.getPos(), VertexBuffer, false);
+            modelRenderer.renderModel(cauldronTE.getWorld(), model, state, cauldronTE.getPos(), vertexBuffer, false);
         }
     }
 

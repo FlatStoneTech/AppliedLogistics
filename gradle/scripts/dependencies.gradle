@@ -42,7 +42,7 @@ dependencies {
     // provided apis
     compile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
     compile "org.jgrapht:jgrapht-core:0.9.1"
-    compile "mezz.jei:jei_1.10.2:3.9.0.244"
+    compile "mezz.jei:jei_1.10.2:3.13.6.389"
 
     // test
     testCompile 'junit:junit:4.12'

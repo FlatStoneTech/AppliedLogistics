@@ -52,7 +52,7 @@ public class AppliedLogistics {
     @Mod.Instance(ModInfo.MOD_ID)
     public static AppliedLogistics instance;
     @SidedProxy(clientSide = ModInfo.CLIENT_PROXY_CLASS, serverSide = ModInfo.SERVER_PROXY_CLASS)
-    public static IProxy proxy;
+    private static IProxy proxy;
     public static Configuration configuration;
 
     static {
@@ -132,8 +132,8 @@ public class AppliedLogistics {
         IntegrationsManager.instance().postInit();
 
         Map<String, Fluid> fluids = FluidRegistry.getRegisteredFluids();
-        for (String key : fluids.keySet()) {
-            Fluid fluid = fluids.get(key);
+        for (Map.Entry<String, Fluid> key : fluids.entrySet()) {
+            Fluid fluid = key.getValue();
             LogHelper.info(">>> Fluid Name: " + key + " (" + fluid.getUnlocalizedName() + ")");
         }
 

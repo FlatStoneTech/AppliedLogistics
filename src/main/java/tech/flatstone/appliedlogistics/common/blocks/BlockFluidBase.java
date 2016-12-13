@@ -49,6 +49,7 @@ public class BlockFluidBase extends BlockFluidClassic implements IBlockRenderer 
         String resourcePath = String.format("%s:fluids", ModInfo.MOD_ID);
         final ModelResourceLocation modelResourceLocation = new ModelResourceLocation(resourcePath, this.getFluid().getName());
 
+        assert fluidItem != null;
         ModelLoader.setCustomModelResourceLocation(fluidItem, 0, modelResourceLocation);
     }
 
@@ -87,7 +88,7 @@ public class BlockFluidBase extends BlockFluidClassic implements IBlockRenderer 
                     if (blockPos1.getY() >= 0 && blockPos1.getY() < 256 && !world.isBlockLoaded(blockPos1))
                         return;
 
-                    if (world.isAirBlock(blockPos1.up()) && this.getCanBlockBurn(world, blockPos1))
+                    if (world.isAirBlock(blockPos1.up()))
                         world.setBlockState(blockPos1.up(), Blocks.FIRE.getDefaultState());
                 }
             }
@@ -108,7 +109,7 @@ public class BlockFluidBase extends BlockFluidClassic implements IBlockRenderer 
         this.checkForMixing(world, pos, state);
     }
 
-    protected boolean isSurroundingBlockFlammable(World worldIn, BlockPos pos) {
+    private boolean isSurroundingBlockFlammable(World worldIn, BlockPos pos) {
         return getCanBlockBurn(worldIn, pos);
     }
 
@@ -116,7 +117,7 @@ public class BlockFluidBase extends BlockFluidClassic implements IBlockRenderer 
         return true;
     }
 
-    public boolean checkForMixing(World worldIn, BlockPos pos, IBlockState state) {
+    private boolean checkForMixing(World worldIn, BlockPos pos, IBlockState state) {
         if (this.blockMaterial == Material.LAVA) {
             boolean flag = false;
 
@@ -135,15 +136,15 @@ public class BlockFluidBase extends BlockFluidClassic implements IBlockRenderer 
             }
 
             if (flag) {
-                Integer integer = (Integer) state.getValue(LEVEL);
+                Integer integer = state.getValue(LEVEL);
 
-                if (integer.intValue() == 0) {
+                if (integer == 0) {
                     worldIn.setBlockState(pos, Blocks.OBSIDIAN.getDefaultState());
                     this.triggerMixEffects(worldIn, pos);
                     return true;
                 }
 
-                if (integer.intValue() <= 4) {
+                if (integer <= 4) {
                     worldIn.setBlockState(pos, Blocks.COBBLESTONE.getDefaultState());
                     this.triggerMixEffects(worldIn, pos);
                     return true;
@@ -154,14 +155,14 @@ public class BlockFluidBase extends BlockFluidClassic implements IBlockRenderer 
         return false;
     }
 
-    protected void triggerMixEffects(World worldIn, BlockPos pos) {
+    private void triggerMixEffects(World worldIn, BlockPos pos) {
         double d0 = (double) pos.getX();
         double d1 = (double) pos.getY();
         double d2 = (double) pos.getZ();
-        worldIn.playSound((EntityPlayer) null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (worldIn.rand.nextFloat() - worldIn.rand.nextFloat()) * 0.8F);
+        worldIn.playSound(null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (worldIn.rand.nextFloat() - worldIn.rand.nextFloat()) * 0.8F);
 
         for (int i = 0; i < 8; ++i) {
-            worldIn.spawnParticle(EnumParticleTypes.SMOKE_LARGE, d0 + Math.random(), d1 + 1.2D, d2 + Math.random(), 0.0D, 0.0D, 0.0D, new int[0]);
+            worldIn.spawnParticle(EnumParticleTypes.SMOKE_LARGE, d0 + Math.random(), d1 + 1.2D, d2 + Math.random(), 0.0D, 0.0D, 0.0D);
         }
     }
 }

@@ -182,6 +182,7 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
         worldIn.removeTileEntity(pos);
     }
 
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void drawBlockHighlight(DrawBlockHighlightEvent event) {
         if (!(event.getTarget().typeOfHit == RayTraceResult.Type.BLOCK && event.getPlayer().worldObj.getBlockState(event.getTarget().getBlockPos()).getBlock() instanceof BlockCauldron)) {
@@ -203,7 +204,7 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
                 double d0 = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
                 double d1 = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks;
                 double d2 = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks;
-                RenderGlobal.func_189697_a(AABB_WOOD.offset(pos).expandXyz(0.0020000000949949026D).offset(-d0, -d1, -d2), 0.0F, 0.0F, 0.0F, 0.4F);
+                RenderGlobal.drawSelectionBoundingBox(AABB_WOOD.offset(pos).expandXyz(0.0020000000949949026D).offset(-d0, -d1, -d2), 0.0F, 0.0F, 0.0F, 0.4F);
 
                 GlStateManager.depthMask(true);
                 GlStateManager.enableTexture2D();
@@ -242,6 +243,7 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
         return false;
     }
 
+    @SideOnly(Side.CLIENT)
     private boolean interactWithLogs(World worldIn, BlockPos pos, TileEntityCauldron tileEntity, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, Item item, ExtendedRayTraceResult lookObject) {
         if (item == Items.WATER_BUCKET) {
             worldIn.playSound(playerIn, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
@@ -310,6 +312,7 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
         return lookObject == null ? null : new ExtendedRayTraceResult(lookObject, index == 13, isLookingAtPrecipitate);
     }
 
+    @SideOnly(Side.CLIENT)
     public void spawnParticlesForLogs(World worldIn, BlockPos pos, ExtendedRayTraceResult lookObject, int particleCount, IParticleFactory... particleFactories) {
         if (!worldIn.isRemote)
             return;
