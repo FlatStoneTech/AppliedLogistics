@@ -188,7 +188,7 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
         if (!(event.getTarget().typeOfHit == RayTraceResult.Type.BLOCK && event.getPlayer().worldObj.getBlockState(event.getTarget().getBlockPos()).getBlock() instanceof BlockCauldron)) {
             return;
         }
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;//ClientHelper.getPlayer();
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         BlockPos pos = event.getTarget().getBlockPos();
         ExtendedRayTraceResult rayTraceResult = getExtendedRayTraceResultFromPlayer(player, pos);
         if (rayTraceResult != null) {

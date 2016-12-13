@@ -70,7 +70,7 @@ public class InternalInventory implements IInventory, Iterable<ItemStack> {
     public ItemStack decrStackSize(int slot, int qty) {
         if (this.inventory[slot] != null) {
             ItemStack split = this.getStackInSlot(slot);
-            ItemStack newStack = null;
+            ItemStack newStack;
 
             if (qty >= split.stackSize) {
                 newStack = this.inventory[slot];
@@ -142,7 +142,7 @@ public class InternalInventory implements IInventory, Iterable<ItemStack> {
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer p_70300_1_) {
+    public boolean isUseableByPlayer(EntityPlayer entityPlayer) {
         return true;
     }
 

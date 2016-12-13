@@ -77,10 +77,9 @@ public class BlockPulverizer extends BlockTechBase {
                 )
             return false;
 
-        if (worldIn.isRemote)
-            return true;
+        if (!worldIn.isRemote)
+            playerIn.openGui(AppliedLogistics.instance, 3, worldIn, pos.getX(), pos.getY(), pos.getZ());
 
-        playerIn.openGui(AppliedLogistics.instance, 3, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
 

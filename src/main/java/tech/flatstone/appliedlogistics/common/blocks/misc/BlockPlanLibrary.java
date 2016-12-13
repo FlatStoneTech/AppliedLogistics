@@ -90,7 +90,7 @@ public class BlockPlanLibrary extends BlockTileBase implements IProvideRecipe {
                 "cxc",
                 "wgw",
                 "cxc",
-                'c', OreDictionary.getOres("craftingTableWood").size() == 0 ? new ItemStack(Blocks.CRAFTING_TABLE) : "craftingTableWood",
+                'c', OreDictionary.getOres("craftingTableWood").isEmpty() ? new ItemStack(Blocks.CRAFTING_TABLE) : "craftingTableWood",
                 'w', "logWood",
                 'g', "gearStone",
                 'x', "chestWood"
