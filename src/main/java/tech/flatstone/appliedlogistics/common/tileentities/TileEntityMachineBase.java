@@ -33,25 +33,6 @@ public abstract class TileEntityMachineBase extends TileEntityInventoryBase {
     @Override
     public void initMachineData() {
         NBTTagCompound machineItemData = this.getMachineItemData();
-        if (machineItemData != null) {
-            for (int i = 0; i < 27; i++) {
-                if (machineItemData.hasKey("item_" + i)) {
-                    ItemStack item = ItemStack.loadItemStackFromNBT(machineItemData.getCompoundTag("item_" + i));
-
-                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_KIT_REDSTONE_OUTPUT.getItem())))
-                        comparatorEnabled = true;
-
-                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_KIT_AUTOMATION.getItem())))
-                        sidedEnabled = true;
-
-                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_KIT_CRAFTING.getItem())))
-                        craftingEnabled = true;
-
-                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_KIT_REDSTONE_INPUT.getItem())))
-                        redstoneEnabled = true;
-                }
-            }
-        }
 
         if (machineItemData == null) {
             // Load Default Details for the machine...
@@ -59,6 +40,25 @@ public abstract class TileEntityMachineBase extends TileEntityInventoryBase {
             sidedEnabled = false;
             craftingEnabled = false;
             redstoneEnabled = false;
+            return;
+        }
+
+        for (int i = 0; i < 27; i++) {
+            if (machineItemData.hasKey("item_" + i)) {
+                ItemStack item = ItemStack.loadItemStackFromNBT(machineItemData.getCompoundTag("item_" + i));
+
+                if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_KIT_REDSTONE_OUTPUT.getItem())))
+                    comparatorEnabled = true;
+
+                if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_KIT_AUTOMATION.getItem())))
+                    sidedEnabled = true;
+
+                if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_KIT_CRAFTING.getItem())))
+                    craftingEnabled = true;
+
+                if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_KIT_REDSTONE_INPUT.getItem())))
+                    redstoneEnabled = true;
+            }
         }
     }
 
