@@ -8,17 +8,21 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
+import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
+import tech.flatstone.appliedlogistics.common.slots.GuiSlotBlankPlanInput;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPatternStamper;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
@@ -29,8 +33,14 @@ import javax.annotation.Nullable;
 public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe, IImplementsGuiMaker {
     private GuiMaker guiMaker;
 
-    // Gui Object for Machine Tab
-    private GuiLabel labelSlotDetails = new GuiLabel(34, 6, 0xffffff, "Hello World...");
+    private GuiLabel labelSlotDetails = new GuiLabel(36, 7, 0xd5d5d5, "Hello World...");
+    private GuiButton buttonPrevious = new GuiButton(-999, 4, 34, 16, "<");
+    private GuiButton buttonNext = new GuiButton(-999, 120, 34, 16, ">");
+    private GuiButton buttonStamp = new GuiButton(-999, 138, 34, 52, "Stamp");
+
+    private GuiCenteredLabel labelMachineName = new GuiCenteredLabel(22, 38, 96, 0xd5d5d5, "Hello World...");
+
+    private GuiLabel labelStats = new GuiLabel(5, 134, 0xd5d5d5, 0.5f, "Total Building Time: 0:00:00 | Total Experence Cost: 0L");
 
     public BlockPatternStamper() {
         super(Material.ROCK, "misc/blockPatternStamper");
@@ -67,7 +77,29 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
 
     @Override
     public void drawGui(TileEntity tileEntity) {
+        buttonNext.setDisabled(true);
+        buttonPrevious.setDisabled(true);
+        buttonStamp.setDisabled(true);
 
+        TileEntityPatternStamper tileEntityPatternStamper = (TileEntityPatternStamper)tileEntity;
+
+        if (tileEntityPatternStamper.getPlanTechLevel() != null)
+            labelSlotDetails.setText(LanguageHelper.ITEM.translateMessage(String.format("plan_blank.%s.name", tileEntityPatternStamper.getPlanTechLevel().getName())));
+        else
+            labelSlotDetails.setText(LanguageHelper.MESSAGE.translateMessage("plan.insert"));
+
+        if (tileEntityPatternStamper.isPlanValid()) {
+            buttonNext.setDisabled(false);
+            buttonPrevious.setDisabled(false);
+            buttonStamp.setDisabled(false);
+        }
+
+        String stats = String.format("Total Building Time: 0:00:00 | Total Experience Cost: %s0L%s", TextFormatting.GREEN, TextFormatting.RESET);
+
+        if (tileEntityPatternStamper.isCreativeMode())
+            stats += String.format(" | %sCreative Mode", TextFormatting.DARK_PURPLE);
+
+        labelStats.setText(stats);
     }
 
     @Override
@@ -77,16 +109,16 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
         GuiTab tabMachine = new GuiTab(this.guiMaker, "Pattern Stamper", Blocks.BLOCK_PATTERN_STAMPER.getStack());
         GuiTab tabAbout = new GuiTab(this.guiMaker, "About", 1);
 
-        tabMachine.addGuiObject(new GuiSlot(4, 4, 28, 28, 0));
+        tabMachine.addGuiObject(new GuiSlot(4, 4, 28, 28, 0, GuiSlotBlankPlanInput.class));
         tabMachine.addGuiObject(labelSlotDetails);
 
         tabMachine.addGuiObject(new GuiWindow(34, 18, 156, 14)); // Progress Bar (for weight)...
 
-        tabMachine.addGuiObject(new GuiButton(-999, 4, 34, 16, "<"));
-        tabMachine.addGuiObject(new GuiButton(-999, 120, 34, 16, ">"));
-        tabMachine.addGuiObject(new GuiButton(-999, 138, 34, 52, "Stamp"));
+        tabMachine.addGuiObject(buttonNext);
+        tabMachine.addGuiObject(buttonPrevious);
+        tabMachine.addGuiObject(buttonStamp);
 
-        tabMachine.addGuiObject(new GuiCenteredLabel(22, 38, 96, 0xFFFFFF, "Hello World..."));
+        tabMachine.addGuiObject(labelMachineName);
 
         tabMachine.addGuiObject(new GuiLine(164, 14, 1, 18, 0xffa1a1a1));
         tabMachine.addGuiObject(new GuiLabel(158, 14, 0xa1a1a1, 0.5f, "Ok"));
@@ -94,9 +126,9 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
 
         tabMachine.addGuiObject(new GuiScrollBox(this.guiMaker, 4, 52, 186, 80));
 
-        tabMachine.addGuiObject(new GuiLabel(5, 134, 0xffffff, "Total Building Time: 0:00:00"));
-        tabMachine.addGuiObject(new GuiLabel(5, 143, 0xffffff, "Total Experence Cost: 0L"));
+        tabMachine.addGuiObject(labelStats);
 
+        tabMachine.addGuiObject(new GuiLabel(8, 142, 0xd5d5d5, "Inventory"));
         tabMachine.addGuiObject(new GuiInventorySlots(4, 152));
 
         guiMaker.addGuiTab(tabMachine);

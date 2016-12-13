@@ -30,6 +30,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -223,7 +224,7 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
 
         GuiTab tabGeneral = new GuiTab(this.guiMaker, "General", Items.ITEM_MATERIAL_GEAR.getStack(1, 2));
         tabGeneral.addGuiObject(labelInputSlotStatus);
-        tabGeneral.addGuiObject(new GuiSlot(5, 5, 0));
+        tabGeneral.addGuiObject(new GuiSlot(5, 5, 0, Slot.class));
         tabGeneral.addGuiObject(new GuiInventorySlots(5, 139));
         tabGeneral.addGuiObject(checkBox2);
         tabGeneral.addGuiObject(checkBox3);
@@ -233,7 +234,7 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
         tabGeneral.addGuiObject(checkBox1);
         tabGeneral.addGuiObject(new GuiProgressArrow(10, 115, 50));
         tabGeneral.addGuiObject(new GuiProgressFire(40, 115, 25));
-        tabGeneral.addGuiObject(new GuiSlot(100, 100, 30, 30, 0));
+        tabGeneral.addGuiObject(new GuiSlot(100, 100, 30, 30, 0, Slot.class));
         guiMaker.addGuiTab(tabGeneral);
 
         GuiTab tabAbout = new GuiTab(this.guiMaker, "About", 1);

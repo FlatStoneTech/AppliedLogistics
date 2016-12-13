@@ -23,6 +23,10 @@ package tech.flatstone.appliedlogistics.api.features;
 import net.minecraft.util.IStringSerializable;
 import tech.flatstone.appliedlogistics.ModInfo;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public enum TechLevel implements IStringSerializable {
     STONE_AGE("stone"),             // Only cobblestone machines, hand cranked
     BRONZE_AGE("bronze"),           // Better Machines, hand cranked
@@ -55,6 +59,10 @@ public enum TechLevel implements IStringSerializable {
 
     public static TechLevel[] all() {
         return TechLevel.values();
+    }
+
+    public static TechLevel[] allExceptCreative() {
+        return Arrays.stream(TechLevel.values()).filter(t -> t != TechLevel.CREATIVE).toArray(TechLevel[]::new);
     }
 
     public int getMeta() {

@@ -4,24 +4,29 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import scala.Int;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GuiSlot extends GuiObject {
     private int slotNumber;
     private boolean largeSlot = false;
+    private Class<? extends Slot> guiSlot;
 
-    public GuiSlot(int x, int y, int slotNumber) {
+    public GuiSlot(int x, int y, int slotNumber, Class<? extends Slot> guiSlot) {
         super(-999);
         this.x = x;
         this.y = y;
         this.w = 18;
         this.h = 18;
         this.slotNumber = slotNumber;
+        this.guiSlot = guiSlot;
     }
 
-    public GuiSlot(int x, int y, int w, int h, int slotNumber) {
+    public GuiSlot(int x, int y, int w, int h, int slotNumber, Class<? extends Slot> guiSlot) {
         super(-999);
 
         if (w < 18)
@@ -35,6 +40,7 @@ public class GuiSlot extends GuiObject {
         this.w = w;
         this.h = h;
         this.slotNumber = slotNumber;
+        this.guiSlot = guiSlot;
     }
 
     @Override
@@ -44,7 +50,17 @@ public class GuiSlot extends GuiObject {
         int slotX = (w >> 1) - (16 >> 1);
         int slotY = (h >> 1) - (16 >> 1);
 
-        slotList.add(new Slot(inventory, this.slotNumber, slotX + this.x, slotY + this.y));
+        try {
+            slotList.add(this.guiSlot.getConstructor(IInventory.class, int.class, int.class, int.class).newInstance(inventory, this.slotNumber, slotX + this.x, slotY + this.y));
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
         return slotList;
     }
 

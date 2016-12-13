@@ -3,12 +3,16 @@ package tech.flatstone.appliedlogistics.common.blocks.machines;
 import com.fireball1725.firelib.guimaker.GuiMaker;
 import com.fireball1725.firelib.guimaker.IImplementsGuiMaker;
 import com.fireball1725.firelib.guimaker.objects.*;
+import com.fireball1725.firelib.guimaker.objects.slots.GuiSlotFuelInput;
+import com.fireball1725.firelib.guimaker.objects.slots.GuiSlotFurnaceInput;
+import com.fireball1725.firelib.guimaker.objects.slots.GuiSlotOutput;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -194,35 +198,35 @@ public class BlockFurnace extends BlockTechBase implements IImplementsGuiMaker {
         GuiTab tabGeneral = new GuiTab(this.guiMaker, "General", Blocks.BLOCK_MACHINE_FURNACE.getStack(1, tileEntity.getBlockMetadata()));
         //tabGeneral.addGuiObject(labelInputSlotStatus);
         // Slots...
-        tabGeneral.addGuiObject(new GuiSlot(5, 5, 1));
-        tabGeneral.addGuiObject(new GuiSlot(23, 5, 2));
-        tabGeneral.addGuiObject(new GuiSlot(95, 5, 4));
-        tabGeneral.addGuiObject(new GuiSlot(113, 5, 5));
-        tabGeneral.addGuiObject(new GuiSlot(131, 5, 6));
-        tabGeneral.addGuiObject(new GuiSlot(149, 5, 7));
+        tabGeneral.addGuiObject(new GuiSlot(5, 5, 1, GuiSlotFurnaceInput.class));
+        tabGeneral.addGuiObject(new GuiSlot(23, 5, 2, GuiSlotFurnaceInput.class));
+        tabGeneral.addGuiObject(new GuiSlot(95, 5, 4, GuiSlotOutput.class));
+        tabGeneral.addGuiObject(new GuiSlot(113, 5, 5, GuiSlotOutput.class));
+        tabGeneral.addGuiObject(new GuiSlot(131, 5, 6, GuiSlotOutput.class));
+        tabGeneral.addGuiObject(new GuiSlot(149, 5, 7, GuiSlotOutput.class));
 
-        tabGeneral.addGuiObject(new GuiSlot(5, 23, 8));
-        tabGeneral.addGuiObject(new GuiSlot(23, 23, 9));
-        tabGeneral.addGuiObject(new GuiSlot(95, 23, 11));
-        tabGeneral.addGuiObject(new GuiSlot(113, 23, 12));
-        tabGeneral.addGuiObject(new GuiSlot(131, 23, 13));
-        tabGeneral.addGuiObject(new GuiSlot(149, 23, 14));
+        tabGeneral.addGuiObject(new GuiSlot(5, 23, 8, GuiSlotFurnaceInput.class));
+        tabGeneral.addGuiObject(new GuiSlot(23, 23, 9, GuiSlotFurnaceInput.class));
+        tabGeneral.addGuiObject(new GuiSlot(95, 23, 11, GuiSlotOutput.class));
+        tabGeneral.addGuiObject(new GuiSlot(113, 23, 12, GuiSlotOutput.class));
+        tabGeneral.addGuiObject(new GuiSlot(131, 23, 13, GuiSlotOutput.class));
+        tabGeneral.addGuiObject(new GuiSlot(149, 23, 14, GuiSlotOutput.class));
 
-        tabGeneral.addGuiObject(new GuiSlot(5, 41, 15));
-        tabGeneral.addGuiObject(new GuiSlot(23, 41, 16));
-        tabGeneral.addGuiObject(new GuiSlot(95, 41, 18));
-        tabGeneral.addGuiObject(new GuiSlot(113, 41, 19));
-        tabGeneral.addGuiObject(new GuiSlot(131, 41, 20));
-        tabGeneral.addGuiObject(new GuiSlot(149, 41, 21));
+        tabGeneral.addGuiObject(new GuiSlot(5, 41, 15, GuiSlotFurnaceInput.class));
+        tabGeneral.addGuiObject(new GuiSlot(23, 41, 16, GuiSlotFurnaceInput.class));
+        tabGeneral.addGuiObject(new GuiSlot(95, 41, 18, GuiSlotOutput.class));
+        tabGeneral.addGuiObject(new GuiSlot(113, 41, 19, GuiSlotOutput.class));
+        tabGeneral.addGuiObject(new GuiSlot(131, 41, 20, GuiSlotOutput.class));
+        tabGeneral.addGuiObject(new GuiSlot(149, 41, 21, GuiSlotOutput.class));
 
-        tabGeneral.addGuiObject(new GuiSlot(5, 59, 22));
-        tabGeneral.addGuiObject(new GuiSlot(23, 59, 23));
-        tabGeneral.addGuiObject(new GuiSlot(95, 59, 25));
-        tabGeneral.addGuiObject(new GuiSlot(113, 59, 26));
-        tabGeneral.addGuiObject(new GuiSlot(131, 59, 27));
-        tabGeneral.addGuiObject(new GuiSlot(149, 59, 28));
+        tabGeneral.addGuiObject(new GuiSlot(5, 59, 22, GuiSlotFurnaceInput.class));
+        tabGeneral.addGuiObject(new GuiSlot(23, 59, 23, GuiSlotFurnaceInput.class));
+        tabGeneral.addGuiObject(new GuiSlot(95, 59, 25, GuiSlotOutput.class));
+        tabGeneral.addGuiObject(new GuiSlot(113, 59, 26, GuiSlotOutput.class));
+        tabGeneral.addGuiObject(new GuiSlot(131, 59, 27, GuiSlotOutput.class));
+        tabGeneral.addGuiObject(new GuiSlot(149, 59, 28, GuiSlotOutput.class));
 
-        tabGeneral.addGuiObject(new GuiSlot(171, 143, 26, 26, 0));
+        tabGeneral.addGuiObject(new GuiSlot(171, 143, 26, 26, 0, GuiSlotFuelInput.class));
 
         // Player's Inventory
         tabGeneral.addGuiObject(new GuiLabel(8, 83, 0xFFFFFF, "Inventory"));

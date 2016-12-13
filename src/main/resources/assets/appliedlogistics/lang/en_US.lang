@@ -85,8 +85,15 @@ tile.appliedlogistics.misc_crank.name=Machine Crank
 item.appliedlogistics.tool_hammer.name=Forge Hammer
 
 ## Plans ################################
-item.appliedlogistics.plan_blank.name=Blank Machine Plan
+item.appliedlogistics.plan_blank.stone.name=Stone Plan
+item.appliedlogistics.plan_blank.bronze.name=Bronze Plan
+item.appliedlogistics.plan_blank.industrial.name=Industrial Plan
+item.appliedlogistics.plan_blank.mechanical.name=Mechanical Plan
+item.appliedlogistics.plan_blank.digital.name=Digital Plan
+item.appliedlogistics.plan_blank.creative.name=Creative Plan
+
 item.appliedlogistics.plan.error.name=<<<ERROR>>>
+
 item.appliedlogistics.plan.pulverizer.name=Pulverizer Machine Plan
 item.appliedlogistics.plan.builder.name=Builder Machine Plan
 item.appliedlogistics.plan.chest.name=Plan Chest Plan

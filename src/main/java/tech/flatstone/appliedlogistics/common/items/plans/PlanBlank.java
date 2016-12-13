@@ -22,17 +22,22 @@ package tech.flatstone.appliedlogistics.common.items.plans;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
+import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 
 import java.util.List;
 
@@ -47,7 +52,18 @@ public class PlanBlank extends ItemPlanBase implements IProvideRecipe {
     @Override
     public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
         for (TechLevel techLevel : TechLevel.all()) {
-            subItems.add(new ItemStack(itemIn, 1, techLevel.getMeta()));
+            if (techLevel == TechLevel.CREATIVE) {
+                for (TechLevel techLevelCreative : TechLevel.allExceptCreative()) {
+                    ItemStack planItem = new ItemStack(itemIn, 1, TechLevel.CREATIVE.getMeta());
+                    NBTTagCompound tagCompound = planItem.getTagCompound();
+                    if (tagCompound == null)
+                        tagCompound = new NBTTagCompound();
+                    tagCompound.setInteger("planBaseMeta", techLevelCreative.getMeta());
+                    planItem.setTagCompound(tagCompound);
+                    subItems.add(planItem);
+                }
+            } else
+                subItems.add(new ItemStack(itemIn, 1, techLevel.getMeta()));
         }
     }
 
@@ -63,6 +79,7 @@ public class PlanBlank extends ItemPlanBase implements IProvideRecipe {
         return name + "." + nameTechLevel;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void registerItemRenderer() {
         for (TechLevel techLevel : TechLevel.all()) {
@@ -80,5 +97,23 @@ public class PlanBlank extends ItemPlanBase implements IProvideRecipe {
                 'y', "plankWood",
                 'z', new ItemStack(Items.PAPER)
         ));
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+        super.addInformation(stack, playerIn, tooltip, advanced);
+
+        NBTTagCompound nbtTagCompound = stack.getTagCompound();
+        if (nbtTagCompound == null)
+            return;
+
+        if (!nbtTagCompound.hasKey("planBaseMeta"))
+            return;
+
+        int planBaseMeta = nbtTagCompound.getInteger("planBaseMeta");
+        TechLevel planBaseTechLevel = TechLevel.byMeta(planBaseMeta);
+
+        tooltip.add(String.format("%s: %s", LanguageHelper.LABEL.translateMessage("tech_level"), LanguageHelper.LABEL.translateMessage("tech_level." + planBaseTechLevel.getName())));
     }
 }
