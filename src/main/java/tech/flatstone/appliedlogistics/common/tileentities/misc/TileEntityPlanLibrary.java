@@ -168,6 +168,6 @@ public class TileEntityPlanLibrary extends TileEntityMachineBase implements INet
 
     @Override
     public void dropItems() {
-        TileHelper.DropItems(this, 0, 0);
+        TileHelper.dropItems(this, 0, 0);
     }
 }

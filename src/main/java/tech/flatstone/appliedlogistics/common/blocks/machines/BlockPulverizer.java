@@ -91,8 +91,8 @@ public class BlockPulverizer extends BlockTechBase {
             return;
         }
 
-        TileHelper.DropItems(tileEntity, 0, 0);
-        TileHelper.DropItems(tileEntity, 2, 10);
+        TileHelper.dropItems(tileEntity, 0, 0);
+        TileHelper.dropItems(tileEntity, 2, 10);
     }
 
     @Override

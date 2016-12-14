@@ -209,7 +209,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
 
             this.worldObj.addBlockEvent(this.pos, this.blockType, EnumEventTypes.PLAN_SLOT_UPDATE.ordinal(), 0);
 
-            TileHelper.DropItems(this, 1, 27);
+            TileHelper.dropItems(this, 1, 27);
         }
     }
 

@@ -100,6 +100,6 @@ public class BlockPlanLibrary extends BlockTileBase implements IProvideRecipe {
     @Override
     public void breakBlock(World world, BlockPos blockPos, IBlockState blockState) {
         TileEntity tileEntity = world.getTileEntity(blockPos);
-        TileHelper.DropItems(tileEntity, 0, 0);
+        TileHelper.dropItems(tileEntity, 0, 0);
     }
 }

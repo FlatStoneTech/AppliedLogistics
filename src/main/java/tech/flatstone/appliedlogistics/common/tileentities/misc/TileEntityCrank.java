@@ -122,7 +122,7 @@ public class TileEntityCrank extends TileEntityBase implements ITickable, IWaila
             // drop random amount of sticks, between 3 and 5 sticks.
             Random random = new Random();
             ItemStack randomSticks = new ItemStack(Items.STICK, random.nextInt(2) + 3);
-            TileHelper.DropItemStack(randomSticks, this.worldObj, this.pos);
+            TileHelper.dropItemStack(randomSticks, this.worldObj, this.pos);
             return;
         }
 

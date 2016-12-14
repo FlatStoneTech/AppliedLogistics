@@ -211,7 +211,7 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
     }
 
     public void dropItems() {
-        TileHelper.DropItems(this);
+        TileHelper.dropItems(this);
     }
 
     @Override
