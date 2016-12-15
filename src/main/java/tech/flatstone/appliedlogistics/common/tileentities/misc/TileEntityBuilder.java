@@ -473,4 +473,5 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
         this.internalInventory.setInventorySlotContents(28, this.outputItem);
         this.outputItem = null;
     }
+
 }

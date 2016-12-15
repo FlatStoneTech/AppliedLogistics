@@ -25,7 +25,7 @@ public class BlockKiln extends BlockTechBase {
 
     public BlockKiln() {
         super(Material.ROCK, "machines/kiln", TechLevel.STONE_AGE);
-        this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE).withProperty(FACING, EnumFacing.NORTH));
+        this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE));//.withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityKiln.class);
         this.setCreativeTab(AppliedLogisticsCreativeTabs.MACHINES);
         this.setInternalName("machine_kiln");
@@ -51,14 +51,15 @@ public class BlockKiln extends BlockTechBase {
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntityKiln tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityKiln.class);
         if (tileEntity != null && tileEntity.canBeRotated()) {
-            return state.withProperty(FACING, tileEntity.getForward()).withProperty(WORKING, tileEntity.getIntTemperature() > 0);
+            return state.withProperty(WORKING, tileEntity.getIntTemperature() > 0);
+            //.withProperty(FACING, tileEntity.getForward())
         }
-        return state.withProperty(FACING, EnumFacing.NORTH).withProperty(WORKING, false);
+        return state.withProperty(WORKING, false);
     }
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, TECHLEVEL, FACING, WORKING);
+        return new BlockStateContainer(this, TECHLEVEL,ROTATION, WORKING);
     }
 
     @Override

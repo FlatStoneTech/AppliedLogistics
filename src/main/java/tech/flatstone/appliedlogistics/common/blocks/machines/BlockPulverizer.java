@@ -43,7 +43,7 @@ public class BlockPulverizer extends BlockTechBase {
 
     public BlockPulverizer() {
         super(Material.ROCK, "machines/pulverizer", TechLevel.STONE_AGE, TechLevel.BRONZE_AGE, TechLevel.INDUSTRIAL_AGE);
-        this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE).withProperty(FACING, EnumFacing.NORTH));
+        this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE));//.withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityPulverizer.class);
         this.setCreativeTab(AppliedLogisticsCreativeTabs.MACHINES);
         this.setInternalName("machine_pulverizer");
@@ -62,7 +62,7 @@ public class BlockPulverizer extends BlockTechBase {
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, TECHLEVEL, FACING);
+        return new BlockStateContainer(this, ROTATION,TECHLEVEL);
     }
 
     @Override

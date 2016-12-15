@@ -36,6 +36,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
+import tech.flatstone.appliedlogistics.api.Rotation.impl.RotationProperty;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTechBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
@@ -49,7 +50,7 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe {
 
     public BlockBuilder() {
         super(Material.ROCK, "misc/builder", TechLevel.all());
-        this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE).withProperty(FACING, EnumFacing.NORTH));
+        this.setDefaultState(blockState.getBaseState().withProperty(TECHLEVEL, TechLevel.STONE_AGE).withProperty(ROTATION, "north-up"));//.withProperty(FACING, EnumFacing.NORTH));
         this.setTileEntity(TileEntityBuilder.class);
         this.setCreativeTab(AppliedLogisticsCreativeTabs.MACHINES);
         this.setInternalName("builder");
@@ -83,10 +84,11 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe {
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
-        if (tileEntity != null) {
-            return state.withProperty(FACING, tileEntity.getForward());
+        if (tileEntity != null && tileEntity.getRTstate() != null &&
+                ((BlockStateContainer.StateImplementation) getBlockState().getBaseState()).getPropertyValueTable().containsValue(RotationProperty.parseValue(tileEntity.getRTstate()))) {
+            return state.withProperty(ROTATION, RotationProperty.parseValue(tileEntity.getRTstate()));
         }
-        return state.withProperty(FACING, EnumFacing.NORTH);
+        return state;
     }
 
     @Override
@@ -97,7 +99,7 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe {
 
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, TECHLEVEL, FACING);
+        return new BlockStateContainer(this, ROTATION, TECHLEVEL);
     }
 
     @Override
