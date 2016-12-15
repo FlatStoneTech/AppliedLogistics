@@ -39,31 +39,35 @@ public class Crushable {
         return inItemStack;
     }
 
-    public void setInItemStack(ItemStack inItemStack) {
+    public ItemStack setInItemStack(ItemStack inItemStack) {
         this.inItemStack = inItemStack;
+        return this.inItemStack;
     }
 
     public ItemStack getOutItemStack() {
         return outItemStack;
     }
 
-    public void setOutItemStack(ItemStack outItemStack) {
+    public ItemStack setOutItemStack(ItemStack outItemStack) {
         this.outItemStack = outItemStack;
+        return this.outItemStack;
     }
 
     public float getChance() {
         return chance;
     }
 
-    public void setChance(float chance) {
+    public float setChance(float chance) {
         this.chance = chance;
+        return this.chance;
     }
 
     public float getLuckMultiplier() {
         return luckMultiplier;
     }
 
-    public void setLuckMultiplier(float luckMultiplier) {
+    public float setLuckMultiplier(float luckMultiplier) {
         this.luckMultiplier = luckMultiplier;
+        return this.luckMultiplier;
     }
 }

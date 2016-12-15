@@ -44,7 +44,7 @@ public class ItemKitCrafting extends ItemBase implements IProvideRecipe {
                 " c ",
                 "rxr",
                 "grg",
-                'c', OreDictionary.getOres("craftingTableWood").size() == 0 ? new ItemStack(Blocks.CRAFTING_TABLE) : "craftingTableWood",
+                'c', OreDictionary.getOres("craftingTableWood").isEmpty() ? new ItemStack(Blocks.CRAFTING_TABLE) : "craftingTableWood",
                 'r', "dustRedstone",
                 'x', new ItemStack(Items.ITEM_CARD_BLANK.getItem()),
                 'g', "dyeGreen"

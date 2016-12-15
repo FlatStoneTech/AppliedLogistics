@@ -160,10 +160,8 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
 
     @Override
     public boolean canCrank() {
-        if (ticksRemaining > 0 && machineWorking)
-            return true;
+        return ticksRemaining > 0 && machineWorking;
 
-        return false;
     }
 
     @Override
@@ -214,7 +212,7 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
                 return;
             }
 
-            ArrayList<Crushable> drops = PulverizerRegistry.getDrops(processItem);
+            List<Crushable> drops = PulverizerRegistry.getDrops(processItem);
 
             if (drops.isEmpty()) {
                 return;
@@ -224,15 +222,12 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
                 this.crushIndex = i;
                 Crushable crushable = drops.get(this.crushIndex);
 
-                ItemStack outItem = crushable.outItemStack.copy();
-                float itemChance = crushable.chance;
-                boolean itemFortune = crushable.luckMultiplier == 1.0f;
+                ItemStack outItem = crushable.getOutItemStack().copy();
+                float itemChance = crushable.getChance();
+                crushable.setLuckMultiplier(1.0f);
 
                 if (!crushPaused) {
-                    if (itemFortune)
-                        this.randomItemCount = RandomHelper.CalculatePulverizer(itemChance, fortuneMultiplier);
-                    if (!itemFortune)
-                        this.randomItemCount = RandomHelper.CalculatePulverizer(itemChance, 0);
+                    this.randomItemCount = RandomHelper.CalculatePulverizer(itemChance, fortuneMultiplier);
                 }
 
                 outItem.stackSize = this.randomItemCount;
