@@ -158,8 +158,7 @@ public class TransportGrid implements ITransport {
      */
     @Override
     public boolean insertObjectToGrid(UUID entryNode, String unlocalizedName, Object object) {
-        graphServer.addCargo(new TransportContainer(entryNode, unlocalizedName, object));
-        return true;
+        return graphServer.addCargo(new TransportContainer(entryNode, unlocalizedName, object));
     }
 
     /**

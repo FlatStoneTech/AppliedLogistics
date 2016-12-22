@@ -29,7 +29,7 @@ public class ApiInfo {
     private static int apiVersion;
     private static int featureLevel;
 
-    public ApiInfo() {
+    private ApiInfo() {
         apiVersion = Integer.getInteger(API_VERSION);
         featureLevel = Integer.getInteger(API_FEATURE_LEVEL);
     }
@@ -42,7 +42,7 @@ public class ApiInfo {
         return featureLevel;
     }
 
-    public static void CheckAPI(String ModName, int apiVersionNum, int apiFeatureLevel) {
+    public static void checkAPI(String ModName, int apiVersionNum, int apiFeatureLevel) {
         if ((apiVersionNum != apiVersion) || (apiFeatureLevel < featureLevel)) {
             throw new IncompatibleApiVersionException(String.format("%s expects %s API %d:%d version %d:%d provided",
                     ModName, ModInfo.MOD_NAME, apiVersionNum, apiFeatureLevel, apiVersion, featureLevel));

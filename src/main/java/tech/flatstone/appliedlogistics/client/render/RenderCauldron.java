@@ -2,7 +2,10 @@ package tech.flatstone.appliedlogistics.client.render;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BlockModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -12,19 +15,19 @@ import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.animation.FastTESR;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.opengl.GL11;
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector4f;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.client.util.ModelTransformer;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCauldron;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCauldron;
 import tech.flatstone.appliedlogistics.common.util.ModelRegistration;
 
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector4f;
+
 public class RenderCauldron extends FastTESR<TileEntityCauldron> {
     @Override
-    public void renderTileEntityFast(final TileEntityCauldron cauldronTE, double x, double y, double z, final float partialTicks, int destroyStage, VertexBuffer VertexBuffer) {
+    public void renderTileEntityFast(final TileEntityCauldron cauldronTE, double x, double y, double z, final float partialTicks, int destroyStage, VertexBuffer vertexBuffer) {
         IBlockState state = cauldronTE.getWorld().getBlockState(cauldronTE.getPos());
         if (!(state.getBlock() instanceof BlockCauldron))
             return;
@@ -61,7 +64,7 @@ public class RenderCauldron extends FastTESR<TileEntityCauldron> {
             }
 
             IBakedModel origModel = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelManager().getModel(ModelRegistration.CAULDRON_HANDLE);
-            VertexBuffer.setTranslation(x - cauldronTE.getPos().getX(), y - cauldronTE.getPos().getY(), z - cauldronTE.getPos().getZ());
+            vertexBuffer.setTranslation(x - cauldronTE.getPos().getX(), y - cauldronTE.getPos().getY(), z - cauldronTE.getPos().getZ());
 
             IBakedModel model = ModelTransformer.transform(origModel, new ModelTransformer.IVertexTransformer() {
                 @Override
@@ -83,7 +86,7 @@ public class RenderCauldron extends FastTESR<TileEntityCauldron> {
             }, null, 0);
 
             BlockModelRenderer modelRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer();
-            modelRenderer.renderModel(cauldronTE.getWorld(), model, state, cauldronTE.getPos(), VertexBuffer, false);
+            modelRenderer.renderModel(cauldronTE.getWorld(), model, state, cauldronTE.getPos(), vertexBuffer, false);
         }
     }
 

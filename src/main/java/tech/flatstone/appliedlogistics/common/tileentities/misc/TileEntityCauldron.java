@@ -5,13 +5,20 @@ import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import tech.flatstone.appliedlogistics.client.particles.ParticleCauldronFlame;
 import tech.flatstone.appliedlogistics.client.particles.ParticleCauldronSmokeNormal;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCauldron;
@@ -19,19 +26,25 @@ import tech.flatstone.appliedlogistics.common.sounds.Sounds;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityInventoryBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
-import tech.flatstone.appliedlogistics.common.util.IRotatable;
-import tech.flatstone.appliedlogistics.common.util.Platform;
-import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 
-public class TileEntityCauldron extends TileEntityInventoryBase implements IFluidTank, ITickable {
-    private InternalInventory internalInventory = new InternalInventory(this, 2);
+public class TileEntityCauldron extends TileEntityInventoryBase implements IFluidHandler, IItemHandler, ITickable {
+    private static final AxisAlignedBB AABB_FLUID = new AxisAlignedBB(0.1875, 0.3125, 0.1875, 0.8125, 0.8125, 0.8125);
     private static final float MAX_HANDLE_ROTATION = -0.43F;
+    private static final float TICKS_PRECIPITATION_DELAY = 600;
+    private static final float TICKS_PRECIPITATION_TOTAL = 1200;
+    private static final double MAXIMUM_PRECIPITATE_LEVEL = 0.0625;
+    private InternalInventory internalInventory = new InternalInventory(this, 2);
     private float handleRotation = MAX_HANDLE_ROTATION;
     private boolean handleRebounded, handleHasEnergy;
     private boolean fireLit = false;
-    private int tickCounter;
+    private int tickCounter, progressTicks;
+    private double waterTemp = 22.0;
+    private FluidTank tank = new FluidTank(Fluid.BUCKET_VOLUME);
+    private Map<EnumItemType, Integer> itemCountMap = new HashMap<>();
 
     public boolean isFireLit() {
         return fireLit;
@@ -46,6 +59,14 @@ public class TileEntityCauldron extends TileEntityInventoryBase implements IFlui
         super.readFromNBT(nbtTagCompound);
 
         fireLit = nbtTagCompound.getBoolean("fireLit");
+        for (EnumItemType itemType : EnumItemType.values()) {
+            if (nbtTagCompound.hasKey(itemType.name())) {
+                if (itemCountMap.containsKey(itemType))
+                    itemCountMap.remove(itemType);
+
+                itemCountMap.put(itemType, nbtTagCompound.getInteger(itemType.name()));
+            }
+        }
     }
 
     @Override
@@ -53,8 +74,77 @@ public class TileEntityCauldron extends TileEntityInventoryBase implements IFlui
         nbtTagCompound = super.writeToNBT(nbtTagCompound);
 
         nbtTagCompound.setBoolean("fireLit", this.fireLit);
+        for (EnumItemType itemType : itemCountMap.keySet()) {
+            nbtTagCompound.setInteger(itemType.name(), itemCountMap.get(itemType));
+        }
 
         return nbtTagCompound;
+    }
+
+    @Override
+    public boolean shouldRenderInPass(int pass) {
+        return true;
+    }
+
+    public void setItemCount(EnumItemType itemType, int count) {
+        if (itemCountMap.containsKey(itemType))
+            itemCountMap.remove(itemType);
+
+        itemCountMap.put(itemType, count);
+    }
+
+    public int getItemCount(EnumItemType itemType) {
+        return itemCountMap.containsKey(itemType) ? itemCountMap.get(itemType) : 0;
+    }
+
+    public boolean isPrecursor() {
+        return tank.getFluid() != null && tank.getFluid().getFluid() == FluidRegistry.getFluid("Precursor");
+    }
+
+    public boolean isPureWater() {
+        return getItemCount(EnumItemType.ALUMINUM) == 0 && getItemCount(EnumItemType.SILICA) == 0 && (tank.getFluid() == null || tank.getFluid().getFluid() == FluidRegistry.WATER);
+
+    }
+
+    public void setPureWater() {
+        itemCountMap.clear();
+        worldObj.notifyNeighborsOfStateChange(pos, blockType);
+    }
+
+    public double getWaterTemp() {
+        return waterTemp;
+    }
+
+    public double getWaterLevel() {
+        return 0.3125 + (tank.getFluidAmount() / (double) tank.getCapacity()) * 0.5;
+    }
+
+    public AxisAlignedBB getFluidCollisionBox() {
+        return new AxisAlignedBB(AABB_FLUID.minX, AABB_FLUID.minY, AABB_FLUID.minZ, AABB_FLUID.maxX, AABB_FLUID.maxY, AABB_FLUID.maxZ);
+    }
+
+    public boolean hasSolidPrecipitate() {
+        return getSolidPrecipitateLevel() > BlockCauldron.AABB_BASE.maxY;
+    }
+
+    public boolean hasMaximunSolidPrecipitate() {
+        return getSolidPrecipitateLevel() == BlockCauldron.AABB_BASE.maxY + 0.001 + MAXIMUM_PRECIPITATE_LEVEL;
+    }
+
+    public double getSolidPrecipitateLevel() {
+        return progressTicks <= TICKS_PRECIPITATION_DELAY ? -1 : BlockCauldron.AABB_BASE.maxY + 0.001 + (getPrecipitationProgressTicks() / TICKS_PRECIPITATION_TOTAL) * MAXIMUM_PRECIPITATE_LEVEL;
+    }
+
+    public int getPrecipitationProgressTicks() {
+        return (int) (progressTicks - TICKS_PRECIPITATION_DELAY);
+    }
+
+    public int getProgressTicks() {
+        return progressTicks;
+    }
+
+    public void setProgressTicks(int progressTicks) {
+        this.progressTicks = progressTicks;
     }
 
     @Override
@@ -80,38 +170,6 @@ public class TileEntityCauldron extends TileEntityInventoryBase implements IFlui
     @Nullable
     @Override
     public ItemStack removeStackFromSlot(int index) {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public FluidStack getFluid() {
-        return null;
-    }
-
-    @Override
-    public int getFluidAmount() {
-        return 0;
-    }
-
-    @Override
-    public int getCapacity() {
-        return 1000;
-    }
-
-    @Override
-    public FluidTankInfo getInfo() {
-        return null;
-    }
-
-    @Override
-    public int fill(FluidStack resource, boolean doFill) {
-        return 0;
-    }
-
-    @Nullable
-    @Override
-    public FluidStack drain(int maxDrain, boolean doDrain) {
         return null;
     }
 
@@ -186,5 +244,63 @@ public class TileEntityCauldron extends TileEntityInventoryBase implements IFlui
     @Override
     public void onRotated() {
         liftHandle();
+    }
+
+    public boolean isEmpty() {
+        return tank.getFluidAmount() == 0;
+    }
+
+    @Override
+    public IFluidTankProperties[] getTankProperties() {
+        return tank.getTankProperties();
+    }
+
+    @Override
+    public int fill(FluidStack resource, boolean doFill) {
+        return 0;
+    }
+
+    @Nullable
+    @Override
+    public FluidStack drain(FluidStack resource, boolean doDrain) {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public FluidStack drain(int maxDrain, boolean doDrain) {
+        return null;
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+            return (T) this;
+
+        return super.getCapability(capability, facing);
+    }
+
+    @Override
+    public int getSlots() {
+        return 0;
+    }
+
+    @Override
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+        return null;
+    }
+
+    @Override
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        return null;
+    }
+
+    public enum EnumItemType {
+        ALUMINUM, SILICA;
     }
 }

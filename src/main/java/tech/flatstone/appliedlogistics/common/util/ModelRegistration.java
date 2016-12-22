@@ -2,9 +2,7 @@ package tech.flatstone.appliedlogistics.common.util;
 
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ModelLoader;
 import tech.flatstone.appliedlogistics.ModInfo;
 
 public class ModelRegistration {

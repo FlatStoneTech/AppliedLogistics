@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import tech.flatstone.appliedlogistics.common.util.EnumCrankMaterials;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
 
 public class ItemCrank extends ItemBlock {
     public ItemCrank(Block block) {

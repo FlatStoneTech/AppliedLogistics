@@ -1,7 +1,5 @@
 package tech.flatstone.appliedlogistics.common.sounds;
 
-import net.minecraft.util.ResourceLocation;
-
 public class SoundBase {
     protected String resourcePath = "";
     protected String internalName = "";

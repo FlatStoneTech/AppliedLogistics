@@ -11,7 +11,7 @@ public enum Sounds {
     private final Class<? extends SoundBase> soundClass;
     private SoundEvent sound;
 
-    Sounds(Class<? extends SoundBase > soundClass) {
+    Sounds(Class<? extends SoundBase> soundClass) {
         this.soundClass = soundClass;
     }
 

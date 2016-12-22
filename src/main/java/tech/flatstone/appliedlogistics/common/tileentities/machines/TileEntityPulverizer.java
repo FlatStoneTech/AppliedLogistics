@@ -31,13 +31,14 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.api.registries.PulverizerRegistry;
 import tech.flatstone.appliedlogistics.api.registries.helpers.Crushable;
-import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCrank;
 import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaBodyMessage;
-import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
-import tech.flatstone.appliedlogistics.common.util.*;
+import tech.flatstone.appliedlogistics.common.util.ICrankable;
+import tech.flatstone.appliedlogistics.common.util.InventoryHelper;
+import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
+import tech.flatstone.appliedlogistics.common.util.RandomHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -159,10 +160,8 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
 
     @Override
     public boolean canCrank() {
-        if (ticksRemaining > 0 && machineWorking)
-            return true;
+        return ticksRemaining > 0 && machineWorking;
 
-        return false;
     }
 
     @Override
@@ -213,7 +212,7 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
                 return;
             }
 
-            ArrayList<Crushable> drops = PulverizerRegistry.getDrops(processItem);
+            List<Crushable> drops = PulverizerRegistry.getDrops(processItem);
 
             if (drops.isEmpty()) {
                 return;
@@ -223,15 +222,12 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
                 this.crushIndex = i;
                 Crushable crushable = drops.get(this.crushIndex);
 
-                ItemStack outItem = crushable.outItemStack.copy();
-                float itemChance = crushable.chance;
-                boolean itemFortune = crushable.luckMultiplier == 1.0f;
+                ItemStack outItem = crushable.getOutItemStack().copy();
+                float itemChance = crushable.getChance();
+                crushable.setLuckMultiplier(1.0f);
 
                 if (!crushPaused) {
-                    if (itemFortune)
-                        this.randomItemCount = RandomHelper.CalculatePulverizer(itemChance, fortuneMultiplier);
-                    if (!itemFortune)
-                        this.randomItemCount = RandomHelper.CalculatePulverizer(itemChance, 0);
+                    this.randomItemCount = RandomHelper.CalculatePulverizer(itemChance, fortuneMultiplier);
                 }
 
                 outItem.stackSize = this.randomItemCount;

@@ -35,34 +35,34 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector4f;
 
 public class RenderCrank extends FastTESR<TileEntityCrank> {
-	@Override
-	public void renderTileEntityFast(final TileEntityCrank te, double x, double y, double z, final float partialTicks, int destroyStage, VertexBuffer worldRenderer) {
-		IBlockState state = te.getWorld().getBlockState(te.getPos());
-		IBakedModel origModel = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
+    @Override
+    public void renderTileEntityFast(final TileEntityCrank te, double x, double y, double z, final float partialTicks, int destroyStage, VertexBuffer worldRenderer) {
+        IBlockState state = te.getWorld().getBlockState(te.getPos());
+        IBakedModel origModel = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
 
-		worldRenderer.setTranslation(-te.getPos().getX() + x, -te.getPos().getY() + y, -te.getPos().getZ() + z);
+        worldRenderer.setTranslation(-te.getPos().getX() + x, -te.getPos().getY() + y, -te.getPos().getZ() + z);
 
-		IBakedModel model = ModelTransformer.transform(origModel, new ModelTransformer.IVertexTransformer() {
-			@Override
-			public float[] transform(BakedQuad quad, VertexFormatElement.EnumType type, VertexFormatElement.EnumUsage usage, float... data) {
-				if (usage == VertexFormatElement.EnumUsage.POSITION) {
-					Vector4f vec = new Vector4f(data[0] - 0.5F, data[1] - 0.5F, data[2] - 0.5F, 0);
-					Matrix4f mat = new Matrix4f();
-					mat.setIdentity();
-					if (te.isRotating())
-						mat.rotY((float) Math.toRadians(te.getRotation() + 15 * partialTicks));
-					if (!te.isRotating())
-						mat.rotY((float) Math.toRadians(te.getRotation()));
-					mat.transform(vec);
-					data[0] = vec.x + 0.5F;
-					data[1] = vec.y + 0.5F;
-					data[2] = vec.z + 0.5F;
-				}
-				return data;
-			}
-		}, null, 0);
+        IBakedModel model = ModelTransformer.transform(origModel, new ModelTransformer.IVertexTransformer() {
+            @Override
+            public float[] transform(BakedQuad quad, VertexFormatElement.EnumType type, VertexFormatElement.EnumUsage usage, float... data) {
+                if (usage == VertexFormatElement.EnumUsage.POSITION) {
+                    Vector4f vec = new Vector4f(data[0] - 0.5F, data[1] - 0.5F, data[2] - 0.5F, 0);
+                    Matrix4f mat = new Matrix4f();
+                    mat.setIdentity();
+                    if (te.isRotating())
+                        mat.rotY((float) Math.toRadians(te.getRotation() + 15 * partialTicks));
+                    if (!te.isRotating())
+                        mat.rotY((float) Math.toRadians(te.getRotation()));
+                    mat.transform(vec);
+                    data[0] = vec.x + 0.5F;
+                    data[1] = vec.y + 0.5F;
+                    data[2] = vec.z + 0.5F;
+                }
+                return data;
+            }
+        }, null, 0);
 
-		BlockModelRenderer modelRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer();
-		modelRenderer.renderModel(te.getWorld(), model, state, te.getPos(), worldRenderer, false);
-	}
+        BlockModelRenderer modelRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer();
+        modelRenderer.renderModel(te.getWorld(), model, state, te.getPos(), worldRenderer, false);
+    }
 }

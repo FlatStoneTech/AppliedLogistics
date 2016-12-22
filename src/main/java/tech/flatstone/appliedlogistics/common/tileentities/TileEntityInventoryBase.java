@@ -121,8 +121,6 @@ public abstract class TileEntityInventoryBase extends TileEntityBase implements 
         return true;
     }
 
-    @Override
-    public abstract void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added);
 
     @Override
     public int[] getSlotsForFace(EnumFacing side) {

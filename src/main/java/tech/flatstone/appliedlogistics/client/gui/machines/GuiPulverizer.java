@@ -21,27 +21,22 @@
 package tech.flatstone.appliedlogistics.client.gui.machines;
 
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.lwjgl.opengl.GL11;
 import tech.flatstone.appliedlogistics.client.gui.GuiBase;
 import tech.flatstone.appliedlogistics.common.container.machines.ContainerPulverizer;
-import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityPulverizer;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.GuiHelper;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
 
 public class GuiPulverizer extends GuiBase {
     private TileEntityPulverizer tileEntity;
     private GuiHelper guiHelper = new GuiHelper();
-    private HashMap<Rectangle, List<String>> tooltips = new HashMap<Rectangle, List<String>>();
+    private HashMap<Rectangle, List<String>> tooltips = new HashMap<>();
 
     public GuiPulverizer(InventoryPlayer inventoryPlayer, TileEntityPulverizer tileEntity) {
         super(new ContainerPulverizer(inventoryPlayer, tileEntity));
@@ -112,14 +107,15 @@ public class GuiPulverizer extends GuiBase {
     }
 
     @Override
-    public void drawScreen(int mouse_x, int mouse_y, float btn) {
-        super.drawScreen(mouse_x, mouse_y, btn);
+    public void drawScreen(int mouseX, int mouseY, float btn) {
+        super.drawScreen(mouseX, mouseY, btn);
 
-        Point currentMouse = new Point(mouse_x - guiLeft, mouse_y - guiTop);
-        for (Rectangle rectangle : tooltips.keySet()) {
-            if (rectangle.contains(currentMouse)) {
-                ArrayList<String> messages = new ArrayList<String>(tooltips.get(rectangle));
-                renderToolTip(messages, mouse_x, mouse_y);
+        Point currentMouse = new Point(mouseX - guiLeft, mouseY - guiTop);
+        for (Map.Entry<Rectangle, List<String>> rectangle : tooltips.entrySet()) {
+            Rectangle thisRectangle = rectangle.getKey();
+            if (thisRectangle.contains(currentMouse)) {
+                ArrayList<String> messages = new ArrayList<>(tooltips.get(thisRectangle));
+                renderToolTip(messages, mouseX, mouseY);
             }
         }
     }

@@ -5,12 +5,12 @@ import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.util.ConfigHelper;
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 public class ConfigWorldGen {
-    public static final Map<EnumOres, OreConfig> OreWorldGen = new HashMap<>(EnumOres.values().length);
-    private static final Map<EnumOres, OreConfig> OreWorldGenDefaults = new HashMap<>(EnumOres.values().length);
+    private static final Map<EnumOres, OreConfig> OreWorldGen = new EnumMap<>(EnumOres.class);
+    private static final Map<EnumOres, OreConfig> OreWorldGenDefaults = new EnumMap<>(EnumOres.class);
     private static final int[] DEFAULT_DIMENSION_BLACKLIST = {-1, 1};
 
     static {
@@ -18,7 +18,7 @@ public class ConfigWorldGen {
         for (EnumOres ore : EnumOres.byType(EnumOreType.ORE)) {
             OreConfig defaultConfig = new OreConfig();
             defaultConfig.Enabled = true;
-            defaultConfig.DimensionRestriction = RestrictionType.Blacklist;
+            defaultConfig.DimensionRestriction = RestrictionType.BLACKLIST;
             defaultConfig.Dimensions = DEFAULT_DIMENSION_BLACKLIST;
 
             // Might want to vary this per-ore at some point, but so far it's constant
@@ -72,6 +72,10 @@ public class ConfigWorldGen {
         }
     }
 
+    public static Map<EnumOres, OreConfig> getOreWorldGen() {
+        return OreWorldGen;
+    }
+
     public static void init(Configuration configuration) {
         configuration.setCategoryLanguageKey(Config.CONFIG_WORLDGEN, "config.worldGen");
         configuration.setCategoryRequiresWorldRestart(Config.CONFIG_WORLDGEN, false);
@@ -120,8 +124,8 @@ public class ConfigWorldGen {
     }
 
     public enum RestrictionType {
-        Blacklist,
-        Whitelist;
+        BLACKLIST,
+        WHITELIST;
 
         public static RestrictionType fromString(String str, RestrictionType def) {
             for (RestrictionType rt : values()) {
@@ -148,8 +152,8 @@ public class ConfigWorldGen {
             boolean inList = false;
             for (int listDim : Dimensions)
                 inList = inList || listDim == dim;
-            return (inList && DimensionRestriction == RestrictionType.Whitelist) ||
-                    (!inList && DimensionRestriction == RestrictionType.Blacklist);
+            return (inList && DimensionRestriction == RestrictionType.WHITELIST) ||
+                    (!inList && DimensionRestriction == RestrictionType.BLACKLIST);
         }
     }
 }

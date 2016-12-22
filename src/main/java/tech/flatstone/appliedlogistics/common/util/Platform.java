@@ -32,6 +32,8 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -89,10 +91,10 @@ public class Platform {
                 stringbuilder.append(",");
             }
 
-            IProperty<?> iproperty = (IProperty) entry.getKey();
+            IProperty<?> iproperty = entry.getKey();
             stringbuilder.append(iproperty.getName());
             stringbuilder.append("=");
-            stringbuilder.append(getPropertyName(iproperty, (Comparable) entry.getValue()));
+            stringbuilder.append(getPropertyName(iproperty, entry.getValue()));
         }
 
         if (stringbuilder.length() == 0) {
@@ -114,19 +116,21 @@ public class Platform {
 
     public static boolean isDevEnv() {
         return (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
-        //return !FMLForgePlugin.RUNTIME_DEOBF;
     }
 
+    @SideOnly(Side.CLIENT)
     public static void playSound(SoundEvent sound) {
         if (sound == null)
             return;
         Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(sound, 1.0F));
     }
 
+    @SideOnly(Side.CLIENT)
     public static void spawnParticle(World worldIn, Vec3d particlePos, IParticleFactory particleFactory) {
-        Minecraft.getMinecraft().effectRenderer.addEffect(particleFactory.getEntityFX(0, worldIn, particlePos.xCoord, particlePos.yCoord, particlePos.zCoord, 0.0D, 0.0D, 0.0D, new int[0]));
+        Minecraft.getMinecraft().effectRenderer.addEffect(particleFactory.createParticle(0, worldIn, particlePos.xCoord, particlePos.yCoord, particlePos.zCoord, 0.0D, 0.0D, 0.0D));
     }
 
+    @SideOnly(Side.CLIENT)
     public static void spawnParticle(Particle particle) {
         Minecraft.getMinecraft().effectRenderer.addEffect(particle);
     }

@@ -38,7 +38,7 @@ public class InternalDynamicInventory implements IInventory, Iterable<ItemStack>
     protected int maxSize;
 
     public InternalDynamicInventory(IInventoryHandler inventory) {
-        this.inventory = new ArrayList<ItemStack>();
+        this.inventory = new ArrayList<>();
         this.inventoryHandler = inventory;
         this.maxSize = 64;
     }
@@ -97,21 +97,17 @@ public class InternalDynamicInventory implements IInventory, Iterable<ItemStack>
 
     @Override
     public void setInventorySlotContents(int slot, ItemStack itemStack) {
-        if (inventory.size() != 0 && inventory.size() >= slot) {
+        if (!inventory.isEmpty() && inventory.size() >= slot) {
             this.inventory.set(slot, itemStack);
         } else {
             this.inventory.add(itemStack);
         }
-
-        //this.inventoryHandler.onChangeInventory(this, slot, InventoryOperation.setInventorySlotContents, removed, added);
 
         this.markDirty();
     }
 
     public void addInventorySlotContents(ItemStack itemStack) {
         this.inventory.add(itemStack);
-
-        //this.inventoryHandler.onChangeInventory(this, slot, InventoryOperation.setInventorySlotContents, removed, added);
 
         this.markDirty();
     }
@@ -135,7 +131,7 @@ public class InternalDynamicInventory implements IInventory, Iterable<ItemStack>
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer p_70300_1_) {
+    public boolean isUseableByPlayer(EntityPlayer entityPlayer) {
         return true;
     }
 

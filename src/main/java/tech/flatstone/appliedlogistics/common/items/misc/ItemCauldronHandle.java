@@ -1,7 +1,6 @@
 package tech.flatstone.appliedlogistics.common.items.misc;
 
 import net.minecraftforge.client.model.ModelLoader;
-import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.common.items.ItemBase;
 import tech.flatstone.appliedlogistics.common.util.ModelRegistration;

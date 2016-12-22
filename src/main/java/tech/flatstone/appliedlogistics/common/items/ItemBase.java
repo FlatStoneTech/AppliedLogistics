@@ -21,7 +21,6 @@
 package tech.flatstone.appliedlogistics.common.items;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
@@ -72,10 +71,5 @@ public abstract class ItemBase extends Item implements IItemRenderer {
         final String resourcePath = String.format("%s:%s", ModInfo.MOD_ID, this.resourcePath);
 
         ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(resourcePath, "inventory"));
-    }
-
-    @Override
-    public boolean onEntityItemUpdate(EntityItem entityItem) {
-        return super.onEntityItemUpdate(entityItem);
     }
 }

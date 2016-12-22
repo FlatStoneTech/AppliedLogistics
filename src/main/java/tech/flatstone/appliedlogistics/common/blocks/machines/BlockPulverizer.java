@@ -77,10 +77,9 @@ public class BlockPulverizer extends BlockTechBase {
                 )
             return false;
 
-        if (worldIn.isRemote)
-            return true;
+        if (!worldIn.isRemote)
+            playerIn.openGui(AppliedLogistics.instance, 3, worldIn, pos.getX(), pos.getY(), pos.getZ());
 
-        playerIn.openGui(AppliedLogistics.instance, 3, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
 
@@ -92,8 +91,8 @@ public class BlockPulverizer extends BlockTechBase {
             return;
         }
 
-        TileHelper.DropItems(tileEntity, 0, 0);
-        TileHelper.DropItems(tileEntity, 2, 10);
+        TileHelper.dropItems(tileEntity, 0, 0);
+        TileHelper.dropItems(tileEntity, 2, 10);
     }
 
     @Override

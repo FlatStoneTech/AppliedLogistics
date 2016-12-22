@@ -76,7 +76,7 @@ public class ItemGear extends ItemBase implements IProvideRecipe {
         for (EnumMaterialsGear gear : EnumMaterialsGear.values()) {
             String materialName = gear.getOreName();
 
-            if (OreDictionary.getOres("ingot" + materialName).size() == 0)
+            if (OreDictionary.getOres("ingot" + materialName).isEmpty())
                 continue;
 
             GameRegistry.addRecipe(new ShapedOreRecipe(Items.ITEM_MATERIAL_GEAR.getStack(1, gear.getMeta()),

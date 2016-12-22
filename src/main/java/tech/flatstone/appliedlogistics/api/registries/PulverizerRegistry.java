@@ -18,18 +18,18 @@ public class PulverizerRegistry {
         ArrayList<ItemStack> blocks = new ArrayList<>();
 
         for (Crushable entry : registry) {
-            if (!blocks.contains(entry.inItemStack))
-                blocks.add(entry.inItemStack);
+            if (!blocks.contains(entry.getInItemStack()))
+                blocks.add(entry.getInItemStack());
         }
 
         return blocks;
     }
 
-    public static ArrayList<Crushable> getDrops(ItemStack itemStack) {
+    public static List<Crushable> getDrops(ItemStack itemStack) {
         ArrayList<Crushable> dropsList = new ArrayList<>();
 
         for (Crushable drop : registry) {
-            if (drop.inItemStack.isItemEqual(itemStack) && drop.outItemStack != null)
+            if (drop.getInItemStack().isItemEqual(itemStack) && drop.getOutItemStack() != null)
                 dropsList.add(drop);
         }
 
@@ -38,7 +38,7 @@ public class PulverizerRegistry {
 
     public static boolean containsBlock(ItemStack itemStack) {
         for (Crushable block : registry) {
-            if (itemStack.isItemEqual(block.inItemStack)) {
+            if (itemStack.isItemEqual(block.getInItemStack())) {
                 return true;
             }
         }

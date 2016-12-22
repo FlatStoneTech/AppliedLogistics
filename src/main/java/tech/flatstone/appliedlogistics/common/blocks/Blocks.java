@@ -30,6 +30,9 @@ import tech.flatstone.appliedlogistics.common.blocks.ores.BlockAlloy;
 import tech.flatstone.appliedlogistics.common.blocks.ores.BlockAlloyStorageBlock;
 import tech.flatstone.appliedlogistics.common.blocks.ores.BlockOre;
 import tech.flatstone.appliedlogistics.common.blocks.ores.BlockOreStorageBlock;
+import tech.flatstone.appliedlogistics.common.blocks.transport.BlockEntry;
+import tech.flatstone.appliedlogistics.common.blocks.transport.BlockExit;
+import tech.flatstone.appliedlogistics.common.blocks.transport.BlockPipe;
 import tech.flatstone.appliedlogistics.common.items.machines.ItemFurnace;
 import tech.flatstone.appliedlogistics.common.items.machines.ItemPulverizer;
 import tech.flatstone.appliedlogistics.common.items.misc.ItemBuilder;
@@ -39,6 +42,9 @@ import tech.flatstone.appliedlogistics.common.items.ores.ItemAlloy;
 import tech.flatstone.appliedlogistics.common.items.ores.ItemAlloyBlock;
 import tech.flatstone.appliedlogistics.common.items.ores.ItemOre;
 import tech.flatstone.appliedlogistics.common.items.ores.ItemOreBlock;
+import tech.flatstone.appliedlogistics.common.items.transport.ItemPipe;
+import tech.flatstone.appliedlogistics.common.items.transport.ItemPipeEntry;
+import tech.flatstone.appliedlogistics.common.items.transport.ItemPipeExit;
 import tech.flatstone.appliedlogistics.common.util.RegistrationHelper;
 
 public enum Blocks {
@@ -58,6 +64,10 @@ public enum Blocks {
 
     BLOCK_MACHINE_PULVERIZER(BlockPulverizer.class, ItemPulverizer.class),
     BLOCK_MACHINE_FURNACE(BlockFurnace.class, ItemFurnace.class),
+
+    BLOCK_TRANSPORT_ENTRY(BlockEntry.class, ItemPipeEntry.class),
+    BLOCK_TRANSPORT_EXIT(BlockExit.class, ItemPipeExit.class),
+    BLOCK_TRANSPORT_PIPE(BlockPipe.class, ItemPipe.class),
     ;
 
     private final Class<? extends BlockBase> blockClass;

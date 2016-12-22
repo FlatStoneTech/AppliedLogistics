@@ -34,19 +34,23 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings({"deprecation", "unchecked"})
+@SideOnly(Side.CLIENT)
 public class ModelTransformer {
 
     public static IBakedModel transform(IBakedModel model, IVertexTransformer transformer, IBlockState state, long rand) {
 
         List<BakedQuad>[] quads = new List[7];
         for (int i = 0; i < quads.length; i++) {
-            quads[i] = new ArrayList<BakedQuad>();
+            quads[i] = new ArrayList<>();
             for (BakedQuad quad : model.getQuads(state, (i == 6 ? null : EnumFacing.getFront(i)), rand))
                 quads[i].add(transform(quad, transformer));
         }
@@ -74,7 +78,7 @@ public class ModelTransformer {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LogHelper.error(e);
         }
         return unpackedQuad;
     }

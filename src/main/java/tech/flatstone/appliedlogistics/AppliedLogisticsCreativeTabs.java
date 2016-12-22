@@ -101,6 +101,17 @@ public class AppliedLogisticsCreativeTabs {
             return ModInfo.MOD_ID + ".fluids";
         }
     };
+    public static final CreativeTabs TRANSPORT = new CreativeTabs(ModInfo.MOD_ID) {
+        @Override
+        public Item getTabIconItem() {
+            return net.minecraft.init.Items.BEEF;
+        }
+
+        @Override
+        public String getTabLabel() {
+            return ModInfo.MOD_ID + ".transport";
+        }
+    };
 
     private AppliedLogisticsCreativeTabs() {
 

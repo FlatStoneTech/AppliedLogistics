@@ -20,52 +20,51 @@
 
 package tech.flatstone.appliedlogistics.common.util;
 
+import net.minecraftforge.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tech.flatstone.appliedlogistics.ModInfo;
 
 public class LogHelper {
-    private static Logger logger = LogManager.getLogger(ModInfo.MOD_NAME);
 
-    public static void log(Level logLevel, String message) {
-        logger.log(logLevel, message);
-        //FMLLog.log(ModInfo.MOD_NAME, logLevel, String.valueOf(object));
+    private static void log(Level logLevel, Object message) {
+        FMLLog.log(ModInfo.MOD_NAME, logLevel, String.valueOf(message));
     }
 
-    public static void all(String message) {
+    public static void all(Object message) {
         log(Level.ALL, message);
     }
 
-    public static void debug(String message) {
+    public static void debug(Object message) {
         log(Level.DEBUG, message);
     }
 
-    public static void trace(String message) {
+    public static void trace(Object message) {
         log(Level.TRACE, message);
     }
 
-    public static void fatal(String message) {
+    public static void fatal(Object message) {
         log(Level.FATAL, message);
     }
 
-    public static void error(String message) {
+    public static void error(Object message) {
         log(Level.ERROR, message);
     }
 
-    public static void warn(String message) {
+    public static void warn(Object message) {
         log(Level.WARN, message);
     }
 
-    public static void info(String message) {
+    public static void info(Object message) {
         log(Level.INFO, message);
     }
 
-    public static void off(String message) {
+    public static void off(Object message) {
         log(Level.OFF, message);
     }
 
-    public static void internal(String message) {
+    public static void internal(Object message) {
         if (Platform.isDevEnv())
             log(Level.INFO, message);
     }

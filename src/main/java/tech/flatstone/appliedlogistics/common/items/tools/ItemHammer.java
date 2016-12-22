@@ -48,12 +48,13 @@ import tech.flatstone.appliedlogistics.common.util.Platform;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvideEvent {
-    public static Set blocksEffectiveAgainst = Sets.newHashSet(new Block[]{});
-    public static boolean canHarvest = false;
-    public static ToolMaterial toolMaterialHammer = EnumHelper.addToolMaterial("APPLIEDLOGISTICSHAMMER", 3, 100, 15.0F, 4.0F, 30);
+    private static Set blocksEffectiveAgainst = Sets.newHashSet(new Block[]{});
+    private static boolean canHarvest = false;
+    private static ToolMaterial toolMaterialHammer = EnumHelper.addToolMaterial("APPLIEDLOGISTICSHAMMER", 3, 100, 15.0F, 4.0F, 30);
     private static IBlockState blockHarvest = null;
 
     public ItemHammer() {
@@ -61,6 +62,11 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
         this.setUnlocalizedName("tool_hammer");
         this.setCreativeTab(AppliedLogisticsCreativeTabs.GENERAL);
         this.setInternalName("tool_hammer");
+    }
+
+    @Override
+    public int getItemEnchantability(ItemStack stack) {
+        return 5;
     }
 
     @Override
@@ -89,22 +95,26 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
 
         boolean valid = false;
 
-        ArrayList<Crushable> drops = HammerRegistry.getDrops(blockItemStack);
+        List<Crushable> drops = HammerRegistry.getDrops(blockItemStack);
 
-        if (drops.size() > 0) {
+        if (player.capabilities.isCreativeMode && !player.isSneaking())
+            drops.clear();
+
+        if (!drops.isEmpty()) {
             Iterator<Crushable> it = drops.iterator();
 
             while (it.hasNext()) {
                 Crushable drop = it.next();
 
-                if (!world.isRemote && world.rand.nextFloat() <= drop.chance + (drop.luckMultiplier * fortune)) {
-                    EntityItem entityItem = new EntityItem(world, (double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, drop.outItemStack.copy());
+                if (!world.isRemote && world.rand.nextFloat() <= drop.getChance() + (drop.getLuckMultiplier() * fortune)) {
+                    EntityItem entityItem = new EntityItem(world, (double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, drop.getOutItemStack().copy());
 
                     double f3 = 0.05f;
                     entityItem.motionX = world.rand.nextGaussian() * f3;
                     entityItem.motionY = (0.2d);
                     entityItem.motionZ = world.rand.nextGaussian() * f3;
 
+                    entityItem.setDefaultPickupDelay();
                     world.spawnEntityInWorld(entityItem);
                 }
 
@@ -123,7 +133,10 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
 
         if (!world.isRemote) {
             world.setBlockToAir(pos);
-            world.playBroadcastSound(2001, pos, 1);
+        }
+
+        if (world.isRemote && valid) {
+            world.playEvent(player, 2001, pos, Block.getStateId(iBlockState));
         }
 
         return valid;
@@ -155,7 +168,7 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
     public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
         Block block = world.getBlockState(pos).getBlock();
 
-        if (block != null && !player.isSneaking()) {
+        if (!player.isSneaking()) {
             if (Platform.isClient())
                 return !world.isRemote ? EnumActionResult.FAIL : EnumActionResult.PASS;
 
@@ -171,5 +184,13 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
     @Override
     public boolean doesSneakBypassUse(ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player) {
         return true;
+    }
+
+    /**
+     * Return the enchantability factor of the item, most of the time is based on material.
+     */
+    @Override
+    public int getItemEnchantability() {
+        return 5;
     }
 }

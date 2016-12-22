@@ -34,7 +34,6 @@ import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.api.features.plan.PlanSlot;
 import tech.flatstone.appliedlogistics.api.features.plan.SlotTechLevelProperties;
 import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
-import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCrank;
 import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaBodyMessage;
 import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
@@ -210,7 +209,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
 
             this.worldObj.addBlockEvent(this.pos, this.blockType, EnumEventTypes.PLAN_SLOT_UPDATE.ordinal(), 0);
 
-            TileHelper.DropItems(this, 1, 27);
+            TileHelper.dropItems(this, 1, 27);
         }
     }
 

@@ -201,7 +201,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
         if (crankShaftPos != null && start.distanceTo(crankShaftPos.hitVec) < distance) {
             lookObject = crankShaftPos;
         }
- 
+
         if (lookObject != null) {
             return new RayTraceResult(lookObject.hitVec.addVector(pos.getX(), pos.getY(), pos.getZ()), lookObject.sideHit, pos);
         }
@@ -209,6 +209,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
         return null;
     }
 
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void drawBlockHighlight(DrawBlockHighlightEvent event) {
         if (!(event.getTarget().typeOfHit == RayTraceResult.Type.BLOCK && ItemStack.areItemsEqual(new ItemStack(event.getPlayer().worldObj.getBlockState(event.getTarget().getBlockPos()).getBlock()), Blocks.BLOCK_MISC_CRANK.getStack())))
@@ -315,10 +316,10 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
 
         crankTop = RotationHelper.rotateBB(crankTop, crankRotation).offset(pos);
 
-        if (mask != null && crankTop.intersectsWith(mask))
+        if (crankTop.intersectsWith(mask))
             list.add(crankTop);
 
-        if (mask != null && crankShaft.intersectsWith(mask))
+        if (crankShaft.intersectsWith(mask))
             list.add(crankShaft);
     }
 
@@ -356,6 +357,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
         return true;
     }
 
+    @SideOnly(Side.CLIENT)
     private void addMaskedDestroyEffects(BlockPos pos, ParticleManager manager, int stateID, Vec3d vec, AxisAlignedBB... masks) {
 
         for (AxisAlignedBB mask : masks) {

@@ -120,8 +120,10 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
                 )
             return false;
 
-        if (worldIn.isRemote)
-            return true;
+        if (!worldIn.isRemote) {
+            worldIn.addBlockEvent(pos, this, EnumEventTypes.PLAN_SLOT_UPDATE.ordinal(), 0);
+            playerIn.openGui(AppliedLogistics.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
+        }
 
         worldIn.addBlockEvent(pos, this, EnumEventTypes.PLAN_SLOT_UPDATE.ordinal(), 0);
 
@@ -161,20 +163,13 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
         return getMetaFromState(state);
     }
 
-//    @Override
-//    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
-//        for (int i = 0; i < TechLevel.values().length; i++) {
-//            list.add(new ItemStack(itemIn, 1, i));
-//        }
-//    }
-
     @Override
     public void RegisterRecipes() {
         GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(this, 1, 0),
                 "cwc",
                 "wgw",
                 "cxc",
-                'c', OreDictionary.getOres("craftingTableWood").size() == 0 ? new ItemStack(net.minecraft.init.Blocks.CRAFTING_TABLE) : "craftingTableWood",
+                'c', OreDictionary.getOres("craftingTableWood").isEmpty() ? new ItemStack(net.minecraft.init.Blocks.CRAFTING_TABLE) : "craftingTableWood",
                 'w', "logWood",
                 'g', "gearStone",
                 'x', "chestWood"

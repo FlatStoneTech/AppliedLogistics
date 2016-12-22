@@ -29,17 +29,16 @@ public class ParticleCauldronFlame extends ParticleFlame {
         float f3 = f2 + 0.0624375F;
         float f4 = 0.1F * particleScale;
 
-        if (particleTexture != null)
-        {
+        if (particleTexture != null) {
             f = particleTexture.getMinU();
             f1 = particleTexture.getMaxU();
             f2 = particleTexture.getMinV();
             f3 = particleTexture.getMaxV();
         }
 
-        float f5 = (float)(prevPosX + (posX - prevPosX) * partialTicks - interpPosX);
-        float f6 = (float)(prevPosY + (posY - prevPosY) * partialTicks - interpPosY);
-        float f7 = (float)(prevPosZ + (posZ - prevPosZ) * partialTicks - interpPosZ);
+        float f5 = (float) (prevPosX + (posX - prevPosX) * partialTicks - interpPosX);
+        float f6 = (float) (prevPosY + (posY - prevPosY) * partialTicks - interpPosY);
+        float f7 = (float) (prevPosZ + (posZ - prevPosZ) * partialTicks - interpPosZ);
         int i = getBrightnessForRender(partialTicks);
         int j = i >> 16 & 65535;
         int k = i & 65535;
@@ -52,7 +51,7 @@ public class ParticleCauldronFlame extends ParticleFlame {
     @SideOnly(Side.CLIENT)
     public static class Factory implements IParticleFactory {
         @Override
-        public Particle getEntityFX(int particleID, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int... p_178902_15_) {
+        public Particle createParticle(int particleID, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int... p_178902_15_) {
             return new ParticleCauldronFlame(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
         }
     }

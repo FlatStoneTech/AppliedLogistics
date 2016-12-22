@@ -23,15 +23,51 @@ package tech.flatstone.appliedlogistics.api.registries.helpers;
 import net.minecraft.item.ItemStack;
 
 public class Crushable {
-    public ItemStack inItemStack;
-    public ItemStack outItemStack;
-    public float chance;
-    public float luckMultiplier;
+    private ItemStack inItemStack;
+    private ItemStack outItemStack;
+    private float chance;
+    private float luckMultiplier;
 
     public Crushable(ItemStack inItemStack, ItemStack outItemStack, float chance, float luckMultiplier) {
         this.inItemStack = inItemStack;
         this.outItemStack = outItemStack;
         this.chance = chance;
         this.luckMultiplier = luckMultiplier;
+    }
+
+    public ItemStack getInItemStack() {
+        return inItemStack;
+    }
+
+    public ItemStack setInItemStack(ItemStack inItemStack) {
+        this.inItemStack = inItemStack;
+        return this.inItemStack;
+    }
+
+    public ItemStack getOutItemStack() {
+        return outItemStack;
+    }
+
+    public ItemStack setOutItemStack(ItemStack outItemStack) {
+        this.outItemStack = outItemStack;
+        return this.outItemStack;
+    }
+
+    public float getChance() {
+        return chance;
+    }
+
+    public float setChance(float chance) {
+        this.chance = chance;
+        return this.chance;
+    }
+
+    public float getLuckMultiplier() {
+        return luckMultiplier;
+    }
+
+    public float setLuckMultiplier(float luckMultiplier) {
+        this.luckMultiplier = luckMultiplier;
+        return this.luckMultiplier;
     }
 }

@@ -37,6 +37,7 @@ import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
 import tech.flatstone.appliedlogistics.api.exceptions.OutdatedJavaException;
 import tech.flatstone.appliedlogistics.common.config.Config;
+import tech.flatstone.appliedlogistics.common.grid.TransportGrid;
 import tech.flatstone.appliedlogistics.common.integrations.IntegrationsManager;
 import tech.flatstone.appliedlogistics.common.network.PacketHandler;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
@@ -51,12 +52,14 @@ public class AppliedLogistics {
     @Mod.Instance(ModInfo.MOD_ID)
     public static AppliedLogistics instance;
     @SidedProxy(clientSide = ModInfo.CLIENT_PROXY_CLASS, serverSide = ModInfo.SERVER_PROXY_CLASS)
-    public static IProxy proxy;
+    private static IProxy proxy;
     public static Configuration configuration;
 
     static {
         FluidRegistry.enableUniversalBucket();
     }
+
+    public TransportGrid transportGrid;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -118,6 +121,8 @@ public class AppliedLogistics {
 
         MinecraftForge.EVENT_BUS.register(this);
 
+        transportGrid = new TransportGrid();
+
         // Init Integrations
         IntegrationsManager.instance().init();
 
@@ -132,9 +137,9 @@ public class AppliedLogistics {
         IntegrationsManager.instance().postInit();
 
         Map<String, Fluid> fluids = FluidRegistry.getRegisteredFluids();
-        for (String key : fluids.keySet()) {
-            Fluid fluid = fluids.get(key);
-            LogHelper.internal(">>> Fluid Name: " + key + " (" + fluid.getUnlocalizedName() + ")");
+        for (Map.Entry<String, Fluid> key : fluids.entrySet()) {
+            Fluid fluid = key.getValue();
+            LogHelper.info(">>> Fluid Name: " + key + " (" + fluid.getUnlocalizedName() + ")");
         }
 
         LogHelper.info("Post Initialization (Ended after " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + "ms)");

@@ -70,12 +70,6 @@ class GridServer implements Runnable {
         activeCargo = new LinkedList<>();
         outgoingCargo = new ConcurrentHashMap<>();
 
-        if (vertexIngestQueue == null)
-            throw new NullPointerException();
-
-        if (edgeIngestQueue == null)
-            throw new NullPointerException();
-
         barrier = new CyclicBarrier(2);
 
         vertexCache = new ArrayList<>();
@@ -85,8 +79,8 @@ class GridServer implements Runnable {
 
     }
 
-    void addCargo(TransportContainer objectContainer) {
-        this.incomingCargo.offer(objectContainer);
+    boolean addCargo(TransportContainer objectContainer) {
+        return this.incomingCargo.offer(objectContainer);
     }
 
     TransportContainer getCargo(UUID exitNode) {
@@ -103,31 +97,26 @@ class GridServer implements Runnable {
             try {
                 barrier.await();
             } catch (InterruptedException | BrokenBarrierException e) {
-                LogHelper.fatal(e.getLocalizedMessage());
+                LogHelper.fatal(e);
                 return;
             }
 
             //step the transport simulation
             if (doTick.get())
                 this.gridTick();
-            else {
-                try {
-                    Thread.sleep(60);
-                } catch (InterruptedException e) {
-                    LogHelper.error(e.getLocalizedMessage());
-                }
-            }
+
         }
     }
 
     /**
      * this method is called from the games main server thread in the server tick handler
      */
-    public void sync() {
+    void sync() throws BrokenBarrierException, InterruptedException {
         try {
             barrier.await();
         } catch (InterruptedException | BrokenBarrierException e) {
-            LogHelper.fatal(e.getLocalizedMessage());
+            LogHelper.fatal(e);
+            throw e;
         }
     }
 
@@ -264,7 +253,7 @@ class GridServer implements Runnable {
     }
 
     boolean removeEdge(UUID source, UUID destination) {
-        return ((source != null) && (destination != null) && edgeEliminationQueue.offer(new UUIDPair(source, destination)));
+        return (source != null && (destination != null) && edgeEliminationQueue.offer(new UUIDPair(source, destination)));
     }
 
     boolean markEdgeExit(UUID source, UUID destination) {
@@ -280,11 +269,8 @@ class GridServer implements Runnable {
         try {
             barrier.await(500, MILLISECONDS);
             running.set(false);
-        } catch (InterruptedException | TimeoutException e) {
-            LogHelper.fatal(e.getLocalizedMessage());
-            throw e;
-        } catch (BrokenBarrierException e) {
-            LogHelper.fatal((e.getLocalizedMessage()));
+        } catch (InterruptedException | TimeoutException | BrokenBarrierException e) {
+            LogHelper.fatal(e);
             throw e;
         }
     }

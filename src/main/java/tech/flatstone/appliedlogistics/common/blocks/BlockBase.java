@@ -20,11 +20,8 @@
 
 package tech.flatstone.appliedlogistics.common.blocks;
 
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
@@ -61,11 +58,16 @@ public abstract class BlockBase extends Block implements IBlockRenderer {
     protected BlockBase(Material material, String resourcePath) {
         super(material);
 
-        //setStepSound(SoundType.STONE);
         setHardness(2.2F);
         setResistance(5.0F);
         setHarvestLevel("pickaxe", 0);
         this.resourcePath = resourcePath;
+    }
+
+    private static boolean canFallThrough(IBlockState blockState) {
+        Block block = blockState.getBlock();
+        Material material = blockState.getMaterial();
+        return block == net.minecraft.init.Blocks.FIRE || material == Material.AIR || material == Material.WATER || material == Material.LAVA;
     }
 
     @Override
@@ -96,12 +98,12 @@ public abstract class BlockBase extends Block implements IBlockRenderer {
         if (!hasGravity(worldIn, pos))
             return;
 
-        if ((worldIn.isAirBlock(pos.down()) || func_185759_i(worldIn.getBlockState(pos.down()))) && pos.getY() >= 0) {
+        if ((worldIn.isAirBlock(pos.down()) || canFallThrough(worldIn.getBlockState(pos.down()))) && pos.getY() >= 0) {
             int i = 32;
 
             if (!fallInstantly && worldIn.isAreaLoaded(pos.add(-i, -i, -i), pos.add(i, i, i))) {
                 if (!worldIn.isRemote) {
-                    EntityFallingBlock entityfallingblock = new EntityFallingBlock(worldIn, (double)pos.getX() + 0.5D, (double)pos.getY(), (double)pos.getZ() + 0.5D, worldIn.getBlockState(pos));
+                    EntityFallingBlock entityfallingblock = new EntityFallingBlock(worldIn, (double) pos.getX() + 0.5D, (double) pos.getY(), (double) pos.getZ() + 0.5D, worldIn.getBlockState(pos));
                     this.onStartFalling(entityfallingblock);
                     worldIn.spawnEntityInWorld(entityfallingblock);
                 }
@@ -109,7 +111,7 @@ public abstract class BlockBase extends Block implements IBlockRenderer {
                 worldIn.setBlockToAir(pos);
                 BlockPos blockpos;
 
-                for (blockpos = pos.down(); (worldIn.isAirBlock(blockpos) || func_185759_i(worldIn.getBlockState(blockpos))) && blockpos.getY() > 0; blockpos = blockpos.down()) {
+                for (blockpos = pos.down(); (worldIn.isAirBlock(blockpos) || canFallThrough(worldIn.getBlockState(blockpos))) && blockpos.getY() > 0; blockpos = blockpos.down()) {
                     ;
                 }
 
@@ -118,12 +120,6 @@ public abstract class BlockBase extends Block implements IBlockRenderer {
                 }
             }
         }
-    }
-
-    public static boolean func_185759_i(IBlockState p_185759_0_) {
-        Block block = p_185759_0_.getBlock();
-        Material material = p_185759_0_.getMaterial();
-        return block == net.minecraft.init.Blocks.FIRE || material == Material.AIR || material == Material.WATER || material == Material.LAVA;
     }
 
     protected void onStartFalling(EntityFallingBlock fallingEntity) {
@@ -154,7 +150,7 @@ public abstract class BlockBase extends Block implements IBlockRenderer {
     }
 
     private String getUnwrappedUnlocalizedName(String unlocalizedName) {
-        return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
+        return unlocalizedName.substring(unlocalizedName.indexOf('.') + 1);
     }
 
     @Override
@@ -221,15 +217,15 @@ public abstract class BlockBase extends Block implements IBlockRenderer {
         PacketHandler.INSTANCE.sendToAllAround(new PacketBlockRotated(pos), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 100));
     }
 
-    protected boolean hasCustomRotation() {
+    private boolean hasCustomRotation() {
         return false;
     }
 
-    protected void customRotateBlock(final IOrientable rotatable, final EnumFacing axis) {
+    private void customRotateBlock(final IOrientable rotatable, final EnumFacing axis) {
 
     }
 
-    public boolean isValidOrientation(final World world, final BlockPos pos, final EnumFacing forward) {
+    private boolean isValidOrientation(final World world, final BlockPos pos, final EnumFacing forward) {
         return true;
     }
 

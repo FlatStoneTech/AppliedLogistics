@@ -21,6 +21,7 @@
 package tech.flatstone.appliedlogistics.api;
 
 import tech.flatstone.appliedlogistics.api.exceptions.CoreInaccessibleException;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.lang.reflect.Field;
 
@@ -30,6 +31,7 @@ public enum AppliedLogisticsApi {
     private static final String CORE_API_FQN = "tech.flatstone.appliedlogistics.common.core.Api";
     private static final String CORE_API_FIELD = "INSTANCE";
     private static final IAppliedLogisticsApi HELD_API;
+    private static final String MESG_START = "Applied Logistics API tried to access the ";
 
     static {
         try {
@@ -38,11 +40,14 @@ public enum AppliedLogisticsApi {
 
             HELD_API = (IAppliedLogisticsApi) apiField.get(apiClass);
         } catch (ClassNotFoundException ex) {
-            throw new CoreInaccessibleException("Applied Logistics API tried to access the " + CORE_API_FQN + " class, without it being declared");
+            LogHelper.error(ex);
+            throw new CoreInaccessibleException(MESG_START + CORE_API_FQN + " class, without it being declared");
         } catch (NoSuchFieldException ex) {
-            throw new CoreInaccessibleException("Applied Logistics API tried to access the " + CORE_API_FIELD + " field in " + CORE_API_FQN + " without it being declared");
+            LogHelper.error(ex);
+            throw new CoreInaccessibleException(MESG_START + CORE_API_FIELD + " field in " + CORE_API_FQN + " without it being declared");
         } catch (IllegalAccessException ex) {
-            throw new CoreInaccessibleException("Applied Logistics API tried to access the " + CORE_API_FIELD + " field in " + CORE_API_FQN + " without enough access permissions");
+            LogHelper.error(ex);
+            throw new CoreInaccessibleException(MESG_START + CORE_API_FIELD + " field in " + CORE_API_FQN + " without enough access permissions");
         }
     }
 
