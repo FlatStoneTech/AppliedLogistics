@@ -206,7 +206,7 @@ public class GuiHelper extends GuiScreen {
     }
 
     public void drawPlayerHead(int x, int y) {
-        ResourceLocation playerSkin = Minecraft.getMinecraft().thePlayer.getLocationSkin();
+        ResourceLocation playerSkin = Minecraft.getMinecraft().player.getLocationSkin();
         mc.getTextureManager().bindTexture(playerSkin);
 
         int[][] savedGLState = OpenGLHelper.saveGLState(new int[]{GL11.GL_ALPHA_TEST, GL11.GL_LIGHTING});

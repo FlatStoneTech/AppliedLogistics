@@ -98,7 +98,7 @@ public abstract class GuiBase extends GuiContainer {
     protected Slot getSlot(int mouseX, int mouseY) {
         for (int j1 = 0; j1 < this.inventorySlots.inventorySlots.size(); j1++) {
             Slot slot = this.inventorySlots.inventorySlots.get(j1);
-            if (isPointInRegion(slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY)) {
+            if (isPointInRegion(slot.xPos, slot.yPos, 16, 16, mouseX, mouseY)) {
                 return slot;
             }
         }
@@ -124,7 +124,7 @@ public abstract class GuiBase extends GuiContainer {
         if (itemStack.getItemDamage() == Short.MAX_VALUE)
             displayStack.setItemDamage(0);
 
-        guiHelper.drawItemStack(displayStack, slot.xDisplayPosition + guiLeft, slot.yDisplayPosition + guiTop, this.itemRender, true);
+        guiHelper.drawItemStack(displayStack, slot.xPos + guiLeft, slot.yPos + guiTop, this.itemRender, true);
     }
 
     protected void drawIcon(Slot slot, ItemStack itemStack) {
@@ -132,11 +132,11 @@ public abstract class GuiBase extends GuiContainer {
         if (itemStack.getItemDamage() == Short.MAX_VALUE)
             displayStack.setItemDamage(0);
 
-        guiHelper.drawItemStack(itemStack, slot.xDisplayPosition + guiLeft, slot.yDisplayPosition + guiTop, this.itemRender, false);
+        guiHelper.drawItemStack(itemStack, slot.xPos + guiLeft, slot.yPos + guiTop, this.itemRender, false);
     }
 
     protected void drawOverlayIcon(Slot slot, EnumIcons icon) {
-        guiHelper.drawIcon("textures/icons/" + icon.getFileName(), slot.xDisplayPosition + guiLeft, slot.yDisplayPosition + guiTop, icon.getWidth(), icon.getHeight(), 0.5f);
+        guiHelper.drawIcon("textures/icons/" + icon.getFileName(), slot.xPos + guiLeft, slot.yPos + guiTop, icon.getWidth(), icon.getHeight(), 0.5f);
 
     }
 
@@ -148,7 +148,7 @@ public abstract class GuiBase extends GuiContainer {
         ItemStack stack = materials.getSlotMaterials().get(0);
         FontRenderer font = stack.getItem().getFontRenderer(stack) == null ? fontRendererObj : stack.getItem().getFontRenderer(stack);
 
-        java.util.List<String> list = stack.getTooltip(this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips);
+        java.util.List<String> list = stack.getTooltip(this.mc.player, this.mc.gameSettings.advancedItemTooltips);
 
         for (int i = 0; i < list.size(); ++i) {
             if (i != 0) {

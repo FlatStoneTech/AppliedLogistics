@@ -20,6 +20,7 @@
 
 package tech.flatstone.appliedlogistics.common.tileentities;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import tech.flatstone.appliedlogistics.common.items.Items;
@@ -29,6 +30,16 @@ public abstract class TileEntityMachineBase extends TileEntityInventoryBase {
     private boolean sidedEnabled = false;
     private boolean craftingEnabled = false;
     private boolean redstoneEnabled = false;
+
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
+    public boolean isUsableByPlayer(EntityPlayer player) {
+        return false;
+    }
 
     @Override
     public void initMachineData() {
@@ -45,7 +56,7 @@ public abstract class TileEntityMachineBase extends TileEntityInventoryBase {
 
         for (int i = 0; i < 27; i++) {
             if (machineItemData.hasKey("item_" + i)) {
-                ItemStack item = ItemStack.loadItemStackFromNBT(machineItemData.getCompoundTag("item_" + i));
+                ItemStack item = new ItemStack(machineItemData.getCompoundTag("item_" + i));
 
                 if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_KIT_REDSTONE_OUTPUT.getItem())))
                     comparatorEnabled = true;

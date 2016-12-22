@@ -200,7 +200,7 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
                 GlStateManager.disableTexture2D();
                 GlStateManager.depthMask(false);
                 GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-                
+
                 double partialTicks = event.getPartialTicks();
                 double d0 = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
                 double d1 = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks;

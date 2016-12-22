@@ -20,8 +20,6 @@
 
 package tech.flatstone.appliedlogistics.common.tileentities.machines;
 
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -31,7 +29,6 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.api.registries.PulverizerRegistry;
 import tech.flatstone.appliedlogistics.api.registries.helpers.Crushable;
-import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaBodyMessage;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
@@ -43,7 +40,7 @@ import tech.flatstone.appliedlogistics.common.util.RandomHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityPulverizer extends TileEntityMachineBase implements ITickable, IWailaBodyMessage, ICrankable {
+public class TileEntityPulverizer extends TileEntityMachineBase implements ITickable, ICrankable {
     private InternalInventory inventory = new InternalInventory(this, 11);
     private float speedMultiplier = 0.0f;
     private float fortuneMultiplier = 0.0f;
@@ -75,13 +72,13 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
         if (machineItemData != null) {
             for (int i = 0; i < 27; i++) {
                 if (machineItemData.hasKey("item_" + i)) {
-                    ItemStack item = ItemStack.loadItemStackFromNBT(machineItemData.getCompoundTag("item_" + i));
+                    ItemStack item = new ItemStack(machineItemData.getCompoundTag("item_" + i));
 
 //                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.WOOD.getMeta())))
-//                        speedMultiplier = 1.5f * item.stackSize;
+//                        speedMultiplier = 1.5f * item.getCount();
 //
 //                    if (ItemStack.areItemsEqual(item, new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, EnumOres.COBBLESTONE.getMeta())))
-//                        fortuneMultiplier = 0.8f * item.stackSize;
+//                        fortuneMultiplier = 0.8f * item.getCount();
                 }
             }
         }
@@ -173,18 +170,18 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
             if (!PulverizerRegistry.containsBlock(itemIn))
                 return;
 
-            if (itemIn.stackSize - maxProcessCount <= 0) {
+            if (itemIn.getCount() - maxProcessCount <= 0) {
                 itemOut = itemIn.copy();
                 itemIn = null;
             } else {
                 itemOut = itemIn.copy();
 
-                itemOut.stackSize = maxProcessCount;
-                itemIn.stackSize = itemIn.stackSize - maxProcessCount;
+                itemOut.setCount(maxProcessCount);
+                itemIn.shrink(maxProcessCount);
             }
 
-            if (itemIn != null && itemIn.stackSize == 0) itemIn = null;
-            if (itemOut.stackSize == 0) itemOut = null;
+            if (itemIn != null && itemIn.getCount() == 0) itemIn = null;
+            if (itemOut.getCount() == 0) itemOut = null;
 
             inventory.setInventorySlotContents(0, itemIn);
             inventory.setInventorySlotContents(1, itemOut);
@@ -204,7 +201,7 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
             ticksRemaining = 0;
             // Machine Done...
 
-            if (worldObj.isRemote)
+            if (this.getWorld().isRemote)
                 return;
 
             ItemStack processItem = inventory.getStackInSlot(1);
@@ -230,8 +227,8 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
                     this.randomItemCount = RandomHelper.CalculatePulverizer(itemChance, fortuneMultiplier);
                 }
 
-                outItem.stackSize = this.randomItemCount;
-                if (outItem.stackSize == 0) outItem = null;
+                outItem.setCount(this.randomItemCount);
+                if (outItem.getCount() == 0) outItem = null;
 
                 // Simulate placing into output slot...
                 if (InventoryHelper.addItemStackToInventory(outItem, inventory, 2, 10, true) != null) {
@@ -274,22 +271,22 @@ public class TileEntityPulverizer extends TileEntityMachineBase implements ITick
         return 200;
     }
 
-    @Override
-    public List<String> getWailaBodyToolTip(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        if (ticksRemaining == 0)
-            return currentTip;
-
-        float timePercent = ((((float) getTotalProcessTime() - (float) ticksRemaining) / (float) getTotalProcessTime())) * 100;
-        int secondsLeft = (ticksRemaining / 20) * 1000;
-
-        currentTip.add(String.format("%s: %s (%d%%)",
-                LanguageHelper.LABEL.translateMessage("time_left"),
-                DurationFormatUtils.formatDuration(secondsLeft, "mm:ss"),
-                Math.round(timePercent)
-        ));
-
-        return currentTip;
-    }
+//    @Override
+//    public List<String> getWailaBodyToolTip(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+//        if (ticksRemaining == 0)
+//            return currentTip;
+//
+//        float timePercent = ((((float) getTotalProcessTime() - (float) ticksRemaining) / (float) getTotalProcessTime())) * 100;
+//        int secondsLeft = (ticksRemaining / 20) * 1000;
+//
+//        currentTip.add(String.format("%s: %s (%d%%)",
+//                LanguageHelper.LABEL.translateMessage("time_left"),
+//                DurationFormatUtils.formatDuration(secondsLeft, "mm:ss"),
+//                Math.round(timePercent)
+//        ));
+//
+//        return currentTip;
+//    }
 
     /**
      * slot 0 = item to pulverize

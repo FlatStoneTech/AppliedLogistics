@@ -13,6 +13,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fluids.BlockFluidClassic;
@@ -22,6 +23,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 
+import javax.annotation.Nonnull;
 import java.util.Random;
 
 public class BlockFluidBase extends BlockFluidClassic implements IBlockRenderer {
@@ -103,10 +105,9 @@ public class BlockFluidBase extends BlockFluidClassic implements IBlockRenderer 
     }
 
     @Override
-    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock) {
-        super.neighborChanged(state, world, pos, neighborBlock);
-
-        this.checkForMixing(world, pos, state);
+    public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {
+        super.onNeighborChange(world, pos, neighbor);
+        this.checkForMixing((World)world, pos, world.getBlockState(pos));
     }
 
     private boolean isSurroundingBlockFlammable(World worldIn, BlockPos pos) {

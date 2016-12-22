@@ -72,7 +72,7 @@ public class InternalDynamicInventory implements IInventory, Iterable<ItemStack>
             ItemStack split = this.getStackInSlot(slot);
             ItemStack newStack;
 
-            if (qty >= split.stackSize) {
+            if (qty >= split.getCount()) {
                 newStack = this.inventory.get(slot);
                 this.inventory.set(slot, null);
             } else {

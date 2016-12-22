@@ -37,13 +37,13 @@ configurations {
 dependencies {
     // installable
     //mods "net.darkhax.wawla:Wawla:1.10.2-2.3.0.203"
-    mods "com.fireball1725.devworld:devworld:1.10-b14-client"
-    mods "cpw.mods:inventorysorter:1.10-0.10.0+42"
+    mods "com.fireball1725.devworld:devworld:1.11-b15-client"
+    //mods "cpw.mods:inventorysorter:1.10-0.10.0+42"
 
     // provided apis
-    compile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
+    //compile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
     compile "org.jgrapht:jgrapht-core:0.9.1"
-    compile "mezz.jei:jei_1.10.2:3.13.6.389"
+    compile "mezz.jei:jei_1.11:4.1.1.207"
 
     // test
     testCompile 'junit:junit:4.12'

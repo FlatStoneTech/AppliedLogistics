@@ -112,8 +112,8 @@ public class WorldGen implements IWorldGenerator {
 
         NBTTagCompound tag = event.getData().getCompoundTag("AppliedLogistics");
         if ((!tag.hasKey("DEFAULT")) || retroGenRequired(tag)) {
-            LogHelper.info("Chunk " + event.getChunk().getChunkCoordIntPair() + " has been flagged for Ore RetroGen by Applied Logistics");
-            retrogenChunks.put(dimID, new ChunkInfo(event.getChunk().getChunkCoordIntPair(), tag));
+            LogHelper.info("Chunk " + event.getChunk().getPos() + " has been flagged for Ore RetroGen by Applied Logistics");
+            retrogenChunks.put(dimID, new ChunkInfo(event.getChunk().getPos(), tag));
         }
     }
 

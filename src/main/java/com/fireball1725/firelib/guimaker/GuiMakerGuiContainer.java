@@ -176,7 +176,7 @@ public class GuiMakerGuiContainer extends GuiContainer {
 
                     Rectangle r = new Rectangle(w, h);
                     if (r.contains(mouseX - x, mouseY - y)) {
-                        guiMaker.setServerGuiTab(tabNumber, Minecraft.getMinecraft().thePlayer);
+                        guiMaker.setServerGuiTab(tabNumber, Minecraft.getMinecraft().player);
                         Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                         this.initGui();
                     }

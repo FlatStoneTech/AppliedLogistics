@@ -1,7 +1,5 @@
 package tech.flatstone.appliedlogistics.common.tileentities.machines;
 
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -11,7 +9,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
-import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaBodyMessage;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
@@ -21,7 +18,7 @@ import tech.flatstone.appliedlogistics.common.util.InventoryHelper;
 
 import java.util.List;
 
-public class TileEntityFurnace extends TileEntityMachineBase implements ITickable, IWailaBodyMessage {
+public class TileEntityFurnace extends TileEntityMachineBase implements ITickable {
     public static final float HIGHEST_MAX_TEMP = 380;
     public static final float LOWEST_MAX_TEMP = 23;
 
@@ -83,13 +80,13 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
         if (machineItemData != null) {
             for (int i = 0; i < 27; i++) {
                 if (machineItemData.hasKey("item_" + i)) {
-                    ItemStack item = ItemStack.loadItemStackFromNBT(machineItemData.getCompoundTag("item_" + i));
+                    ItemStack item = new ItemStack(machineItemData.getCompoundTag("item_" + i));
 
                     if (ItemStack.areItemsEqual(item, Items.ITEM_MATERIAL_GEAR.getStack(1, EnumOres.IRON.getMeta())))
-                        gearCount = item.stackSize;
+                        gearCount = item.getCount();
 
                     if (ItemStack.areItemsEqual(item, new ItemStack(Blocks.FURNACE)))
-                        furnaceCount = item.stackSize;
+                        furnaceCount = item.getCount();
 
                     if (ItemStack.areItemsEqual(item, new ItemStack(Blocks.CHEST)))
                         upgradeExtraSlots = true;
@@ -176,7 +173,7 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
                     if (FurnaceRecipes.instance().getSmeltingResult(processItem.copy()) == null)
                         continue;
                     ItemStack outputStack = FurnaceRecipes.instance().getSmeltingResult(processItem.copy()).copy();
-                    outputStack.stackSize = processItem.stackSize * outputStack.stackSize;
+                    outputStack.setCount(processItem.getCount() * outputStack.getCount());
                     int slotsToCheck = upgradeExtraSlots ? 4 : 1;
                     int slotMin = i * 7 + 3 + 1;
                     int slotMax = i * 7 + 3 + slotsToCheck;
@@ -229,10 +226,10 @@ public class TileEntityFurnace extends TileEntityMachineBase implements ITickabl
         return itemstack != null;
     }
 
-    @Override
-    public List<String> getWailaBodyToolTip(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        return currentTip;
-    }
+//    @Override
+//    public List<String> getWailaBodyToolTip(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+//        return currentTip;
+//    }
 
     @Override
     public IInventory getInternalInventory() {

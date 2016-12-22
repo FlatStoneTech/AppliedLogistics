@@ -67,13 +67,14 @@ public abstract class BlockTechBase extends BlockTileBase implements IBlockRende
         }
     }
 
-    @Override
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
-        if (techLevels.length == 0)
-            super.getSubBlocks(itemIn, tab, list);
-
-        for (TechLevel techLevel : techLevels) {
-            list.add(new ItemStack(this, 1, techLevel.getMeta()));
-        }
-    }
+    //todo: 1.11
+//    @Override
+//    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
+//        if (techLevels.length == 0)
+//            super.getSubBlocks(itemIn, tab, list);
+//
+//        for (TechLevel techLevel : techLevels) {
+//            list.add(new ItemStack(this, 1, techLevel.getMeta()));
+//        }
+//    }
 }

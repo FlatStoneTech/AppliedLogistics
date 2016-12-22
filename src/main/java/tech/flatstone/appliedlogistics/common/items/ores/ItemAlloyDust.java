@@ -41,14 +41,15 @@ public class ItemAlloyDust extends ItemBase {
         this.setInternalName("alloy_dust");
     }
 
-    @Override
-    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
-        for (int i = 0; i < EnumAlloys.values().length; i++) {
-            if (EnumAlloys.byMeta(i).isTypeSet(EnumOreType.DUST)) {
-                subItems.add(new ItemStack(this, 1, i));
-            }
-        }
-    }
+//todo 1.11
+//    @Override
+//    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+//        for (int i = 0; i < EnumAlloys.values().length; i++) {
+//            if (EnumAlloys.byMeta(i).isTypeSet(EnumOreType.DUST)) {
+//                subItems.add(new ItemStack(this, 1, i));
+//            }
+//        }
+//    }
 
     @Override
     public int getMetadata(int damage) {
@@ -62,12 +63,13 @@ public class ItemAlloyDust extends ItemBase {
         return name + "." + oreName;
     }
 
-    @Override
-    public void registerItemRenderer() {
-        for (int i = 0; i < EnumAlloys.values().length; i++) {
-            if (EnumAlloys.byMeta(i).isTypeSet(EnumOreType.DUST)) {
-                ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(ModInfo.MOD_ID + ":ores/dust-" + EnumAlloys.byMeta(i).getUnlocalizedName(), "inventory"));
-            }
-        }
-    }
+    //todo: also 1.11
+//    @Override
+//    public void registerItemRenderer() {
+//        for (int i = 0; i < EnumAlloys.values().length; i++) {
+//            if (EnumAlloys.byMeta(i).isTypeSet(EnumOreType.DUST)) {
+//                ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(ModInfo.MOD_ID + ":ores/dust-" + EnumAlloys.byMeta(i).getUnlocalizedName(), "inventory"));
+//            }
+//        }
+//    }
 }

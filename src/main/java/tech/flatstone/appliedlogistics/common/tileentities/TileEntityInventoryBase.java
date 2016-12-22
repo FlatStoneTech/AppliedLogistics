@@ -46,7 +46,7 @@ public abstract class TileEntityInventoryBase extends TileEntityBase implements 
             NBTTagCompound tagCompound = nbtTagCompound.getCompoundTag("Items");
             for (int i = 0; i < inventory.getSizeInventory(); i++) {
                 NBTTagCompound item = tagCompound.getCompoundTag("items" + i);
-                inventory.setInventorySlotContents(i, ItemStack.loadItemStackFromNBT(item));
+                inventory.setInventorySlotContents(i, new ItemStack(item));
             }
         }
     }
@@ -101,9 +101,9 @@ public abstract class TileEntityInventoryBase extends TileEntityBase implements 
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player) {
+    public boolean isUsableByPlayer(EntityPlayer player) {
         final double squaredMCReach = 64.0D;
-        return this.worldObj.getTileEntity(this.pos) == this && player.getDistanceSq(this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.getPos().getZ() + 0.5D) <= squaredMCReach;
+        return this.getWorld().getTileEntity(this.pos) == this && player.getDistanceSq(this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.getPos().getZ() + 0.5D) <= squaredMCReach;
     }
 
     @Override

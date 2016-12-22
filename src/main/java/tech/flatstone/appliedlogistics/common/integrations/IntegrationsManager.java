@@ -22,8 +22,6 @@ package tech.flatstone.appliedlogistics.common.integrations;
 
 import net.minecraftforge.fml.common.Loader;
 import tech.flatstone.appliedlogistics.IntegrationModIDs;
-import tech.flatstone.appliedlogistics.common.integrations.rftools.RFTools;
-import tech.flatstone.appliedlogistics.common.integrations.waila.Waila;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.util.ArrayList;
@@ -43,8 +41,8 @@ public class IntegrationsManager {
         Map<String, Class<? extends IIntegration>> integrationClasses = new HashMap<>();
 
         try {
-            integrationClasses.put(IntegrationModIDs.RFTOOLS, RFTools.class);
-            integrationClasses.put(IntegrationModIDs.WAILA, Waila.class);
+//            integrationClasses.put(IntegrationModIDs.RFTOOLS, RFTools.class);
+//            integrationClasses.put(IntegrationModIDs.WAILA, Waila.class);
         } catch (RuntimeException ex) {
             LogHelper.error(ex);
         }

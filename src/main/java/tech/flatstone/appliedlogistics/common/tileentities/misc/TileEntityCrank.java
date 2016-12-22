@@ -20,8 +20,6 @@
 
 package tech.flatstone.appliedlogistics.common.tileentities.misc;
 
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -29,7 +27,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCrank;
-import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaBodyMessage;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
 import tech.flatstone.appliedlogistics.common.util.EnumCrankMaterials;
 import tech.flatstone.appliedlogistics.common.util.ICrankable;
@@ -41,7 +38,7 @@ import java.util.Random;
 
 //todo: crank drops defualt item, not one with correct meta...
 
-public class TileEntityCrank extends TileEntityBase implements ITickable, IWailaBodyMessage {
+public class TileEntityCrank extends TileEntityBase implements ITickable {
     private int rotation = 0;
     private boolean rotating = false;
     private int badCrankCount = 0;
@@ -59,7 +56,7 @@ public class TileEntityCrank extends TileEntityBase implements ITickable, IWaila
             }
         }
 
-        if (badCrankCount > 0 && !worldObj.isRemote) {
+        if (badCrankCount > 0 && !this.getWorld().isRemote) {
             crankTickCounter--;
 
             if (crankTickCounter == -1) {
@@ -71,7 +68,7 @@ public class TileEntityCrank extends TileEntityBase implements ITickable, IWaila
     }
 
     public float getRotation() {
-        TileEntity tileEntity = TileHelper.getTileEntity(this.worldObj, this.pos.down(), TileEntity.class);
+        TileEntity tileEntity = TileHelper.getTileEntity(this.getWorld(), this.pos.down(), TileEntity.class);
         if (tileEntity != null && tileEntity instanceof IRotatable) {
             EnumFacing facing = ((IRotatable) tileEntity).getDirection();
             int offset = ((facing.getHorizontalIndex() + 1) * 90) + 90;
@@ -81,7 +78,7 @@ public class TileEntityCrank extends TileEntityBase implements ITickable, IWaila
     }
 
     public EnumFacing getCrankRotation() {
-        TileEntity tileEntity = TileHelper.getTileEntity(this.worldObj, this.pos.down(), TileEntity.class);
+        TileEntity tileEntity = TileHelper.getTileEntity(this.getWorld(), this.pos.down(), TileEntity.class);
         if (tileEntity != null && tileEntity instanceof IRotatable) {
             return ((IRotatable) tileEntity).getDirection();
         }
@@ -93,8 +90,8 @@ public class TileEntityCrank extends TileEntityBase implements ITickable, IWaila
     }
 
     public void crankDone() {
-        TileEntity tileEntity = TileHelper.getTileEntity(this.worldObj, this.pos.down(), TileEntity.class);
-        if (tileEntity != null && tileEntity instanceof ICrankable && !worldObj.isRemote)
+        TileEntity tileEntity = TileHelper.getTileEntity(this.getWorld(), this.pos.down(), TileEntity.class);
+        if (tileEntity != null && tileEntity instanceof ICrankable && !getWorld().isRemote)
             ((ICrankable) tileEntity).doCrank();
     }
 
@@ -112,21 +109,21 @@ public class TileEntityCrank extends TileEntityBase implements ITickable, IWaila
         if (rotating)
             return;
 
-        if (worldObj.isRemote)
+        if (this.getWorld().isRemote)
             return;
 
         Random rng = new Random();
         float randomFloat = rng.nextFloat();
         if (randomFloat <= 0.08 && this.getBlockMetadata() == EnumCrankMaterials.WOOD.getMeta()) { // todo: config Option for %
-            ((BlockCrank) this.worldObj.getBlockState(this.pos).getBlock()).breakCrank(this.worldObj, this.pos, false);
+            ((BlockCrank) this.getWorld().getBlockState(this.pos).getBlock()).breakCrank(this.getWorld(), this.pos, false);
             // drop random amount of sticks, between 3 and 5 sticks.
             Random random = new Random();
             ItemStack randomSticks = new ItemStack(Items.STICK, random.nextInt(2) + 3);
-            TileHelper.dropItemStack(randomSticks, this.worldObj, this.pos);
+            TileHelper.dropItemStack(randomSticks, this.getWorld(), this.pos);
             return;
         }
 
-        TileEntity tileEntity = TileHelper.getTileEntity(this.worldObj, this.pos.down(), TileEntity.class);
+        TileEntity tileEntity = TileHelper.getTileEntity(this.getWorld(), this.pos.down(), TileEntity.class);
         if (tileEntity != null && tileEntity instanceof ICrankable) {
             if (((ICrankable) tileEntity).canCrank()) {
                 rotating = true;
@@ -146,12 +143,12 @@ public class TileEntityCrank extends TileEntityBase implements ITickable, IWaila
                         break;
                     case WOOD:
                         if (badCrankCount == 6) { //todo: Config Option
-                            ((BlockCrank) this.worldObj.getBlockState(this.pos).getBlock()).breakCrank(this.worldObj, this.pos, false);
+                            ((BlockCrank) this.getWorld().getBlockState(this.pos).getBlock()).breakCrank(this.getWorld(), this.pos, false);
                             return;
                         }
                         break;
                     default:
-                        ((BlockCrank) this.worldObj.getBlockState(this.pos).getBlock()).breakCrank(this.worldObj, this.pos, false);
+                        ((BlockCrank) this.getWorld().getBlockState(this.pos).getBlock()).breakCrank(this.getWorld(), this.pos, false);
                         return;
                 }
 
@@ -182,13 +179,13 @@ public class TileEntityCrank extends TileEntityBase implements ITickable, IWaila
         this.crankTickCounter = nbtTagCompound.getInteger("crankTickCounter");
     }
 
-    @Override
-    public List<String> getWailaBodyToolTip(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        TileEntity tileEntity = TileHelper.getTileEntity(this.worldObj, this.pos.down(), TileEntity.class);
-
-        if (tileEntity != null && tileEntity instanceof IWailaBodyMessage)
-            return ((IWailaBodyMessage) tileEntity).getWailaBodyToolTip(itemStack, currentTip, accessor, config);
-
-        return currentTip;
-    }
+//    @Override
+//    public List<String> getWailaBodyToolTip(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+//        TileEntity tileEntity = TileHelper.getTileEntity(this.getWorld(), this.pos.down(), TileEntity.class);
+//
+//        if (tileEntity != null && tileEntity instanceof IWailaBodyMessage)
+//            return ((IWailaBodyMessage) tileEntity).getWailaBodyToolTip(itemStack, currentTip, accessor, config);
+//
+//        return currentTip;
+//    }
 }

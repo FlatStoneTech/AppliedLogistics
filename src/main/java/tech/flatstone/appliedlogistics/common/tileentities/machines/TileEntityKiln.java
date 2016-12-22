@@ -1,20 +1,17 @@
 package tech.flatstone.appliedlogistics.common.tileentities.machines;
 
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaBodyMessage;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
 
 import java.util.List;
 
-public class TileEntityKiln extends TileEntityMachineBase implements ITickable, IWailaBodyMessage {
+public class TileEntityKiln extends TileEntityMachineBase implements ITickable {
     private InternalInventory inventory = new InternalInventory(this, 100); //todo: lower slot count...
     private int fuelRemaining = 0;
     private int fuelTotal = 0;
@@ -47,10 +44,10 @@ public class TileEntityKiln extends TileEntityMachineBase implements ITickable, 
 
     }
 
-    @Override
-    public List<String> getWailaBodyToolTip(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        return currentTip;
-    }
+//    @Override
+//    public List<String> getWailaBodyToolTip(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+//        return currentTip;
+//    }
 
     @Override
     public IInventory getInternalInventory() {

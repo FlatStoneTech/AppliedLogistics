@@ -84,7 +84,7 @@ minecraft {
     replace "@APIFEATURE@", api_featureset
 
     runDir = "run"
-    mappings = "snapshot_20161111"
+    mappings = "snapshot_20161220"
 
     useDepAts = true
 }

@@ -20,8 +20,6 @@
 
 package tech.flatstone.appliedlogistics.common.tileentities;
 
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
@@ -34,7 +32,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.EnumSkyBlock;
-import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaHeadMessage;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.common.util.IOrientable;
 import tech.flatstone.appliedlogistics.common.util.IRotatable;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
@@ -42,7 +41,7 @@ import tech.flatstone.appliedlogistics.common.util.TileHelper;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOrientable, IRotatable {
+public class TileEntityBase extends TileEntity implements IOrientable, IRotatable {
     private String customName;
     private int renderedFragment = 0;
     private NBTTagCompound machineItemData;
@@ -60,11 +59,12 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
         return new SPacketUpdateTileEntity(pos, 0, getUpdateTag());
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void onDataPacket(NetworkManager networkManager, SPacketUpdateTileEntity s35PacketUpdateTileEntity) {
         super.onDataPacket(networkManager, s35PacketUpdateTileEntity);
         readFromNBT(s35PacketUpdateTileEntity.getNbtCompound());
-        worldObj.markBlockRangeForRenderUpdate(this.pos, this.pos);
+        this.getWorld().markBlockRangeForRenderUpdate(this.pos, this.pos);
         markForUpdate();
     }
 
@@ -75,30 +75,31 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
     public void markForUpdate() {
         if (this.renderedFragment > 0) {
             this.renderedFragment |= 0x1;
-        } else if (this.worldObj != null) {
-            Block block = worldObj.getBlockState(this.pos).getBlock();
+        } else if (this.getWorld() != null) {
+            Block block = this.getWorld().getBlockState(this.pos).getBlock();
             //todo: look at this, is it correct?
-            this.worldObj.notifyBlockUpdate(this.pos, worldObj.getBlockState(this.pos), worldObj.getBlockState(this.pos), 3);
+            this.getWorld().notifyBlockUpdate(this.pos, this.getWorld().getBlockState(this.pos), this.getWorld().getBlockState(this.pos), 3);
 
             int xCoord = this.pos.getX();
             int yCoord = this.pos.getY();
             int zCoord = this.pos.getZ();
 
-            this.worldObj.notifyBlockOfStateChange(new BlockPos(xCoord, yCoord - 1, zCoord), block);
-            this.worldObj.notifyBlockOfStateChange(new BlockPos(xCoord, yCoord + 1, zCoord), block);
-            this.worldObj.notifyBlockOfStateChange(new BlockPos(xCoord - 1, yCoord, zCoord), block);
-            this.worldObj.notifyBlockOfStateChange(new BlockPos(xCoord + 1, yCoord, zCoord), block);
-            this.worldObj.notifyBlockOfStateChange(new BlockPos(xCoord, yCoord - 1, zCoord - 1), block);
-            this.worldObj.notifyBlockOfStateChange(new BlockPos(xCoord, yCoord - 1, zCoord + 1), block);
+            // Todo: update detectors?
+            this.getWorld().notifyNeighborsOfStateChange(new BlockPos(xCoord, yCoord - 1, zCoord), block, false);
+            this.getWorld().notifyNeighborsOfStateChange(new BlockPos(xCoord, yCoord + 1, zCoord), block, false);
+            this.getWorld().notifyNeighborsOfStateChange(new BlockPos(xCoord - 1, yCoord, zCoord), block, false);
+            this.getWorld().notifyNeighborsOfStateChange(new BlockPos(xCoord + 1, yCoord, zCoord), block, false);
+            this.getWorld().notifyNeighborsOfStateChange(new BlockPos(xCoord, yCoord - 1, zCoord - 1), block, false);
+            this.getWorld().notifyNeighborsOfStateChange(new BlockPos(xCoord, yCoord - 1, zCoord + 1), block, false);
         }
     }
 
     public void markForLightUpdate() {
-        if (this.worldObj.isRemote) {
-            this.worldObj.notifyBlockUpdate(this.pos, worldObj.getBlockState(this.pos), worldObj.getBlockState(this.pos), 3);
+        if (this.getWorld().isRemote) {
+            this.getWorld().notifyBlockUpdate(this.pos, this.getWorld().getBlockState(this.pos), this.getWorld().getBlockState(this.pos), 3);
         }
 
-        this.worldObj.checkLightFor(EnumSkyBlock.BLOCK, this.pos);
+        this.getWorld().checkLightFor(EnumSkyBlock.BLOCK, this.pos);
     }
 
     public void onChunkLoad() {
@@ -131,7 +132,7 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
     }
 
     public String getUnlocalizedName() {
-        Item item = Item.getItemFromBlock(worldObj.getBlockState(this.pos).getBlock());
+        Item item = Item.getItemFromBlock(this.getWorld().getBlockState(this.pos).getBlock());
         ItemStack itemStack = new ItemStack(item, 1, getBlockMetadata());
 
         return itemStack.getUnlocalizedName() + ".name";
@@ -179,19 +180,19 @@ public class TileEntityBase extends TileEntity implements IWailaHeadMessage, IOr
     }
 
     public IBlockState getBlockState() {
-        if (worldObj == null)
+        if (this.getWorld() == null)
             return null;
 
-        return worldObj.getBlockState(pos);
+        return this.getWorld().getBlockState(pos);
     }
 
-    @Override
-    public List<String> getWailaHeadToolTip(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        if (customName != null)
-            currentTip.add(String.format("%s%s%s", TextFormatting.BLUE, TextFormatting.ITALIC, customName));
-
-        return currentTip;
-    }
+//    @Override
+//    public List<String> getWailaHeadToolTip(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+//        if (customName != null)
+//            currentTip.add(String.format("%s%s%s", TextFormatting.BLUE, TextFormatting.ITALIC, customName));
+//
+//        return currentTip;
+//    }
 
     @Override
     public boolean canBeRotated() {

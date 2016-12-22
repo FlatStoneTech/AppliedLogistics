@@ -20,8 +20,6 @@
 
 package tech.flatstone.appliedlogistics.common.tileentities.misc;
 
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,7 +32,6 @@ import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.api.features.plan.PlanSlot;
 import tech.flatstone.appliedlogistics.api.features.plan.SlotTechLevelProperties;
 import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
-import tech.flatstone.appliedlogistics.common.integrations.waila.IWailaBodyMessage;
 import tech.flatstone.appliedlogistics.common.items.ItemPlanBase;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
@@ -45,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class TileEntityBuilder extends TileEntityMachineBase implements ITickable, INetworkButton, IWailaBodyMessage, ICrankable {
+public class TileEntityBuilder extends TileEntityMachineBase implements ITickable, INetworkButton, ICrankable {
     private InternalInventory internalInventory = new InternalInventory(this, 56);
     private ItemStack planItem = null;
     private int currentTechLevel = -1;
@@ -123,7 +120,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
 
         if (nbtTagCompound.hasKey("outputItem")) {
             NBTTagCompound outputItemStack = nbtTagCompound.getCompoundTag("outputItem");
-            outputItem = ItemStack.loadItemStackFromNBT(outputItemStack);
+            outputItem = new ItemStack(outputItemStack);
         }
     }
 
@@ -161,33 +158,33 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
 
     }
 
-    @Override
-    public List<String> getWailaBodyToolTip(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        List<String> newTooltip = currentTip;
-
-        if (getPlanBase() == null || planItem == null)
-            return newTooltip;
-
-        newTooltip.add(String.format("%s: %s",
-                LanguageHelper.LABEL.translateMessage("plan"),
-                LanguageHelper.NONE.translateMessage(planItem.getUnlocalizedName() + ".name")
-        ));
-
-        if (ticksRemaining == 0)
-            return newTooltip;
-
-        float timePercent = (((float) this.ticksTotal - (float) this.ticksRemaining) / (float) this.ticksTotal) * 100;
-
-        int secondsLeft = (ticksRemaining / 20) * 1000;
-
-        newTooltip.add(String.format("%s: %s (%d%%)",
-                LanguageHelper.LABEL.translateMessage("time_left"),
-                DurationFormatUtils.formatDuration(secondsLeft, "mm:ss"),
-                Math.round(timePercent)
-        ));
-
-        return newTooltip;
-    }
+//    @Override
+//    public List<String> getWailaBodyToolTip(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+//        List<String> newTooltip = currentTip;
+//
+//        if (getPlanBase() == null || planItem == null)
+//            return newTooltip;
+//
+//        newTooltip.add(String.format("%s: %s",
+//                LanguageHelper.LABEL.translateMessage("plan"),
+//                LanguageHelper.NONE.translateMessage(planItem.getUnlocalizedName() + ".name")
+//        ));
+//
+//        if (ticksRemaining == 0)
+//            return newTooltip;
+//
+//        float timePercent = (((float) this.ticksTotal - (float) this.ticksRemaining) / (float) this.ticksTotal) * 100;
+//
+//        int secondsLeft = (ticksRemaining / 20) * 1000;
+//
+//        newTooltip.add(String.format("%s: %s (%d%%)",
+//                LanguageHelper.LABEL.translateMessage("time_left"),
+//                DurationFormatUtils.formatDuration(secondsLeft, "mm:ss"),
+//                Math.round(timePercent)
+//        ));
+//
+//        return newTooltip;
+//    }
 
     @Override
     public IInventory getInternalInventory() {
@@ -199,7 +196,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
         if (operation == InventoryOperation.markDirty)
             return;
 
-        if (this.worldObj == null)
+        if (this.getWorld() == null)
             return;
 
         if (slot == 0) { // Change in the input slot...
@@ -207,7 +204,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
             this.markDirty();
             this.markForUpdate();
 
-            this.worldObj.addBlockEvent(this.pos, this.blockType, EnumEventTypes.PLAN_SLOT_UPDATE.ordinal(), 0);
+            this.getWorld().addBlockEvent(this.pos, this.blockType, EnumEventTypes.PLAN_SLOT_UPDATE.ordinal(), 0);
 
             TileHelper.dropItems(this, 1, 27);
         }
@@ -262,7 +259,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
                 this.markDirty();
                 this.markForUpdate();
 
-                this.worldObj.addBlockEvent(this.pos, this.blockType, EnumEventTypes.PLAN_SLOT_UPDATE.ordinal(), 0);
+                this.getWorld().addBlockEvent(this.pos, this.blockType, EnumEventTypes.PLAN_SLOT_UPDATE.ordinal(), 0);
                 break;
             default:
                 break;
@@ -375,7 +372,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
                 return false;
 
 
-            if (itemInSlot != null && itemInSlot.stackSize < slotDetails.getSlotMaterialMinCount())
+            if (itemInSlot != null && itemInSlot.getCount() < slotDetails.getSlotMaterialMinCount())
                 return false;
         }
 
@@ -399,7 +396,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
             if (itemInSlot == null)
                 continue;
 
-            totalWeight += (slotDetails.getSlotMaterialWeight() * itemInSlot.stackSize);
+            totalWeight += (slotDetails.getSlotMaterialWeight() * itemInSlot.getCount());
         }
 
         return totalWeight;
@@ -419,7 +416,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
             if (itemInSlot == null)
                 continue;
 
-            totalTicks += (slotDetails.getSlotMaterialTimeToAdd() * itemInSlot.stackSize);
+            totalTicks += (slotDetails.getSlotMaterialTimeToAdd() * itemInSlot.getCount());
         }
 
         return totalTicks;

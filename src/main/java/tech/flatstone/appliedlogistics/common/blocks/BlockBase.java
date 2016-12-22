@@ -79,11 +79,11 @@ public abstract class BlockBase extends Block implements IBlockRenderer {
     }
 
     @Override
-    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn) {
-        if (hasGravity(worldIn, pos))
-            worldIn.scheduleUpdate(pos, this, 2);
+    public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {
+        if (hasGravity((World)world, pos))
+            ((World)world).scheduleUpdate(pos, this, 2);
 
-        super.neighborChanged(state, worldIn, pos, blockIn);
+        super.onNeighborChange(world, pos, neighbor);
     }
 
     @Override
@@ -105,7 +105,7 @@ public abstract class BlockBase extends Block implements IBlockRenderer {
                 if (!worldIn.isRemote) {
                     EntityFallingBlock entityfallingblock = new EntityFallingBlock(worldIn, (double) pos.getX() + 0.5D, (double) pos.getY(), (double) pos.getZ() + 0.5D, worldIn.getBlockState(pos));
                     this.onStartFalling(entityfallingblock);
-                    worldIn.spawnEntityInWorld(entityfallingblock);
+                    worldIn.spawnEntity(entityfallingblock);
                 }
             } else {
                 worldIn.setBlockToAir(pos);
@@ -240,30 +240,31 @@ public abstract class BlockBase extends Block implements IBlockRenderer {
         return new EnumFacing[0];
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void registerBlockRenderer() {
-        final String resourcePath = String.format("%s:%s", ModInfo.MOD_ID, this.resourcePath);
-
-        ModelLoader.setCustomStateMapper(this, new DefaultStateMapper() {
-            @Override
-            protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
-                return new ModelResourceLocation(resourcePath, getPropertyString(state.getProperties()));
-            }
-        });
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void registerBlockItemRenderer() {
-        final String resourcePath = String.format("%s:%s", ModInfo.MOD_ID, this.resourcePath);
-
-        List<ItemStack> subBlocks = new ArrayList<ItemStack>();
-        getSubBlocks(Item.getItemFromBlock(this), null, subBlocks);
-
-        for (ItemStack itemStack : subBlocks) {
-            IBlockState blockState = this.getStateFromMeta(itemStack.getItemDamage());
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), itemStack.getItemDamage(), new ModelResourceLocation(resourcePath, Platform.getPropertyString(blockState.getProperties())));
-        }
-    }
+//todo: not sure 1.11
+    //    @SideOnly(Side.CLIENT)
+//    @Override
+//    public void registerBlockRenderer() {
+//        final String resourcePath = String.format("%s:%s", ModInfo.MOD_ID, this.resourcePath);
+//
+//        ModelLoader.setCustomStateMapper(this, new DefaultStateMapper() {
+//            @Override
+//            protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+//                return new ModelResourceLocation(resourcePath, getPropertyString(state.getProperties(), null));
+//            }
+//        });
+//    }
+//
+//    @SideOnly(Side.CLIENT)
+//    @Override
+//    public void registerBlockItemRenderer() {
+//        final String resourcePath = String.format("%s:%s", ModInfo.MOD_ID, this.resourcePath);
+//
+//        List<ItemStack> subBlocks = new ArrayList<ItemStack>();
+//        getSubBlocks(Item.getItemFromBlock(this), null, subBlocks);
+//
+//        for (ItemStack itemStack : subBlocks) {
+//            IBlockState blockState = this.getStateFromMeta(itemStack.getItemDamage());
+//            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), itemStack.getItemDamage(), new ModelResourceLocation(resourcePath, Platform.getPropertyString(blockState.getProperties())));
+//        }
+//    }
 }

@@ -1,11 +1,11 @@
 package com.fireball1725.firelib.guimaker.integrations.jei;
 
 import com.fireball1725.firelib.guimaker.GuiMakerGuiContainer;
-import mezz.jei.api.IJeiRuntime;
-import mezz.jei.api.IModPlugin;
-import mezz.jei.api.IModRegistry;
-import mezz.jei.api.JEIPlugin;
+import mezz.jei.api.*;
 import mezz.jei.api.gui.IAdvancedGuiHandler;
+import mezz.jei.api.ingredients.IModIngredientRegistration;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -14,6 +14,16 @@ import java.util.List;
 
 @JEIPlugin
 public class JeiPlugin implements IModPlugin {
+
+    @Override
+    public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry) {
+
+    }
+
+    @Override
+    public void registerIngredients(IModIngredientRegistration registry) {
+
+    }
 
     @Override
     public void register(@Nonnull IModRegistry registry) {
@@ -26,8 +36,15 @@ public class JeiPlugin implements IModPlugin {
 
             @Nullable
             @Override
+            @SideOnly(Side.CLIENT)
             public List<Rectangle> getGuiExtraAreas(@Nonnull GuiMakerGuiContainer guiContainer) {
                 return guiContainer.getExtaGuiAreas();
+            }
+
+            @Nullable
+            @Override
+            public Object getIngredientUnderMouse(GuiMakerGuiContainer guiContainer, int mouseX, int mouseY) {
+                return null;
             }
         });
     }
