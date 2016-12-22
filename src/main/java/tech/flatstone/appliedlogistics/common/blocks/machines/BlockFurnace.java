@@ -101,8 +101,8 @@ public class BlockFurnace extends BlockTechBase implements IImplementsGuiMaker {
         if (worldIn.isRemote)
             return true;
 
-        guiMaker.setGuiTitle(tileEntity.hasCustomName() ? tileEntity.getCustomName() : LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()));
-        guiMaker.show(AppliedLogistics.instance, worldIn, playerIn, pos);
+        //guiMaker.setGuiTitle(tileEntity.hasCustomName() ? tileEntity.getCustomName() : LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()));
+        //guiMaker.show(AppliedLogistics.instance, worldIn, playerIn, pos);
 
         return true;
     }

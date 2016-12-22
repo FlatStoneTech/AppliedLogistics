@@ -127,7 +127,7 @@ public class Platform {
 
     @SideOnly(Side.CLIENT)
     public static void spawnParticle(World worldIn, Vec3d particlePos, IParticleFactory particleFactory) {
-        Minecraft.getMinecraft().effectRenderer.addEffect(particleFactory.createParticle(0, worldIn, particlePos.xCoord, particlePos.yCoord, particlePos.zCoord, 0.0D, 0.0D, 0.0D));
+        Minecraft.getMinecraft().effectRenderer.addEffect(particleFactory.getEntityFX(0, worldIn, particlePos.xCoord, particlePos.yCoord, particlePos.zCoord, 0.0D, 0.0D, 0.0D));
     }
 
     @SideOnly(Side.CLIENT)

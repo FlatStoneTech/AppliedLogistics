@@ -199,12 +199,14 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
                 GlStateManager.glLineWidth(2.0F);
                 GlStateManager.disableTexture2D();
                 GlStateManager.depthMask(false);
-
+                GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+                
                 double partialTicks = event.getPartialTicks();
                 double d0 = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
                 double d1 = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks;
                 double d2 = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks;
-                RenderGlobal.drawSelectionBoundingBox(AABB_WOOD.offset(pos).expandXyz(0.0020000000949949026D).offset(-d0, -d1, -d2), 0.0F, 0.0F, 0.0F, 0.4F);
+
+                RenderGlobal.func_189697_a(AABB_WOOD.offset(pos).expandXyz(0.0020000000949949026D).offset(-d0, -d1, -d2), 0.0F, 0.0F, 0.0F, 0.4F);
 
                 GlStateManager.depthMask(true);
                 GlStateManager.enableTexture2D();
