@@ -141,11 +141,6 @@ public class InternalDynamicInventory implements IInventory, Iterable<ItemStack>
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer entityPlayer) {
-        return true;
-    }
-
-    @Override
     public void openInventory(EntityPlayer player) {
 
     }
@@ -212,7 +207,7 @@ public class InternalDynamicInventory implements IInventory, Iterable<ItemStack>
         NBTTagCompound tagCompound = nbtTagCompound.getCompoundTag("Items");
         for (int i = 0; i < invSize; i++) {
             NBTTagCompound item = tagCompound.getCompoundTag("items" + i);
-            inventory.add(ItemStack.loadItemStackFromNBT(item));
+            inventory.add(new ItemStack(item));
         }
     }
 

@@ -20,6 +20,8 @@
 
 package tech.flatstone.appliedlogistics.common.blocks;
 
+import com.sun.istack.internal.NotNull;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -32,6 +34,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -240,31 +243,32 @@ public abstract class BlockBase extends Block implements IBlockRenderer {
         return new EnumFacing[0];
     }
 
-//todo: not sure 1.11
-    //    @SideOnly(Side.CLIENT)
-//    @Override
-//    public void registerBlockRenderer() {
-//        final String resourcePath = String.format("%s:%s", ModInfo.MOD_ID, this.resourcePath);
-//
-//        ModelLoader.setCustomStateMapper(this, new DefaultStateMapper() {
-//            @Override
-//            protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
-//                return new ModelResourceLocation(resourcePath, getPropertyString(state.getProperties(), null));
-//            }
-//        });
-//    }
-//
-//    @SideOnly(Side.CLIENT)
-//    @Override
-//    public void registerBlockItemRenderer() {
-//        final String resourcePath = String.format("%s:%s", ModInfo.MOD_ID, this.resourcePath);
-//
-//        List<ItemStack> subBlocks = new ArrayList<ItemStack>();
-//        getSubBlocks(Item.getItemFromBlock(this), null, subBlocks);
-//
-//        for (ItemStack itemStack : subBlocks) {
-//            IBlockState blockState = this.getStateFromMeta(itemStack.getItemDamage());
-//            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), itemStack.getItemDamage(), new ModelResourceLocation(resourcePath, Platform.getPropertyString(blockState.getProperties())));
-//        }
-//    }
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void registerBlockRenderer() {
+        final String resourcePath = String.format("%s:%s", ModInfo.MOD_ID, this.resourcePath);
+
+        ModelLoader.setCustomStateMapper(this, new DefaultStateMapper() {
+            @SideOnly(Side.CLIENT)
+            @Override
+            @MethodsReturnNonnullByDefault
+            protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+                return new ModelResourceLocation(resourcePath, getPropertyString(state.getProperties()));
+            }
+        });
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void registerBlockItemRenderer() {
+        final String resourcePath = String.format("%s:%s", ModInfo.MOD_ID, this.resourcePath);
+
+        NonNullList<ItemStack> subBlocks = NonNullList.create();
+        getSubBlocks(Item.getItemFromBlock(this), null, subBlocks);
+
+        for (ItemStack itemStack : subBlocks) {
+            IBlockState blockState = this.getStateFromMeta(itemStack.getItemDamage());
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), itemStack.getItemDamage(), new ModelResourceLocation(resourcePath, Platform.getPropertyString(blockState.getProperties())));
+        }
+    }
 }

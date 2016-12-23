@@ -10,6 +10,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCauldron;
 
+import javax.annotation.Nullable;
+
 public class ParticleCauldronSplash extends ParticleSplash {
     private static final double MAX_HEIGHT = 0.15;
 
@@ -23,15 +25,16 @@ public class ParticleCauldronSplash extends ParticleSplash {
         prevPosY = posY;
         prevPosZ = posZ;
         motionY -= particleGravity;
-        moveEntity(motionX, motionY, motionZ);
+        move(motionX, motionY, motionZ);
         motionX *= 0.9800000190734863D;
         motionY *= 0.9800000190734863D;
         motionZ *= 0.9800000190734863D;
 
-        double x = MathHelper.floor_double(posX);
-        double y = MathHelper.floor_double(posY);
-        double z = MathHelper.floor_double(posZ);
-        boolean isCauldron = worldObj.getBlockState(new BlockPos(x, y, z)).getBlock() instanceof BlockCauldron;
+        double x = MathHelper.floor(posX);
+        double y = MathHelper.floor(posY);
+        double z = MathHelper.floor(posZ);
+        boolean isCauldron = this.world.getBlockState(new BlockPos(x, y, z)).getBlock() instanceof BlockCauldron;
+        boolean isCollided = false;
         y = posY - y;
         if (isCauldron) {
             x = posX - x;
@@ -51,14 +54,15 @@ public class ParticleCauldronSplash extends ParticleSplash {
             motionX *= 0.699999988079071D;
             motionZ *= 0.699999988079071D;
             if (isCauldron && y > MAX_HEIGHT)
-                moveEntity(0, MAX_HEIGHT - y, 0);
+                move(0, MAX_HEIGHT - y, 0);
         }
     }
 
     @SideOnly(Side.CLIENT)
     public static class Factory implements IParticleFactory {
+        @Nullable
         @Override
-        public Particle getEntityFX(int particleID, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int... p_178902_15_) {
+        public Particle createParticle(int particleID, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int... p_178902_15_) {
             return new ParticleCauldronSplash(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
         }
     }

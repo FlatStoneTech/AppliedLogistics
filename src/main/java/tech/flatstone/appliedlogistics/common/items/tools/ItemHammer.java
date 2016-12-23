@@ -87,7 +87,7 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
 
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player) {
-        World world = player.worldObj;
+        World world = player.world;
         IBlockState iBlockState = world.getBlockState(pos);
         Block block = iBlockState.getBlock();
         ItemStack blockItemStack = new ItemStack(block, 1, block.getMetaFromState(iBlockState));
@@ -115,7 +115,7 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
                     entityItem.motionZ = world.rand.nextGaussian() * f3;
 
                     entityItem.setDefaultPickupDelay();
-                    world.spawnEntityInWorld(entityItem);
+                    world.spawnEntity(entityItem);
                 }
 
                 valid = true;
@@ -128,7 +128,7 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
 
         itemstack.damageItem(1, player);
 
-        if (itemstack.stackSize == 0)
+        if (itemstack.getCount() == 0);
             player.setHeldItem(EnumHand.MAIN_HAND, null);
 
         if (!world.isRemote) {
@@ -165,7 +165,7 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
 
     //todo: is this even important?
     @Override
-    public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
         Block block = world.getBlockState(pos).getBlock();
 
         if (!player.isSneaking()) {

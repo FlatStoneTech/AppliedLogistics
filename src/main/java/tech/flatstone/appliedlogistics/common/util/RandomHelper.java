@@ -10,7 +10,7 @@ public class RandomHelper {
         if (fortuneValue == 0) {
             return (int) Math.ceil(itemValue);
         } else {
-            float random = MathHelper.randomFloatClamp(rng, itemValue, fortuneValue + itemValue);
+            float random = MathHelper.nextFloat(rng, itemValue, fortuneValue + itemValue);
             return (int) Math.ceil(random);
         }
     }

@@ -17,6 +17,8 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import tech.flatstone.appliedlogistics.client.particles.ParticleCauldronFlame;
@@ -108,7 +110,7 @@ public class TileEntityCauldron extends TileEntityInventoryBase implements IFlui
 
     public void setPureWater() {
         itemCountMap.clear();
-        world.notifyNeighborsOfStateChange(pos, blockType);
+        world.notifyNeighborsOfStateChange(pos, blockType, false);
     }
 
     public double getWaterTemp() {
@@ -202,6 +204,7 @@ public class TileEntityCauldron extends TileEntityInventoryBase implements IFlui
         handleRebounded = false;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void update() {
         tickCounter++;
@@ -298,6 +301,11 @@ public class TileEntityCauldron extends TileEntityInventoryBase implements IFlui
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         return null;
+    }
+
+    @Override
+    public int getSlotLimit(int slot) {
+        return 0;
     }
 
     public enum EnumItemType {

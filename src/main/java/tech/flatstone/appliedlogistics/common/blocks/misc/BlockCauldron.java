@@ -21,6 +21,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -96,7 +97,7 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
     public void registerBlockItemRenderer() {
         final String resourcePath = String.format("%s:%s", ModInfo.MOD_ID, this.resourcePath);
 
-        List<ItemStack> subBlocks = new ArrayList<ItemStack>();
+        NonNullList<ItemStack> subBlocks = NonNullList.create();
         getSubBlocks(Item.getItemFromBlock(this), null, subBlocks);
 
         //todo: remove this into a class, duplicated code...
@@ -211,7 +212,7 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
                 double d1 = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks;
                 double d2 = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks;
 
-                RenderGlobal.func_189697_a(AABB_WOOD.offset(pos).expandXyz(0.0020000000949949026D).offset(-d0, -d1, -d2), 0.0F, 0.0F, 0.0F, 0.4F);
+                RenderGlobal.drawSelectionBoundingBox(AABB_WOOD.offset(pos).expandXyz(0.0020000000949949026D).offset(-d0, -d1, -d2), 0.0F, 0.0F, 0.0F, 0.4F);
 
                 GlStateManager.depthMask(true);
                 GlStateManager.enableTexture2D();
@@ -226,25 +227,23 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
         return blockState.getValue(CAULDRON_LIT) ? 10 : 0;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         TileEntityCauldron tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityCauldron.class);
         if (tileEntity == null)
             return true;
 
         ExtendedRayTraceResult lookObject = getExtendedRayTraceResultFromPlayer(playerIn, pos);
 
-        if (heldItem == null)
-            return true;
-
         if (tileEntity.isEmpty()) {
 
         }
 
-        Item item = heldItem.getItem();
+        Item item = playerIn.getHeldItem(hand).getItem();
 
         if (lookObject != null && lookObject.isLookingAtLogs) {
-            return interactWithLogs(worldIn, pos, tileEntity, playerIn, hand, heldItem, item, lookObject);
+            return interactWithLogs(worldIn, pos, tileEntity, playerIn, hand, playerIn.getHeldItem(hand), item, lookObject);
         }
 
         return false;

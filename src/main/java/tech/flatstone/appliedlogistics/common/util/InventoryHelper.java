@@ -13,27 +13,23 @@ public class InventoryHelper {
         ItemStack itemOut = itemIn.copy();
 
         for (int i = slotStart; i <= slotEnd; i++) {
-            ItemStack slotItemStack = inventory.getStackInSlot(i) == null ? null : inventory.getStackInSlot(i).copy();
+            ItemStack slotItemStack = inventory.getStackInSlot(i).copy();
             if (itemOut == null) return null;
-            if (slotItemStack == null) {
-                if (!simulate) inventory.setInventorySlotContents(i, itemOut);
-                return null;
-            }
 
             if (!(ItemStack.areItemsEqual(itemOut, slotItemStack))) continue;
 
-            if (slotItemStack.stackSize == slotItemStack.getMaxStackSize()) continue;
+            if (slotItemStack.getCount() == slotItemStack.getMaxStackSize()) continue;
 
-            if (itemOut.stackSize + slotItemStack.stackSize >= slotItemStack.getMaxStackSize()) {
-                int sizeRemaining = slotItemStack.getMaxStackSize() - slotItemStack.stackSize;
-                itemOut.stackSize = itemOut.stackSize - sizeRemaining;
-                if (!simulate) slotItemStack.stackSize = slotItemStack.stackSize + sizeRemaining;
+            if (itemOut.getCount() + slotItemStack.getCount() >= slotItemStack.getMaxStackSize()) {
+                int sizeRemaining = slotItemStack.getMaxStackSize() - slotItemStack.getCount();
+                itemOut.shrink(sizeRemaining);
+                if (!simulate) slotItemStack.grow(sizeRemaining);
                 if (!simulate) inventory.setInventorySlotContents(i, slotItemStack);
-                if (itemOut.stackSize == 0) itemOut = null;
+                if (itemOut.getCount() == 0) itemOut = null;
                 continue;
             }
 
-            slotItemStack.stackSize = slotItemStack.stackSize + itemOut.stackSize;
+            slotItemStack.grow(itemOut.getCount());
             itemOut = null;
             if (!simulate) inventory.setInventorySlotContents(i, slotItemStack);
             break;

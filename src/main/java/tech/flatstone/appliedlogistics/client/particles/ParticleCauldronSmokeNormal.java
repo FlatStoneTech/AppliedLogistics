@@ -10,6 +10,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockCauldron;
 
+import javax.annotation.Nullable;
+
 public class ParticleCauldronSmokeNormal extends ParticleSmokeNormal {
     private static final double MAX_HEIGHT = 0.15;
 
@@ -24,6 +26,7 @@ public class ParticleCauldronSmokeNormal extends ParticleSmokeNormal {
         double y = MathHelper.floor(posY);
         double z = MathHelper.floor(posZ);
         boolean isCauldron = world.getBlockState(new BlockPos(x, y, z)).getBlock() instanceof BlockCauldron;
+        boolean isCollided = false;
         y = posY - y;
         if (isCauldron) {
             x = posX - x;
@@ -36,13 +39,14 @@ public class ParticleCauldronSmokeNormal extends ParticleSmokeNormal {
             }
         }
         if (isCauldron && isCollided && y > MAX_HEIGHT)
-            moveEntity(0, MAX_HEIGHT - y, 0);
+            move(0, MAX_HEIGHT - y, 0);
     }
 
     @SideOnly(Side.CLIENT)
     public static class Factory implements IParticleFactory {
+        @Nullable
         @Override
-        public Particle getEntityFX(int particleID, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int... p_178902_15_) {
+        public Particle createParticle(int particleID, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int... p_178902_15_) {
             return new ParticleCauldronSmokeNormal(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn, 1.0F);
         }
     }

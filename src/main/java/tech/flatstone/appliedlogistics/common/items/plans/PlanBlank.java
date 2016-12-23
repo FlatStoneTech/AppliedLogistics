@@ -27,6 +27,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -50,7 +51,7 @@ public class PlanBlank extends ItemPlanBase implements IProvideRecipe {
     }
 
     @Override
-    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+    public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
         for (TechLevel techLevel : TechLevel.all()) {
             if (techLevel == TechLevel.CREATIVE) {
                 for (TechLevel techLevelCreative : TechLevel.allExceptCreative()) {

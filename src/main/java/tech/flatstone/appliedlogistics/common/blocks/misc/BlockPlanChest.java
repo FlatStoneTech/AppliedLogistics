@@ -50,7 +50,7 @@ public class BlockPlanChest extends BlockTileBase {
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         TileEntityPlanChest tileEntityPlanChest = TileHelper.getTileEntity(worldIn, pos, TileEntityPlanChest.class);
         if (tileEntityPlanChest != null)
             LogHelper.info(">>> Rows: " + tileEntityPlanChest.getSlotRows());

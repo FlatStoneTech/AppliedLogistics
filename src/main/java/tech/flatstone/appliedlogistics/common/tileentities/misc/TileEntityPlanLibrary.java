@@ -99,8 +99,8 @@ public class TileEntityPlanLibrary extends TileEntityMachineBase implements INet
 
             if (operation == InventoryOperation.decreaseStackSize && inputSlot != null) {
                 ItemStack newInputSlot = inputSlot.copy();
-                newInputSlot.stackSize--;
-                if (newInputSlot.stackSize == 0)
+                newInputSlot.shrink(1);
+                if (newInputSlot.getCount() == 0)
                     newInputSlot = null;
 
                 inventory.setInventorySlotContents(0, newInputSlot);

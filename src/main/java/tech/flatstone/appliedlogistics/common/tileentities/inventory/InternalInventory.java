@@ -72,7 +72,7 @@ public class InternalInventory implements IInventory, Iterable<ItemStack> {
             ItemStack split = this.getStackInSlot(slot);
             ItemStack newStack;
 
-            if (qty >= split.stackSize) {
+            if (qty >= split.getCount()) {
                 newStack = this.inventory[slot];
                 this.inventory[slot] = null;
             } else {
@@ -105,12 +105,12 @@ public class InternalInventory implements IInventory, Iterable<ItemStack> {
             ItemStack added = itemStack;
 
             if (oldStack != null && itemStack != null && Platform.isSameItem(oldStack, itemStack)) {
-                if (oldStack.stackSize > itemStack.stackSize) {
+                if (oldStack.getCount() > itemStack.getCount()) {
                     removed = removed.copy();
-                    removed.stackSize -= itemStack.stackSize;
-                } else if (oldStack.stackSize < itemStack.stackSize) {
+                    removed.shrink(itemStack.getCount());
+                } else if (oldStack.getCount() < itemStack.getCount()) {
                     added = added.copy();
-                    added.stackSize -= oldStack.stackSize;
+                    added.shrink(oldStack.getCount());
                     removed = null;
                 } else {
                     removed = added = null;
@@ -133,6 +133,11 @@ public class InternalInventory implements IInventory, Iterable<ItemStack> {
         if (this.inventoryHandler != null && this.eventsEnabled()) {
             this.inventoryHandler.onChangeInventory(this, -1, InventoryOperation.markDirty, null, null);
         }
+    }
+
+    @Override
+    public boolean isUsableByPlayer(EntityPlayer player) {
+        return false;
     }
 
     public void markDirty(int slotIndex) {

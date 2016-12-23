@@ -7,6 +7,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.common.util.IRotatable;
 
 public class PacketBlockRotated implements IMessage, IMessageHandler<PacketBlockRotated, IMessage> {
@@ -32,12 +34,14 @@ public class PacketBlockRotated implements IMessage, IMessageHandler<PacketBlock
         buf.writeInt(blockPos.getZ());
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public IMessage onMessage(final PacketBlockRotated message, MessageContext ctx) {
         Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+            @SideOnly(Side.CLIENT)
             @Override
             public void run() {
-                TileEntity tileEntity = Minecraft.getMinecraft().theWorld.getTileEntity(message.blockPos);
+                TileEntity tileEntity = Minecraft.getMinecraft().world.getTileEntity(message.blockPos);
                 if (tileEntity != null && tileEntity instanceof IRotatable) {
                     ((IRotatable) tileEntity).onRotated();
                 }

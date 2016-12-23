@@ -38,10 +38,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -107,7 +104,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
     }
 
     @Override
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
+    public void getSubBlocks(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> list) {
         for (EnumCrankMaterials material : EnumCrankMaterials.values()) {
             list.add(new ItemStack(itemIn, 1, material.getMeta()));
         }
@@ -134,7 +131,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         //todo: check not fake player
         //todo: check that there is work to do
 
@@ -154,7 +151,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
     }
 
     @Override
-    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn) {
+    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
         TileEntity tileEntity = TileHelper.getTileEntity(worldIn, pos.down(), TileEntity.class);
         if (tileEntity == null)
             breakCrank(worldIn, pos, true);
@@ -212,12 +209,12 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void drawBlockHighlight(DrawBlockHighlightEvent event) {
-        if (!(event.getTarget().typeOfHit == RayTraceResult.Type.BLOCK && ItemStack.areItemsEqual(new ItemStack(event.getPlayer().worldObj.getBlockState(event.getTarget().getBlockPos()).getBlock()), Blocks.BLOCK_MISC_CRANK.getStack())))
+        if (!(event.getTarget().typeOfHit == RayTraceResult.Type.BLOCK && ItemStack.areItemsEqual(new ItemStack(event.getPlayer().world.getBlockState(event.getTarget().getBlockPos()).getBlock()), Blocks.BLOCK_MISC_CRANK.getStack())))
             return;
 
         event.setCanceled(true);
 
-        TileEntityCrank tileEntity = TileHelper.getTileEntity(event.getPlayer().worldObj, event.getTarget().getBlockPos(), TileEntityCrank.class);
+        TileEntityCrank tileEntity = TileHelper.getTileEntity(event.getPlayer().world, event.getTarget().getBlockPos(), TileEntityCrank.class);
 
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
         BlockPos posBlock = event.getTarget().getBlockPos();

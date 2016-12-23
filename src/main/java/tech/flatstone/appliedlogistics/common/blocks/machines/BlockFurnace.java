@@ -22,6 +22,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.ModInfo;
@@ -97,12 +99,14 @@ public class BlockFurnace extends BlockTechBase implements IImplementsGuiMaker {
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        TileEntityFurnace tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityFurnace.class);
+
         if (worldIn.isRemote)
             return true;
 
-        //guiMaker.setGuiTitle(tileEntity.hasCustomName() ? tileEntity.getCustomName() : LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()));
-        //guiMaker.show(AppliedLogistics.instance, worldIn, playerIn, pos);
+        guiMaker.setGuiTitle(tileEntity.hasCustomName() ? tileEntity.getCustomName() : LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()));
+        guiMaker.show(AppliedLogistics.instance, worldIn, playerIn, pos);
 
         return true;
     }
@@ -163,6 +167,7 @@ public class BlockFurnace extends BlockTechBase implements IImplementsGuiMaker {
         return getMetaFromState(state);
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void drawGui(TileEntity tileEntity) {
         TileEntityFurnace tileEntityFurnace = (TileEntityFurnace)tileEntity;
@@ -189,6 +194,7 @@ public class BlockFurnace extends BlockTechBase implements IImplementsGuiMaker {
         imageTempBar.setH(height);
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void initGui(TileEntity tileEntity, InventoryPlayer inventoryPlayer) {
         guiMaker.clearGuiTabs();

@@ -113,11 +113,11 @@ public class PlanMachineFurnace extends PlanBase implements IMachinePlan {
 
         int speedMultipler = 0;
         if (speedUpgrades != null)
-            speedMultipler = speedUpgrades.stackSize * 75;
+            speedMultipler = speedUpgrades.getCount() * 75;
 
         int chanceMultipler = 0;
         if (chanceUpgrades != null)
-            chanceMultipler = chanceUpgrades.stackSize * 80;
+            chanceMultipler = chanceUpgrades.getCount() * 80;
 
 
         String outputMessage = String.format("%s\n" +

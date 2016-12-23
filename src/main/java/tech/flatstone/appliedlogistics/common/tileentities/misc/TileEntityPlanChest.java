@@ -46,7 +46,7 @@ public class TileEntityPlanChest extends TileEntityMachineBase {
         if (machineItemData != null) {
             for (int i = 0; i < 27; i++) {
                 if (machineItemData.hasKey("item_" + i)) {
-                    ItemStack item = ItemStack.loadItemStackFromNBT(machineItemData.getCompoundTag("item_" + i));
+                    ItemStack item = new ItemStack(machineItemData.getCompoundTag("item_" + i));
 
                     if (ItemStack.areItemsEqual(item, new ItemStack(Blocks.CHEST)))
                         slotRows = item.getCount();
