@@ -25,7 +25,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import org.apache.commons.lang3.time.DurationFormatUtils;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.api.registries.PulverizerRegistry;
 import tech.flatstone.appliedlogistics.api.registries.helpers.Crushable;
@@ -34,10 +33,8 @@ import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInv
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
 import tech.flatstone.appliedlogistics.common.util.ICrankable;
 import tech.flatstone.appliedlogistics.common.util.InventoryHelper;
-import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 import tech.flatstone.appliedlogistics.common.util.RandomHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TileEntityPulverizer extends TileEntityMachineBase implements ITickable, ICrankable {

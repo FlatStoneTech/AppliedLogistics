@@ -8,7 +8,6 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
@@ -16,29 +15,11 @@ import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOp
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.InventoryHelper;
 
-import java.util.List;
-
 public class TileEntityFurnace extends TileEntityMachineBase implements ITickable {
     public static final float HIGHEST_MAX_TEMP = 380;
     public static final float LOWEST_MAX_TEMP = 23;
 
     private InternalInventory inventory = new InternalInventory(this, 100);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     private int fuelRemaining = 0;

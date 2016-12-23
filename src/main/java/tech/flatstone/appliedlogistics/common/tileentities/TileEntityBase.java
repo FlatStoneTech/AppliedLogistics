@@ -30,7 +30,6 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -39,7 +38,6 @@ import tech.flatstone.appliedlogistics.common.util.IRotatable;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class TileEntityBase extends TileEntity implements IOrientable, IRotatable {
     private String customName;

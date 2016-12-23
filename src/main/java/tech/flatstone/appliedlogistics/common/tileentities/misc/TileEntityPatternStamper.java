@@ -1,7 +1,6 @@
 package tech.flatstone.appliedlogistics.common.tileentities.misc;
 
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -71,11 +70,7 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
 
             ItemStack itemStack = inv.getStackInSlot(0);
 
-            if (itemStack == null)
-                return;
-
-            if (!isPlanValid())
-                return;
+            if (!isPlanValid()) return;
 
             if (itemStack.getItemDamage() == TechLevel.CREATIVE.getMeta()) {
                 creativeMode = true;
