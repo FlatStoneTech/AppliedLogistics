@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class GuiMaker {
-    public static ResourceLocation resourceLocation = new ResourceLocation("firelib", "textures/gui/Darkskin.png");
+    public static ResourceLocation resourceLocation = new ResourceLocation("firelib", "textures/gui/darkskin.png");
     private static List<GuiMaker> guiInstances = new ArrayList<>();
 
     //region Things set in stone

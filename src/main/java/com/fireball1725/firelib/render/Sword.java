@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class Sword implements LayerRenderer<AbstractClientPlayer> {
-    private static final ResourceLocation swordObj = new ResourceLocation(ModInfo.MOD_ID, "textures/sword/Benihime.obj");
-    private static final ResourceLocation swordTex = new ResourceLocation(ModInfo.MOD_ID, "textures/sword/Benihime.png");
+    private static final ResourceLocation swordObj = new ResourceLocation(ModInfo.MOD_ID, "textures/sword/benihime.obj");
+    private static final ResourceLocation swordTex = new ResourceLocation(ModInfo.MOD_ID, "textures/sword/benihime.png");
     private final RenderPlayer renderPlayer;
     private final IModelCustom swordModel;
     private final List<UUID> uuidList = new ArrayList<>();

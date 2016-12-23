@@ -131,7 +131,7 @@ public class GuiMakerGuiContainer extends GuiContainer {
                         this.itemRender.renderItemAndEffectIntoGUI(guiTabs.getTabIconStack(), this.xSize + 1, 14 + (tabNumber * 25));
                     }
                 } else {
-                    ResourceLocation resourceLocation = new ResourceLocation("firelib", "textures/gui/Darkskin.png");
+                    ResourceLocation resourceLocation = new ResourceLocation("firelib", "textures/gui/darkskin.png");
                     this.mc.getTextureManager().bindTexture(resourceLocation);
 
                     //todo: make work with icon Number, instead of hard coding for icon 1
