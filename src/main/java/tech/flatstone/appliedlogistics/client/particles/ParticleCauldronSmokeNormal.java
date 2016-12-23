@@ -23,7 +23,7 @@ public class ParticleCauldronSmokeNormal extends ParticleSmokeNormal {
         double x = MathHelper.floor(posX);
         double y = MathHelper.floor(posY);
         double z = MathHelper.floor(posZ);
-        boolean isCauldron = worldObj.getBlockState(new BlockPos(x, y, z)).getBlock() instanceof BlockCauldron;
+        boolean isCauldron = world.getBlockState(new BlockPos(x, y, z)).getBlock() instanceof BlockCauldron;
         y = posY - y;
         if (isCauldron) {
             x = posX - x;

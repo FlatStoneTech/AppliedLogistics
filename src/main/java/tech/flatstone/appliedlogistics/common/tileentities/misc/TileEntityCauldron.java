@@ -108,7 +108,7 @@ public class TileEntityCauldron extends TileEntityInventoryBase implements IFlui
 
     public void setPureWater() {
         itemCountMap.clear();
-        worldObj.notifyNeighborsOfStateChange(pos, blockType);
+        world.notifyNeighborsOfStateChange(pos, blockType);
     }
 
     public double getWaterTemp() {
@@ -182,7 +182,7 @@ public class TileEntityCauldron extends TileEntityInventoryBase implements IFlui
             if (handleHasEnergy) {
                 if (wasLifted && !handleRebounded) {
                     handleRebounded = true;
-                    worldObj.playSound(pos.getX(), pos.getY(), pos.getZ(), Sounds.CAULDRON_HANDLE.getSound(), SoundCategory.MASTER, 0.6F, 1.0F, true);
+                    world.playSound(pos.getX(), pos.getY(), pos.getZ(), Sounds.CAULDRON_HANDLE.getSound(), SoundCategory.MASTER, 0.6F, 1.0F, true);
                 } else {
                     handleRotation += 0.1F;
                     handleHasEnergy = false;
@@ -205,24 +205,24 @@ public class TileEntityCauldron extends TileEntityInventoryBase implements IFlui
     @Override
     public void update() {
         tickCounter++;
-        if (worldObj.isRemote) {
+        if (world.isRemote) {
             if (tickCounter > 1 && (handleRotation > MAX_HANDLE_ROTATION || handleHasEnergy))
                 rotateHandle();
         }
 
-        IBlockState state = worldObj.getBlockState(getPos());
+        IBlockState state = world.getBlockState(getPos());
         if (!(state.getBlock() instanceof BlockCauldron))
             return;
 
         BlockCauldron blockCauldron = (BlockCauldron) state.getBlock();
 
-        if (this.fireLit && worldObj.isRemote && (tickCounter >= 400 || worldObj.rand.nextInt() < tickCounter)) {
+        if (this.fireLit && world.isRemote && (tickCounter >= 400 || world.rand.nextInt() < tickCounter)) {
             IParticleFactory[] particles = new IParticleFactory[4];
             particles[0] = new ParticleCauldronFlame.Factory();
             for (int i = 1; i < 4; i++) {
                 particles[i] = new ParticleCauldronSmokeNormal.Factory();
             }
-            blockCauldron.spawnParticlesForLogs(worldObj, pos, null, 5, particles);
+            blockCauldron.spawnParticlesForLogs(world, pos, null, 5, particles);
         }
     }
 

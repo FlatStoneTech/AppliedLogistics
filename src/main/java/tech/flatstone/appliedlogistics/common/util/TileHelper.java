@@ -43,7 +43,7 @@ public class TileHelper {
     }
 
     public static boolean dropItemStack(ItemStack itemStack, World world, BlockPos blockPos) {
-        if (itemStack != null && itemStack.stackSize > 0) {
+        if (itemStack != null && itemStack.getCount() > 0) {
             Random rand = new Random();
 
             float dX = rand.nextFloat() * 0.8F + 0.1F;
@@ -61,7 +61,7 @@ public class TileHelper {
             entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
             entityItem.motionZ = rand.nextGaussian() * factor;
             world.spawnEntity(entityItem);
-            itemStack.stackSize = 0;
+            itemStack.setCount(0);
             return true;
         }
         return false;

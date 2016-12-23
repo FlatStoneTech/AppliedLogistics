@@ -49,7 +49,7 @@ public class TileEntityPlanChest extends TileEntityMachineBase {
                     ItemStack item = ItemStack.loadItemStackFromNBT(machineItemData.getCompoundTag("item_" + i));
 
                     if (ItemStack.areItemsEqual(item, new ItemStack(Blocks.CHEST)))
-                        slotRows = item.stackSize;
+                        slotRows = item.getCount();
                 }
             }
         }
