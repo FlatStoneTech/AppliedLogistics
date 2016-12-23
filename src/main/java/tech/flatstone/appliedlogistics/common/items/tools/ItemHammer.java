@@ -58,7 +58,7 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
     private static IBlockState blockHarvest = null;
 
     public ItemHammer() {
-        super(3.0F, 1.0F, toolMaterialHammer, blocksEffectiveAgainst, "tools/toolHammer");
+        super(3.0F, 1.0F, toolMaterialHammer, blocksEffectiveAgainst, "tools/tool_hammer");
         this.setUnlocalizedName("tool_hammer");
         this.setCreativeTab(AppliedLogisticsCreativeTabs.GENERAL);
         this.setInternalName("tool_hammer");

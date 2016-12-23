@@ -6,7 +6,7 @@
   "variants": {
     "inventory": [
       {
-        "model": "appliedlogistics:misc/cauldron-inventory"
+        "model": "appliedlogistics:misc/cauldron_inventory"
       }
     ],
     "facing": {

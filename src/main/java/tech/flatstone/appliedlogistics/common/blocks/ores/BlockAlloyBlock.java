@@ -43,7 +43,7 @@ public class BlockAlloyBlock extends BlockBase implements IProvideRecipe {
     public static final PropertyEnum<EnumAlloys> MATERIAL = PropertyEnum.create("material", EnumAlloys.class);
 
     public BlockAlloyBlock() {
-        super(Material.ROCK, "ores/oreBlock");
+        super(Material.ROCK, "ores/ore_block");
         this.setDefaultState(this.blockState.getBaseState().withProperty(MATERIAL, EnumAlloys.byMeta(0)));
         this.setCreativeTab(AppliedLogisticsCreativeTabs.MATERIALS);
         this.setInternalName("alloy_block");

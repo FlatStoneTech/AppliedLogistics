@@ -74,7 +74,7 @@ public class ItemAlloyIngot extends ItemBase implements IProvideRecipe, IProvide
     public void registerItemRenderer() {
         for (int i = 0; i < EnumAlloys.values().length; i++) {
             if (EnumAlloys.byMeta(i).isTypeSet(EnumOreType.INGOT)) {
-                ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(ModInfo.MOD_ID + ":ores/ingot-" + EnumAlloys.byMeta(i).getUnlocalizedName(), "inventory"));
+                ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(ModInfo.MOD_ID + ":ores/ingot_" + EnumAlloys.byMeta(i).getUnlocalizedName(), "inventory"));
             }
         }
     }

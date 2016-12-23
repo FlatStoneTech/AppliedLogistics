@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -33,10 +34,11 @@ public abstract class BlockTechBase extends BlockTileBase implements IBlockRende
     @SideOnly(Side.CLIENT)
     @Override
     public void registerBlockRenderer() {
-        final String resourcePath = String.format("%s:%s-", ModInfo.MOD_ID, this.resourcePath);
+        final String resourcePath = String.format("%s:%s_", ModInfo.MOD_ID, this.resourcePath);
         final String badPath = String.format("%s:badblock", ModInfo.MOD_ID);
 
         ModelLoader.setCustomStateMapper(this, new DefaultStateMapper() {
+            @SideOnly(Side.CLIENT)
             @Override
             protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
                 Map<IProperty<?>, Comparable<?>> blockStates = Maps.newLinkedHashMap(state.getProperties());
@@ -55,7 +57,7 @@ public abstract class BlockTechBase extends BlockTileBase implements IBlockRende
     @SideOnly(Side.CLIENT)
     @Override
     public void registerBlockItemRenderer() {
-        final String resourcePath = String.format("%s:%s-", ModInfo.MOD_ID, this.resourcePath);
+        final String resourcePath = String.format("%s:%s_", ModInfo.MOD_ID, this.resourcePath);
         final String badPath = String.format("%s:badblock", ModInfo.MOD_ID);
 
         for (TechLevel techLevel : TechLevel.values()) {
@@ -67,14 +69,14 @@ public abstract class BlockTechBase extends BlockTileBase implements IBlockRende
         }
     }
 
-    //todo: 1.11
-//    @Override
-//    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
-//        if (techLevels.length == 0)
-//            super.getSubBlocks(itemIn, tab, list);
-//
-//        for (TechLevel techLevel : techLevels) {
-//            list.add(new ItemStack(this, 1, techLevel.getMeta()));
-//        }
-//    }
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void getSubBlocks(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> list) {
+        if (techLevels.length == 0)
+            super.getSubBlocks(itemIn, tab, list);
+
+        for (TechLevel techLevel : techLevels) {
+            list.add(new ItemStack(this, 1, techLevel.getMeta()));
+        }
+    }
 }

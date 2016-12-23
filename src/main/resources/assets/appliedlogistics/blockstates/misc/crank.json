@@ -14,7 +14,7 @@
       },
       "bronze": {
         "textures": {
-          "texture": "appliedlogistics:blocks/ores/blocks/Bronze"
+          "texture": "appliedlogistics:blocks/ores/blocks/bronze"
         },
         "y": 90
       },

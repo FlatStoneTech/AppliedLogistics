@@ -68,7 +68,7 @@ public class ItemGear extends ItemBase implements IProvideRecipe {
     @Override
     public void registerItemRenderer() {
         for (EnumMaterialsGear gear : EnumMaterialsGear.values()) {
-            ModelLoader.setCustomModelResourceLocation(this, gear.getMeta(), new ModelResourceLocation(ModInfo.MOD_ID + ":materials/gear-" + gear.getUnlocalizedName(), "inventory"));
+            ModelLoader.setCustomModelResourceLocation(this, gear.getMeta(), new ModelResourceLocation(ModInfo.MOD_ID + ":materials/gear_" + gear.getUnlocalizedName(), "inventory"));
         }
     }
 

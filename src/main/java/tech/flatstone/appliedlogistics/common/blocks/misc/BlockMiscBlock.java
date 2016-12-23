@@ -20,7 +20,7 @@ public class BlockMiscBlock extends BlockBase {
     public static final PropertyEnum<EnumMisc> MATERIAL = PropertyEnum.create("material", EnumMisc.class);
 
     public BlockMiscBlock() {
-        super(Material.ROCK, "misc/miscBlock");
+        super(Material.ROCK, "misc/misc_block");
         this.setDefaultState(this.blockState.getBaseState().withProperty(MATERIAL, EnumMisc.byMeta(0)));
         this.setCreativeTab(AppliedLogisticsCreativeTabs.MATERIALS);
         this.setInternalName("misc_block");

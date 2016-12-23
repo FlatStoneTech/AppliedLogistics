@@ -67,7 +67,7 @@ public class ItemMiscDust extends ItemBase {
     public void registerItemRenderer() {
         for (int i = 0; i < EnumMisc.values().length; i++) {
             if (EnumMisc.byMeta(i).isTypeSet(EnumOreType.DUST)) {
-                ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(ModInfo.MOD_ID + ":ores/dust-" + EnumMisc.byMeta(i).getUnlocalizedName(), "inventory"));
+                ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(ModInfo.MOD_ID + ":ores/dust_" + EnumMisc.byMeta(i).getUnlocalizedName(), "inventory"));
             }
         }
     }

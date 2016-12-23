@@ -84,7 +84,7 @@ public class PlanBlank extends ItemPlanBase implements IProvideRecipe {
     @Override
     public void registerItemRenderer() {
         for (TechLevel techLevel : TechLevel.all()) {
-            ModelLoader.setCustomModelResourceLocation(this, techLevel.getMeta(), new ModelResourceLocation(ModInfo.MOD_ID + ":plans/plan-" + techLevel.getName(), "inventory"));
+            ModelLoader.setCustomModelResourceLocation(this, techLevel.getMeta(), new ModelResourceLocation(ModInfo.MOD_ID + ":plans/plan_" + techLevel.getName(), "inventory"));
         }
     }
 

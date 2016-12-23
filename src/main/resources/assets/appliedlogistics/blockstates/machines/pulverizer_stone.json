@@ -1,0 +1,34 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "up": "appliedlogistics:blocks/machines/stone/pulverizer_top",
+      "down": "appliedlogistics:blocks/machines/stone/pulverizer_bottom",
+      "north": "appliedlogistics:blocks/machines/stone/pulverizer_front",
+      "east": "appliedlogistics:blocks/machines/stone/pulverizer_left",
+      "west": "appliedlogistics:blocks/machines/stone/pulverizer_right",
+      "south": "appliedlogistics:blocks/machines/stone/pulverizer_back",
+      "particle": "appliedlogistics:blocks/machines/stone/pulverizer_front"
+    },
+    "model": "minecraft:cube",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": [
+      {}
+    ],
+    "facing": {
+      "west": {
+        "y": -90
+      },
+      "east": {
+        "y": 90
+      },
+      "north": {
+      },
+      "south": {
+        "y": 180
+      }
+    }
+  }
+}

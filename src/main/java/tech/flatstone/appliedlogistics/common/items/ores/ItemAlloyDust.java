@@ -24,6 +24,7 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.client.model.ModelLoader;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.ModInfo;
@@ -41,15 +42,14 @@ public class ItemAlloyDust extends ItemBase {
         this.setInternalName("alloy_dust");
     }
 
-//todo 1.11
-//    @Override
-//    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
-//        for (int i = 0; i < EnumAlloys.values().length; i++) {
-//            if (EnumAlloys.byMeta(i).isTypeSet(EnumOreType.DUST)) {
-//                subItems.add(new ItemStack(this, 1, i));
-//            }
-//        }
-//    }
+    @Override
+    public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
+        for (int i = 0; i < EnumAlloys.values().length; i++) {
+            if (EnumAlloys.byMeta(i).isTypeSet(EnumOreType.DUST)) {
+                subItems.add(new ItemStack(this, 1, i));
+            }
+        }
+    }
 
     @Override
     public int getMetadata(int damage) {
@@ -63,13 +63,12 @@ public class ItemAlloyDust extends ItemBase {
         return name + "." + oreName;
     }
 
-    //todo: also 1.11
-//    @Override
-//    public void registerItemRenderer() {
-//        for (int i = 0; i < EnumAlloys.values().length; i++) {
-//            if (EnumAlloys.byMeta(i).isTypeSet(EnumOreType.DUST)) {
-//                ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(ModInfo.MOD_ID + ":ores/dust-" + EnumAlloys.byMeta(i).getUnlocalizedName(), "inventory"));
-//            }
-//        }
-//    }
+    @Override
+    public void registerItemRenderer() {
+        for (int i = 0; i < EnumAlloys.values().length; i++) {
+            if (EnumAlloys.byMeta(i).isTypeSet(EnumOreType.DUST)) {
+                ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(ModInfo.MOD_ID + ":ores/dust_" + EnumAlloys.byMeta(i).getUnlocalizedName(), "inventory"));
+            }
+        }
+    }
 }

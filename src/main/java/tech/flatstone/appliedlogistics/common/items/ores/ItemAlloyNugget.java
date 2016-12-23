@@ -71,7 +71,7 @@ public class ItemAlloyNugget extends ItemBase implements IProvideRecipe {
     public void registerItemRenderer() {
         for (int i = 0; i < EnumAlloys.values().length; i++) {
             if (EnumAlloys.byMeta(i).isTypeSet(EnumOreType.NUGGET)) {
-                ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(ModInfo.MOD_ID + ":ores/nugget-" + EnumAlloys.byMeta(i).getUnlocalizedName(), "inventory"));
+                ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(ModInfo.MOD_ID + ":ores/nugget_" + EnumAlloys.byMeta(i).getUnlocalizedName(), "inventory"));
             }
         }
     }

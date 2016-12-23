@@ -1,0 +1,16 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "up": "appliedlogistics:blocks/temp/top_texture",
+      "down": "appliedlogistics:blocks/temp/bottom_texture",
+      "north": "appliedlogistics:blocks/temp/front_texture",
+      "east": "appliedlogistics:blocks/temp/side_texture",
+      "west": "appliedlogistics:blocks/temp/side_texture",
+      "south": "appliedlogistics:blocks/temp/side_texture",
+      "particle": "appliedlogistics:blocks/temp/front_texture"
+    },
+    "model": "minecraft:cube",
+    "transform": "forge:default-block"
+  }
+}

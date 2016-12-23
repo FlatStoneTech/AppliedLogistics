@@ -74,7 +74,7 @@ public class ItemOreIngot extends ItemBase implements IProvideRecipe, IProvideSm
     public void registerItemRenderer() {
         for (int i = 0; i < EnumOres.values().length; i++) {
             if (EnumOres.byMeta(i).isTypeSet(EnumOreType.INGOT)) {
-                ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(ModInfo.MOD_ID + ":ores/ingot-" + EnumOres.byMeta(i).getUnlocalizedName(), "inventory"));
+                ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(ModInfo.MOD_ID + ":ores/ingot_" + EnumOres.byMeta(i).getUnlocalizedName(), "inventory"));
             }
         }
     }
