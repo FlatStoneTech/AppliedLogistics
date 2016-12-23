@@ -24,16 +24,19 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.DebugItemHelper;
 
 import java.util.List;
 
+@SideOnly(Side.CLIENT)
 public class AppliedLogisticsCreativeTabs {
     public static final CreativeTabs GENERAL = new CreativeTabs(ModInfo.MOD_ID) {
         @Override
-        public Item getTabIconItem() {
-            return Items.ITEM_TOOL_HAMMER.getItem();
+        public ItemStack getTabIconItem() {
+            return Items.ITEM_TOOL_HAMMER.getStack();
         }
 
         @Override
@@ -43,8 +46,8 @@ public class AppliedLogisticsCreativeTabs {
     };
     public static final CreativeTabs MATERIALS = new CreativeTabs(ModInfo.MOD_ID) {
         @Override
-        public Item getTabIconItem() {
-            return Items.ITEM_ORE_DUST.getItem();
+        public ItemStack getTabIconItem() {
+            return Items.ITEM_ORE_DUST.getStack();
         }
 
         @Override
@@ -54,8 +57,8 @@ public class AppliedLogisticsCreativeTabs {
     };
     public static final CreativeTabs MACHINES = new CreativeTabs(ModInfo.MOD_ID) {
         @Override
-        public Item getTabIconItem() {
-            return Items.ITEM_MATERIAL_GEAR.getItem();
+        public ItemStack getTabIconItem() {
+            return Items.ITEM_MATERIAL_GEAR.getStack();
         }
 
         @Override
@@ -65,8 +68,8 @@ public class AppliedLogisticsCreativeTabs {
     };
     public static final CreativeTabs PLANS = new CreativeTabs(ModInfo.MOD_ID) {
         @Override
-        public Item getTabIconItem() {
-            return Items.ITEM_PLAN.getItem();
+        public ItemStack getTabIconItem() {
+            return Items.ITEM_PLAN.getStack();
         }
 
         @Override
@@ -76,8 +79,8 @@ public class AppliedLogisticsCreativeTabs {
     };
     public static final CreativeTabs DEBUG = new CreativeTabs(ModInfo.MOD_ID) {
         @Override
-        public Item getTabIconItem() {
-            return Item.getItemFromBlock(Blocks.COMMAND_BLOCK);
+        public ItemStack getTabIconItem() {
+            return Item.getItemFromBlock(Blocks.COMMAND_BLOCK).getDefaultInstance();
         }
 
         @Override
@@ -85,15 +88,11 @@ public class AppliedLogisticsCreativeTabs {
             return ModInfo.MOD_ID + ".debug";
         }
 
-        @Override
-        public void displayAllRelevantItems(List<ItemStack> p_78018_1_) {
-            p_78018_1_.addAll(0, DebugItemHelper.init());
-        }
     };
     public static final CreativeTabs FLUIDS = new CreativeTabs(ModInfo.MOD_ID) {
         @Override
-        public Item getTabIconItem() {
-            return net.minecraft.init.Items.BUCKET;
+        public ItemStack getTabIconItem() {
+            return net.minecraft.init.Items.BUCKET.getDefaultInstance();
         }
 
         @Override
@@ -103,8 +102,8 @@ public class AppliedLogisticsCreativeTabs {
     };
     public static final CreativeTabs TRANSPORT = new CreativeTabs(ModInfo.MOD_ID) {
         @Override
-        public Item getTabIconItem() {
-            return net.minecraft.init.Items.BEEF;
+        public ItemStack getTabIconItem() {
+            return net.minecraft.init.Items.BEEF.getDefaultInstance();
         }
 
         @Override

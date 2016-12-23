@@ -72,7 +72,7 @@ public class Sword implements LayerRenderer<AbstractClientPlayer> {
         float f = entitylivingbaseIn.prevRenderYawOffset + (entitylivingbaseIn.renderYawOffset - entitylivingbaseIn.prevRenderYawOffset) * partialTicks;
         double d3 = MathHelper.sin(f * 0.017453292f);
         double d4 = -MathHelper.cos(f * 0.017453292f);
-        float f1 = MathHelper.clamp_float((float) d1 * 50.0f, -6.0f, 180.0f);
+        float f1 = MathHelper.clamp((float) d1 * 50.0f, -6.0f, 180.0f);
         float f2 = Math.max(0, (float) (d0 * d3 + d2 * d4) * 100.0f);
         float f3 = (float) (d0 * d4 - d2 * d3) * 100.0f;
         float f4 = entitylivingbaseIn.prevCameraYaw + (entitylivingbaseIn.cameraYaw - entitylivingbaseIn.prevCameraYaw) * partialTicks;

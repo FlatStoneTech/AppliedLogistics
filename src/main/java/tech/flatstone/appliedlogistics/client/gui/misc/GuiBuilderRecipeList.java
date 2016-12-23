@@ -146,7 +146,7 @@ public class GuiBuilderRecipeList extends GuiListExtended {
             if (j1 > 0)
             {
                 int k1 = (bottom - top) * (bottom - top) / getContentHeight();
-                k1 = MathHelper.clamp_int(k1, 32, bottom - top - 8);
+                k1 = MathHelper.clamp(k1, 32, bottom - top - 8);
                 int l1 = (int)amountScrolled * (bottom - top - k1) / j1 + top;
 
                 if (l1 < top)

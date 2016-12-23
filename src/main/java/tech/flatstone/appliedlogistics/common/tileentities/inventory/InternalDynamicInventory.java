@@ -124,6 +124,16 @@ public class InternalDynamicInventory implements IInventory, Iterable<ItemStack>
         }
     }
 
+    /**
+     * Don't rename this method to canInteractWith due to conflicts with Container
+     *
+     * @param player
+     */
+    @Override
+    public boolean isUsableByPlayer(EntityPlayer player) {
+        return false;
+    }
+
     public void markDirty(int slotIndex) {
         if (this.inventoryHandler != null && this.eventsEnabled()) {
             this.inventoryHandler.onChangeInventory(this, slotIndex, InventoryOperation.markDirty, null, null);

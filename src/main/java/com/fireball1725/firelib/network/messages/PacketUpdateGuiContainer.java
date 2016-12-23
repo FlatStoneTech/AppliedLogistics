@@ -35,7 +35,7 @@ public class PacketUpdateGuiContainer implements IMessage, IMessageHandler<Packe
 
     @Override
     public IMessage onMessage(final PacketUpdateGuiContainer message, final MessageContext ctx) {
-        IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.worldObj;
+        IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world;
         mainThread.addScheduledTask(new Runnable() {
             @Override
             public void run() {

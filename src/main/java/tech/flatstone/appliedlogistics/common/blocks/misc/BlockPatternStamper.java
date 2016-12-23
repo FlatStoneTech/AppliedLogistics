@@ -17,6 +17,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
@@ -75,6 +77,7 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
         return true;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void drawGui(TileEntity tileEntity) {
         buttonNext.setDisabled(true);
@@ -102,6 +105,7 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
         labelStats.setText(stats);
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void initGui(TileEntity tileEntity, InventoryPlayer inventoryPlayer) {
         guiMaker.clearGuiTabs();
@@ -161,5 +165,15 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
     @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateContainer(this, FACING);
+    }
+
+    @Override
+    public void registerBlockRenderer() {
+
+    }
+
+    @Override
+    public void registerBlockItemRenderer() {
+
     }
 }

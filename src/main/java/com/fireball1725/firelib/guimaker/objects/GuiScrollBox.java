@@ -94,7 +94,7 @@ public class GuiScrollBox extends GuiObject {
 
     private int getScrollBarHeight() {
         int scrollBarHeight = (int) ((float) ((this.h) * (this.h)) / (float) this.maxScrollY);
-        scrollBarHeight = MathHelper.clamp_int(scrollBarHeight, 16, this.h - 2);
+        scrollBarHeight = MathHelper.clamp(scrollBarHeight, 16, this.h - 2);
 
         return scrollBarHeight;
     }
@@ -131,7 +131,7 @@ public class GuiScrollBox extends GuiObject {
                     if (isMouseXYWithinScrollBar()) {
                         this.scrollMultiplier = -1.0F;
                         int l1 = (int) ((float) ((this.h) * (this.h)) / (float) this.maxScrollY);
-                        l1 = MathHelper.clamp_int(l1, 16, this.h - 2);
+                        l1 = MathHelper.clamp(l1, 16, this.h - 2);
                         this.scrollMultiplier /= (float) (this.h - l1) / Math.max(1, this.getMaxScroll());
                     } else {
                         this.scrollMultiplier = 1.0F;
@@ -145,7 +145,7 @@ public class GuiScrollBox extends GuiObject {
                 }
             } else if (this.initialClickY >= 0) {
                 this.offsetScrollY -= (this.mouseY - this.initialClickY) * this.scrollMultiplier;
-                this.offsetScrollY = MathHelper.clamp_int(this.offsetScrollY, 0, this.maxScrollY - this.h);
+                this.offsetScrollY = MathHelper.clamp(this.offsetScrollY, 0, this.maxScrollY - this.h);
                 this.initialClickY = this.mouseY;
             }
         } else {
@@ -162,7 +162,7 @@ public class GuiScrollBox extends GuiObject {
                     i2 = 1;
 
                 this.offsetScrollY += (float) (i2 * 10);
-                this.offsetScrollY = MathHelper.clamp_int(this.offsetScrollY, 0, this.maxScrollY - this.h);
+                this.offsetScrollY = MathHelper.clamp(this.offsetScrollY, 0, this.maxScrollY - this.h);
             }
         }
 

@@ -102,4 +102,14 @@ public class BlockPlanLibrary extends BlockTileBase implements IProvideRecipe {
         TileEntity tileEntity = world.getTileEntity(blockPos);
         TileHelper.dropItems(tileEntity, 0, 0);
     }
+
+    @Override
+    public void registerBlockRenderer() {
+
+    }
+
+    @Override
+    public void registerBlockItemRenderer() {
+
+    }
 }

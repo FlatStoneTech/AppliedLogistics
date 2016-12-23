@@ -74,4 +74,14 @@ public class BlockOre extends BlockBase {
             }
         }
     }
+
+    @Override
+    public void registerBlockRenderer() {
+
+    }
+
+    @Override
+    public void registerBlockItemRenderer() {
+
+    }
 }

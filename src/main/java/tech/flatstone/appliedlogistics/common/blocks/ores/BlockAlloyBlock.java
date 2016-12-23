@@ -90,4 +90,14 @@ public class BlockAlloyBlock extends BlockBase implements IProvideRecipe {
             }
         }
     }
+
+    @Override
+    public void registerBlockRenderer() {
+
+    }
+
+    @Override
+    public void registerBlockItemRenderer() {
+
+    }
 }

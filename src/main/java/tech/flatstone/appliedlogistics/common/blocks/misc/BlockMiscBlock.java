@@ -47,15 +47,17 @@ public class BlockMiscBlock extends BlockBase {
     }
 
     @Override
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
-        for (EnumMisc misc : EnumMisc.values()) {
-            if (misc.isTypeSet(EnumOreType.BLOCK))
-                list.add(new ItemStack(itemIn, 1, misc.getMeta()));
-        }
+    public boolean hasGravity(World worldIn, BlockPos pos) {
+        return worldIn.getBlockState(pos).getValue(MATERIAL).isTypeSet(EnumOreType.GRAVITY);
     }
 
     @Override
-    public boolean hasGravity(World worldIn, BlockPos pos) {
-        return worldIn.getBlockState(pos).getValue(MATERIAL).isTypeSet(EnumOreType.GRAVITY);
+    public void registerBlockRenderer() {
+
+    }
+
+    @Override
+    public void registerBlockItemRenderer() {
+
     }
 }

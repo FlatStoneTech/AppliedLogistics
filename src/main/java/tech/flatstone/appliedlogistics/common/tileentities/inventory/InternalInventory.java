@@ -141,10 +141,6 @@ public class InternalInventory implements IInventory, Iterable<ItemStack> {
         }
     }
 
-    @Override
-    public boolean isUseableByPlayer(EntityPlayer entityPlayer) {
-        return true;
-    }
 
     @Override
     public void openInventory(EntityPlayer player) {

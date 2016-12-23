@@ -86,6 +86,11 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
         //GameRegistry.addShapelessRecipe(new ItemStack(this), new ItemStack(Blocks.CAULDRON));
     }
 
+    @Override
+    public void registerBlockRenderer() {
+
+    }
+
     @SideOnly(Side.CLIENT)
     @Override
     public void registerBlockItemRenderer() {

@@ -67,8 +67,8 @@ public class AppliedLogistics {
         LogHelper.info("Pre Initialization (Started)");
 
         //Make sure we are running on java 7 or newer
-        if (!SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_1_7)) {
-            throw new OutdatedJavaException(String.format("%s requires Java 7 or newer, Please update your java", ModInfo.MOD_NAME));
+        if (!SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_1_8)) {
+            throw new OutdatedJavaException(String.format("%s requires Java 8 or newer, Please update your java", ModInfo.MOD_NAME));
         }
 
         proxy.registerConfiguration(event.getSuggestedConfigurationFile());

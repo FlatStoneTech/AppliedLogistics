@@ -69,7 +69,7 @@ public class GuiPlanLibrary extends GuiBase {
         if (plan == null)
             return;
 
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        EntityPlayer player = Minecraft.getMinecraft().player;
         int playerXP = player.experienceLevel;
 
         if (plan.getPlanRequiredXP() > playerXP && !player.capabilities.isCreativeMode) {
@@ -114,7 +114,7 @@ public class GuiPlanLibrary extends GuiBase {
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
-        UUID playerUUID = Minecraft.getMinecraft().thePlayer.getUniqueID();
+        UUID playerUUID = Minecraft.getMinecraft().player.getUniqueID();
         PacketButtonClick packetButtonClick = new PacketButtonClick(button.id, tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ(), playerUUID);
         PacketHandler.INSTANCE.sendToServer(packetButtonClick);
     }

@@ -20,9 +20,9 @@ public class ParticleCauldronSmokeNormal extends ParticleSmokeNormal {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        double x = MathHelper.floor_double(posX);
-        double y = MathHelper.floor_double(posY);
-        double z = MathHelper.floor_double(posZ);
+        double x = MathHelper.floor(posX);
+        double y = MathHelper.floor(posY);
+        double z = MathHelper.floor(posZ);
         boolean isCauldron = worldObj.getBlockState(new BlockPos(x, y, z)).getBlock() instanceof BlockCauldron;
         y = posY - y;
         if (isCauldron) {
