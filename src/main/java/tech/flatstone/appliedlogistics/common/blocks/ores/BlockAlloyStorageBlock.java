@@ -37,8 +37,6 @@ import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.util.EnumAlloys;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 
-import java.util.List;
-
 public class BlockAlloyStorageBlock extends BlockBase implements IProvideRecipe {
     public static final PropertyEnum<EnumAlloys> MATERIAL = PropertyEnum.create("material", EnumAlloys.class);
 

@@ -1,11 +1,15 @@
 package com.fireball1725.firelib.truetyper;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
-import java.awt.RenderingHints;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.glu.GLU;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
@@ -16,23 +20,13 @@ import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.GLU;
-
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-
 /**
- *	TrueTyper: Open Source TTF implementation for Minecraft.
- *	Modified from Slick2D - under BSD Licensing -  http://slick.ninjacave.com/license/
- *
- *	Copyright (c) 2013 - Slick2D
- *
- *	All rights reserved.
+ * TrueTyper: Open Source TTF implementation for Minecraft.
+ * Modified from Slick2D - under BSD Licensing -  http://slick.ninjacave.com/license/
+ * <p>
+ * Copyright (c) 2013 - Slick2D
+ * <p>
+ * All rights reserved.
  */
 
 public class TrueTypeFont {
@@ -41,6 +35,14 @@ public class TrueTypeFont {
             ALIGN_RIGHT = 1,
             ALIGN_CENTER = 2;
     /**
+     * Boolean flag on whether AntiAliasing is enabled or not
+     */
+    protected boolean antiAlias;
+    /**
+     * A reference to Java's AWT Font that we create our font texture from
+     */
+    protected Font font;
+    /**
      * Array that holds necessary information about the font characters
      */
     private FloatObject[] charArray = new FloatObject[256];
@@ -48,10 +50,6 @@ public class TrueTypeFont {
      * Map of user defined font characters (Character <-> IntObject)
      */
     private Map customChars = new HashMap();
-    /**
-     * Boolean flag on whether AntiAliasing is enabled or not
-     */
-    protected boolean antiAlias;
     /**
      * Font's size
      */
@@ -73,24 +71,12 @@ public class TrueTypeFont {
      */
     private int textureHeight = 1024;
     /**
-     * A reference to Java's AWT Font that we create our font texture from
-     */
-    protected Font font;
-    /**
      * The font metrics for our Java AWT font
      */
     private FontMetrics fontMetrics;
 
 
     private int correctL = 9, correctR = 8;
-
-    private class FloatObject {
-        public float width;
-        public float height;
-        public float storedX;
-        public float storedY;
-    }
-
 
     public TrueTypeFont(Font font, boolean antiAlias, char[] additionalChars) {
         this.font = font;
@@ -103,8 +89,94 @@ public class TrueTypeFont {
         if (fontHeight <= 0) fontHeight = 1;
     }
 
+
     public TrueTypeFont(Font font, boolean antiAlias) {
         this(font, antiAlias, null);
+    }
+
+    public static int loadImage(BufferedImage bufferedImage) {
+        try {
+            short width = (short) bufferedImage.getWidth();
+            short height = (short) bufferedImage.getHeight();
+            //textureLoader.bpp = bufferedImage.getColorModel().hasAlpha() ? (byte)32 : (byte)24;
+            int bpp = (byte) bufferedImage.getColorModel().getPixelSize();
+            ByteBuffer byteBuffer;
+            DataBuffer db = bufferedImage.getData().getDataBuffer();
+            if (db instanceof DataBufferInt) {
+                int intI[] = ((DataBufferInt) (bufferedImage.getData().getDataBuffer())).getData();
+                byte newI[] = new byte[intI.length * 4];
+                for (int i = 0; i < intI.length; i++) {
+                    byte b[] = intToByteArray(intI[i]);
+                    int newIndex = i * 4;
+
+                    newI[newIndex] = b[1];
+                    newI[newIndex + 1] = b[2];
+                    newI[newIndex + 2] = b[3];
+                    newI[newIndex + 3] = b[0];
+                }
+
+                byteBuffer = ByteBuffer.allocateDirect(
+                        width * height * (bpp / 8))
+                        .order(ByteOrder.nativeOrder())
+                        .put(newI);
+            } else {
+                byteBuffer = ByteBuffer.allocateDirect(
+                        width * height * (bpp / 8))
+                        .order(ByteOrder.nativeOrder())
+                        .put(((DataBufferByte) (bufferedImage.getData().getDataBuffer())).getData());
+            }
+            byteBuffer.flip();
+
+
+            int internalFormat = GL11.GL_RGBA8,
+                    format = GL11.GL_RGBA;
+            IntBuffer textureId = BufferUtils.createIntBuffer(1);
+            GL11.glGenTextures(textureId);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId.get(0));
+
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
+
+
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+            //GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+            //GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_NEAREST);
+
+            //GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
+            //GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST_MIPMAP_LINEAR);
+            //GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST_MIPMAP_NEAREST);
+
+            GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+
+            GLU.gluBuild2DMipmaps(GL11.GL_TEXTURE_2D, internalFormat, width, height, format, GL11.GL_UNSIGNED_BYTE, byteBuffer);
+            return textureId.get(0);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+            //System.exit(-1);
+        }
+    }
+
+    public static boolean isSupported(String fontname) {
+        Font font[] = getFonts();
+        for (int i = font.length - 1; i >= 0; i--) {
+            if (font[i].getName().equalsIgnoreCase(fontname))
+                return true;
+        }
+        return false;
+    }
+
+    public static Font[] getFonts() {
+        return GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
+    }
+
+    public static byte[] intToByteArray(int value) {
+        return new byte[]{
+                (byte) (value >>> 24),
+                (byte) (value >>> 16),
+                (byte) (value >>> 8),
+                (byte) value};
     }
 
     public void setCorrection(boolean on) {
@@ -421,95 +493,17 @@ public class TrueTypeFont {
         GL11.glPopMatrix();
     }
 
-    public static int loadImage(BufferedImage bufferedImage) {
-        try {
-            short width = (short) bufferedImage.getWidth();
-            short height = (short) bufferedImage.getHeight();
-            //textureLoader.bpp = bufferedImage.getColorModel().hasAlpha() ? (byte)32 : (byte)24;
-            int bpp = (byte) bufferedImage.getColorModel().getPixelSize();
-            ByteBuffer byteBuffer;
-            DataBuffer db = bufferedImage.getData().getDataBuffer();
-            if (db instanceof DataBufferInt) {
-                int intI[] = ((DataBufferInt) (bufferedImage.getData().getDataBuffer())).getData();
-                byte newI[] = new byte[intI.length * 4];
-                for (int i = 0; i < intI.length; i++) {
-                    byte b[] = intToByteArray(intI[i]);
-                    int newIndex = i * 4;
-
-                    newI[newIndex] = b[1];
-                    newI[newIndex + 1] = b[2];
-                    newI[newIndex + 2] = b[3];
-                    newI[newIndex + 3] = b[0];
-                }
-
-                byteBuffer = ByteBuffer.allocateDirect(
-                        width * height * (bpp / 8))
-                        .order(ByteOrder.nativeOrder())
-                        .put(newI);
-            } else {
-                byteBuffer = ByteBuffer.allocateDirect(
-                        width * height * (bpp / 8))
-                        .order(ByteOrder.nativeOrder())
-                        .put(((DataBufferByte) (bufferedImage.getData().getDataBuffer())).getData());
-            }
-            byteBuffer.flip();
-
-
-            int internalFormat = GL11.GL_RGBA8,
-                    format = GL11.GL_RGBA;
-            IntBuffer textureId = BufferUtils.createIntBuffer(1);
-            GL11.glGenTextures(textureId);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId.get(0));
-
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
-
-
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-            //GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-            //GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_NEAREST);
-
-            //GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
-            //GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST_MIPMAP_LINEAR);
-            //GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST_MIPMAP_NEAREST);
-
-            GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-
-            GLU.gluBuild2DMipmaps(GL11.GL_TEXTURE_2D, internalFormat, width, height, format, GL11.GL_UNSIGNED_BYTE, byteBuffer);
-            return textureId.get(0);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-            //System.exit(-1);
-        }
-    }
-
-    public static boolean isSupported(String fontname) {
-        Font font[] = getFonts();
-        for (int i = font.length - 1; i >= 0; i--) {
-            if (font[i].getName().equalsIgnoreCase(fontname))
-                return true;
-        }
-        return false;
-    }
-
-    public static Font[] getFonts() {
-        return GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
-    }
-
-    public static byte[] intToByteArray(int value) {
-        return new byte[]{
-                (byte) (value >>> 24),
-                (byte) (value >>> 16),
-                (byte) (value >>> 8),
-                (byte) value};
-    }
-
     public void destroy() {
         IntBuffer scratch = BufferUtils.createIntBuffer(1);
         scratch.put(0, fontTextureID);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
         GL11.glDeleteTextures(scratch);
+    }
+
+    private class FloatObject {
+        public float width;
+        public float height;
+        public float storedX;
+        public float storedY;
     }
 }

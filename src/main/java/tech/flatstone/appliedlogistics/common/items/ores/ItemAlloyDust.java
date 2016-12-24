@@ -32,8 +32,6 @@ import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.items.ItemBase;
 import tech.flatstone.appliedlogistics.common.util.EnumAlloys;
 
-import java.util.List;
-
 public class ItemAlloyDust extends ItemBase {
     public ItemAlloyDust() {
         super("ores/dust");

@@ -9,8 +9,6 @@ import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
 
-import java.util.List;
-
 public class TileEntityKiln extends TileEntityMachineBase implements ITickable {
     private InternalInventory inventory = new InternalInventory(this, 100); //todo: lower slot count...
     private int fuelRemaining = 0;

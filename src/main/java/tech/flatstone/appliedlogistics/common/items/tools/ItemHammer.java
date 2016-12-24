@@ -46,7 +46,6 @@ import tech.flatstone.appliedlogistics.common.util.IProvideEvent;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.Platform;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -128,8 +127,8 @@ public class ItemHammer extends ItemBaseTool implements IProvideRecipe, IProvide
 
         itemstack.damageItem(1, player);
 
-        if (itemstack.getCount() == 0);
-            player.setHeldItem(EnumHand.MAIN_HAND, null);
+        if (itemstack.getCount() == 0) ;
+        player.setHeldItem(EnumHand.MAIN_HAND, null);
 
         if (!world.isRemote) {
             world.setBlockToAir(pos);

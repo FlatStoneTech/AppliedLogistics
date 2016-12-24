@@ -12,8 +12,7 @@ public enum EnumAlloys implements IStringSerializable {
     TITANIUM("Titanium", 0, FluidTitanium.class, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST),
     BRONZE("Bronze", 1, FluidBronze.class, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST),
     ELECTRUM("Electrum", 2, FluidElectrum.class, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST),
-    STEEL("Steel", 3, FluidSteel.class, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST),
-    ;
+    STEEL("Steel", 3, FluidSteel.class, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST),;
 
     public static final EnumAlloys[] META_LOOKUP = new EnumAlloys[values().length];
 

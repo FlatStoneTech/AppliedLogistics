@@ -19,7 +19,6 @@ import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 public abstract class BlockTechBase extends BlockTileBase implements IBlockRenderer {

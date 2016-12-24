@@ -20,8 +20,6 @@
 
 package tech.flatstone.appliedlogistics.proxy;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.shader.Framebuffer;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import tech.flatstone.appliedlogistics.client.render.RenderCauldron;
 import tech.flatstone.appliedlogistics.client.render.RenderCrank;

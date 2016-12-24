@@ -33,7 +33,6 @@ import tech.flatstone.appliedlogistics.common.util.ICrankable;
 import tech.flatstone.appliedlogistics.common.util.IRotatable;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-import java.util.List;
 import java.util.Random;
 
 //todo: crank drops defualt item, not one with correct meta...

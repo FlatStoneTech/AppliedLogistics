@@ -5,8 +5,7 @@ import tech.flatstone.appliedlogistics.common.sounds.misc.SoundCauldronHandle;
 import tech.flatstone.appliedlogistics.common.util.RegistrationHelper;
 
 public enum Sounds {
-    CAULDRON_HANDLE(SoundCauldronHandle.class),
-    ;
+    CAULDRON_HANDLE(SoundCauldronHandle.class),;
 
     private final Class<? extends SoundBase> soundClass;
     private SoundEvent sound;

@@ -67,8 +67,7 @@ public enum Blocks {
 
     BLOCK_TRANSPORT_ENTRY(BlockEntry.class, ItemPipeEntry.class),
     BLOCK_TRANSPORT_EXIT(BlockExit.class, ItemPipeExit.class),
-    BLOCK_TRANSPORT_PIPE(BlockPipe.class, ItemPipe.class),
-    ;
+    BLOCK_TRANSPORT_PIPE(BlockPipe.class, ItemPipe.class),;
 
     private final Class<? extends BlockBase> blockClass;
     private final Class<? extends ItemBlock> itemBlockClass;

@@ -5,7 +5,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
@@ -23,7 +22,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 
-import javax.annotation.Nonnull;
 import java.util.Random;
 
 public class BlockFluidBase extends BlockFluidClassic implements IBlockRenderer {
@@ -107,7 +105,7 @@ public class BlockFluidBase extends BlockFluidClassic implements IBlockRenderer 
     @Override
     public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {
         super.onNeighborChange(world, pos, neighbor);
-        this.checkForMixing((World)world, pos, world.getBlockState(pos));
+        this.checkForMixing((World) world, pos, world.getBlockState(pos));
     }
 
     private boolean isSurroundingBlockFlammable(World worldIn, BlockPos pos) {

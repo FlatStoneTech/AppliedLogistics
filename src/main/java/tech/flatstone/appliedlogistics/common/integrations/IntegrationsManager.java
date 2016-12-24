@@ -21,7 +21,6 @@
 package tech.flatstone.appliedlogistics.common.integrations;
 
 import net.minecraftforge.fml.common.Loader;
-import tech.flatstone.appliedlogistics.IntegrationModIDs;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.util.ArrayList;

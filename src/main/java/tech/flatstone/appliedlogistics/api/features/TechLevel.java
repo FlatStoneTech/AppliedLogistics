@@ -23,9 +23,7 @@ package tech.flatstone.appliedlogistics.api.features;
 import net.minecraft.util.IStringSerializable;
 import tech.flatstone.appliedlogistics.ModInfo;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public enum TechLevel implements IStringSerializable {
     STONE_AGE("stone"),             // Only cobblestone machines, hand cranked

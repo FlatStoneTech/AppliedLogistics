@@ -37,8 +37,6 @@ import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 
-import java.util.List;
-
 public class BlockOreBlock extends BlockBase implements IProvideRecipe {
     public static final PropertyEnum<EnumOres> MATERIAL = PropertyEnum.create("material", EnumOres.class);
 

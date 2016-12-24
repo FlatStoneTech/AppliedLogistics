@@ -39,8 +39,6 @@ import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.IProvideSmelting;
 
-import java.util.List;
-
 public class ItemOreIngot extends ItemBase implements IProvideRecipe, IProvideSmelting {
     public ItemOreIngot() {
         super("ores/ingot");

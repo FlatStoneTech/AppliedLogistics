@@ -27,9 +27,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.common.items.Items;
-import tech.flatstone.appliedlogistics.common.util.DebugItemHelper;
-
-import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class AppliedLogisticsCreativeTabs {

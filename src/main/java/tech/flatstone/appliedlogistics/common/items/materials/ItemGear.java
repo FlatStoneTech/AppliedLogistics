@@ -36,8 +36,6 @@ import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.EnumMaterialsGear;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 
-import java.util.List;
-
 public class ItemGear extends ItemBase implements IProvideRecipe {
     public ItemGear() {
         super("materials/gear");

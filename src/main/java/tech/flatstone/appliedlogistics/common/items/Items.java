@@ -64,8 +64,7 @@ public enum Items {
 
     ITEM_TRANSPORT_EXIT(ItemPipeExit.class),
     ITEM_TRANSPORT_ENTRY(ItemPipeEntry.class),
-    ITEM_TRANSPORT_PIPE(ItemPipe.class),
-    ;
+    ITEM_TRANSPORT_PIPE(ItemPipe.class),;
 
     private final Class<? extends Item> itemClass;
     private Item item;

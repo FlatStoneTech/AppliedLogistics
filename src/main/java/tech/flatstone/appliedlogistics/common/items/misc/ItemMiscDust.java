@@ -32,8 +32,6 @@ import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.items.ItemBase;
 import tech.flatstone.appliedlogistics.common.util.EnumMisc;
 
-import java.util.List;
-
 public class ItemMiscDust extends ItemBase {
     public ItemMiscDust() {
         super("misc/dust");

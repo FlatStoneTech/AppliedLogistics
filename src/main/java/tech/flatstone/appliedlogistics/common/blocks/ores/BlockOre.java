@@ -28,14 +28,10 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
 import tech.flatstone.appliedlogistics.common.util.EnumOres;
-
-import java.util.List;
 
 public class BlockOre extends BlockBase {
     public static PropertyEnum MATERIAL = PropertyEnum.create("material", EnumOres.class);

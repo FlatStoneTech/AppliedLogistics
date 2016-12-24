@@ -11,8 +11,7 @@ import java.util.List;
 
 public enum EnumMisc implements IStringSerializable {
     SILICA("Silica", 0, EnumOreType.GRAVITY, EnumOreType.BLOCK, EnumOreType.DUST),
-    PRECURSOR("Precursor", 1, FluidPrecursor.class),
-    ;
+    PRECURSOR("Precursor", 1, FluidPrecursor.class),;
 
     public static final EnumMisc[] META_LOOKUP = new EnumMisc[values().length];
 

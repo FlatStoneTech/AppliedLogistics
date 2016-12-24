@@ -8,8 +8,6 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -21,7 +19,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
-import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.slots.GuiSlotBlankPlanInput;
@@ -29,8 +26,6 @@ import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPatter
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
-
-import javax.annotation.Nullable;
 
 public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe, IImplementsGuiMaker {
     private GuiMaker guiMaker;
@@ -84,7 +79,7 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
         buttonPrevious.setDisabled(true);
         buttonStamp.setDisabled(true);
 
-        TileEntityPatternStamper tileEntityPatternStamper = (TileEntityPatternStamper)tileEntity;
+        TileEntityPatternStamper tileEntityPatternStamper = (TileEntityPatternStamper) tileEntity;
 
         if (tileEntityPatternStamper.getPlanTechLevel() != null)
             labelSlotDetails.setText(LanguageHelper.ITEM.translateMessage(String.format("plan_blank.%s.name", tileEntityPatternStamper.getPlanTechLevel().getName())));

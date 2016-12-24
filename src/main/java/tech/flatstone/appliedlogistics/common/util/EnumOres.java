@@ -41,8 +41,7 @@ public enum EnumOres implements IStringSerializable {
     LEAD("Lead", 6, FluidLead.class, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE),
     NICKEL("Nickel", 7, FluidNickel.class, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE),
     RUTILE("Rutile", 8, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE),
-    ALUMINUM("Aluminum", 9, FluidAluminum.class, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE),
-    ;
+    ALUMINUM("Aluminum", 9, FluidAluminum.class, EnumOreType.STORAGE_BLOCK, EnumOreType.NUGGET, EnumOreType.INGOT, EnumOreType.DUST, EnumOreType.ORE),;
 
     private static final EnumOres[] META_LOOKUP = new EnumOres[values().length];
 

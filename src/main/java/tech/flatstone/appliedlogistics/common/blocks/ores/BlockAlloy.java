@@ -33,8 +33,6 @@ import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
 import tech.flatstone.appliedlogistics.common.util.EnumAlloys;
 
-import java.util.List;
-
 public class BlockAlloy extends BlockBase {
     public static PropertyEnum MATERIAL = PropertyEnum.create("material", EnumAlloys.class);
 

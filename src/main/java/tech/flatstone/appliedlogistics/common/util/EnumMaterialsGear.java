@@ -36,8 +36,7 @@ public enum EnumMaterialsGear implements IStringSerializable {
     TITANIUM("Titanium"),
     BRONZE("Bronze"),
     ELECTRUM("Electrum"),
-    STEEL("Steel"),
-    ;
+    STEEL("Steel"),;
 
     private final String name;
 

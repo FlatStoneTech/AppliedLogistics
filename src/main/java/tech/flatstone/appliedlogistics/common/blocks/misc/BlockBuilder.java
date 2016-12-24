@@ -22,8 +22,8 @@ package tech.flatstone.appliedlogistics.common.blocks.misc;
 
 import com.fireball1725.firelib.guimaker.GuiMaker;
 import com.fireball1725.firelib.guimaker.GuiMakerStatusIcon;
-import com.fireball1725.firelib.guimaker.objects.*;
 import com.fireball1725.firelib.guimaker.IImplementsGuiMaker;
+import com.fireball1725.firelib.guimaker.objects.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
@@ -40,8 +40,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
@@ -55,6 +53,7 @@ import tech.flatstone.appliedlogistics.common.util.*;
 
 public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImplementsGuiMaker {
     public static final PropertyEnum TECHLEVEL = PropertyEnum.create("tech", TechLevel.class);
+    private static final String ABOUT_LABEL = "§l§nAbout the Builder§r\n\nThe builder is Applied Logistic's main tool for building all Applied Logistic items.\n\nThis is a pretty cool block that does a lot of things...";
     private GuiMaker guiMaker;
     private GuiLabel labelInputSlotStatus = new GuiLabel(26, 13, 0x00FF00, "");
     private GuiCenteredLabel labelInfoArray = new GuiCenteredLabel(0, 6, 242, 0xffffff);
@@ -64,8 +63,6 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
     private GuiCheckBox checkBox4 = new GuiCheckBox(13, 50, 40, false);
     private GuiCheckBox checkBox5 = new GuiCheckBox(14, 50, 10, false);
     private GuiButton guiButton1 = new GuiButton(1, 10, 70, 140, "Hello World...");
-
-    private static final String ABOUT_LABEL = "§l§nAbout the Builder§r\n\nThe builder is Applied Logistic's main tool for building all Applied Logistic items.\n\nThis is a pretty cool block that does a lot of things...";
 
     public BlockBuilder() {
         super(Material.ROCK, "misc/builder", TechLevel.all());
@@ -77,7 +74,7 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
         guiMaker = new GuiMaker(this, 256, 220) {
             @Override
             public void guiObjectClicked(int controlID) {
-                switch(controlID) {
+                switch (controlID) {
                     default:
                         LogHelper.info(">>> " + controlID);
                         break;
@@ -188,7 +185,7 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
     public void drawGui(TileEntity tileEntity) {
         if (!(tileEntity instanceof TileEntityBuilder))
             return;
-        TileEntityBuilder tileEntityBuilder = (TileEntityBuilder)tileEntity;
+        TileEntityBuilder tileEntityBuilder = (TileEntityBuilder) tileEntity;
 
         ItemStack itemPlan = tileEntityBuilder.getPlanItem();
 

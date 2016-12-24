@@ -51,9 +51,9 @@ import java.util.concurrent.TimeUnit;
 public class AppliedLogistics {
     @Mod.Instance(ModInfo.MOD_ID)
     public static AppliedLogistics instance;
+    public static Configuration configuration;
     @SidedProxy(clientSide = ModInfo.CLIENT_PROXY_CLASS, serverSide = ModInfo.SERVER_PROXY_CLASS)
     private static IProxy proxy;
-    public static Configuration configuration;
 
     static {
         FluidRegistry.enableUniversalBucket();

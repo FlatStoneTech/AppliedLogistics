@@ -4,17 +4,12 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.common.blocks.BlockBase;
 import tech.flatstone.appliedlogistics.common.util.EnumMisc;
-
-import java.util.List;
 
 public class BlockMiscBlock extends BlockBase {
     public static final PropertyEnum<EnumMisc> MATERIAL = PropertyEnum.create("material", EnumMisc.class);

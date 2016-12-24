@@ -36,8 +36,6 @@ import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.util.EnumAlloys;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 
-import java.util.List;
-
 public class ItemAlloyNugget extends ItemBase implements IProvideRecipe {
     public ItemAlloyNugget() {
         super("ores/nugget");

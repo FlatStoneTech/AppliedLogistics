@@ -12,8 +12,6 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -170,7 +168,7 @@ public class BlockFurnace extends BlockTechBase implements IImplementsGuiMaker {
     @SideOnly(Side.CLIENT)
     @Override
     public void drawGui(TileEntity tileEntity) {
-        TileEntityFurnace tileEntityFurnace = (TileEntityFurnace)tileEntity;
+        TileEntityFurnace tileEntityFurnace = (TileEntityFurnace) tileEntity;
 
         progressArrow1.setProgress(tileEntityFurnace.getSmeltProgress(0));
         progressArrow2.setProgress(tileEntityFurnace.getSmeltProgress(1));

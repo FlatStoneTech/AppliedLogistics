@@ -25,7 +25,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import org.apache.commons.lang3.time.DurationFormatUtils;
 import tech.flatstone.appliedlogistics.api.features.IMachinePlan;
 import tech.flatstone.appliedlogistics.api.features.IUpgradeableMachine;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;

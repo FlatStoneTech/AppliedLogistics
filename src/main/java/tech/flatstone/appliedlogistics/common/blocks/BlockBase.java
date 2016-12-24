@@ -20,7 +20,6 @@
 
 package tech.flatstone.appliedlogistics.common.blocks;
 
-import com.sun.istack.internal.NotNull;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -83,8 +82,8 @@ public abstract class BlockBase extends Block implements IBlockRenderer {
 
     @Override
     public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {
-        if (hasGravity((World)world, pos))
-            ((World)world).scheduleUpdate(pos, this, 2);
+        if (hasGravity((World) world, pos))
+            ((World) world).scheduleUpdate(pos, this, 2);
 
         super.onNeighborChange(world, pos, neighbor);
     }

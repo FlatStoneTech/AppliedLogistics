@@ -25,8 +25,7 @@ import net.minecraft.util.IStringSerializable;
 public enum EnumCrankMaterials implements IStringSerializable {
     WOOD("Wood"),
     IRON("Iron"),
-    BRONZE("Bronze")
-    ;
+    BRONZE("Bronze");
 
     private final String name;
 

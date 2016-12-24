@@ -1,84 +1,336 @@
 {
-    "display": {
-        "thirdperson_righthand": {
-            "rotation": [ 0, 270, 0 ],
-            "translation": [ 0, -4, -4 ],
-            "scale": [ 0.50, 0.50, 0.50 ]
-        },
-        "thirdperson_lefthand": {
-            "rotation": [ 0, 90, 0 ],
-            "translation": [ 0, -4, -4 ],
-            "scale": [ 0.50, 0.50, 0.50 ]
-        },
-        "firstperson_righthand": {
-            "rotation": [ 0, 270, 0 ],
-            "translation": [ 0, 0, 0 ],
-            "scale": [ 0.50, 0.50, 0.50 ]
-        },
-        "firstperson_lefthand": {
-            "rotation": [ 0, 90, 0 ],
-            "translation": [ 0, 0, 0 ],
-            "scale": [ 0.50, 0.50, 0.50 ]
-        },
-        "gui": {
-            "rotation": [ 90, 90, 0 ],
-            "translation": [ 0, -2, 0 ],
-            "scale": [ 1, 1, 1 ]
-        },
-        "fixed": {
-            "rotation": [ 90, 90, 0 ],
-            "translation": [ 0, 0, -3],
-            "scale":[ 0.80, 0.80, 0.80]
-        },
-        "ground": {
-            "rotation": [ 0, 0, 0 ],
-            "translation": [ 0, -5, 0],
-            "scale":[ 0.80, 0.80, 0.80]
-        }
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        0,
+        270,
+        0
+      ],
+      "translation": [
+        0,
+        -4,
+        -4
+      ],
+      "scale": [
+        0.50,
+        0.50,
+        0.50
+      ]
     },
-    "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
-    "textures": {
-        "0": "blocks/wool_colored_gray"
+    "thirdperson_lefthand": {
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "translation": [
+        0,
+        -4,
+        -4
+      ],
+      "scale": [
+        0.50,
+        0.50,
+        0.50
+      ]
     },
-    "elements": [
-        {
-            "name": "handle_1",
-            "from": [ 8.0, 12.0, 1.0 ],
-            "to": [ 16.0, 13.0, 2.0 ],
-            "faces": {
-                "north": { "texture": "#0", "uv": [ 0.0, 0.0, 8.0, 1.0 ] },
-                "east": { "texture": "#0", "uv": [ 0.0, 0.0, 1.0, 1.0 ] },
-                "south": { "texture": "#0", "uv": [ 0.0, 0.0, 8.0, 1.0 ] },
-                "west": { "texture": "#0", "uv": [ 0.0, 0.0, 1.0, 1.0 ] },
-                "up": { "texture": "#0", "uv": [ 0.0, 0.0, 8.0, 1.0 ] },
-                "down": { "texture": "#0", "uv": [ 0.0, 0.0, 8.0, 1.0 ] }
-            }
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        270,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.50,
+        0.50,
+        0.50
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.50,
+        0.50,
+        0.50
+      ]
+    },
+    "gui": {
+      "rotation": [
+        90,
+        90,
+        0
+      ],
+      "translation": [
+        0,
+        -2,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        90,
+        90,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        -3
+      ],
+      "scale": [
+        0.80,
+        0.80,
+        0.80
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        -5,
+        0
+      ],
+      "scale": [
+        0.80,
+        0.80,
+        0.80
+      ]
+    }
+  },
+  "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
+  "textures": {
+    "0": "blocks/wool_colored_gray"
+  },
+  "elements": [
+    {
+      "name": "handle_1",
+      "from": [
+        8.0,
+        12.0,
+        1.0
+      ],
+      "to": [
+        16.0,
+        13.0,
+        2.0
+      ],
+      "faces": {
+        "north": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            8.0,
+            1.0
+          ]
         },
-        {
-            "name": "handle_2",
-            "from": [ 8.0, 12.0, 14.0 ],
-            "to": [ 16.0, 13.0, 15.0 ],
-            "faces": {
-                "north": { "texture": "#0", "uv": [ 0.0, 0.0, 8.0, 1.0 ] },
-                "east": { "texture": "#0", "uv": [ 0.0, 0.0, 1.0, 1.0 ] },
-                "south": { "texture": "#0", "uv": [ 0.0, 0.0, 8.0, 1.0 ] },
-                "west": { "texture": "#0", "uv": [ 0.0, 0.0, 1.0, 1.0 ] },
-                "up": { "texture": "#0", "uv": [ 0.0, 0.0, 8.0, 1.0 ] },
-                "down": { "texture": "#0", "uv": [ 0.0, 0.0, 8.0, 1.0 ] }
-            }
+        "east": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            1.0,
+            1.0
+          ]
         },
-        {
-            "name": "handle_3",
-            "from": [ 15.0, 12.0, 2.0 ],
-            "to": [ 16.0, 13.0, 14.0 ],
-            "faces": {
-                "north": { "texture": "#0", "uv": [ 0.0, 0.0, 1.0, 1.0 ] },
-                "east": { "texture": "#0", "uv": [ 0.0, 0.0, 12.0, 1.0 ] },
-                "south": { "texture": "#0", "uv": [ 0.0, 0.0, 1.0, 1.0 ] },
-                "west": { "texture": "#0", "uv": [ 0.0, 0.0, 12.0, 1.0 ] },
-                "up": { "texture": "#0", "uv": [ 0.0, 0.0, 1.0, 12.0 ] },
-                "down": { "texture": "#0", "uv": [ 0.0, 0.0, 1.0, 12.0 ] }
-            }
+        "south": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            8.0,
+            1.0
+          ]
+        },
+        "west": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            1.0,
+            1.0
+          ]
+        },
+        "up": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            8.0,
+            1.0
+          ]
+        },
+        "down": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            8.0,
+            1.0
+          ]
         }
-    ]
+      }
+    },
+    {
+      "name": "handle_2",
+      "from": [
+        8.0,
+        12.0,
+        14.0
+      ],
+      "to": [
+        16.0,
+        13.0,
+        15.0
+      ],
+      "faces": {
+        "north": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            8.0,
+            1.0
+          ]
+        },
+        "east": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            1.0,
+            1.0
+          ]
+        },
+        "south": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            8.0,
+            1.0
+          ]
+        },
+        "west": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            1.0,
+            1.0
+          ]
+        },
+        "up": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            8.0,
+            1.0
+          ]
+        },
+        "down": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            8.0,
+            1.0
+          ]
+        }
+      }
+    },
+    {
+      "name": "handle_3",
+      "from": [
+        15.0,
+        12.0,
+        2.0
+      ],
+      "to": [
+        16.0,
+        13.0,
+        14.0
+      ],
+      "faces": {
+        "north": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            1.0,
+            1.0
+          ]
+        },
+        "east": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            12.0,
+            1.0
+          ]
+        },
+        "south": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            1.0,
+            1.0
+          ]
+        },
+        "west": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            12.0,
+            1.0
+          ]
+        },
+        "up": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            1.0,
+            12.0
+          ]
+        },
+        "down": {
+          "texture": "#0",
+          "uv": [
+            0.0,
+            0.0,
+            1.0,
+            12.0
+          ]
+        }
+      }
+    }
+  ]
 }

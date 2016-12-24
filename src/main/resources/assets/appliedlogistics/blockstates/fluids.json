@@ -4,44 +4,96 @@
     "model": "forge:fluid"
   },
   "variants": {
-    "aluminum": [{
-      "custom": { "fluid": "aluminum" }
-    }],
-    "bronze": [{
-      "custom": { "fluid": "bronze" }
-    }],
-    "copper": [{
-      "custom": { "fluid": "copper" }
-    }],
-    "electrum": [{
-      "custom": { "fluid": "electrum" }
-    }],
-    "gold": [{
-      "custom": { "fluid": "gold" }
-    }],
-    "iron": [{
-      "custom": { "fluid": "iron" }
-    }],
-    "lead": [{
-      "custom": { "fluid": "lead" }
-    }],
-    "nickel": [{
-      "custom": { "fluid": "nickel" }
-    }],
-    "precursor": [{
-      "custom": { "fluid": "precursor" }
-    }],
-    "silver": [{
-      "custom": { "fluid": "silver" }
-    }],
-    "steel": [{
-      "custom": { "fluid": "steel" }
-    }],
-    "tin": [{
-      "custom": { "fluid": "tin" }
-    }],
-    "titanium": [{
-      "custom": { "fluid": "titanium" }
-    }]
+    "aluminum": [
+      {
+        "custom": {
+          "fluid": "aluminum"
+        }
+      }
+    ],
+    "bronze": [
+      {
+        "custom": {
+          "fluid": "bronze"
+        }
+      }
+    ],
+    "copper": [
+      {
+        "custom": {
+          "fluid": "copper"
+        }
+      }
+    ],
+    "electrum": [
+      {
+        "custom": {
+          "fluid": "electrum"
+        }
+      }
+    ],
+    "gold": [
+      {
+        "custom": {
+          "fluid": "gold"
+        }
+      }
+    ],
+    "iron": [
+      {
+        "custom": {
+          "fluid": "iron"
+        }
+      }
+    ],
+    "lead": [
+      {
+        "custom": {
+          "fluid": "lead"
+        }
+      }
+    ],
+    "nickel": [
+      {
+        "custom": {
+          "fluid": "nickel"
+        }
+      }
+    ],
+    "precursor": [
+      {
+        "custom": {
+          "fluid": "precursor"
+        }
+      }
+    ],
+    "silver": [
+      {
+        "custom": {
+          "fluid": "silver"
+        }
+      }
+    ],
+    "steel": [
+      {
+        "custom": {
+          "fluid": "steel"
+        }
+      }
+    ],
+    "tin": [
+      {
+        "custom": {
+          "fluid": "tin"
+        }
+      }
+    ],
+    "titanium": [
+      {
+        "custom": {
+          "fluid": "titanium"
+        }
+      }
+    ]
   }
 }

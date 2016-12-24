@@ -3,14 +3,11 @@ package tech.flatstone.appliedlogistics.common.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -18,23 +15,17 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityBase;
 import tech.flatstone.appliedlogistics.common.util.IBlockRenderer;
 import tech.flatstone.appliedlogistics.common.util.IOrientable;
-import tech.flatstone.appliedlogistics.common.util.Platform;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public abstract class BlockTileBase extends BlockBase implements ITileEntityProvider, IBlockRenderer {
     protected static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);

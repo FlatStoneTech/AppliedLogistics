@@ -1,16 +1,19 @@
 [
-{
-  "modid": "appliedlogistics",
-  "name": "Applied Logistics",
-  "description": "",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "",
-  "updateUrl": "",
-  "authorList": ["FireBall","Glasspelican"],
-  "credits": "Special thanks to everyone that has contributed on Github",
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": []
-}
+  {
+    "modid": "appliedlogistics",
+    "name": "Applied Logistics",
+    "description": "",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "FireBall",
+      "Glasspelican"
+    ],
+    "credits": "Special thanks to everyone that has contributed on Github",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
 ]

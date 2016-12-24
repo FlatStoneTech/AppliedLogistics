@@ -4,12 +4,10 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
-import scala.Int;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class GuiSlot extends GuiObject {
     private int slotNumber;

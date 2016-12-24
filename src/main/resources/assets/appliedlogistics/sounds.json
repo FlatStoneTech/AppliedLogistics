@@ -1,13 +1,24 @@
 {
-  "CauldronHandle":
-  {
+  "CauldronHandle": {
     "category": "master",
-    "sounds":
-    [
-      #Original File: 170959__timgormly__metal-clang.aiff
-      #Creator: timgormly
-      #Source: http://freesound.org/people/timgormly/sounds/170959/
-      { "name": "appliedlogistics:misc/metal_clang","stream": false }
-    ]
-  }
+    "sounds": [
+      #
+    Original
+    File: 170959
+    __timgormly__metal
+    -
+    clang
+    .
+    aiff
+    #
+    Creator: timgormly
+    #
+    Source: http
+    ://freesound.org/people/timgormly/sounds/170959/
+{
+  "name": "appliedlogistics:misc/metal_clang",
+  "stream": false
+}
+]
+}
 }
