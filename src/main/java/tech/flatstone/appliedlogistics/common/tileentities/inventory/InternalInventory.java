@@ -39,6 +39,9 @@ public class InternalInventory implements IInventory, Iterable<ItemStack> {
     public InternalInventory(IInventoryHandler inventory, int size) {
         this.size = size;
         this.inventory = new ItemStack[size];
+        for (int i = 0; i < size; i++) {
+            this.inventory[i] = ItemStack.EMPTY;
+        }
         this.inventoryHandler = inventory;
         this.maxSize = 64;
     }
@@ -80,7 +83,7 @@ public class InternalInventory implements IInventory, Iterable<ItemStack> {
             }
 
             if (inventoryHandler != null && this.eventsEnabled()) {
-                this.inventoryHandler.onChangeInventory(this, slot, InventoryOperation.decreaseStackSize, newStack, null);
+                this.inventoryHandler.onChangeInventory(this, slot, InventoryOperation.decreaseStackSize, newStack, ItemStack.EMPTY);
             }
 
             this.markDirty();
@@ -94,7 +97,7 @@ public class InternalInventory implements IInventory, Iterable<ItemStack> {
     public ItemStack removeStackFromSlot(int index) {
         return null;
     }
-
+    
     @Override
     public void setInventorySlotContents(int slot, ItemStack itemStack) {
         ItemStack oldStack = this.inventory[slot];
@@ -131,7 +134,7 @@ public class InternalInventory implements IInventory, Iterable<ItemStack> {
     @Override
     public void markDirty() {
         if (this.inventoryHandler != null && this.eventsEnabled()) {
-            this.inventoryHandler.onChangeInventory(this, -1, InventoryOperation.markDirty, null, null);
+            this.inventoryHandler.onChangeInventory(this, -1, InventoryOperation.markDirty, ItemStack.EMPTY, ItemStack.EMPTY);
         }
     }
 
