@@ -195,9 +195,6 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
         if (operation == InventoryOperation.markDirty)
             return;
 
-        if (this.getWorld() == null)
-            return;
-
         if (slot == 0) { // Change in the input slot...
             currentTechLevel = this.getBlockMetadata();
             this.markDirty();
@@ -235,10 +232,8 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
 
     @Override
     public boolean canCrank() {
-        if (ticksRemaining > 0)
-            return true;
+        return ticksRemaining > 0;
 
-        return false;
     }
 
     @Override
@@ -353,7 +348,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
         if (ticksRemaining > 0)
             return false;
 
-        if (builderSlotDetailsList.size() == 0)
+        if (builderSlotDetailsList.isEmpty())
             return false;
 
         if (getBlockMetadata() == TechLevel.CREATIVE.getMeta())
@@ -375,10 +370,7 @@ public class TileEntityBuilder extends TileEntityMachineBase implements ITickabl
                 return false;
         }
 
-        if (getTotalWeight() > ((IMachinePlan) getPlanBase()).getPlanMaxWeight(TechLevel.byMeta(currentTechLevel)))
-            return false;
-
-        return true;
+        return getTotalWeight() <= ((IMachinePlan) getPlanBase()).getPlanMaxWeight(TechLevel.byMeta(currentTechLevel));
     }
 
     public int getTotalWeight() {

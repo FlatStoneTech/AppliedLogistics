@@ -30,7 +30,7 @@ import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInv
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 public class TileEntityCauldron extends TileEntityInventoryBase implements IFluidHandler, IItemHandler, ITickable {
@@ -46,7 +46,7 @@ public class TileEntityCauldron extends TileEntityInventoryBase implements IFlui
     private int tickCounter, progressTicks;
     private double waterTemp = 22.0;
     private FluidTank tank = new FluidTank(Fluid.BUCKET_VOLUME);
-    private Map<EnumItemType, Integer> itemCountMap = new HashMap<>();
+    private Map<EnumItemType, Integer> itemCountMap = new EnumMap<>(EnumItemType.class);
 
     public boolean isFireLit() {
         return fireLit;

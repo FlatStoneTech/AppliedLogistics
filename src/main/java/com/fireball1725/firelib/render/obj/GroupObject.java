@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class GroupObject {
     public String name;
-    public ArrayList<Face> faces = new ArrayList<Face>();
+    public ArrayList<Face> faces = new ArrayList<>();
     public int glDrawingMode;
 
     public GroupObject() {
@@ -27,7 +27,7 @@ public class GroupObject {
 
     @SideOnly(Side.CLIENT)
     public void render(int glDrawingMode) {
-        if (faces.size() > 0) {
+        if (!faces.isEmpty()) {
             Tessellator tessellator = Tessellator.getInstance();
             tessellator.getBuffer().begin(glDrawingMode, DefaultVertexFormats.POSITION_TEX);
             render(tessellator);
@@ -37,7 +37,7 @@ public class GroupObject {
 
     @SideOnly(Side.CLIENT)
     public void render(Tessellator tessellator) {
-        if (faces.size() > 0) {
+        if (!faces.isEmpty()) {
             for (Face face : faces) {
                 face.addFaceForRender(tessellator);
             }

@@ -104,7 +104,7 @@ public abstract class GuiMaker {
         TileEntity tileEntity = world.getTileEntity(pos);
 
         guiMakerInstance.initGui(tileEntity, player.inventory);
-        if (guiTabs.size() == 0)
+        if (guiTabs.isEmpty())
             return;
 
         selectedTab = 0;

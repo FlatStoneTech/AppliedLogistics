@@ -70,11 +70,7 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
 
             ItemStack itemStack = inv.getStackInSlot(0);
 
-            if (itemStack == null)
-                return;
-
-            if (!isPlanValid())
-                return;
+            if (!isPlanValid()) return;
 
             if (itemStack.getItemDamage() == TechLevel.CREATIVE.getMeta()) {
                 creativeMode = true;

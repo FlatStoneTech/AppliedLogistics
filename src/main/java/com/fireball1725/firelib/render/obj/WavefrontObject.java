@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
  * Wavefront Object importer
  * Based heavily off of the specifications found at http://en.wikipedia.org/wiki/Wavefront_.obj_file
  */
+@SideOnly(Side.CLIENT)
 public class WavefrontObject implements IModelCustom {
     private static Pattern vertexPattern = Pattern.compile("(v( (\\-){0,1}\\d+\\.\\d+){3,4} *\\n)|(v( (\\-){0,1}\\d+\\.\\d+){3,4} *$)");
     private static Pattern vertexNormalPattern = Pattern.compile("(vn( (\\-){0,1}\\d+\\.\\d+){3,4} *\\n)|(vn( (\\-){0,1}\\d+\\.\\d+){3,4} *$)");
@@ -36,10 +37,10 @@ public class WavefrontObject implements IModelCustom {
     private static Matcher face_V_VT_VN_Matcher, face_V_VT_Matcher, face_V_VN_Matcher, face_V_Matcher;
     private static Matcher groupObjectMatcher;
 
-    public ArrayList<Vertex> vertices = new ArrayList<Vertex>();
-    public ArrayList<Vertex> vertexNormals = new ArrayList<Vertex>();
-    public ArrayList<TextureCoordinate> textureCoordinates = new ArrayList<TextureCoordinate>();
-    public ArrayList<GroupObject> groupObjects = new ArrayList<GroupObject>();
+    public ArrayList<Vertex> vertices = new ArrayList<>();
+    public ArrayList<Vertex> vertexNormals = new ArrayList<>();
+    public ArrayList<TextureCoordinate> textureCoordinates = new ArrayList<>();
+    public ArrayList<GroupObject> groupObjects = new ArrayList<>();
     private GroupObject currentGroupObject;
     private String fileName;
 
@@ -221,13 +222,11 @@ public class WavefrontObject implements IModelCustom {
                     if (face != null) {
                         currentGroupObject.faces.add(face);
                     }
-                } else if (currentLine.startsWith("g ") | currentLine.startsWith("o ")) {
+                } else if (currentLine.startsWith("g ") || currentLine.startsWith("o ")) {
                     GroupObject group = parseGroupObject(currentLine, lineCount);
 
-                    if (group != null) {
-                        if (currentGroupObject != null) {
-                            groupObjects.add(currentGroupObject);
-                        }
+                    if (group != null && currentGroupObject != null) {
+                        groupObjects.add(currentGroupObject);
                     }
 
                     currentGroupObject = group;
