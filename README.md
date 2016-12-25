@@ -1,6 +1,6 @@
 # Applied Logistics
 
-![]()
+![Applied Logistics Logo](https://raw.githubusercontent.com/FlatStoneTech/AppliedLogistics/develop/images/appliedlogistics-logo.png)
 
 ## Table of Contents
 
