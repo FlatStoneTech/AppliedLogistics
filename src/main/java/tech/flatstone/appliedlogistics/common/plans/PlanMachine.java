@@ -17,32 +17,38 @@
  *  Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.debug;
+package tech.flatstone.appliedlogistics.common.plans;
 
 import net.minecraft.item.ItemStack;
-import tech.flatstone.appliedlogistics.api.features.EnumOreType;
-import tech.flatstone.appliedlogistics.common.items.Items;
-import tech.flatstone.appliedlogistics.common.util.DebugItemHelper;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
 
-public class DebugOres4 implements IDebugChest {
-    @Override
-    public ItemStack getDebugChest() {
-        DebugItemHelper debugChest = new DebugItemHelper("Ores 4/4");
+import java.util.List;
 
-        for (int i = 0; i < 6; i++) {
+public class PlanMachine {
+    private final String name;
+    private final List<PlanComponent> planComponentList;
+    private final ItemStack outputItem;
+    private final float totalTechWeight;
 
-            if (EnumOres.byMeta(i + 9).isTypeSet(EnumOreType.NUGGET))
-                debugChest.setItem(i, new ItemStack(Items.ITEM_ORE_NUGGET.getItem(), 1, i + 9));
+    public PlanMachine(String name, List<PlanComponent> planComponentList, ItemStack outputItem, float totalTechWeight) {
+        this.name = name;
+        this.planComponentList = planComponentList;
+        this.outputItem = outputItem;
+        this.totalTechWeight = totalTechWeight;
+    }
 
-            if (EnumOres.byMeta(i + 9).isTypeSet(EnumOreType.DUST))
-                debugChest.setItem(i + 9, new ItemStack(Items.ITEM_ORE_DUST.getItem(), 1, i + 9));
+    public String getName() {
+        return name;
+    }
 
-            //todo: // FIXME: 5/28/16 
-            //if (EnumOres.byMeta(i + 9).isTypeSet(EnumOreType.GEAR))
-            //    debugChest.setItem(i + 18, new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, i + 9));
-        }
+    public List<PlanComponent> getPlanComponentList() {
+        return planComponentList;
+    }
 
-        return debugChest.registerItem();
+    public ItemStack getOutputItem() {
+        return outputItem;
+    }
+
+    public float getTotalTechWeight() {
+        return totalTechWeight;
     }
 }

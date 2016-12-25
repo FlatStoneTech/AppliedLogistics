@@ -1,3 +1,34 @@
 Blank Plan per Tech Level
 Limited # of uses (hover shows number of uses left)
 Can copy plan for XP based on tech level and orginal XP cost in plan copier
+
+
+----------
+
+Recipe components ->
+ - list <ItemStack> - Materials
+ - list <this> - Requires
+ - list <this> - Prohibited
+ - float - TimeToBuild
+ - float - XPRequired
+ - String - Name
+ - boolean - Required
+ - float - TechWeight
+
+Register Machine ->
+ - ItemStack <plan item> (key)
+
+ - list <recipe components>
+ - ItemStack <output item>
+ - float - TechWeightMax
+ - String - Name
+
+
+
+
+ [X] Base Materials -> 10x Cobblestone, 2x Iron Ingot, etc...
+ [ ] 2x Processing Speed -> 3x Gold Gear
+ [ ] 2x Material Gain -> 2x Iron Gear, 1x Diamond
+ [ ] 3x Processing Speed
+ [ ] 3x Material Gain
+ [ ] Comparator Support

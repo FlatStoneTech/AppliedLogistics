@@ -17,32 +17,67 @@
  *  Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.debug;
+package tech.flatstone.appliedlogistics.common.plans;
 
 import net.minecraft.item.ItemStack;
-import tech.flatstone.appliedlogistics.api.features.EnumOreType;
-import tech.flatstone.appliedlogistics.common.items.Items;
-import tech.flatstone.appliedlogistics.common.util.DebugItemHelper;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
+import net.minecraft.util.NonNullList;
 
-public class DebugOres4 implements IDebugChest {
-    @Override
-    public ItemStack getDebugChest() {
-        DebugItemHelper debugChest = new DebugItemHelper("Ores 4/4");
+import java.util.List;
 
-        for (int i = 0; i < 6; i++) {
+public class PlanComponent {
+    private final NonNullList<ItemStack> recipeMaterials;
+    private final List<PlanComponent> recipeRequires;
+    private final List<PlanComponent> recipeProhibits;
+    private final float recipeTimeToBuild;
+    private final float recipeXPRequired;
+    private final String recipeName;
+    private final boolean recipeRequired;
+    private final float recipeWeight;
 
-            if (EnumOres.byMeta(i + 9).isTypeSet(EnumOreType.NUGGET))
-                debugChest.setItem(i, new ItemStack(Items.ITEM_ORE_NUGGET.getItem(), 1, i + 9));
+    public PlanComponent(String recipeName, NonNullList<ItemStack> recipeMaterials, List<PlanComponent> recipeRequires, List<PlanComponent> recipeProhibits, float recipeTimeToBuild, float recipeXPRequired, float recipeWeight) {
+        this(recipeName, recipeMaterials, recipeRequires, recipeProhibits, recipeTimeToBuild, recipeXPRequired, recipeWeight, false);
+    }
 
-            if (EnumOres.byMeta(i + 9).isTypeSet(EnumOreType.DUST))
-                debugChest.setItem(i + 9, new ItemStack(Items.ITEM_ORE_DUST.getItem(), 1, i + 9));
+    public PlanComponent(String recipeName, NonNullList<ItemStack> recipeMaterials, List<PlanComponent> recipeRequires, List<PlanComponent> recipeProhibits, float recipeTimeToBuild, float recipeXPRequired, float recipeWeight, boolean recipeRequired) {
+        this.recipeMaterials = recipeMaterials;
+        this.recipeRequires = recipeRequires;
+        this.recipeProhibits = recipeProhibits;
+        this.recipeTimeToBuild = recipeTimeToBuild;
+        this.recipeXPRequired = recipeXPRequired;
+        this.recipeName = recipeName;
+        this.recipeWeight = recipeWeight;
+        this.recipeRequired = recipeRequired;
+    }
 
-            //todo: // FIXME: 5/28/16 
-            //if (EnumOres.byMeta(i + 9).isTypeSet(EnumOreType.GEAR))
-            //    debugChest.setItem(i + 18, new ItemStack(Items.ITEM_MATERIAL_GEAR.getItem(), 1, i + 9));
-        }
+    public NonNullList<ItemStack> getRecipeMaterials() {
+        return recipeMaterials;
+    }
 
-        return debugChest.registerItem();
+    public List<PlanComponent> getRecipeRequires() {
+        return recipeRequires;
+    }
+
+    public List<PlanComponent> getRecipeProhibits() {
+        return recipeProhibits;
+    }
+
+    public float getRecipeTimeToBuild() {
+        return recipeTimeToBuild;
+    }
+
+    public float getRecipeXPRequired() {
+        return recipeXPRequired;
+    }
+
+    public String getRecipeName() {
+        return recipeName;
+    }
+
+    public boolean isRecipeRequired() {
+        return recipeRequired;
+    }
+
+    public float getRecipeWeight() {
+        return recipeWeight;
     }
 }
