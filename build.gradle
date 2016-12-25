@@ -1,5 +1,6 @@
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'com.matthewprenger.cursegradle'
+apply plugin: 'co.riiid.gradle'
 
 apply from: 'gradle/scripts/dependencies.gradle'
 apply from: 'gradle/scripts/integration.gradle'
@@ -40,7 +41,8 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
-        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.0.7"
+        classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.0.7'
+        classpath 'co.riiid:gradle-github-plugin:0.4.2'
     }
 }
 
@@ -57,6 +59,14 @@ archivesBaseName = cibasename
 def api_version = 1
 def api_featureset = 1
 
+def githubOwner = ''
+def githubRepo = ''
+def githubToken = ''
+def githubTagName = ''
+def githubTargetCommitish = ''
+def githubName = ''
+def githubPreRelease = true
+
 // If TeamCity is running this build, lets set the version info
 if (hasProperty("teamcity")) {
     version = minecraft_version + "-" + teamcity["build.number"] + "-universal"
@@ -66,6 +76,15 @@ if (hasProperty("teamcity")) {
 
     curseApiKey = teamcity["apiKey"]
     curseReleaseType = teamcity["releaseType"]
+
+    githubOwner = teamcity["githubOwner"]
+    githubRepo = teamcity["githubProject"]
+    githubToken = teamcity["githubToken"]
+    githubTagName = teamcity["build.number"]
+    githubTargetCommitish = teamcity["branch"]
+    githubName = teamcity["build.number"]
+
+    githubPreRelease = teamcity["githubPreRelease"];
 }
 
 minecraft {
@@ -121,4 +140,18 @@ curseforge {
         addGameVersion minecraft_version
         addArtifact devJar
     }
+}
+
+github {
+    owner = githubOwner
+    repo = githubRepo
+    token = githubToken
+    tagName = githubTagName
+    targetCommitish = githubTargetCommitish
+    name = githubName
+    body = file("CHANGELOG.md").text
+    prerelease = githubPreRelease
+    assets = [
+            jar.archivePath
+    ]
 }
