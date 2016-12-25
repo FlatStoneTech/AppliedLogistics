@@ -1,5 +1,7 @@
 # Applied Logistics
 
+![]()
+
 ## Table of Contents
 
 * [About](#about)
