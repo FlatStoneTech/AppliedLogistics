@@ -70,13 +70,13 @@ public class InternalInventory implements IInventory, Iterable<ItemStack> {
 
     @Override
     public ItemStack decrStackSize(int slot, int qty) {
-        if (this.inventory[slot] != null) {
+        if (!this.inventory[slot].isEmpty()) {
             ItemStack split = this.getStackInSlot(slot);
             ItemStack newStack;
 
             if (qty >= split.getCount()) {
                 newStack = this.inventory[slot];
-                this.inventory[slot] = null;
+                this.inventory[slot] = ItemStack.EMPTY;
             } else {
                 newStack = split.splitStack(qty);
             }
@@ -94,7 +94,7 @@ public class InternalInventory implements IInventory, Iterable<ItemStack> {
 
     @Override
     public ItemStack removeStackFromSlot(int index) {
-        return null;
+        return ItemStack.EMPTY;
     }
     
     @Override
@@ -106,16 +106,16 @@ public class InternalInventory implements IInventory, Iterable<ItemStack> {
             ItemStack removed = oldStack;
             ItemStack added = itemStack;
 
-            if (oldStack != null && itemStack != null && Platform.isSameItem(oldStack, itemStack)) {
+            if ((!oldStack.isEmpty()) && (!itemStack.isEmpty()) && Platform.isSameItem(oldStack, itemStack)) {
                 if (oldStack.getCount() > itemStack.getCount()) {
                     removed = removed.copy();
                     removed.shrink(itemStack.getCount());
                 } else if (oldStack.getCount() < itemStack.getCount()) {
                     added = added.copy();
                     added.shrink(oldStack.getCount());
-                    removed = null;
+                    removed = ItemStack.EMPTY;
                 } else {
-                    removed = added = null;
+                    removed = added = ItemStack.EMPTY;
                 }
             }
 
@@ -132,9 +132,7 @@ public class InternalInventory implements IInventory, Iterable<ItemStack> {
 
     @Override
     public void markDirty() {
-        if (this.inventoryHandler != null && this.eventsEnabled()) {
-            this.inventoryHandler.onChangeInventory(this, -1, InventoryOperation.markDirty, ItemStack.EMPTY, ItemStack.EMPTY);
-        }
+        markDirty(-1);
     }
 
     @Override
@@ -144,7 +142,7 @@ public class InternalInventory implements IInventory, Iterable<ItemStack> {
 
     public void markDirty(int slotIndex) {
         if (this.inventoryHandler != null && this.eventsEnabled()) {
-            this.inventoryHandler.onChangeInventory(this, slotIndex, InventoryOperation.markDirty, null, null);
+            this.inventoryHandler.onChangeInventory(this, slotIndex, InventoryOperation.markDirty, ItemStack.EMPTY, ItemStack.EMPTY);
         }
     }
 

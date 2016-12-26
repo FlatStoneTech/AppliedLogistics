@@ -8,11 +8,14 @@ import net.minecraft.init.SoundEvents;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.io.IOException;
 
 public class GuiCheckBox extends GuiObject {
+    private String labelText;
+
     public GuiCheckBox(int buttonID, int x, int y, boolean checked) {
         super(buttonID);
         this.x = x;
@@ -38,10 +41,13 @@ public class GuiCheckBox extends GuiObject {
 
     @Override
     public void drawGuiContainerForegroundLayer(GuiContainer guiContainer, int mouseX, int mouseY) {
+        Point p = this.getWindowXY(false);
+
+        if (!this.labelText.isEmpty())
+            Minecraft.getMinecraft().fontRendererObj.drawString(this.labelText, p.x + 16, p.y + 2, 0xFFFFFF);
+
         if (!this.visible || disabled)
             return;
-
-        Point p = this.getWindowXY(false);
 
         Rectangle r = new Rectangle(p.x + this.guiX, p.y + this.guiY, 11, 11);
 
@@ -74,5 +80,9 @@ public class GuiCheckBox extends GuiObject {
 
         Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         this.guiObjectClicked();
+    }
+
+    public void setLabel(String text) {
+        this.labelText = text;
     }
 }

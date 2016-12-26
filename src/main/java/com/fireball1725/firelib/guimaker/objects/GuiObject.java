@@ -42,7 +42,7 @@ public abstract class GuiObject extends Gui implements IGuiObject {
     }
 
     public void guiObjectClicked() {
-        PacketHandler.INSTANCE.sendToServer(new PacketGuiObjectClicked(guiMakerObj.getGuiId(), this.controlID));
+        PacketHandler.INSTANCE.sendToServer(new PacketGuiObjectClicked(guiMakerObj.getGuiId(), this.controlID, guiMakerObj.getBlockPos()));
     }
 
     public void guiObjectUpdated() {

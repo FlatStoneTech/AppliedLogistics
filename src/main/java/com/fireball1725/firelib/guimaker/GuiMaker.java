@@ -59,6 +59,8 @@ public abstract class GuiMaker {
      * Gui Tabs that make up Gui Window
      */
     private List<GuiTab> guiTabs = new ArrayList<>();
+
+    private BlockPos blockPos;
     //endregion
 
     //region Get Instance
@@ -109,6 +111,8 @@ public abstract class GuiMaker {
 
         selectedTab = 0;
 
+        this.blockPos = pos;
+
         player.openGui(mod, this.guiId, world, pos.getX(), pos.getY(), pos.getZ());
     }
 
@@ -144,6 +148,10 @@ public abstract class GuiMaker {
     //endregion
 
     //region Getters and Setters
+
+    public BlockPos getBlockPos() {
+        return blockPos;
+    }
 
     /**
      * Get GuiMaker Status Icon
@@ -247,7 +255,7 @@ public abstract class GuiMaker {
 
     //region Callbacks
 
-    abstract public void guiObjectClicked(int controlID);
+    abstract public void guiObjectClicked(int controlID, World world, BlockPos pos);
 
     abstract public void guiObjectUpdated(int controlID);
 

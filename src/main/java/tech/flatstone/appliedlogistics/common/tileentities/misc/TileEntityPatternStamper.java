@@ -19,24 +19,72 @@
 
 package tech.flatstone.appliedlogistics.common.tileentities.misc;
 
+import com.fireball1725.firelib.guimaker.objects.GuiCheckBox;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
+import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPatternStamper;
 import tech.flatstone.appliedlogistics.common.items.Items;
+import tech.flatstone.appliedlogistics.common.network.PacketHandler;
+import tech.flatstone.appliedlogistics.common.network.messages.PacketPatternStamperUpdatePlan;
+import tech.flatstone.appliedlogistics.common.plans.PlanComponent;
+import tech.flatstone.appliedlogistics.common.plans.PlanMachine;
+import tech.flatstone.appliedlogistics.common.plans.PlanRegistry;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
+import tech.flatstone.appliedlogistics.common.util.Platform;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TileEntityPatternStamper extends TileEntityMachineBase {
     InternalInventory inventory = new InternalInventory(this, 2);
 
     private boolean creativeMode = false;
     private TechLevel planTechLevel = null;
+
+    private List<PlanMachine> planMachines = null;
+    private int selectedMachine = 0;
+
+    public PlanMachine getSelectedPlanMachine() {
+        if (planMachines == null)
+            return null;
+
+        return planMachines.get(selectedMachine);
+    }
+
+    public void planNext() {
+        if (this.planMachines == null)
+            return;
+
+        selectedMachine++;
+
+        if (selectedMachine >= this.planMachines.size())
+            selectedMachine = 0;
+
+        this.markDirty();
+        this.markForUpdate();
+    }
+
+    public void planPrev() {
+        if (this.planMachines == null)
+            return;
+
+        selectedMachine--;
+
+        if (selectedMachine == -1)
+            selectedMachine = this.planMachines.size() - 1;
+
+        this.markDirty();
+        this.markForUpdate();
+    }
 
     @Override
     public boolean canBeRotated() {
@@ -48,13 +96,12 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
         super.readFromNBT(nbtTagCompound);
 
         creativeMode = nbtTagCompound.getBoolean("creativeMode");
+        selectedMachine = nbtTagCompound.getInteger("selectedMachine");
 
         if (nbtTagCompound.getInteger("techLevel") == -1)
             planTechLevel = null;
         else
             planTechLevel = TechLevel.byMeta(nbtTagCompound.getInteger("techLevel"));
-
-        LogHelper.info(">>> NBT Read");
     }
 
     @Override
@@ -62,11 +109,10 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
         super.writeToNBT(nbtTagCompound);
 
         nbtTagCompound.setBoolean("creativeMode", creativeMode);
+        nbtTagCompound.setInteger("selectedMachine", selectedMachine);
 
         int techLevelMeta = planTechLevel == null ? -1 : planTechLevel.getMeta();
         nbtTagCompound.setInteger("techLevel", techLevelMeta);
-
-        LogHelper.info(">>> NBT Write");
 
         return nbtTagCompound;
     }
@@ -78,16 +124,17 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
 
     @Override
     public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
-        LogHelper.info(String.format("Inventory: %s | slot: %d | Operation: %s | Removed ItemStack: %s | Added ItemStack: %s", inv.toString(), slot, operation, removed, added));
-
         if (slot == 0) {
             creativeMode = false;
             planTechLevel = null;
 
             this.markDirty();
             this.markForUpdate();
+            this.updateMachineList(planTechLevel);
 
             ItemStack itemStack = inv.getStackInSlot(0);
+
+            if (itemStack.isEmpty()) return;
 
             if (!isPlanValid()) return;
 
@@ -100,6 +147,7 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
 
             this.markDirty();
             this.markForUpdate();
+            this.updateMachineList(planTechLevel);
         }
     }
 
@@ -136,5 +184,49 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
 
     public TechLevel getPlanTechLevel() {
         return planTechLevel;
+    }
+
+    public void updateMachineList(TechLevel planTechLevel) {
+        if (Platform.isServer())
+            PacketHandler.INSTANCE.sendToAllAround(new PacketPatternStamperUpdatePlan(this.getPos(), planTechLevel), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), this.getPos().getX(), this.getPos().getY(), this.getPos().getZ(), 50));
+
+        this.selectedMachine = 0;
+        this.planMachines = PlanRegistry.getPlanRegistry(planTechLevel);
+
+        updateCheckBoxes();
+    }
+
+    public void updateCheckBoxes() {
+        BlockPatternStamper block = (BlockPatternStamper)this.blockType;
+
+        if (planMachines == null) {
+            block.drawCheckBoxes(new ArrayList<>(), 0);
+            return;
+        }
+
+        List<GuiCheckBox> checkBoxes = new ArrayList<>();
+
+        int y = 4;
+        int i = 0;
+
+        PlanMachine planMachine = getSelectedPlanMachine();
+        if (planMachine == null)
+            return;
+
+        for (PlanComponent planComponent : planMachine.getPlanComponentList()) {
+            GuiCheckBox guiCheckBox = new GuiCheckBox(i + 100, 4, y, false);
+            if (planComponent.isRecipeRequired()) {
+                guiCheckBox.setSelected(true);
+                guiCheckBox.setDisabled(true);
+            }
+            guiCheckBox.setLabel(planComponent.getRecipeName());
+
+            y += 18;
+            i ++;
+
+            checkBoxes.add(guiCheckBox);
+        }
+
+        block.drawCheckBoxes(checkBoxes, y);
     }
 }

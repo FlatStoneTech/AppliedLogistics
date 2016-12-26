@@ -25,17 +25,16 @@ import com.fireball1725.firelib.guimaker.objects.*;
 import com.fireball1725.firelib.guimaker.objects.slots.GuiSlotFuelInput;
 import com.fireball1725.firelib.guimaker.objects.slots.GuiSlotFurnaceInput;
 import com.fireball1725.firelib.guimaker.objects.slots.GuiSlotOutput;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -47,13 +46,21 @@ import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTechBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
+import tech.flatstone.appliedlogistics.common.items.Items;
+import tech.flatstone.appliedlogistics.common.plans.PlanComponent;
+import tech.flatstone.appliedlogistics.common.plans.PlanMachine;
+import tech.flatstone.appliedlogistics.common.plans.PlanRegistry;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityFurnace;
+import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 
-public class BlockFurnace extends BlockTechBase implements IImplementsGuiMaker {
+public class BlockFurnace extends BlockTechBase implements IImplementsGuiMaker, IProvideRecipe {
     private static final PropertyBool WORKING = PropertyBool.create("working");
     private GuiMaker guiMaker;
     private GuiProgressArrow progressArrow1 = new GuiProgressArrow(52, 6, 0);
@@ -73,7 +80,7 @@ public class BlockFurnace extends BlockTechBase implements IImplementsGuiMaker {
 
         this.guiMaker = new GuiMaker(this, 202, 174) {
             @Override
-            public void guiObjectClicked(int controlID) {
+            public void guiObjectClicked(int controlID, World world, BlockPos pos) {
 
             }
 
@@ -279,6 +286,65 @@ public class BlockFurnace extends BlockTechBase implements IImplementsGuiMaker {
         //labelInfoArray.setText(ABOUT_LABEL);
         //tabAbout.addGuiObject(labelInfoArray);
         guiMaker.addGuiTab(tabAbout);
+
+    }
+
+    @Override
+    public void RegisterRecipes() {
+        // Register Components
+                PlanComponent techStoneBase = new PlanComponent("Base Materials",
+                Arrays.asList(
+                        new ItemStack(net.minecraft.init.Blocks.COBBLESTONE, 10),
+                        new ItemStack(net.minecraft.init.Blocks.COBBLESTONE, 10)
+                ),
+                null,
+                null,
+                0, 0, 0, true);
+
+        PlanComponent techStoneSpeed1 = new PlanComponent("50% Speed Increase",
+                Arrays.asList(
+                        new ItemStack(net.minecraft.init.Blocks.COBBLESTONE, 10),
+                        new ItemStack(net.minecraft.init.Blocks.COBBLESTONE, 10)
+                ),
+                null,
+                null,
+                40, 2, 50, false);
+
+        PlanComponent techStoneSpeed2 = new PlanComponent("100% Speed Increase",
+                Arrays.asList(
+                        new ItemStack(net.minecraft.init.Blocks.COBBLESTONE, 10),
+                        new ItemStack(net.minecraft.init.Blocks.COBBLESTONE, 10)
+                ),
+                null,
+                null,
+                40, 2, 50, false);
+
+
+        // Register Machines
+        PlanRegistry.RegisterMachine(new PlanMachine("Stone Furnace",
+                Arrays.asList(
+                        techStoneBase, techStoneSpeed1
+                ), Blocks.BLOCK_MACHINE_FURNACE.getStack(), 100, TechLevel.STONE_AGE));
+
+        PlanRegistry.RegisterMachine(new PlanMachine("Furnace 1",
+                Arrays.asList(
+                        techStoneBase, techStoneSpeed1, techStoneSpeed2
+                ), Blocks.BLOCK_MACHINE_FURNACE.getStack(), 100, TechLevel.STONE_AGE));
+
+        PlanRegistry.RegisterMachine(new PlanMachine("Furnace 2",
+                Arrays.asList(
+                        techStoneSpeed1
+                ), Blocks.BLOCK_MACHINE_FURNACE.getStack(), 100, TechLevel.STONE_AGE));
+
+        PlanRegistry.RegisterMachine(new PlanMachine("Furnace 3",
+                Arrays.asList(
+                        techStoneSpeed1, techStoneSpeed2
+                ), Blocks.BLOCK_MACHINE_FURNACE.getStack(), 100, TechLevel.STONE_AGE));
+
+        PlanRegistry.RegisterMachine(new PlanMachine("Furnace 4",
+                Arrays.asList(
+                        techStoneSpeed1, techStoneSpeed2, techStoneSpeed1, techStoneSpeed2, techStoneBase, techStoneBase, techStoneSpeed1, techStoneSpeed2
+                ), Blocks.BLOCK_MACHINE_FURNACE.getStack(), 100, TechLevel.STONE_AGE));
 
     }
 }

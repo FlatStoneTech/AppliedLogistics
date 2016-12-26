@@ -25,6 +25,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.network.messages.PacketBlockRotated;
 import tech.flatstone.appliedlogistics.common.network.messages.PacketButtonClick;
+import tech.flatstone.appliedlogistics.common.network.messages.PacketPatternStamperUpdatePlan;
 
 public class PacketHandler {
     public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(ModInfo.MOD_ID.toLowerCase());
@@ -32,5 +33,6 @@ public class PacketHandler {
     public static void init() {
         INSTANCE.registerMessage(PacketButtonClick.class, PacketButtonClick.class, 0, Side.SERVER);
         INSTANCE.registerMessage(PacketBlockRotated.class, PacketBlockRotated.class, 1, Side.CLIENT);
+        INSTANCE.registerMessage(PacketPatternStamperUpdatePlan.class, PacketPatternStamperUpdatePlan.class, 2, Side.CLIENT);
     }
 }

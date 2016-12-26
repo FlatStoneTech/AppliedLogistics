@@ -72,7 +72,7 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
 
         guiMaker = new GuiMaker(this, 256, 220) {
             @Override
-            public void guiObjectClicked(int controlID) {
+            public void guiObjectClicked(int controlID, World world, BlockPos pos) {
                 switch (controlID) {
                     default:
                         LogHelper.info(">>> " + controlID);

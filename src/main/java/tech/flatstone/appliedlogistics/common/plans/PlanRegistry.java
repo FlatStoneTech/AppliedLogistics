@@ -20,9 +20,42 @@
 package tech.flatstone.appliedlogistics.common.plans;
 
 import net.minecraft.item.ItemStack;
+import tech.flatstone.appliedlogistics.api.features.TechLevel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class PlanRegistry {
-    private HashMap<ItemStack, PlanMachine> planRegistry;
+    private static List<PlanMachine> planRegistry = new ArrayList<>();
+
+    public static void RegisterMachine(PlanMachine planMachine) {
+        planRegistry.add(planMachine);
+    }
+
+    public static void RegisterMachine(List<PlanMachine> planMachines) {
+        for (PlanMachine planMachine : planMachines)
+            RegisterMachine(planMachine);
+    }
+
+    public static List<PlanMachine> getPlanRegistry() {
+        return planRegistry;
+    }
+
+    public static List<PlanMachine> getPlanRegistry(TechLevel techLevel) {
+        if (techLevel == null)
+            return null;
+
+        List<PlanMachine> planMachineList = new ArrayList<>();
+        for (PlanMachine planMachine : planRegistry) {
+            if (planMachine.getTechLevel() == techLevel)
+                planMachineList.add(planMachine);
+        }
+
+        if (planMachineList.size() == 0)
+            return null;
+
+        return planMachineList;
+    }
+
 }

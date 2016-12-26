@@ -25,7 +25,7 @@ import net.minecraft.util.NonNullList;
 import java.util.List;
 
 public class PlanComponent {
-    private final NonNullList<ItemStack> recipeMaterials;
+    private final List<ItemStack> recipeMaterials;
     private final List<PlanComponent> recipeRequires;
     private final List<PlanComponent> recipeProhibits;
     private final float recipeTimeToBuild;
@@ -34,11 +34,11 @@ public class PlanComponent {
     private final boolean recipeRequired;
     private final float recipeWeight;
 
-    public PlanComponent(String recipeName, NonNullList<ItemStack> recipeMaterials, List<PlanComponent> recipeRequires, List<PlanComponent> recipeProhibits, float recipeTimeToBuild, float recipeXPRequired, float recipeWeight) {
+    public PlanComponent(String recipeName, List<ItemStack> recipeMaterials, List<PlanComponent> recipeRequires, List<PlanComponent> recipeProhibits, float recipeTimeToBuild, float recipeXPRequired, float recipeWeight) {
         this(recipeName, recipeMaterials, recipeRequires, recipeProhibits, recipeTimeToBuild, recipeXPRequired, recipeWeight, false);
     }
 
-    public PlanComponent(String recipeName, NonNullList<ItemStack> recipeMaterials, List<PlanComponent> recipeRequires, List<PlanComponent> recipeProhibits, float recipeTimeToBuild, float recipeXPRequired, float recipeWeight, boolean recipeRequired) {
+    public PlanComponent(String recipeName, List<ItemStack> recipeMaterials, List<PlanComponent> recipeRequires, List<PlanComponent> recipeProhibits, float recipeTimeToBuild, float recipeXPRequired, float recipeWeight, boolean recipeRequired) {
         this.recipeMaterials = recipeMaterials;
         this.recipeRequires = recipeRequires;
         this.recipeProhibits = recipeProhibits;
@@ -49,7 +49,7 @@ public class PlanComponent {
         this.recipeRequired = recipeRequired;
     }
 
-    public NonNullList<ItemStack> getRecipeMaterials() {
+    public List<ItemStack> getRecipeMaterials() {
         return recipeMaterials;
     }
 

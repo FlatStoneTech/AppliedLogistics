@@ -20,6 +20,7 @@
 package tech.flatstone.appliedlogistics.common.plans;
 
 import net.minecraft.item.ItemStack;
+import tech.flatstone.appliedlogistics.api.features.TechLevel;
 
 import java.util.List;
 
@@ -28,12 +29,14 @@ public class PlanMachine {
     private final List<PlanComponent> planComponentList;
     private final ItemStack outputItem;
     private final float totalTechWeight;
+    private final TechLevel techLevel;
 
-    public PlanMachine(String name, List<PlanComponent> planComponentList, ItemStack outputItem, float totalTechWeight) {
+    public PlanMachine(String name, List<PlanComponent> planComponentList, ItemStack outputItem, float totalTechWeight, TechLevel techLevel) {
         this.name = name;
         this.planComponentList = planComponentList;
         this.outputItem = outputItem;
         this.totalTechWeight = totalTechWeight;
+        this.techLevel = techLevel;
     }
 
     public String getName() {
@@ -50,5 +53,9 @@ public class PlanMachine {
 
     public float getTotalTechWeight() {
         return totalTechWeight;
+    }
+
+    public TechLevel getTechLevel() {
+        return techLevel;
     }
 }

@@ -65,6 +65,7 @@ public class GuiScrollBox extends GuiObject {
             maxScrollY = h;
 
         this.maxScrollY = maxScrollY;
+        this.offsetScrollY = 0;
     }
 
     public void addGuiObject(GuiObject guiObject) {
@@ -78,6 +79,10 @@ public class GuiScrollBox extends GuiObject {
             guiObject.setParent(this.x, this.y);
             guiObject.updateGuiSize(this.guiX, this.guiY, this.guiW, this.guiH);
         }
+    }
+
+    public void clearObjects() {
+        guiObjectList.clear();
     }
 
     @Override
