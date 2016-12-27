@@ -31,6 +31,8 @@ public class GuiMakerGuiContainer extends GuiContainer {
         super(new GuiMakerContainer(inventoryPlayer, tileEntity, id));
         this.guiMaker = GuiMaker.getGuiMaker(id);
 
+        this.guiMaker.initControls();
+
         guiMaker.setServerGuiTab(0, inventoryPlayer.player);
 
         this.xSize = guiMaker.getGuiWidth();

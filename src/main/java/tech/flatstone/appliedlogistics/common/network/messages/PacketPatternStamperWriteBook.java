@@ -80,7 +80,7 @@ public class PacketPatternStamperWriteBook implements IMessage, IMessageHandler<
 
         itemBook.setTagCompound(message.nbtBook);
 
-        ctx.getServerHandler().playerEntity.world.playSound((EntityPlayer)null, message.blockX, message.blockY, message.blockZ, SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        ctx.getServerHandler().playerEntity.world.playSound((EntityPlayer) null, message.blockX, message.blockY, message.blockZ, SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
 
         return null;
     }

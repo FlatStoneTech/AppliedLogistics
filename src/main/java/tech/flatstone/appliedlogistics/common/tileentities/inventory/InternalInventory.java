@@ -96,7 +96,7 @@ public class InternalInventory implements IInventory, Iterable<ItemStack> {
     public ItemStack removeStackFromSlot(int index) {
         return ItemStack.EMPTY;
     }
-    
+
     @Override
     public void setInventorySlotContents(int slot, ItemStack itemStack) {
         ItemStack oldStack = this.inventory[slot];

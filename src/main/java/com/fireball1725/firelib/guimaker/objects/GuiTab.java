@@ -28,6 +28,9 @@ public class GuiTab {
     }
 
     public void addGuiObject(GuiObject guiObject) {
+        if (guiObject == null)
+            return;
+
         guiObject.updateGuiObject(this.guiMakerObj);
         guiObjectList.add(guiObject);
     }

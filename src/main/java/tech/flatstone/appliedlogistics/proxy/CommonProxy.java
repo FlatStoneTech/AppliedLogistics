@@ -27,10 +27,8 @@ import net.minecraftforge.oredict.OreDictionary;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.api.features.EnumOreType;
 import tech.flatstone.appliedlogistics.api.registries.HammerRegistry;
-import tech.flatstone.appliedlogistics.api.registries.PlanRegistry;
 import tech.flatstone.appliedlogistics.api.registries.PulverizerRegistry;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
-import tech.flatstone.appliedlogistics.common.config.Config;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.sounds.Sounds;
 import tech.flatstone.appliedlogistics.common.util.*;
@@ -248,7 +246,7 @@ public abstract class CommonProxy implements IProxy {
 
     @Override
     public void registerWorldGen() {
-        WorldGenInit.init();
+        //WorldGenInit.init();
     }
 
     @Override

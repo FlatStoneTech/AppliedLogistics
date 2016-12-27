@@ -8,7 +8,6 @@ import net.minecraft.init.SoundEvents;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.io.IOException;

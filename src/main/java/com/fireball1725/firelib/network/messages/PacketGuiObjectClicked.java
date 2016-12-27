@@ -47,7 +47,7 @@ public class PacketGuiObjectClicked implements IMessage, IMessageHandler<PacketG
             @Override
             public void run() {
                 GuiMaker guiMaker = GuiMaker.getGuiMaker(message.guiID);
-                guiMaker.guiObjectClicked(message.objectID, ctx.getServerHandler().playerEntity.world, message.blockPos);
+                guiMaker.guiObjectClickedClient(message.objectID, ctx.getServerHandler().playerEntity.world, message.blockPos);
             }
         });
 

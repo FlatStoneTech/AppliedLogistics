@@ -19,51 +19,38 @@
 
 package tech.flatstone.appliedlogistics.common.blocks.misc;
 
-import com.fireball1725.firelib.guimaker.GuiMaker;
-import com.fireball1725.firelib.guimaker.GuiMakerStatusIcon;
-import com.fireball1725.firelib.guimaker.IImplementsGuiMaker;
-import com.fireball1725.firelib.guimaker.objects.*;
-import com.fireball1725.firelib.guimaker.objects.GuiDrawItemStack;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
+import tech.flatstone.appliedlogistics.client.gui.misc.GuiBuilder;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTechBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
-import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityBuilder;
-import tech.flatstone.appliedlogistics.common.util.*;
+import tech.flatstone.appliedlogistics.common.util.EnumEventTypes;
+import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
+import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
+import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImplementsGuiMaker {
+public class BlockBuilder extends BlockTechBase implements IProvideRecipe {
     public static final PropertyEnum TECHLEVEL = PropertyEnum.create("tech", TechLevel.class);
     private static final String ABOUT_LABEL = "§l§nAbout the Builder§r\n\nThe builder is Applied Logistic's main tool for building all Applied Logistic items.\n\nThis is a pretty cool block that does a lot of things...";
-    private GuiMaker guiMaker;
-    private GuiLabel labelInputSlotStatus = new GuiLabel(26, 13, 0x00FF00, "");
-    private GuiCenteredLabel labelInfoArray = new GuiCenteredLabel(0, 6, 242, 0xffffff);
-    private GuiCheckBox checkBox1 = new GuiCheckBox(10, 70, 100, true);
-    private GuiCheckBox checkBox2 = new GuiCheckBox(11, 10, 40, false);
-    private GuiCheckBox checkBox3 = new GuiCheckBox(12, 30, 40, true);
-    private GuiCheckBox checkBox4 = new GuiCheckBox(13, 50, 40, false);
-    private GuiCheckBox checkBox5 = new GuiCheckBox(14, 50, 10, false);
-    private GuiButton guiButton1 = new GuiButton(1, 10, 70, 140, "Hello World...");
+    private GuiBuilder guiBuilder = new GuiBuilder();
 
     public BlockBuilder() {
         super(Material.ROCK, "misc/builder", TechLevel.all());
@@ -71,43 +58,9 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
         this.setTileEntity(TileEntityBuilder.class);
         this.setCreativeTab(AppliedLogisticsCreativeTabs.MACHINES);
         this.setInternalName("builder");
-
-        guiMaker = new GuiMaker(this, 256, 220) {
-            @Override
-            public void guiObjectClicked(int controlID, World world, BlockPos pos) {
-                switch (controlID) {
-                    default:
-                        LogHelper.info(">>> " + controlID);
-                        break;
-                    case 10:
-                        checkBox1.setSelected(!checkBox1.isSelected());
-                        break;
-                    case 11:
-                        checkBox2.setSelected(!checkBox2.isSelected());
-                        checkBox1.setDisabled(checkBox2.isSelected());
-                        guiButton1.setDisabled(checkBox2.isSelected());
-                        break;
-                    case 12:
-                        checkBox3.setSelected(!checkBox3.isSelected());
-                        guiButton1.setVisible(checkBox3.isSelected());
-                        checkBox1.setVisible(checkBox3.isSelected());
-                        break;
-                    case 13:
-                        checkBox4.setSelected(!checkBox4.isSelected());
-                        guiButton1.setSelected(checkBox4.isSelected());
-                        break;
-                    case 14:
-                        checkBox5.setSelected(!checkBox5.isSelected());
-                }
-            }
-
-            @Override
-            public void guiObjectUpdated(int controlID) {
-
-            }
-        };
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         TileEntityBuilder tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityBuilder.class);
@@ -127,8 +80,8 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
 
         worldIn.addBlockEvent(pos, this, EnumEventTypes.PLAN_SLOT_UPDATE.ordinal(), 0);
 
-        guiMaker.setGuiTitle(tileEntity.hasCustomName() ? tileEntity.getCustomName() : LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()));
-        guiMaker.show(AppliedLogistics.instance, worldIn, playerIn, pos);
+        guiBuilder.setGuiTitle(tileEntity.hasCustomName() ? tileEntity.getCustomName() : LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()));
+        guiBuilder.show(AppliedLogistics.instance, worldIn, playerIn, pos);
 
         return true;
     }
@@ -182,101 +135,6 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
         return true;
     }
 
-    @Override
-    public void drawGui(TileEntity tileEntity) {
-        if (!(tileEntity instanceof TileEntityBuilder))
-            return;
-        TileEntityBuilder tileEntityBuilder = (TileEntityBuilder) tileEntity;
-
-        ItemStack itemPlan = tileEntityBuilder.getPlanItem();
-
-        if (tileEntityBuilder.getPlanItem() == null) {
-            labelInputSlotStatus.setText(TextFormatting.RED + LanguageHelper.MESSAGE.translateMessage("plan.insert"));
-        } else if (itemPlan != null && tileEntityBuilder.isUpgradeMode()) {
-            labelInputSlotStatus.setText(LanguageHelper.LABEL.translateMessage("upgrade") + " " + LanguageHelper.NONE.translateMessage(itemPlan.getUnlocalizedName() + ".name"));
-        } else if (itemPlan != null) {
-            labelInputSlotStatus.setText(LanguageHelper.NONE.translateMessage(itemPlan.getUnlocalizedName() + ".name"));
-        }
-
-
-        if (guiMaker.getSelectedTab() == 0)
-            guiMaker.setGuiMakerStatusIcon(GuiMakerStatusIcon.EMPTY);
-
-        if (guiMaker.getSelectedTab() == 1)
-            guiMaker.setGuiMakerStatusIcon(GuiMakerStatusIcon.GOOD);
-
-        if (guiMaker.getSelectedTab() == 2)
-            guiMaker.setGuiMakerStatusIcon(GuiMakerStatusIcon.WARN);
-
-        if (guiMaker.getSelectedTab() == 3)
-            guiMaker.setGuiMakerStatusIcon(GuiMakerStatusIcon.FAIL);
-
-    }
-
-    @Override
-    public void initGui(TileEntity tileEntity, InventoryPlayer inventoryPlayer) {
-        guiMaker.clearGuiTabs();
-
-        GuiTab tabGeneral = new GuiTab(this.guiMaker, "General", Items.ITEM_MATERIAL_GEAR.getStack(1, 2));
-        tabGeneral.addGuiObject(labelInputSlotStatus);
-        tabGeneral.addGuiObject(new GuiSlot(5, 5, 0, Slot.class));
-        tabGeneral.addGuiObject(new GuiInventorySlots(5, 139));
-        tabGeneral.addGuiObject(checkBox2);
-        tabGeneral.addGuiObject(checkBox3);
-        tabGeneral.addGuiObject(checkBox4);
-        tabGeneral.addGuiObject(guiButton1);
-        tabGeneral.addGuiObject(new GuiButton(1, 10, 95, 40, "Hello World..."));
-        tabGeneral.addGuiObject(checkBox1);
-        tabGeneral.addGuiObject(new GuiProgressArrow(10, 115, 50));
-        tabGeneral.addGuiObject(new GuiProgressFire(40, 115, 25));
-        tabGeneral.addGuiObject(new GuiSlot(100, 100, 30, 30, 0, Slot.class));
-        tabGeneral.addGuiObject(new GuiDrawItemStack(Items.ITEM_MATERIAL_GEAR.getStack(2, EnumMaterialsGear.COPPER.getMeta()), 100, 20));
-        tabGeneral.addGuiObject(new GuiDrawItemStack(Items.ITEM_MATERIAL_GEAR.getStack(2, EnumMaterialsGear.GOLD.getMeta()), 100, 40));
-
-        NonNullList<ItemStack> test = NonNullList.create();
-        test.add(Items.ITEM_MATERIAL_GEAR.getStack(10, OreDictionary.WILDCARD_VALUE));
-
-        GuiDrawItemStack testStack = new GuiDrawItemStack(test, 120, 20);
-        testStack.setRenderDescription(true);
-        testStack.setScale(0.5f);
-        tabGeneral.addGuiObject(testStack);
-
-        GuiDrawItemStack testStack2 = new GuiDrawItemStack(OreDictionary.getOres("plankWood"), 120, 30);
-        testStack2.setRenderDescription(true);
-        testStack2.setScale(0.5f);
-        tabGeneral.addGuiObject(testStack2);
-
-        GuiDrawItemStack testStack3 = new GuiDrawItemStack(OreDictionary.getOres("logWood"), 120, 40);
-        testStack3.setRenderDescription(true);
-        testStack3.setScale(0.5f);
-        tabGeneral.addGuiObject(testStack3);
-
-        GuiDrawItemStack testStack4 = new GuiDrawItemStack(OreDictionary.getOres("stairWood"), 120, 50);
-        testStack4.setRenderDescription(true);
-        testStack4.setScale(0.5f);
-        tabGeneral.addGuiObject(testStack4);
-
-
-        guiMaker.addGuiTab(tabGeneral);
-
-        GuiTab tabAbout = new GuiTab(this.guiMaker, "About", 1);
-        GuiScrollBox tabAboutScrollBox = new GuiScrollBox(this.guiMaker, 3, 3, 250, 214, false);
-        labelInfoArray.setText(ABOUT_LABEL);
-        tabAboutScrollBox.addGuiObject(labelInfoArray);
-        tabAbout.addGuiObject(tabAboutScrollBox);
-        guiMaker.addGuiTab(tabAbout);
-
-        GuiTab tabTest = new GuiTab(this.guiMaker, "Test", 1);
-        GuiScrollBox scrollBox = new GuiScrollBox(this.guiMaker, 20, 20, 150, 150);
-        scrollBox.addGuiObject(new GuiWindow(0, 0, 18, 298));
-        scrollBox.setMaxScrollY(300);
-        scrollBox.addGuiObject(new GuiLabel(0, 100, 0xFFFFFF, "Hello world, this is a label..."));
-        scrollBox.addGuiObject(checkBox5);
-        scrollBox.addGuiObject(new GuiCenteredLabel(1, 1, 140, 0xFFFFFF, "Hello world, this is a test label to see if this works properly, who know if it will, this again is just a test to see what happens, I just needed a really long label to test all of this, so yay for really long labels, ok i think i am done here, good bye everyone :D"));
-
-        tabTest.addGuiObject(scrollBox);
-        guiMaker.addGuiTab(tabTest);
-    }
 
 //    @Override
 //    public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos) {

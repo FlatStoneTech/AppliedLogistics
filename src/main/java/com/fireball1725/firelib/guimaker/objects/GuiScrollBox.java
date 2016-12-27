@@ -11,14 +11,12 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-import sun.tools.asm.CatchData;
 
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
-import java.util.ListIterator;
 
 public class GuiScrollBox extends GuiObject {
     private final GuiMaker guiMakerObj;

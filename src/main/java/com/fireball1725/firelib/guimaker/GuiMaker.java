@@ -5,10 +5,13 @@ import com.fireball1725.firelib.guimaker.objects.GuiTab;
 import com.fireball1725.firelib.network.PacketHandler;
 import com.fireball1725.firelib.network.messages.PacketUpdateGuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +29,7 @@ public abstract class GuiMaker {
     /**
      * GuiMaker Parent Instance
      */
-    private final IImplementsGuiMaker guiMakerInstance;
+    private final GuiMaker guiMakerInstance;
     //endregion
 
     //region Things that can be adjusted or set during run-time
@@ -67,11 +70,9 @@ public abstract class GuiMaker {
 
     /**
      * Create new instance of GuiMaker
-     *
-     * @param instance
      */
-    public GuiMaker(IImplementsGuiMaker instance, int windowWidth, int windowHeight) {
-        this.guiMakerInstance = instance;
+    public GuiMaker(int windowWidth, int windowHeight) {
+        this.guiMakerInstance = this;
         this.guiId = guiInstances.size();
         this.guiWidth = windowWidth;
         this.guiHeight = windowHeight;
@@ -102,6 +103,7 @@ public abstract class GuiMaker {
      * @param player
      * @param pos
      */
+    @SideOnly(Side.CLIENT)
     public void show(Object mod, World world, EntityPlayer player, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
 
@@ -203,7 +205,7 @@ public abstract class GuiMaker {
      *
      * @return
      */
-    public IImplementsGuiMaker getGuiMakerInstance() {
+    public GuiMaker getGuiMakerInstance() {
         return guiMakerInstance;
     }
 
@@ -255,9 +257,23 @@ public abstract class GuiMaker {
 
     //region Callbacks
 
-    abstract public void guiObjectClicked(int controlID, World world, BlockPos pos);
+    @SideOnly(Side.CLIENT)
+    abstract public void guiObjectClickedClient(int controlID, World world, BlockPos pos);
 
+    @SideOnly(Side.SERVER)
+    abstract public void guiObjectClickedServer(int controlID, World world, BlockPos pos);
+
+    @SideOnly(Side.CLIENT)
     abstract public void guiObjectUpdated(int controlID);
+
+    @SideOnly(Side.CLIENT)
+    abstract public void initGui(TileEntity tileEntity, InventoryPlayer inventoryPlayer);
+
+    @SideOnly(Side.CLIENT)
+    abstract public void drawGui(TileEntity tileEntity);
+
+    @SideOnly(Side.CLIENT)
+    abstract public void initControls();
 
     //endregion
 }

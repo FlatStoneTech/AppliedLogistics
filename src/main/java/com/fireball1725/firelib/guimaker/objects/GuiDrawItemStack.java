@@ -19,19 +19,15 @@
 
 package com.fireball1725.firelib.guimaker.objects;
 
-import com.fireball1725.firelib.guimaker.objects.GuiObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.opengl.GL11;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
-import tech.flatstone.appliedlogistics.common.util.OreDictHelper;
 
 import java.awt.*;
 
@@ -105,7 +101,7 @@ public class GuiDrawItemStack extends GuiObject {
 
         if (System.currentTimeMillis() > this.displayTime + 1500) {
             this.displayTime = System.currentTimeMillis();
-            displayID = (++displayID)%itemStacks.size();
+            displayID = (++displayID) % itemStacks.size();
         }
 
         if (renderDescription) {

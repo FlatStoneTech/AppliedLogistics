@@ -19,25 +19,25 @@
 
 package tech.flatstone.appliedlogistics.common.tileentities.misc;
 
-import com.fireball1725.firelib.guimaker.objects.*;
+import com.fireball1725.firelib.guimaker.objects.GuiCheckBox;
+import com.fireball1725.firelib.guimaker.objects.GuiDrawItemStack;
+import com.fireball1725.firelib.guimaker.objects.GuiDrawSimpleImage;
+import com.fireball1725.firelib.guimaker.objects.GuiObject;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
+import tech.flatstone.appliedlogistics.client.gui.misc.GuiPatternStamper;
 import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPatternStamper;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.network.PacketHandler;
@@ -52,7 +52,8 @@ import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOp
 import tech.flatstone.appliedlogistics.common.util.Platform;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TileEntityPatternStamper extends TileEntityMachineBase {
     InternalInventory inventory = new InternalInventory(this, 2);
@@ -63,6 +64,8 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
     private List<PlanMachine> planMachines = null;
 
     private List<NonNullList<ItemStack>> materialsList = new ArrayList<>();
+
+    private List<GuiObject> guiObjects = new ArrayList<>();
 
     private int selectedMachine = 0;
 
@@ -235,14 +238,17 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
         this.selectedMachine = 0;
         this.planMachines = PlanRegistry.getPlanRegistry(planTechLevel);
 
-        updateCheckBoxes();
+        if (Platform.isClient()) {
+            updateCheckBoxes();
+        }
     }
 
     @SideOnly(Side.CLIENT)
     public void updateCheckBoxes() {
-        BlockPatternStamper block = (BlockPatternStamper)this.blockType;
+        BlockPatternStamper block = (BlockPatternStamper) this.blockType;
 
         if (planMachines == null) {
+            this.guiObjects.clear();
             block.drawCheckBoxes(new ArrayList<>(), 0);
             return;
         }
@@ -270,7 +276,7 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
 
             // Add Time Requirement
             y -= 4;
-            GuiDrawSimpleImage imageTime2 = new GuiDrawSimpleImage(BlockPatternStamper.RESOURCE_BUILD_TIME, 16, y);
+            GuiDrawSimpleImage imageTime2 = new GuiDrawSimpleImage(GuiPatternStamper.RESOURCE_BUILD_TIME, 16, y);
             imageTime2.setScale(0.5f);
             imageTime2.setLabelText(String.format("Build Time: %s", DurationFormatUtils.formatDuration(planComponent.getRecipeTimeToBuild() * 1000, "HH:mm:ss")));
             guiObjects.add(imageTime2);
@@ -278,7 +284,7 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
             i++;
 
             // Add XP Requirement
-            GuiDrawSimpleImage imageXP2 = new GuiDrawSimpleImage(BlockPatternStamper.RESOURCE_XP_COST, 16 + 80, y);
+            GuiDrawSimpleImage imageXP2 = new GuiDrawSimpleImage(GuiPatternStamper.RESOURCE_XP_COST, 16 + 80, y);
             imageXP2.setScale(0.5f);
             imageXP2.setLabelText(String.format("XP Cost: %s%dL%s", TextFormatting.GREEN, planComponent.getRecipeXPRequired(), TextFormatting.RESET));
             guiObjects.add(imageXP2);
@@ -299,12 +305,13 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
         }
 
         block.drawCheckBoxes(guiObjects, y);
-        updateCheckBoxData(guiObjects);
+        updateCheckBoxData();
+        this.guiObjects = guiObjects;
     }
 
     @SideOnly(Side.CLIENT)
-    public void updateCheckBoxData(List<GuiObject> guiObjects) {
-        BlockPatternStamper block = (BlockPatternStamper)this.blockType;
+    public void updateCheckBoxData() {
+        BlockPatternStamper block = (BlockPatternStamper) this.blockType;
 
         if (planMachines == null) {
             block.drawMaterialsList(new ArrayList<>(), 0);
@@ -335,7 +342,7 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
 
             i++;
 
-            i+=2;
+            i += 2;
 
             for (NonNullList<ItemStack> itemStacks : planComponent.getRecipeMaterials()) {
                 if (guiCheckBox.isSelected()) {
@@ -408,11 +415,14 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
     }
 
     @SideOnly(Side.CLIENT)
-    private boolean canInsertIntoCurrentPage(String currentText, String textToAdd)
-    {
+    private boolean canInsertIntoCurrentPage(String currentText, String textToAdd) {
         String s1 = currentText + textToAdd;
         int i = Minecraft.getMinecraft().fontRendererObj.getWordWrappedHeight(s1 + "" + TextFormatting.BLACK + "_", 118);
 
         return (i <= 128 && s1.length() < 256);
+    }
+
+    public List<GuiObject> getGuiObjects() {
+        return guiObjects;
     }
 }

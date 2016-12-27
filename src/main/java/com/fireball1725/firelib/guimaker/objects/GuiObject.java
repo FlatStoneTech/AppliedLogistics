@@ -10,12 +10,15 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraftforge.fml.client.config.GuiUtils;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@SideOnly(Side.CLIENT)
 public abstract class GuiObject extends Gui implements IGuiObject {
 
     protected final int controlID;
@@ -44,7 +47,7 @@ public abstract class GuiObject extends Gui implements IGuiObject {
 
     public void guiObjectClicked() {
         PacketHandler.INSTANCE.sendToServer(new PacketGuiObjectClicked(guiMakerObj.getGuiId(), this.controlID, guiMakerObj.getBlockPos()));
-        this.guiMakerObj.guiObjectClicked(this.controlID, Minecraft.getMinecraft().world, guiMakerObj.getBlockPos());
+        this.guiMakerObj.guiObjectClickedClient(this.controlID, Minecraft.getMinecraft().world, guiMakerObj.getBlockPos());
     }
 
     public void guiObjectUpdated() {
