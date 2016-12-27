@@ -106,7 +106,7 @@ public abstract class GuiMaker {
     @SideOnly(Side.CLIENT)
     public void show(Object mod, World world, EntityPlayer player, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
-
+        guiMakerInstance.initControls();
         guiMakerInstance.initGui(tileEntity, player.inventory);
         if (guiTabs.isEmpty())
             return;

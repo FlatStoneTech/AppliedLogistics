@@ -37,7 +37,6 @@ import tech.flatstone.appliedlogistics.common.fluids.FluidBase;
 import java.util.ArrayList;
 import java.util.List;
 
-@SideOnly(Side.CLIENT)
 public class FluidHelper {
     private static List<Class<? extends FluidBase>> fluidClasses = new ArrayList<>();
     private static List<Class<? extends BlockFluidBase>> fluidBlockClasses = new ArrayList<>();

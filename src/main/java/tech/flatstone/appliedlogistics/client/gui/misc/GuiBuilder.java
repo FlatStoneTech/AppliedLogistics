@@ -190,10 +190,10 @@ public class GuiBuilder extends GuiMaker {
 
         GuiTab tabAbout = new GuiTab(this, "About", 1);
         GuiScrollBox tabAboutScrollBox = new GuiScrollBox(this, 3, 3, 250, 214, false);
-//        labelInfoArray.setText("Hello World...");
-//        tabAboutScrollBox.addGuiObject(labelInfoArray);
-//        tabAbout.addGuiObject(tabAboutScrollBox);
-//        this.addGuiTab(tabAbout);
+        labelInfoArray.setText("Hello World...");
+        tabAboutScrollBox.addGuiObject(labelInfoArray);
+        tabAbout.addGuiObject(tabAboutScrollBox);
+        this.addGuiTab(tabAbout);
 
         GuiTab tabTest = new GuiTab(this, "Test", 1);
         GuiScrollBox scrollBox = new GuiScrollBox(this, 20, 20, 150, 150);
