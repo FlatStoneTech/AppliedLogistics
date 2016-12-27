@@ -17,67 +17,101 @@
  *  Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.plans;
+package com.fireball1725.firelib.guimaker.objects;
 
+import com.fireball1725.firelib.guimaker.objects.GuiObject;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
+import org.lwjgl.opengl.GL11;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
+import tech.flatstone.appliedlogistics.common.util.OreDictHelper;
 
-import java.util.List;
+import java.awt.*;
 
-public class PlanComponent {
-    private final List<NonNullList<ItemStack>> recipeMaterials;
-    private final List<PlanComponent> recipeRequires;
-    private final List<PlanComponent> recipeProhibits;
-    private final long recipeTimeToBuild;
-    private final int recipeXPRequired;
-    private final String recipeName;
-    private final boolean recipeRequired;
-    private final float recipeWeight;
+public class GuiDrawItemStack extends GuiObject {
+    private NonNullList<ItemStack> itemStacks = NonNullList.create();
+    private int displayID = 0;
+    private long displayTime = System.currentTimeMillis();
+    private boolean renderDescription = false;
+    private float scale = 1;
 
-    public PlanComponent(String recipeName, List<NonNullList<ItemStack>> recipeMaterials, List<PlanComponent> recipeRequires, List<PlanComponent> recipeProhibits, long recipeTimeToBuild, int recipeXPRequired, float recipeWeight) {
-        this(recipeName, recipeMaterials, recipeRequires, recipeProhibits, recipeTimeToBuild, recipeXPRequired, recipeWeight, false);
+    public GuiDrawItemStack(ItemStack itemStack, int x, int y) {
+        super(-999);
+        this.itemStacks.add(itemStack);
+        this.x = x;
+        this.y = y;
+        this.processItemStack();
     }
 
-    public PlanComponent(String recipeName, List<NonNullList<ItemStack>> recipeMaterials, List<PlanComponent> recipeRequires, List<PlanComponent> recipeProhibits, long recipeTimeToBuild, int recipeXPRequired, float recipeWeight, boolean recipeRequired) {
-        this.recipeMaterials = recipeMaterials;
-        this.recipeRequires = recipeRequires;
-        this.recipeProhibits = recipeProhibits;
-        this.recipeTimeToBuild = recipeTimeToBuild;
-        this.recipeXPRequired = recipeXPRequired;
-        this.recipeName = recipeName;
-        this.recipeWeight = recipeWeight;
-        this.recipeRequired = recipeRequired;
+    public GuiDrawItemStack(NonNullList<ItemStack> itemStacks, int x, int y) {
+        super(-999);
+        this.itemStacks = itemStacks;
+        this.x = x;
+        this.y = y;
+        this.processItemStack();
     }
 
-    public List<NonNullList<ItemStack>> getRecipeMaterials() {
-        return recipeMaterials;
+    public void setRenderDescription(boolean renderDescription) {
+        this.renderDescription = renderDescription;
     }
 
-    public List<PlanComponent> getRecipeRequires() {
-        return recipeRequires;
+    public void setScale(float scale) {
+        this.scale = scale;
     }
 
-    public List<PlanComponent> getRecipeProhibits() {
-        return recipeProhibits;
+    private void processItemStack() {
+        NonNullList<ItemStack> itemStacks = NonNullList.create();
+
+        for (ItemStack itemIn : this.itemStacks) {
+            if (itemIn.getMetadata() != OreDictionary.WILDCARD_VALUE) {
+                itemStacks.add(itemIn);
+                continue;
+            }
+
+            NonNullList<ItemStack> tempStack = NonNullList.create();
+            itemIn.getItem().getSubItems(itemIn.getItem(), null, tempStack);
+
+            for (ItemStack itemStack : tempStack)
+                itemStack.setCount(itemIn.getCount());
+
+            itemStacks.addAll(tempStack);
+        }
+
+        this.itemStacks = itemStacks;
     }
 
-    public long getRecipeTimeToBuild() {
-        return recipeTimeToBuild;
-    }
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void drawGuiContainerForegroundLayer(GuiContainer guiContainer, int mouseX, int mouseY) {
+        Point p = this.getWindowXY(false);
 
-    public int getRecipeXPRequired() {
-        return recipeXPRequired;
-    }
+        RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
 
-    public String getRecipeName() {
-        return recipeName;
-    }
+        ItemStack itemStack = this.itemStacks.get(displayID);
 
-    public boolean isRecipeRequired() {
-        return recipeRequired;
-    }
+        int scaledX = (int) Math.floor(p.getX() / this.scale);
+        int scaledY = (int) Math.floor(p.getY() / this.scale);
 
-    public float getRecipeWeight() {
-        return recipeWeight;
+        GL11.glScalef(this.scale, this.scale, 1);
+
+        renderItem.renderItemAndEffectIntoGUI(itemStack, scaledX, scaledY);
+
+        if (System.currentTimeMillis() > this.displayTime + 1500) {
+            this.displayTime = System.currentTimeMillis();
+            displayID = (++displayID)%itemStacks.size();
+        }
+
+        if (renderDescription) {
+            Minecraft.getMinecraft().fontRendererObj.drawString(String.format("%dx %s", itemStack.getCount(), itemStack.getDisplayName()), scaledX + 20, scaledY + 4, 0xFFFFFF);
+        }
+
+        GL11.glScalef(1 / this.scale, 1 / this.scale, 1);
     }
 }

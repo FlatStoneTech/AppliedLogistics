@@ -22,49 +22,57 @@ package tech.flatstone.appliedlogistics.common.blocks.misc;
 import com.fireball1725.firelib.guimaker.GuiMaker;
 import com.fireball1725.firelib.guimaker.IImplementsGuiMaker;
 import com.fireball1725.firelib.guimaker.objects.*;
-import javafx.scene.control.CheckBox;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
+import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
-import tech.flatstone.appliedlogistics.common.plans.PlanMachine;
+import tech.flatstone.appliedlogistics.common.slots.GuiSlotBlankBookInput;
 import tech.flatstone.appliedlogistics.common.slots.GuiSlotBlankPlanInput;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPatternStamper;
-import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
-import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
-import tech.flatstone.appliedlogistics.common.util.TileHelper;
+import tech.flatstone.appliedlogistics.common.util.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe, IImplementsGuiMaker {
+    public static final ResourceLocation RESOURCE_BUILD_TIME = new ResourceLocation(ModInfo.MOD_ID, "textures/icons/stopwatch.png");
+    public static final ResourceLocation RESOURCE_XP_COST = new ResourceLocation(ModInfo.MOD_ID, "textures/icons/xp_orb.png");
+
     private GuiMaker guiMaker;
 
     private GuiLabel labelSlotDetails = new GuiLabel(36, 7, 0xd5d5d5, "");
     private GuiButton buttonPrevious = new GuiButton(1, 4, 34, 16, "<");
     private GuiButton buttonNext = new GuiButton(2, 120, 34, 16, ">");
     private GuiButton buttonStamp = new GuiButton(3, 138, 34, 52, "Stamp");
-    private GuiScrollBox scrollBox;
-    private List<GuiCheckBox> checkBoxes = new ArrayList<>();
+    private GuiScrollBox scrollBoxOptions;
+    private GuiScrollBox scrollBoxMaterials;
+    private List<GuiObject> guiObjects = new ArrayList<>();
+    private List<GuiObject> guiMaterialsList= new ArrayList<>();
 
     private GuiCenteredLabel labelMachineName = new GuiCenteredLabel(22, 38, 96, 0xd5d5d5, "");
 
-    private GuiLabel labelStats = new GuiLabel(5, 134, 0xd5d5d5, 0.5f, "Total Building Time: 0:00:00 | Total Experence Cost: 0L");
+    private GuiDrawSimpleImage imageBuildTime = new GuiDrawSimpleImage(RESOURCE_BUILD_TIME, 6, 130);
+    private GuiDrawSimpleImage imageXPCost = new GuiDrawSimpleImage(RESOURCE_XP_COST, 90, 130);
+    private GuiLabel labelCreativeMode = new GuiLabel(150, 132, 0xffffff, 0.5f, "");
 
     public BlockPatternStamper() {
         super(Material.ROCK, "misc/blockPatternStamper");
@@ -86,7 +94,8 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
                     case 0:
                     default:
                         if (controlID >= 100)
-                            handleCheckBoxClick(controlID);
+                            if (Platform.isClient())
+                                handleCheckBoxClick(controlID, world, pos);
 
                         break;
                     case 1: // Previous
@@ -99,9 +108,10 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
                         break;
                     case 3: // Stamp
 
-
-
-
+                        break;
+                    case 4: // Save Book
+                        if (Platform.isClient())
+                            tileEntity.saveBook();
                         break;
                 }
             }
@@ -112,7 +122,10 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
             }
         };
 
-        this.scrollBox = new GuiScrollBox(this.guiMaker, 4, 52, 186, 80);
+        this.scrollBoxOptions = new GuiScrollBox(this.guiMaker, 4, 52, 186, 75);
+        this.scrollBoxMaterials = new GuiScrollBox(this.guiMaker, 4, 24, 186, 103);
+        this.imageXPCost.setScale(0.5f);
+        this.imageBuildTime.setScale(0.5f);
     }
 
     @Override
@@ -148,12 +161,14 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
             buttonStamp.setDisabled(false);
         }
 
-        String stats = String.format("Total Building Time: 0:00:00 | Total Experience Cost: %s0L%s", TextFormatting.GREEN, TextFormatting.RESET);
+        imageBuildTime.setLabelText(String.format("Total Build Time: %s",
+                DurationFormatUtils.formatDuration(tileEntityPatternStamper.getRecipeTimeToBuild() * 1000, "HH:mm:ss")));
+        imageXPCost.setLabelText(String.format("Total XP Cost: %s%dL%s",
+                TextFormatting.GREEN, tileEntityPatternStamper.getRecipeXPRequired(), TextFormatting.RESET));
 
+        labelCreativeMode.setText("");
         if (tileEntityPatternStamper.isCreativeMode())
-            stats += String.format(" | %sCreative Mode", TextFormatting.DARK_PURPLE);
-
-        labelStats.setText(stats);
+            labelCreativeMode.setText(String.format("%sCreative Mode%s", TextFormatting.DARK_PURPLE, TextFormatting.RESET));
 
         labelMachineName.setText("");
         if (tileEntityPatternStamper.getSelectedPlanMachine() != null) {
@@ -168,6 +183,7 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
         guiMaker.clearGuiTabs();
 
         GuiTab tabMachine = new GuiTab(this.guiMaker, "Pattern Stamper", Blocks.BLOCK_PATTERN_STAMPER.getStack());
+        GuiTab tabExport = new GuiTab(this.guiMaker, "Total Materials", new ItemStack(Items.BOOK));
         GuiTab tabAbout = new GuiTab(this.guiMaker, "About", 1);
 
         tabMachine.addGuiObject(new GuiSlot(4, 4, 28, 28, 0, GuiSlotBlankPlanInput.class));
@@ -185,14 +201,32 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
         tabMachine.addGuiObject(new GuiLabel(158, 14, 0xa1a1a1, 0.5f, "Ok"));
         tabMachine.addGuiObject(new GuiLabel(166, 14, 0xa1a1a1, 0.5f, "Error"));
 
-        tabMachine.addGuiObject(scrollBox);
+        tabMachine.addGuiObject(scrollBoxOptions);
+        tabExport.addGuiObject(scrollBoxMaterials);
 
-        tabMachine.addGuiObject(labelStats);
+        // Bottom info bar
+        tabMachine.addGuiObject(imageBuildTime);
+        tabMachine.addGuiObject(imageXPCost);
+        tabMachine.addGuiObject(labelCreativeMode);
+        tabExport.addGuiObject(imageBuildTime);
+        tabExport.addGuiObject(imageXPCost);
+        tabExport.addGuiObject(labelCreativeMode);
 
+        // Player's Inventory
         tabMachine.addGuiObject(new GuiLabel(8, 142, 0xd5d5d5, "Inventory"));
         tabMachine.addGuiObject(new GuiInventorySlots(4, 152));
+        tabExport.addGuiObject(new GuiLabel(8, 142, 0xd5d5d5, "Inventory"));
+        tabExport.addGuiObject(new GuiInventorySlots(4, 152));
+
+        // Book and Quill Slot
+        tabExport.addGuiObject(new GuiSlot(4, 4, 1, GuiSlotBlankBookInput.class));
+
+        tabExport.addGuiObject(new GuiButton(4, 140, 4, 50, 18, "Save"));
+
+        tabExport.addGuiObject(new GuiLabel(24, 10, 0xffffff, "Export Materials List"));
 
         guiMaker.addGuiTab(tabMachine);
+        guiMaker.addGuiTab(tabExport);
         guiMaker.addGuiTab(tabAbout);
     }
 
@@ -234,23 +268,47 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
 
     }
 
-    public void drawCheckBoxes(List<GuiCheckBox> checkBoxes, int maxScrollY) {
-        this.checkBoxes = checkBoxes;
-        this.scrollBox.clearObjects();
+    @SideOnly(Side.CLIENT)
+    public void drawCheckBoxes(List<GuiObject> guiObjects, int maxScrollY) {
+        this.guiObjects = guiObjects;
+        this.scrollBoxOptions.clearObjects();
 
-        for (GuiCheckBox checkBox : this.checkBoxes) {
-            this.scrollBox.addGuiObject(checkBox);
+        for (GuiObject guiObject : this.guiObjects) {
+            this.scrollBoxOptions.addGuiObject(guiObject);
         }
 
-        this.scrollBox.setMaxScrollY(maxScrollY);
-        this.scrollBox.initGui();
+        this.scrollBoxOptions.setMaxScrollY(maxScrollY);
+        this.scrollBoxOptions.initGui();
     }
 
-    public void handleCheckBoxClick(int checkBox) {
+    @SideOnly(Side.CLIENT)
+    public void drawMaterialsList(List<GuiObject> guiObjects, int maxScrollY) {
+        this.guiMaterialsList = guiObjects;
+        this.scrollBoxMaterials.clearObjects();
+
+        for (GuiObject guiObject : this.guiMaterialsList) {
+            this.scrollBoxMaterials.addGuiObject(guiObject);
+        }
+
+        this.scrollBoxMaterials.setMaxScrollY(maxScrollY);
+        this.scrollBoxMaterials.initGui();
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void handleCheckBoxClick(int checkBox, World world, BlockPos pos) {
+        TileEntityPatternStamper tileEntity = TileHelper.getTileEntity(world, pos, TileEntityPatternStamper.class);
+        if (tileEntity == null)
+            return;
+
         int buttonID = checkBox - 100;
 
-        GuiCheckBox guiCheckBox = this.checkBoxes.get(buttonID);
-        guiCheckBox.setSelected(!guiCheckBox.isSelected());
+        GuiObject guiObject = this.guiObjects.get(buttonID);
+
+        if (guiObject instanceof GuiCheckBox) {
+            GuiCheckBox guiCheckBox = (GuiCheckBox)this.guiObjects.get(buttonID);
+            guiCheckBox.setSelected(!guiCheckBox.isSelected());
+            tileEntity.updateCheckBoxData(this.guiObjects);
+        }
     }
 
 }

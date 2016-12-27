@@ -51,6 +51,7 @@ import tech.flatstone.appliedlogistics.common.plans.PlanComponent;
 import tech.flatstone.appliedlogistics.common.plans.PlanMachine;
 import tech.flatstone.appliedlogistics.common.plans.PlanRegistry;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityFurnace;
+import tech.flatstone.appliedlogistics.common.util.EnumOres;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
@@ -292,10 +293,13 @@ public class BlockFurnace extends BlockTechBase implements IImplementsGuiMaker, 
     @Override
     public void RegisterRecipes() {
         // Register Components
-                PlanComponent techStoneBase = new PlanComponent("Base Materials",
+        PlanComponent techStoneBase = new PlanComponent("Base Materials",
                 Arrays.asList(
-                        new ItemStack(net.minecraft.init.Blocks.COBBLESTONE, 10),
-                        new ItemStack(net.minecraft.init.Blocks.COBBLESTONE, 10)
+                        PlanRegistry.getItemStack(new ItemStack(net.minecraft.init.Blocks.COBBLESTONE, 10)),
+                        PlanRegistry.getItemStack(Items.ITEM_PLAN.getStack(10)),
+                        PlanRegistry.getItemStack(Blocks.BLOCK_MISC_CRANK.getStack(1)),
+                        PlanRegistry.getItemStack(Items.ITEM_ORE_INGOT.getStack(10, EnumOres.COPPER.getMeta())),
+                        PlanRegistry.getItemStack("ingotIron", 10)
                 ),
                 null,
                 null,
@@ -303,8 +307,8 @@ public class BlockFurnace extends BlockTechBase implements IImplementsGuiMaker, 
 
         PlanComponent techStoneSpeed1 = new PlanComponent("50% Speed Increase",
                 Arrays.asList(
-                        new ItemStack(net.minecraft.init.Blocks.COBBLESTONE, 10),
-                        new ItemStack(net.minecraft.init.Blocks.COBBLESTONE, 10)
+                        PlanRegistry.getItemStack(new ItemStack(net.minecraft.init.Blocks.COBBLESTONE, 10)),
+                        PlanRegistry.getItemStack("ingotIron", 10)
                 ),
                 null,
                 null,
@@ -312,8 +316,10 @@ public class BlockFurnace extends BlockTechBase implements IImplementsGuiMaker, 
 
         PlanComponent techStoneSpeed2 = new PlanComponent("100% Speed Increase",
                 Arrays.asList(
-                        new ItemStack(net.minecraft.init.Blocks.COBBLESTONE, 10),
-                        new ItemStack(net.minecraft.init.Blocks.COBBLESTONE, 10)
+                        PlanRegistry.getItemStack(new ItemStack(net.minecraft.init.Blocks.COBBLESTONE, 10)),
+                        PlanRegistry.getItemStack("ingotIron", 10),
+                        PlanRegistry.getItemStack("logWood", 10),
+                        PlanRegistry.getItemStack("plankWood", 30)
                 ),
                 null,
                 null,

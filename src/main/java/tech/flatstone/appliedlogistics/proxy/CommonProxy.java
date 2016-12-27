@@ -253,6 +253,6 @@ public abstract class CommonProxy implements IProxy {
 
     @Override
     public void registerConfiguration(File configFile) {
-        AppliedLogistics.configuration = Config.initConfig(configFile);
+        //AppliedLogistics.configuration = Config.initConfig(configFile);
     }
 }

@@ -11,11 +11,14 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import sun.tools.asm.CatchData;
 
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
+import java.util.ListIterator;
 
 public class GuiScrollBox extends GuiObject {
     private final GuiMaker guiMakerObj;
@@ -121,8 +124,12 @@ public class GuiScrollBox extends GuiObject {
 
         scissorCut(this.x + this.guiX + 1, this.y + this.guiY + 1, this.w - 10, this.h - 2);
 
-        for (GuiObject guiObject : guiObjectList)
-            guiObject.drawGuiContainerBackgroundLayer(guiContainer, partialTicks, mouseX, mouseY);
+        try {
+            for (GuiObject guiObject : guiObjectList)
+                guiObject.drawGuiContainerBackgroundLayer(guiContainer, partialTicks, mouseX, mouseY);
+        } catch (ConcurrentModificationException ex) {
+            // do nothing...
+        }
 
         scissorEnd();
     }
@@ -198,8 +205,12 @@ public class GuiScrollBox extends GuiObject {
     public void drawGuiContainerForegroundLayer(GuiContainer guiContainer, int mouseX, int mouseY) {
         scissorCut(this.x + 1 + guiX, this.y + 1 + guiY, this.w - 10, this.h - 2);
 
-        for (GuiObject guiObject : guiObjectList)
-            guiObject.drawGuiContainerForegroundLayer(guiContainer, mouseX, mouseY);
+        try {
+            for (GuiObject guiObject : guiObjectList)
+                guiObject.drawGuiContainerForegroundLayer(guiContainer, mouseX, mouseY);
+        } catch (ConcurrentModificationException ex) {
+            // do nothing with this error...
+        }
 
         scissorEnd();
     }

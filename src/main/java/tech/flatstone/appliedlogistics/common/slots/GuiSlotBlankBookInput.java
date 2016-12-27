@@ -17,67 +17,37 @@
  *  Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.plans;
+package tech.flatstone.appliedlogistics.common.slots;
 
+import net.minecraft.init.Items;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemSaddle;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 
-import java.util.List;
+import javax.annotation.Nullable;
 
-public class PlanComponent {
-    private final List<NonNullList<ItemStack>> recipeMaterials;
-    private final List<PlanComponent> recipeRequires;
-    private final List<PlanComponent> recipeProhibits;
-    private final long recipeTimeToBuild;
-    private final int recipeXPRequired;
-    private final String recipeName;
-    private final boolean recipeRequired;
-    private final float recipeWeight;
-
-    public PlanComponent(String recipeName, List<NonNullList<ItemStack>> recipeMaterials, List<PlanComponent> recipeRequires, List<PlanComponent> recipeProhibits, long recipeTimeToBuild, int recipeXPRequired, float recipeWeight) {
-        this(recipeName, recipeMaterials, recipeRequires, recipeProhibits, recipeTimeToBuild, recipeXPRequired, recipeWeight, false);
+public class GuiSlotBlankBookInput extends Slot {
+    public GuiSlotBlankBookInput(IInventory inventoryIn, int index, int xPosition, int yPosition) {
+        super(inventoryIn, index, xPosition, yPosition);
     }
 
-    public PlanComponent(String recipeName, List<NonNullList<ItemStack>> recipeMaterials, List<PlanComponent> recipeRequires, List<PlanComponent> recipeProhibits, long recipeTimeToBuild, int recipeXPRequired, float recipeWeight, boolean recipeRequired) {
-        this.recipeMaterials = recipeMaterials;
-        this.recipeRequires = recipeRequires;
-        this.recipeProhibits = recipeProhibits;
-        this.recipeTimeToBuild = recipeTimeToBuild;
-        this.recipeXPRequired = recipeXPRequired;
-        this.recipeName = recipeName;
-        this.recipeWeight = recipeWeight;
-        this.recipeRequired = recipeRequired;
+    @Override
+    public boolean isItemValid(@Nullable ItemStack stack) {
+        if (stack == null)
+            return false;
+
+        if (!this.inventory.isItemValidForSlot(getSlotIndex(), stack))
+            return false;
+
+        if (stack.getItem() != Items.WRITABLE_BOOK)
+            return false;
+
+        return true;
     }
 
-    public List<NonNullList<ItemStack>> getRecipeMaterials() {
-        return recipeMaterials;
-    }
-
-    public List<PlanComponent> getRecipeRequires() {
-        return recipeRequires;
-    }
-
-    public List<PlanComponent> getRecipeProhibits() {
-        return recipeProhibits;
-    }
-
-    public long getRecipeTimeToBuild() {
-        return recipeTimeToBuild;
-    }
-
-    public int getRecipeXPRequired() {
-        return recipeXPRequired;
-    }
-
-    public String getRecipeName() {
-        return recipeName;
-    }
-
-    public boolean isRecipeRequired() {
-        return recipeRequired;
-    }
-
-    public float getRecipeWeight() {
-        return recipeWeight;
+    @Override
+    public int getSlotStackLimit() {
+        return 1;
     }
 }

@@ -26,6 +26,7 @@ import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.network.messages.PacketBlockRotated;
 import tech.flatstone.appliedlogistics.common.network.messages.PacketButtonClick;
 import tech.flatstone.appliedlogistics.common.network.messages.PacketPatternStamperUpdatePlan;
+import tech.flatstone.appliedlogistics.common.network.messages.PacketPatternStamperWriteBook;
 
 public class PacketHandler {
     public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(ModInfo.MOD_ID.toLowerCase());
@@ -34,5 +35,6 @@ public class PacketHandler {
         INSTANCE.registerMessage(PacketButtonClick.class, PacketButtonClick.class, 0, Side.SERVER);
         INSTANCE.registerMessage(PacketBlockRotated.class, PacketBlockRotated.class, 1, Side.CLIENT);
         INSTANCE.registerMessage(PacketPatternStamperUpdatePlan.class, PacketPatternStamperUpdatePlan.class, 2, Side.CLIENT);
+        INSTANCE.registerMessage(PacketPatternStamperWriteBook.class, PacketPatternStamperWriteBook.class, 3, Side.SERVER);
     }
 }

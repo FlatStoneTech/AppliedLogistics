@@ -3,6 +3,7 @@ package com.fireball1725.firelib.guimaker.objects;
 import com.fireball1725.firelib.guimaker.GuiMaker;
 import com.fireball1725.firelib.network.PacketHandler;
 import com.fireball1725.firelib.network.messages.PacketGuiObjectClicked;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -43,6 +44,7 @@ public abstract class GuiObject extends Gui implements IGuiObject {
 
     public void guiObjectClicked() {
         PacketHandler.INSTANCE.sendToServer(new PacketGuiObjectClicked(guiMakerObj.getGuiId(), this.controlID, guiMakerObj.getBlockPos()));
+        this.guiMakerObj.guiObjectClicked(this.controlID, Minecraft.getMinecraft().world, guiMakerObj.getBlockPos());
     }
 
     public void guiObjectUpdated() {

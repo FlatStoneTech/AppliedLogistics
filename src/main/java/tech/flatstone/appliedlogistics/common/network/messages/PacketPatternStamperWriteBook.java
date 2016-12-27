@@ -17,67 +17,71 @@
  *  Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.plans;
+package tech.flatstone.appliedlogistics.common.network.messages;
 
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPatternStamper;
+import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-import java.util.List;
+public class PacketPatternStamperWriteBook implements IMessage, IMessageHandler<PacketPatternStamperWriteBook, IMessage> {
+    private NBTTagCompound nbtBook;
+    private int blockX;
+    private int blockY;
+    private int blockZ;
 
-public class PlanComponent {
-    private final List<NonNullList<ItemStack>> recipeMaterials;
-    private final List<PlanComponent> recipeRequires;
-    private final List<PlanComponent> recipeProhibits;
-    private final long recipeTimeToBuild;
-    private final int recipeXPRequired;
-    private final String recipeName;
-    private final boolean recipeRequired;
-    private final float recipeWeight;
+    public PacketPatternStamperWriteBook() {
 
-    public PlanComponent(String recipeName, List<NonNullList<ItemStack>> recipeMaterials, List<PlanComponent> recipeRequires, List<PlanComponent> recipeProhibits, long recipeTimeToBuild, int recipeXPRequired, float recipeWeight) {
-        this(recipeName, recipeMaterials, recipeRequires, recipeProhibits, recipeTimeToBuild, recipeXPRequired, recipeWeight, false);
     }
 
-    public PlanComponent(String recipeName, List<NonNullList<ItemStack>> recipeMaterials, List<PlanComponent> recipeRequires, List<PlanComponent> recipeProhibits, long recipeTimeToBuild, int recipeXPRequired, float recipeWeight, boolean recipeRequired) {
-        this.recipeMaterials = recipeMaterials;
-        this.recipeRequires = recipeRequires;
-        this.recipeProhibits = recipeProhibits;
-        this.recipeTimeToBuild = recipeTimeToBuild;
-        this.recipeXPRequired = recipeXPRequired;
-        this.recipeName = recipeName;
-        this.recipeWeight = recipeWeight;
-        this.recipeRequired = recipeRequired;
+    public PacketPatternStamperWriteBook(NBTTagCompound nbtTagCompound, BlockPos pos) {
+        this.nbtBook = nbtTagCompound;
+        this.blockX = pos.getX();
+        this.blockY = pos.getY();
+        this.blockZ = pos.getZ();
     }
 
-    public List<NonNullList<ItemStack>> getRecipeMaterials() {
-        return recipeMaterials;
+    @Override
+    public void fromBytes(ByteBuf buf) {
+        this.nbtBook = ByteBufUtils.readTag(buf);
+        this.blockX = buf.readInt();
+        this.blockY = buf.readInt();
+        this.blockZ = buf.readInt();
     }
 
-    public List<PlanComponent> getRecipeRequires() {
-        return recipeRequires;
+    @Override
+    public void toBytes(ByteBuf buf) {
+        ByteBufUtils.writeTag(buf, this.nbtBook);
+        buf.writeInt(blockX);
+        buf.writeInt(blockY);
+        buf.writeInt(blockZ);
     }
 
-    public List<PlanComponent> getRecipeProhibits() {
-        return recipeProhibits;
-    }
+    @Override
+    public IMessage onMessage(PacketPatternStamperWriteBook message, MessageContext ctx) {
+        BlockPos pos = new BlockPos(message.blockX, message.blockY, message.blockZ);
+        TileEntityPatternStamper tileEntity = TileHelper.getTileEntity(ctx.getServerHandler().playerEntity.world, pos, TileEntityPatternStamper.class);
 
-    public long getRecipeTimeToBuild() {
-        return recipeTimeToBuild;
-    }
+        if (tileEntity == null)
+            return null;
 
-    public int getRecipeXPRequired() {
-        return recipeXPRequired;
-    }
+        ItemStack itemBook = tileEntity.getInternalInventory().getStackInSlot(1);
+        if (itemBook.isEmpty())
+            return null;
 
-    public String getRecipeName() {
-        return recipeName;
-    }
+        itemBook.setTagCompound(message.nbtBook);
 
-    public boolean isRecipeRequired() {
-        return recipeRequired;
-    }
+        ctx.getServerHandler().playerEntity.world.playSound((EntityPlayer)null, message.blockX, message.blockY, message.blockZ, SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
 
-    public float getRecipeWeight() {
-        return recipeWeight;
+        return null;
     }
 }

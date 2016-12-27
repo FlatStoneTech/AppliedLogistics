@@ -19,10 +19,15 @@
 
 package tech.flatstone.appliedlogistics.common.plans;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
+import net.minecraftforge.oredict.OreDictionary;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -56,6 +61,35 @@ public class PlanRegistry {
             return null;
 
         return planMachineList;
+    }
+
+    public static NonNullList<ItemStack> getItemStack(ItemStack itemIn) {
+        NonNullList<ItemStack> itemStacks = NonNullList.create();
+        int oreID[] = OreDictionary.getOreIDs(itemIn);
+
+        if (oreID.length == 0) {
+            itemStacks.add(itemIn);
+            return itemStacks;
+        }
+
+        String oreDictName = OreDictionary.getOreName(oreID[0]);
+        itemStacks = OreDictionary.getOres(oreDictName);
+
+        for(ItemStack itemStack : itemStacks) {
+            itemStack.setCount(itemIn.getCount());
+        }
+
+        return itemStacks;
+    }
+
+    public static NonNullList<ItemStack> getItemStack(String oreDictName, int size) {
+        NonNullList<ItemStack> itemStacks = OreDictionary.getOres(oreDictName);
+
+        for(ItemStack itemStack : itemStacks) {
+            itemStack.setCount(size);
+        }
+
+        return itemStacks;
     }
 
 }

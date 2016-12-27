@@ -28,6 +28,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.ITextComponent;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.IInventoryCustom;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.IInventoryHandler;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 public abstract class TileEntityInventoryBase extends TileEntityBase implements ISidedInventory, IInventoryHandler {
     public abstract IInventory getInternalInventory();
@@ -62,8 +63,7 @@ public abstract class TileEntityInventoryBase extends TileEntityBase implements 
             for (int i = 0; i < inventory.getSizeInventory(); i++) {
                 NBTTagCompound item = new NBTTagCompound();
                 ItemStack itemStack = this.getStackInSlot(i);
-                if (itemStack != null)
-                    itemStack.writeToNBT(item);
+                itemStack.writeToNBT(item);
 
                 tagCompound.setTag("items" + i, item);
             }

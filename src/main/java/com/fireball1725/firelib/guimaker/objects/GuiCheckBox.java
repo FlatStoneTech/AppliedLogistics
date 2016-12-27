@@ -43,7 +43,7 @@ public class GuiCheckBox extends GuiObject {
     public void drawGuiContainerForegroundLayer(GuiContainer guiContainer, int mouseX, int mouseY) {
         Point p = this.getWindowXY(false);
 
-        if (!this.labelText.isEmpty())
+        if (this.labelText != null)
             Minecraft.getMinecraft().fontRendererObj.drawString(this.labelText, p.x + 16, p.y + 2, 0xFFFFFF);
 
         if (!this.visible || disabled)

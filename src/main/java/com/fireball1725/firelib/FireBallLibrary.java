@@ -7,6 +7,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Mod(modid = ModInfo.MOD_ID, name = ModInfo.MOD_NAME, certificateFingerprint = ModInfo.FINGERPRINT, dependencies = ModInfo.DEPENDENCIES, version = ModInfo.VERSION_BUILD, guiFactory = ModInfo.GUI_FACTORY)
 public class FireBallLibrary {
@@ -16,6 +18,7 @@ public class FireBallLibrary {
     public static IProxy proxy;
     public static Configuration configuration;
 
+    @SideOnly(Side.CLIENT)
     public FontRendererExtended fontRendererExtendedObj;
 
     @Mod.EventHandler

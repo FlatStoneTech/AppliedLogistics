@@ -23,6 +23,7 @@ import com.fireball1725.firelib.guimaker.GuiMaker;
 import com.fireball1725.firelib.guimaker.GuiMakerStatusIcon;
 import com.fireball1725.firelib.guimaker.IImplementsGuiMaker;
 import com.fireball1725.firelib.guimaker.objects.*;
+import com.fireball1725.firelib.guimaker.objects.GuiDrawItemStack;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
@@ -34,6 +35,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
@@ -228,6 +230,33 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe, IImpl
         tabGeneral.addGuiObject(new GuiProgressArrow(10, 115, 50));
         tabGeneral.addGuiObject(new GuiProgressFire(40, 115, 25));
         tabGeneral.addGuiObject(new GuiSlot(100, 100, 30, 30, 0, Slot.class));
+        tabGeneral.addGuiObject(new GuiDrawItemStack(Items.ITEM_MATERIAL_GEAR.getStack(2, EnumMaterialsGear.COPPER.getMeta()), 100, 20));
+        tabGeneral.addGuiObject(new GuiDrawItemStack(Items.ITEM_MATERIAL_GEAR.getStack(2, EnumMaterialsGear.GOLD.getMeta()), 100, 40));
+
+        NonNullList<ItemStack> test = NonNullList.create();
+        test.add(Items.ITEM_MATERIAL_GEAR.getStack(10, OreDictionary.WILDCARD_VALUE));
+
+        GuiDrawItemStack testStack = new GuiDrawItemStack(test, 120, 20);
+        testStack.setRenderDescription(true);
+        testStack.setScale(0.5f);
+        tabGeneral.addGuiObject(testStack);
+
+        GuiDrawItemStack testStack2 = new GuiDrawItemStack(OreDictionary.getOres("plankWood"), 120, 30);
+        testStack2.setRenderDescription(true);
+        testStack2.setScale(0.5f);
+        tabGeneral.addGuiObject(testStack2);
+
+        GuiDrawItemStack testStack3 = new GuiDrawItemStack(OreDictionary.getOres("logWood"), 120, 40);
+        testStack3.setRenderDescription(true);
+        testStack3.setScale(0.5f);
+        tabGeneral.addGuiObject(testStack3);
+
+        GuiDrawItemStack testStack4 = new GuiDrawItemStack(OreDictionary.getOres("stairWood"), 120, 50);
+        testStack4.setRenderDescription(true);
+        testStack4.setScale(0.5f);
+        tabGeneral.addGuiObject(testStack4);
+
+
         guiMaker.addGuiTab(tabGeneral);
 
         GuiTab tabAbout = new GuiTab(this.guiMaker, "About", 1);
