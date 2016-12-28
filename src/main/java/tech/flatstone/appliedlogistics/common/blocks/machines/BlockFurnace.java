@@ -44,10 +44,7 @@ import tech.flatstone.appliedlogistics.common.plans.PlanComponent;
 import tech.flatstone.appliedlogistics.common.plans.PlanMachine;
 import tech.flatstone.appliedlogistics.common.plans.PlanRegistry;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityFurnace;
-import tech.flatstone.appliedlogistics.common.util.EnumOres;
-import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
-import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
-import tech.flatstone.appliedlogistics.common.util.TileHelper;
+import tech.flatstone.appliedlogistics.common.util.*;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -103,8 +100,8 @@ public class BlockFurnace extends BlockTechBase implements IProvideRecipe {
         if (worldIn.isRemote)
             return true;
 
-        guiFurnace.setGuiTitle(tileEntity.hasCustomName() ? tileEntity.getCustomName() : LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()));
-        guiFurnace.show(AppliedLogistics.instance, worldIn, playerIn, pos);
+        //guiFurnace.setGuiTitle(tileEntity.hasCustomName() ? tileEntity.getCustomName() : LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()));
+        //guiFurnace.show(AppliedLogistics.instance, worldIn, playerIn, pos);
 
         return true;
     }

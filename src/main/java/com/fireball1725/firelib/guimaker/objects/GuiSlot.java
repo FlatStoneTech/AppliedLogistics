@@ -10,21 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GuiSlot extends GuiObject {
-    private int slotNumber;
-    private boolean largeSlot = false;
-    private Class<? extends Slot> guiSlot;
-
-    public GuiSlot(int x, int y, int slotNumber, Class<? extends Slot> guiSlot) {
+    public GuiSlot(int x, int y) {
         super(-999);
         this.x = x;
         this.y = y;
         this.w = 18;
         this.h = 18;
-        this.slotNumber = slotNumber;
-        this.guiSlot = guiSlot;
     }
 
-    public GuiSlot(int x, int y, int w, int h, int slotNumber, Class<? extends Slot> guiSlot) {
+    public GuiSlot(int x, int y, int w, int h) {
         super(-999);
 
         if (w < 18)
@@ -37,29 +31,6 @@ public class GuiSlot extends GuiObject {
         this.y = y;
         this.w = w;
         this.h = h;
-        this.slotNumber = slotNumber;
-        this.guiSlot = guiSlot;
-    }
-
-    @Override
-    public List<Slot> initContainer(InventoryPlayer inventoryPlayer, IInventory inventory) {
-        List<Slot> slotList = new ArrayList<>();
-
-        int slotX = (w >> 1) - (16 >> 1);
-        int slotY = (h >> 1) - (16 >> 1);
-
-        try {
-            slotList.add(this.guiSlot.getConstructor(IInventory.class, int.class, int.class, int.class).newInstance(inventory, this.slotNumber, slotX + this.x, slotY + this.y));
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        return slotList;
     }
 
     @Override

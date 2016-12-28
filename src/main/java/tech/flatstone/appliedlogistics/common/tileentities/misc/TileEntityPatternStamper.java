@@ -49,6 +49,7 @@ import tech.flatstone.appliedlogistics.common.plans.PlanRegistry;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 import tech.flatstone.appliedlogistics.common.util.Platform;
 
 import javax.annotation.Nullable;
@@ -227,20 +228,18 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
     }
 
     public void updateMachineList(TechLevel planTechLevel) {
-        if (this.world == null)
+        //if (this.world == null)
             return;
 
-        if (Platform.isServer()) {
-            PacketHandler.INSTANCE.sendToAllAround(new PacketPatternStamperUpdatePlan(this.getPos(), planTechLevel), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), this.getPos().getX(), this.getPos().getY(), this.getPos().getZ(), 50));
-        }
+        //if (Platform.isServer()) {
+            //PacketHandler.INSTANCE.sendToAllAround(new PacketPatternStamperUpdatePlan(this.getPos(), planTechLevel), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), this.getPos().getX(), this.getPos().getY(), this.getPos().getZ(), 50));
+        //}
 
 
-        this.selectedMachine = 0;
-        this.planMachines = PlanRegistry.getPlanRegistry(planTechLevel);
+        //this.selectedMachine = 0;
+        //this.planMachines = PlanRegistry.getPlanRegistry(planTechLevel);
 
-        if (Platform.isClient()) {
-            updateCheckBoxes();
-        }
+        //updateCheckBoxes();
     }
 
     @SideOnly(Side.CLIENT)
@@ -249,7 +248,7 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
 
         if (planMachines == null) {
             this.guiObjects.clear();
-            block.drawCheckBoxes(new ArrayList<>(), 0);
+            //block.drawCheckBoxes(new ArrayList<>(), 0);
             return;
         }
 
@@ -304,7 +303,7 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
             }
         }
 
-        block.drawCheckBoxes(guiObjects, y);
+        //block.drawCheckBoxes(guiObjects, y);
         updateCheckBoxData();
         this.guiObjects = guiObjects;
     }
@@ -314,7 +313,7 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
         BlockPatternStamper block = (BlockPatternStamper) this.blockType;
 
         if (planMachines == null) {
-            block.drawMaterialsList(new ArrayList<>(), 0);
+            //block.drawMaterialsList(new ArrayList<>(), 0);
             return;
         }
 
@@ -378,7 +377,7 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
             y += 20;
         }
 
-        block.drawMaterialsList(guiMaterialObjects, y - 20);
+        //block.drawMaterialsList(guiMaterialObjects, y - 20);
 
         this.markDirty();
         this.markForUpdate();

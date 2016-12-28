@@ -39,8 +39,8 @@ public class PacketUpdateGuiContainer implements IMessage, IMessageHandler<Packe
         mainThread.addScheduledTask(new Runnable() {
             @Override
             public void run() {
-                GuiMaker guiMaker = GuiMaker.getGuiMaker(message.guiID);
-                guiMaker.setServerGuiTab(message.selectedTab, ctx.getServerHandler().playerEntity);
+                GuiMaker guiMaker = GuiMaker.getGuiMakerInstance(message.guiID);
+                //guiMaker.setServerGuiTab(message.selectedTab, ctx.getServerHandler().playerEntity);
             }
         });
 

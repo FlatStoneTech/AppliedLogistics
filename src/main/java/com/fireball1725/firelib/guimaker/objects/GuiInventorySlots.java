@@ -17,23 +17,6 @@ public class GuiInventorySlots extends GuiObject {
     }
 
     @Override
-    public List<Slot> initContainer(InventoryPlayer inventoryPlayer, IInventory inventory) {
-        List<Slot> slotList = new ArrayList<>();
-
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 9; j++) {
-                slotList.add(new Slot(inventoryPlayer, j + i * 9 + 9, 1 + j * 18 + this.x, 1 + i * 18 + this.y));
-            }
-        }
-
-        for (int i = 0; i < 9; i++) {
-            slotList.add(new Slot(inventoryPlayer, i, 1 + i * 18 + this.x, 1 + 58 + this.y));
-        }
-
-        return slotList;
-    }
-
-    @Override
     public void drawGuiContainerBackgroundLayer(GuiContainer guiContainer, float partialTicks, int mouseX, int mouseY) {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {

@@ -35,140 +35,140 @@ import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.tileentities.machines.TileEntityFurnace;
 
-public class GuiFurnace extends GuiMaker {
-    private GuiProgressArrow progressArrow1;
-    private GuiProgressArrow progressArrow2;
-    private GuiProgressArrow progressArrow3;
-    private GuiProgressArrow progressArrow4;
-    private GuiProgressFire progressFire1;
-    private GuiCenteredLabel labelIntTemp;
-    private GuiImage imageTempBar;
-
-    public GuiFurnace() {
-        super(202, 174);
-    }
-
-    @Override
-    public void guiObjectClickedClient(int controlID, World world, BlockPos pos) {
-
-    }
-
-    @Override
-    public void guiObjectClickedServer(int controlID, World world, BlockPos pos) {
-
-    }
-
-    @Override
-    public void guiObjectUpdated(int controlID) {
-
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void initGui(TileEntity tileEntity, InventoryPlayer inventoryPlayer) {
-        this.clearGuiTabs();
-
-        GuiTab tabGeneral = new GuiTab(this, "General", Blocks.BLOCK_MACHINE_FURNACE.getStack(1, tileEntity.getBlockMetadata()));
-        //tabGeneral.addGuiObject(labelInputSlotStatus);
-        // Slots...
-        tabGeneral.addGuiObject(new GuiSlot(5, 5, 1, GuiSlotFurnaceInput.class));
-        tabGeneral.addGuiObject(new GuiSlot(23, 5, 2, GuiSlotFurnaceInput.class));
-        tabGeneral.addGuiObject(new GuiSlot(95, 5, 4, GuiSlotOutput.class));
-        tabGeneral.addGuiObject(new GuiSlot(113, 5, 5, GuiSlotOutput.class));
-        tabGeneral.addGuiObject(new GuiSlot(131, 5, 6, GuiSlotOutput.class));
-        tabGeneral.addGuiObject(new GuiSlot(149, 5, 7, GuiSlotOutput.class));
-
-        tabGeneral.addGuiObject(new GuiSlot(5, 23, 8, GuiSlotFurnaceInput.class));
-        tabGeneral.addGuiObject(new GuiSlot(23, 23, 9, GuiSlotFurnaceInput.class));
-        tabGeneral.addGuiObject(new GuiSlot(95, 23, 11, GuiSlotOutput.class));
-        tabGeneral.addGuiObject(new GuiSlot(113, 23, 12, GuiSlotOutput.class));
-        tabGeneral.addGuiObject(new GuiSlot(131, 23, 13, GuiSlotOutput.class));
-        tabGeneral.addGuiObject(new GuiSlot(149, 23, 14, GuiSlotOutput.class));
-
-        tabGeneral.addGuiObject(new GuiSlot(5, 41, 15, GuiSlotFurnaceInput.class));
-        tabGeneral.addGuiObject(new GuiSlot(23, 41, 16, GuiSlotFurnaceInput.class));
-        tabGeneral.addGuiObject(new GuiSlot(95, 41, 18, GuiSlotOutput.class));
-        tabGeneral.addGuiObject(new GuiSlot(113, 41, 19, GuiSlotOutput.class));
-        tabGeneral.addGuiObject(new GuiSlot(131, 41, 20, GuiSlotOutput.class));
-        tabGeneral.addGuiObject(new GuiSlot(149, 41, 21, GuiSlotOutput.class));
-
-        tabGeneral.addGuiObject(new GuiSlot(5, 59, 22, GuiSlotFurnaceInput.class));
-        tabGeneral.addGuiObject(new GuiSlot(23, 59, 23, GuiSlotFurnaceInput.class));
-        tabGeneral.addGuiObject(new GuiSlot(95, 59, 25, GuiSlotOutput.class));
-        tabGeneral.addGuiObject(new GuiSlot(113, 59, 26, GuiSlotOutput.class));
-        tabGeneral.addGuiObject(new GuiSlot(131, 59, 27, GuiSlotOutput.class));
-        tabGeneral.addGuiObject(new GuiSlot(149, 59, 28, GuiSlotOutput.class));
-
-        tabGeneral.addGuiObject(new GuiSlot(171, 143, 26, 26, 0, GuiSlotFuelInput.class));
-
-        // Player's Inventory
-        tabGeneral.addGuiObject(new GuiLabel(8, 83, 0xFFFFFF, "Inventory"));
-        tabGeneral.addGuiObject(new GuiInventorySlots(5, 93));
-
-        // Progress Bars
-        tabGeneral.addGuiObject(progressArrow1);
-        tabGeneral.addGuiObject(progressArrow2);
-        tabGeneral.addGuiObject(progressArrow3);
-        tabGeneral.addGuiObject(progressArrow4);
-        tabGeneral.addGuiObject(progressFire1);
-
-        // Temp Bar
-        tabGeneral.addGuiObject(new GuiWindow(179, 5, 18, 106));
-        tabGeneral.addGuiObject(labelIntTemp);
-        tabGeneral.addGuiObject(new GuiLine(171, 22, 25, 1, 0xffa1a1a1));
-        tabGeneral.addGuiObject(new GuiLabel(172, 17, 0xa1a1a1, 0.5f, "8x"));
-        tabGeneral.addGuiObject(new GuiLine(171, 40, 25, 1, 0xffa1a1a1));
-        tabGeneral.addGuiObject(new GuiLabel(172, 35, 0xa1a1a1, 0.5f, "4x"));
-        tabGeneral.addGuiObject(new GuiLine(171, 58, 25, 1, 0xffa1a1a1));
-        tabGeneral.addGuiObject(new GuiLabel(172, 53, 0xa1a1a1, 0.5f, "2x"));
-        tabGeneral.addGuiObject(new GuiLine(171, 76, 25, 1, 0xffa1a1a1));
-        tabGeneral.addGuiObject(new GuiLabel(172, 71, 0xa1a1a1, 0.5f, "1x"));
-        tabGeneral.addGuiObject(imageTempBar);
-
-        this.addGuiTab(tabGeneral);
-
-        GuiTab tabAbout = new GuiTab(this, "About", 1);
-        //labelInfoArray.setText(ABOUT_LABEL);
-        //tabAbout.addGuiObject(labelInfoArray);
-        this.addGuiTab(tabAbout);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void drawGui(TileEntity tileEntity) {
-        TileEntityFurnace tileEntityFurnace = (TileEntityFurnace) tileEntity;
-
-        progressArrow1.setProgress(tileEntityFurnace.getSmeltProgress(0));
-        progressArrow2.setProgress(tileEntityFurnace.getSmeltProgress(1));
-        progressArrow3.setProgress(tileEntityFurnace.getSmeltProgress(2));
-        //progressArrow4.setProgress(tileEntityFurnace.getSmeltProgress(0));
-        progressFire1.setProgress(tileEntityFurnace.getFuelOffset());
-
-        labelIntTemp.setText(String.format("%d\u00B0C", tileEntityFurnace.getIntTemperature() + 20));
-
-        float colorRangeFraction = tileEntityFurnace.getMaxTemp() / (float) TileEntityFurnace.HIGHEST_MAX_TEMP;
-        int colorRange = (int) (240 * colorRangeFraction);
-        float tempFraction = tileEntityFurnace.getIntTemperature() / (float) tileEntityFurnace.getMaxTemp();
-
-        int height = (int) (104 * tempFraction);
-        int textureHeight = (int) (colorRange * tempFraction);
-
-        //new GuiImage(new ResourceLocation(ModInfo.MOD_ID, "textures/gui/tempbar.png"), 180, 6 + 104 - height, 0, 240 - textureHeight, 50, textureHeight, 16, height, 50, 240);
-        imageTempBar.setY(6 + 104 - height);
-        imageTempBar.setV(240 - textureHeight);
-        imageTempBar.setvHeight(textureHeight);
-        imageTempBar.setH(height);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void initControls() {
-        progressArrow1 = new GuiProgressArrow(52, 6, 0);
-        progressArrow2 = new GuiProgressArrow(52, 24, 0);
-        progressArrow3 = new GuiProgressArrow(52, 42, 0);
-        progressArrow4 = new GuiProgressArrow(52, 60, 0);
-        progressFire1 = new GuiProgressFire(176, 127, 0);
-        labelIntTemp = new GuiCenteredLabel(178, 113, 20, 0xa1a1a1, 0.5f, "?°C");
-        imageTempBar = new GuiImage(new ResourceLocation(ModInfo.MOD_ID, "textures/gui/tempbar.png"), 180, 6, 0, 0, 16, 104, 16, 104, 50, 240);
-    }
+public class GuiFurnace {
+//    private GuiProgressArrow progressArrow1;
+//    private GuiProgressArrow progressArrow2;
+//    private GuiProgressArrow progressArrow3;
+//    private GuiProgressArrow progressArrow4;
+//    private GuiProgressFire progressFire1;
+//    private GuiCenteredLabel labelIntTemp;
+//    private GuiImage imageTempBar;
+//
+//    public GuiFurnace() {
+//        super(202, 174);
+//    }
+//
+//    @Override
+//    public void guiObjectClickedClient(int controlID, World world, BlockPos pos) {
+//
+//    }
+//
+//    @Override
+//    public void guiObjectClickedServer(int controlID, World world, BlockPos pos) {
+//
+//    }
+//
+//    @Override
+//    public void guiObjectUpdated(int controlID) {
+//
+//    }
+//
+//    @SideOnly(Side.CLIENT)
+//    @Override
+//    public void initGui(TileEntity tileEntity, InventoryPlayer inventoryPlayer) {
+//        this.clearGuiTabs();
+//
+//        GuiTab tabGeneral = new GuiTab(this, "General", Blocks.BLOCK_MACHINE_FURNACE.getStack(1, tileEntity.getBlockMetadata()));
+//        //tabGeneral.addGuiObject(labelInputSlotStatus);
+//        // Slots...
+//        tabGeneral.addGuiObject(new GuiSlot(5, 5, 1, GuiSlotFurnaceInput.class));
+//        tabGeneral.addGuiObject(new GuiSlot(23, 5, 2, GuiSlotFurnaceInput.class));
+//        tabGeneral.addGuiObject(new GuiSlot(95, 5, 4, GuiSlotOutput.class));
+//        tabGeneral.addGuiObject(new GuiSlot(113, 5, 5, GuiSlotOutput.class));
+//        tabGeneral.addGuiObject(new GuiSlot(131, 5, 6, GuiSlotOutput.class));
+//        tabGeneral.addGuiObject(new GuiSlot(149, 5, 7, GuiSlotOutput.class));
+//
+//        tabGeneral.addGuiObject(new GuiSlot(5, 23, 8, GuiSlotFurnaceInput.class));
+//        tabGeneral.addGuiObject(new GuiSlot(23, 23, 9, GuiSlotFurnaceInput.class));
+//        tabGeneral.addGuiObject(new GuiSlot(95, 23, 11, GuiSlotOutput.class));
+//        tabGeneral.addGuiObject(new GuiSlot(113, 23, 12, GuiSlotOutput.class));
+//        tabGeneral.addGuiObject(new GuiSlot(131, 23, 13, GuiSlotOutput.class));
+//        tabGeneral.addGuiObject(new GuiSlot(149, 23, 14, GuiSlotOutput.class));
+//
+//        tabGeneral.addGuiObject(new GuiSlot(5, 41, 15, GuiSlotFurnaceInput.class));
+//        tabGeneral.addGuiObject(new GuiSlot(23, 41, 16, GuiSlotFurnaceInput.class));
+//        tabGeneral.addGuiObject(new GuiSlot(95, 41, 18, GuiSlotOutput.class));
+//        tabGeneral.addGuiObject(new GuiSlot(113, 41, 19, GuiSlotOutput.class));
+//        tabGeneral.addGuiObject(new GuiSlot(131, 41, 20, GuiSlotOutput.class));
+//        tabGeneral.addGuiObject(new GuiSlot(149, 41, 21, GuiSlotOutput.class));
+//
+//        tabGeneral.addGuiObject(new GuiSlot(5, 59, 22, GuiSlotFurnaceInput.class));
+//        tabGeneral.addGuiObject(new GuiSlot(23, 59, 23, GuiSlotFurnaceInput.class));
+//        tabGeneral.addGuiObject(new GuiSlot(95, 59, 25, GuiSlotOutput.class));
+//        tabGeneral.addGuiObject(new GuiSlot(113, 59, 26, GuiSlotOutput.class));
+//        tabGeneral.addGuiObject(new GuiSlot(131, 59, 27, GuiSlotOutput.class));
+//        tabGeneral.addGuiObject(new GuiSlot(149, 59, 28, GuiSlotOutput.class));
+//
+//        tabGeneral.addGuiObject(new GuiSlot(171, 143, 26, 26, 0, GuiSlotFuelInput.class));
+//
+//        // Player's Inventory
+//        tabGeneral.addGuiObject(new GuiLabel(8, 83, 0xFFFFFF, "Inventory"));
+//        tabGeneral.addGuiObject(new GuiInventorySlots(5, 93));
+//
+//        // Progress Bars
+//        tabGeneral.addGuiObject(progressArrow1);
+//        tabGeneral.addGuiObject(progressArrow2);
+//        tabGeneral.addGuiObject(progressArrow3);
+//        tabGeneral.addGuiObject(progressArrow4);
+//        tabGeneral.addGuiObject(progressFire1);
+//
+//        // Temp Bar
+//        tabGeneral.addGuiObject(new GuiWindow(179, 5, 18, 106));
+//        tabGeneral.addGuiObject(labelIntTemp);
+//        tabGeneral.addGuiObject(new GuiLine(171, 22, 25, 1, 0xffa1a1a1));
+//        tabGeneral.addGuiObject(new GuiLabel(172, 17, 0xa1a1a1, 0.5f, "8x"));
+//        tabGeneral.addGuiObject(new GuiLine(171, 40, 25, 1, 0xffa1a1a1));
+//        tabGeneral.addGuiObject(new GuiLabel(172, 35, 0xa1a1a1, 0.5f, "4x"));
+//        tabGeneral.addGuiObject(new GuiLine(171, 58, 25, 1, 0xffa1a1a1));
+//        tabGeneral.addGuiObject(new GuiLabel(172, 53, 0xa1a1a1, 0.5f, "2x"));
+//        tabGeneral.addGuiObject(new GuiLine(171, 76, 25, 1, 0xffa1a1a1));
+//        tabGeneral.addGuiObject(new GuiLabel(172, 71, 0xa1a1a1, 0.5f, "1x"));
+//        tabGeneral.addGuiObject(imageTempBar);
+//
+//        this.addGuiTab(tabGeneral);
+//
+//        GuiTab tabAbout = new GuiTab(this, "About", 1);
+//        //labelInfoArray.setText(ABOUT_LABEL);
+//        //tabAbout.addGuiObject(labelInfoArray);
+//        this.addGuiTab(tabAbout);
+//    }
+//
+//    @SideOnly(Side.CLIENT)
+//    @Override
+//    public void drawGui(TileEntity tileEntity) {
+//        TileEntityFurnace tileEntityFurnace = (TileEntityFurnace) tileEntity;
+//
+//        progressArrow1.setProgress(tileEntityFurnace.getSmeltProgress(0));
+//        progressArrow2.setProgress(tileEntityFurnace.getSmeltProgress(1));
+//        progressArrow3.setProgress(tileEntityFurnace.getSmeltProgress(2));
+//        //progressArrow4.setProgress(tileEntityFurnace.getSmeltProgress(0));
+//        progressFire1.setProgress(tileEntityFurnace.getFuelOffset());
+//
+//        labelIntTemp.setText(String.format("%d\u00B0C", tileEntityFurnace.getIntTemperature() + 20));
+//
+//        float colorRangeFraction = tileEntityFurnace.getMaxTemp() / (float) TileEntityFurnace.HIGHEST_MAX_TEMP;
+//        int colorRange = (int) (240 * colorRangeFraction);
+//        float tempFraction = tileEntityFurnace.getIntTemperature() / (float) tileEntityFurnace.getMaxTemp();
+//
+//        int height = (int) (104 * tempFraction);
+//        int textureHeight = (int) (colorRange * tempFraction);
+//
+//        //new GuiImage(new ResourceLocation(ModInfo.MOD_ID, "textures/gui/tempbar.png"), 180, 6 + 104 - height, 0, 240 - textureHeight, 50, textureHeight, 16, height, 50, 240);
+//        imageTempBar.setY(6 + 104 - height);
+//        imageTempBar.setV(240 - textureHeight);
+//        imageTempBar.setvHeight(textureHeight);
+//        imageTempBar.setH(height);
+//    }
+//
+//    @SideOnly(Side.CLIENT)
+//    @Override
+//    public void initControls() {
+//        progressArrow1 = new GuiProgressArrow(52, 6, 0);
+//        progressArrow2 = new GuiProgressArrow(52, 24, 0);
+//        progressArrow3 = new GuiProgressArrow(52, 42, 0);
+//        progressArrow4 = new GuiProgressArrow(52, 60, 0);
+//        progressFire1 = new GuiProgressFire(176, 127, 0);
+//        labelIntTemp = new GuiCenteredLabel(178, 113, 20, 0xa1a1a1, 0.5f, "?°C");
+//        imageTempBar = new GuiImage(new ResourceLocation(ModInfo.MOD_ID, "textures/gui/tempbar.png"), 180, 6, 0, 0, 16, 104, 16, 104, 50, 240);
+//    }
 }

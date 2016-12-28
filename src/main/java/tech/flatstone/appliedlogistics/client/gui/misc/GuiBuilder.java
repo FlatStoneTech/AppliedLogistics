@@ -40,171 +40,171 @@ import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 
-public class GuiBuilder extends GuiMaker {
-    private GuiLabel labelInputSlotStatus;
-    private GuiCenteredLabel labelInfoArray;
-    private GuiCheckBox checkBox1;
-    private GuiCheckBox checkBox2;
-    private GuiCheckBox checkBox3;
-    private GuiCheckBox checkBox4;
-    private GuiCheckBox checkBox5;
-    private GuiButton guiButton1;
-
-
-    public GuiBuilder() {
-        super(256, 220);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void guiObjectClickedClient(int controlID, World world, BlockPos pos) {
-        switch (controlID) {
-            default:
-                LogHelper.info(">>> " + controlID);
-                break;
-            case 10:
-                checkBox1.setSelected(!checkBox1.isSelected());
-                break;
-            case 11:
-                checkBox2.setSelected(!checkBox2.isSelected());
-                checkBox1.setDisabled(checkBox2.isSelected());
-                guiButton1.setDisabled(checkBox2.isSelected());
-                break;
-            case 12:
-                checkBox3.setSelected(!checkBox3.isSelected());
-                guiButton1.setVisible(checkBox3.isSelected());
-                checkBox1.setVisible(checkBox3.isSelected());
-                break;
-            case 13:
-                checkBox4.setSelected(!checkBox4.isSelected());
-                guiButton1.setSelected(checkBox4.isSelected());
-                break;
-            case 14:
-                checkBox5.setSelected(!checkBox5.isSelected());
-        }
-    }
-
-    @Override
-    public void guiObjectClickedServer(int controlID, World world, BlockPos pos) {
-
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void guiObjectUpdated(int controlID) {
-
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void drawGui(TileEntity tileEntity) {
-        if (!(tileEntity instanceof TileEntityBuilder))
-            return;
-        TileEntityBuilder tileEntityBuilder = (TileEntityBuilder) tileEntity;
-
-        ItemStack itemPlan = tileEntityBuilder.getPlanItem();
-
-        if (tileEntityBuilder.getPlanItem() == null) {
-            labelInputSlotStatus.setText(TextFormatting.RED + LanguageHelper.MESSAGE.translateMessage("plan.insert"));
-        } else if (itemPlan != null && tileEntityBuilder.isUpgradeMode()) {
-            labelInputSlotStatus.setText(LanguageHelper.LABEL.translateMessage("upgrade") + " " + LanguageHelper.NONE.translateMessage(itemPlan.getUnlocalizedName() + ".name"));
-        } else if (itemPlan != null) {
-            labelInputSlotStatus.setText(LanguageHelper.NONE.translateMessage(itemPlan.getUnlocalizedName() + ".name"));
-        }
-
-
-        if (this.getSelectedTab() == 0)
-            this.setGuiMakerStatusIcon(GuiMakerStatusIcon.EMPTY);
-
-        if (this.getSelectedTab() == 1)
-            this.setGuiMakerStatusIcon(GuiMakerStatusIcon.GOOD);
-
-        if (this.getSelectedTab() == 2)
-            this.setGuiMakerStatusIcon(GuiMakerStatusIcon.WARN);
-
-        if (this.getSelectedTab() == 3)
-            this.setGuiMakerStatusIcon(GuiMakerStatusIcon.FAIL);
-
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void initControls() {
-        labelInputSlotStatus = new GuiLabel(26, 13, 0x00FF00, "");
-        labelInfoArray = new GuiCenteredLabel(0, 6, 242, 0xffffff);
-        checkBox1 = new GuiCheckBox(10, 70, 100, true);
-        checkBox2 = new GuiCheckBox(11, 10, 40, false);
-        checkBox3 = new GuiCheckBox(12, 30, 40, true);
-        checkBox4 = new GuiCheckBox(13, 50, 40, false);
-        checkBox5 = new GuiCheckBox(14, 50, 10, false);
-        guiButton1 = new GuiButton(1, 10, 70, 140, "Hello World...");
-
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void initGui(TileEntity tileEntity, InventoryPlayer inventoryPlayer) {
-        this.clearGuiTabs();
-
-        GuiTab tabGeneral = new GuiTab(this, "General", Items.ITEM_MATERIAL_GEAR.getStack(1, 2));
-        tabGeneral.addGuiObject(labelInputSlotStatus);
-        tabGeneral.addGuiObject(new GuiSlot(5, 5, 0, Slot.class));
-        tabGeneral.addGuiObject(new GuiInventorySlots(5, 139));
-        tabGeneral.addGuiObject(checkBox2);
-        tabGeneral.addGuiObject(checkBox3);
-        tabGeneral.addGuiObject(checkBox4);
-        tabGeneral.addGuiObject(guiButton1);
-        tabGeneral.addGuiObject(new GuiButton(1, 10, 95, 40, "Hello World..."));
-        tabGeneral.addGuiObject(checkBox1);
-        tabGeneral.addGuiObject(new GuiProgressArrow(10, 115, 50));
-        tabGeneral.addGuiObject(new GuiProgressFire(40, 115, 25));
-        tabGeneral.addGuiObject(new GuiSlot(100, 100, 30, 30, 0, Slot.class));
-        tabGeneral.addGuiObject(new GuiDrawItemStack(Items.ITEM_MATERIAL_GEAR.getStack(2, EnumMaterialsGear.COPPER.getMeta()), 100, 20));
-        tabGeneral.addGuiObject(new GuiDrawItemStack(Items.ITEM_MATERIAL_GEAR.getStack(2, EnumMaterialsGear.GOLD.getMeta()), 100, 40));
-
-        NonNullList<ItemStack> test = NonNullList.create();
-        test.add(Items.ITEM_MATERIAL_GEAR.getStack(10, OreDictionary.WILDCARD_VALUE));
-
-        GuiDrawItemStack testStack = new GuiDrawItemStack(test, 120, 20);
-        testStack.setRenderDescription(true);
-        testStack.setScale(0.5f);
-        tabGeneral.addGuiObject(testStack);
-
-        GuiDrawItemStack testStack2 = new GuiDrawItemStack(OreDictionary.getOres("plankWood"), 120, 30);
-        testStack2.setRenderDescription(true);
-        testStack2.setScale(0.5f);
-        tabGeneral.addGuiObject(testStack2);
-
-        GuiDrawItemStack testStack3 = new GuiDrawItemStack(OreDictionary.getOres("logWood"), 120, 40);
-        testStack3.setRenderDescription(true);
-        testStack3.setScale(0.5f);
-        tabGeneral.addGuiObject(testStack3);
-
-        GuiDrawItemStack testStack4 = new GuiDrawItemStack(OreDictionary.getOres("stairWood"), 120, 50);
-        testStack4.setRenderDescription(true);
-        testStack4.setScale(0.5f);
-        tabGeneral.addGuiObject(testStack4);
-
-
-        this.addGuiTab(tabGeneral);
-
-        GuiTab tabAbout = new GuiTab(this, "About", 1);
-        GuiScrollBox tabAboutScrollBox = new GuiScrollBox(this, 3, 3, 250, 214, false);
-        labelInfoArray.setText("Hello World...");
-        tabAboutScrollBox.addGuiObject(labelInfoArray);
-        tabAbout.addGuiObject(tabAboutScrollBox);
-        this.addGuiTab(tabAbout);
-
-        GuiTab tabTest = new GuiTab(this, "Test", 1);
-        GuiScrollBox scrollBox = new GuiScrollBox(this, 20, 20, 150, 150);
-        scrollBox.addGuiObject(new GuiWindow(0, 0, 18, 298));
-        scrollBox.setMaxScrollY(300);
-        scrollBox.addGuiObject(new GuiLabel(0, 100, 0xFFFFFF, "Hello world, this is a label..."));
-        scrollBox.addGuiObject(checkBox5);
-        scrollBox.addGuiObject(new GuiCenteredLabel(1, 1, 140, 0xFFFFFF, "Hello world, this is a test label to see if this works properly, who know if it will, this again is just a test to see what happens, I just needed a really long label to test all of this, so yay for really long labels, ok i think i am done here, good bye everyone :D"));
-
-        tabTest.addGuiObject(scrollBox);
-        this.addGuiTab(tabTest);
-    }
+public class GuiBuilder {
+//    private GuiLabel labelInputSlotStatus;
+//    private GuiCenteredLabel labelInfoArray;
+//    private GuiCheckBox checkBox1;
+//    private GuiCheckBox checkBox2;
+//    private GuiCheckBox checkBox3;
+//    private GuiCheckBox checkBox4;
+//    private GuiCheckBox checkBox5;
+//    private GuiButton guiButton1;
+//
+//
+//    public GuiBuilder() {
+//        super(256, 220);
+//    }
+//
+//    @SideOnly(Side.CLIENT)
+//    @Override
+//    public void guiObjectClickedClient(int controlID, World world, BlockPos pos) {
+//        switch (controlID) {
+//            default:
+//                LogHelper.info(">>> " + controlID);
+//                break;
+//            case 10:
+//                checkBox1.setSelected(!checkBox1.isSelected());
+//                break;
+//            case 11:
+//                checkBox2.setSelected(!checkBox2.isSelected());
+//                checkBox1.setDisabled(checkBox2.isSelected());
+//                guiButton1.setDisabled(checkBox2.isSelected());
+//                break;
+//            case 12:
+//                checkBox3.setSelected(!checkBox3.isSelected());
+//                guiButton1.setVisible(checkBox3.isSelected());
+//                checkBox1.setVisible(checkBox3.isSelected());
+//                break;
+//            case 13:
+//                checkBox4.setSelected(!checkBox4.isSelected());
+//                guiButton1.setSelected(checkBox4.isSelected());
+//                break;
+//            case 14:
+//                checkBox5.setSelected(!checkBox5.isSelected());
+//        }
+//    }
+//
+//    @Override
+//    public void guiObjectClickedServer(int controlID, World world, BlockPos pos) {
+//
+//    }
+//
+//    @SideOnly(Side.CLIENT)
+//    @Override
+//    public void guiObjectUpdated(int controlID) {
+//
+//    }
+//
+//    @SideOnly(Side.CLIENT)
+//    @Override
+//    public void drawGui(TileEntity tileEntity) {
+//        if (!(tileEntity instanceof TileEntityBuilder))
+//            return;
+//        TileEntityBuilder tileEntityBuilder = (TileEntityBuilder) tileEntity;
+//
+//        ItemStack itemPlan = tileEntityBuilder.getPlanItem();
+//
+//        if (tileEntityBuilder.getPlanItem() == null) {
+//            labelInputSlotStatus.setText(TextFormatting.RED + LanguageHelper.MESSAGE.translateMessage("plan.insert"));
+//        } else if (itemPlan != null && tileEntityBuilder.isUpgradeMode()) {
+//            labelInputSlotStatus.setText(LanguageHelper.LABEL.translateMessage("upgrade") + " " + LanguageHelper.NONE.translateMessage(itemPlan.getUnlocalizedName() + ".name"));
+//        } else if (itemPlan != null) {
+//            labelInputSlotStatus.setText(LanguageHelper.NONE.translateMessage(itemPlan.getUnlocalizedName() + ".name"));
+//        }
+//
+//
+//        if (this.getSelectedTab() == 0)
+//            this.setGuiMakerStatusIcon(GuiMakerStatusIcon.EMPTY);
+//
+//        if (this.getSelectedTab() == 1)
+//            this.setGuiMakerStatusIcon(GuiMakerStatusIcon.GOOD);
+//
+//        if (this.getSelectedTab() == 2)
+//            this.setGuiMakerStatusIcon(GuiMakerStatusIcon.WARN);
+//
+//        if (this.getSelectedTab() == 3)
+//            this.setGuiMakerStatusIcon(GuiMakerStatusIcon.FAIL);
+//
+//    }
+//
+//    @SideOnly(Side.CLIENT)
+//    @Override
+//    public void initControls() {
+//        labelInputSlotStatus = new GuiLabel(26, 13, 0x00FF00, "");
+//        labelInfoArray = new GuiCenteredLabel(0, 6, 242, 0xffffff);
+//        checkBox1 = new GuiCheckBox(10, 70, 100, true);
+//        checkBox2 = new GuiCheckBox(11, 10, 40, false);
+//        checkBox3 = new GuiCheckBox(12, 30, 40, true);
+//        checkBox4 = new GuiCheckBox(13, 50, 40, false);
+//        checkBox5 = new GuiCheckBox(14, 50, 10, false);
+//        guiButton1 = new GuiButton(1, 10, 70, 140, "Hello World...");
+//
+//    }
+//
+//    @SideOnly(Side.CLIENT)
+//    @Override
+//    public void initGui(TileEntity tileEntity, InventoryPlayer inventoryPlayer) {
+//        this.clearGuiTabs();
+//
+//        GuiTab tabGeneral = new GuiTab(this, "General", Items.ITEM_MATERIAL_GEAR.getStack(1, 2));
+//        tabGeneral.addGuiObject(labelInputSlotStatus);
+//        tabGeneral.addGuiObject(new GuiSlot(5, 5, 0, Slot.class));
+//        tabGeneral.addGuiObject(new GuiInventorySlots(5, 139));
+//        tabGeneral.addGuiObject(checkBox2);
+//        tabGeneral.addGuiObject(checkBox3);
+//        tabGeneral.addGuiObject(checkBox4);
+//        tabGeneral.addGuiObject(guiButton1);
+//        tabGeneral.addGuiObject(new GuiButton(1, 10, 95, 40, "Hello World..."));
+//        tabGeneral.addGuiObject(checkBox1);
+//        tabGeneral.addGuiObject(new GuiProgressArrow(10, 115, 50));
+//        tabGeneral.addGuiObject(new GuiProgressFire(40, 115, 25));
+//        tabGeneral.addGuiObject(new GuiSlot(100, 100, 30, 30, 0, Slot.class));
+//        tabGeneral.addGuiObject(new GuiDrawItemStack(Items.ITEM_MATERIAL_GEAR.getStack(2, EnumMaterialsGear.COPPER.getMeta()), 100, 20));
+//        tabGeneral.addGuiObject(new GuiDrawItemStack(Items.ITEM_MATERIAL_GEAR.getStack(2, EnumMaterialsGear.GOLD.getMeta()), 100, 40));
+//
+//        NonNullList<ItemStack> test = NonNullList.create();
+//        test.add(Items.ITEM_MATERIAL_GEAR.getStack(10, OreDictionary.WILDCARD_VALUE));
+//
+//        GuiDrawItemStack testStack = new GuiDrawItemStack(test, 120, 20);
+//        testStack.setRenderDescription(true);
+//        testStack.setScale(0.5f);
+//        tabGeneral.addGuiObject(testStack);
+//
+//        GuiDrawItemStack testStack2 = new GuiDrawItemStack(OreDictionary.getOres("plankWood"), 120, 30);
+//        testStack2.setRenderDescription(true);
+//        testStack2.setScale(0.5f);
+//        tabGeneral.addGuiObject(testStack2);
+//
+//        GuiDrawItemStack testStack3 = new GuiDrawItemStack(OreDictionary.getOres("logWood"), 120, 40);
+//        testStack3.setRenderDescription(true);
+//        testStack3.setScale(0.5f);
+//        tabGeneral.addGuiObject(testStack3);
+//
+//        GuiDrawItemStack testStack4 = new GuiDrawItemStack(OreDictionary.getOres("stairWood"), 120, 50);
+//        testStack4.setRenderDescription(true);
+//        testStack4.setScale(0.5f);
+//        tabGeneral.addGuiObject(testStack4);
+//
+//
+//        this.addGuiTab(tabGeneral);
+//
+//        GuiTab tabAbout = new GuiTab(this, "About", 1);
+//        GuiScrollBox tabAboutScrollBox = new GuiScrollBox(this, 3, 3, 250, 214, false);
+//        labelInfoArray.setText("Hello World...");
+//        tabAboutScrollBox.addGuiObject(labelInfoArray);
+//        tabAbout.addGuiObject(tabAboutScrollBox);
+//        this.addGuiTab(tabAbout);
+//
+//        GuiTab tabTest = new GuiTab(this, "Test", 1);
+//        GuiScrollBox scrollBox = new GuiScrollBox(this, 20, 20, 150, 150);
+//        scrollBox.addGuiObject(new GuiWindow(0, 0, 18, 298));
+//        scrollBox.setMaxScrollY(300);
+//        scrollBox.addGuiObject(new GuiLabel(0, 100, 0xFFFFFF, "Hello world, this is a label..."));
+//        scrollBox.addGuiObject(checkBox5);
+//        scrollBox.addGuiObject(new GuiCenteredLabel(1, 1, 140, 0xFFFFFF, "Hello world, this is a test label to see if this works properly, who know if it will, this again is just a test to see what happens, I just needed a really long label to test all of this, so yay for really long labels, ok i think i am done here, good bye everyone :D"));
+//
+//        tabTest.addGuiObject(scrollBox);
+//        this.addGuiTab(tabTest);
+//    }
 
 }

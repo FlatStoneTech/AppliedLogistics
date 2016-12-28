@@ -1,6 +1,7 @@
 package com.fireball1725.firelib.guimaker.objects;
 
 import com.fireball1725.firelib.guimaker.GuiMaker;
+import com.fireball1725.firelib.guimaker.GuiMakerGuiContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -19,7 +20,7 @@ import java.util.ConcurrentModificationException;
 import java.util.List;
 
 public class GuiScrollBox extends GuiObject {
-    private final GuiMaker guiMakerObj;
+    private final GuiMakerGuiContainer guiMakerGuiContainerObj;
     private List<GuiObject> guiObjectList = new ArrayList<>();
     private int maxScrollY = 0;
     private int offsetScrollY = 0;
@@ -27,25 +28,25 @@ public class GuiScrollBox extends GuiObject {
     private int initialClickY = -1;
     private float scrollMultiplier;
 
-    public GuiScrollBox(GuiMaker guiMakerObj, int x, int y, int w, int h) {
+    public GuiScrollBox(GuiMakerGuiContainer guiMakerGuiContainerObj, int x, int y, int w, int h) {
         super(-999);
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
         this.maxScrollY = h;
-        this.guiMakerObj = guiMakerObj;
+        this.guiMakerGuiContainerObj = guiMakerGuiContainerObj;
         this.border = true;
     }
 
-    public GuiScrollBox(GuiMaker guiMakerObj, int x, int y, int w, int h, boolean border) {
+    public GuiScrollBox(GuiMakerGuiContainer guiMakerGuiContainerObj, int x, int y, int w, int h, boolean border) {
         super(-999);
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
         this.maxScrollY = h;
-        this.guiMakerObj = guiMakerObj;
+        this.guiMakerGuiContainerObj = guiMakerGuiContainerObj;
         this.border = border;
     }
 
@@ -70,7 +71,7 @@ public class GuiScrollBox extends GuiObject {
     }
 
     public void addGuiObject(GuiObject guiObject) {
-        guiObject.updateGuiObject(this.guiMakerObj);
+        guiObject.updateGuiObject(this.guiMakerGuiContainerObj);
         guiObjectList.add(guiObject);
     }
 

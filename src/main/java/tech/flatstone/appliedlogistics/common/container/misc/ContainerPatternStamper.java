@@ -17,60 +17,16 @@
  *  Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package com.fireball1725.firelib.guimaker.objects;
+package tech.flatstone.appliedlogistics.common.container.misc;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import com.fireball1725.firelib.guimaker.GuiMakerContainer;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
-import java.awt.*;
+public class ContainerPatternStamper extends GuiMakerContainer {
 
-public class GuiDrawSimpleImage extends GuiObject {
-    private String labelText = "";
-    private float scale = 1;
-    private ResourceLocation resourceLocation;
-
-    public GuiDrawSimpleImage(ResourceLocation resourceLocation, int x, int y, int w, int h) {
-        super(-999);
-        this.resourceLocation = resourceLocation;
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
-    }
-
-    public GuiDrawSimpleImage(ResourceLocation resourceLocation, int x, int y) {
-        this(resourceLocation, x, y, 16, 16);
-    }
-
-    public void setLabelText(String labelText) {
-        this.labelText = labelText;
-    }
-
-    public void setScale(float scale) {
-        this.scale = scale;
-    }
-
-    @Override
-    public void drawGuiContainerForegroundLayer(GuiContainer guiContainer, int mouseX, int mouseY) {
-        Point p = this.getWindowXY(false);
-
-        int scaledX = (int) Math.floor(p.getX() / this.scale);
-        int scaledY = (int) Math.floor(p.getY() / this.scale);
-
-        GL11.glScalef(this.scale, this.scale, 1);
-
-        Minecraft.getMinecraft().getTextureManager().bindTexture(this.resourceLocation);
-        GlStateManager.color(1, 1, 1, 1);
-        Gui.drawModalRectWithCustomSizedTexture(scaledX, scaledY, 0, 0, this.w, this.h, this.w, this.h);
-
-        if (!this.labelText.isEmpty()) {
-            Minecraft.getMinecraft().fontRendererObj.drawString(this.labelText, scaledX + this.w + 4, scaledY + 4, 0xFFFFFF);
-        }
-
-        GL11.glScalef(1 / this.scale, 1 / this.scale, 1);
+    public ContainerPatternStamper(int id, EntityPlayer player, World world, BlockPos pos) {
+        super(id, player, world, pos);
     }
 }

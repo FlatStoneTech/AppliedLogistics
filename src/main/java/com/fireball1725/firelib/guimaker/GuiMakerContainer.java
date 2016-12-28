@@ -8,6 +8,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.List;
 
@@ -16,26 +18,13 @@ public class GuiMakerContainer extends Container {
     private final TileEntity tileEntity;
     private GuiMaker guiMaker;
 
-    public GuiMakerContainer(InventoryPlayer inventoryPlayer, TileEntity tileEntity, int id) {
-        this.inventoryPlayer = inventoryPlayer;
-        this.tileEntity = tileEntity;
-        this.guiMaker = GuiMaker.getGuiMaker(id);
-
-        initContainer();
+    public GuiMakerContainer(int id, EntityPlayer player, World world, BlockPos pos) {
+        this.inventoryPlayer = player.inventory;
+        this.tileEntity = world.getTileEntity(pos);
+        this.guiMaker = GuiMaker.getGuiMakerInstance(id);
     }
 
-    public void initContainer() {
-        this.inventoryItemStacks.clear();
-        this.inventorySlots.clear();
 
-        for (GuiObject guiObject : guiMaker.getGuiObjects()) {
-            List<Slot> slotList;
-            slotList = guiObject.initContainer(inventoryPlayer, (IInventory) tileEntity);
-            for (Slot slot : slotList) {
-                this.addSlotToContainer(slot);
-            }
-        }
-    }
 
     @Override
     public boolean canInteractWith(EntityPlayer playerIn) {

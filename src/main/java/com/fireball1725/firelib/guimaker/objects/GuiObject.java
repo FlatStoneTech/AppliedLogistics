@@ -1,9 +1,7 @@
 package com.fireball1725.firelib.guimaker.objects;
 
 import com.fireball1725.firelib.guimaker.GuiMaker;
-import com.fireball1725.firelib.network.PacketHandler;
-import com.fireball1725.firelib.network.messages.PacketGuiObjectClicked;
-import net.minecraft.client.Minecraft;
+import com.fireball1725.firelib.guimaker.GuiMakerGuiContainer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -25,7 +23,7 @@ public abstract class GuiObject extends Gui implements IGuiObject {
     protected int x, y, w, h;
     protected int guiX, guiY, guiW, guiH;
     protected int mouseX, mouseY;
-    protected GuiMaker guiMakerObj;
+    protected GuiMakerGuiContainer guiMakerGuiContainerObj;
     protected boolean visible = true;
     protected boolean disabled = false;
     protected boolean selected = false;
@@ -36,8 +34,8 @@ public abstract class GuiObject extends Gui implements IGuiObject {
         this.controlID = controlID;
     }
 
-    public void updateGuiObject(GuiMaker guiMakerObj) {
-        this.guiMakerObj = guiMakerObj;
+    public void updateGuiObject(GuiMakerGuiContainer guiMakerObj) {
+        this.guiMakerGuiContainerObj = guiMakerObj;
     }
 
     public void updateMouse(int mouseX, int mouseY) {
@@ -46,12 +44,11 @@ public abstract class GuiObject extends Gui implements IGuiObject {
     }
 
     public void guiObjectClicked() {
-        PacketHandler.INSTANCE.sendToServer(new PacketGuiObjectClicked(guiMakerObj.getGuiId(), this.controlID, guiMakerObj.getBlockPos()));
-        this.guiMakerObj.guiObjectClickedClient(this.controlID, Minecraft.getMinecraft().world, guiMakerObj.getBlockPos());
+        //this.guiMakerGuiContainerObj.guiObjectClickedClient(this.controlID, Minecraft.getMinecraft().world, guiMakerGuiContainerObj.getBlockPos());
     }
 
     public void guiObjectUpdated() {
-        this.guiMakerObj.guiObjectUpdated(this.controlID);
+        //this.guiMakerGuiContainerObj.guiObjectUpdated(this.controlID);
     }
 
     protected void setOffset(int x, int y) {
@@ -170,4 +167,5 @@ public abstract class GuiObject extends Gui implements IGuiObject {
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
+
 }

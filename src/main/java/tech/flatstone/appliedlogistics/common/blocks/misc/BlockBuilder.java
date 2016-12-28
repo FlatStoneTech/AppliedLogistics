@@ -75,13 +75,12 @@ public class BlockBuilder extends BlockTechBase implements IProvideRecipe {
 
         if (!worldIn.isRemote) {
             worldIn.addBlockEvent(pos, this, EnumEventTypes.PLAN_SLOT_UPDATE.ordinal(), 0);
-            playerIn.openGui(AppliedLogistics.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
+
+            //guiBuilder.setGuiTitle(tileEntity.hasCustomName() ? tileEntity.getCustomName() : LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()));
+            //guiBuilder.show(AppliedLogistics.instance, worldIn, playerIn, pos);
         }
 
         worldIn.addBlockEvent(pos, this, EnumEventTypes.PLAN_SLOT_UPDATE.ordinal(), 0);
-
-        guiBuilder.setGuiTitle(tileEntity.hasCustomName() ? tileEntity.getCustomName() : LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()));
-        guiBuilder.show(AppliedLogistics.instance, worldIn, playerIn, pos);
 
         return true;
     }

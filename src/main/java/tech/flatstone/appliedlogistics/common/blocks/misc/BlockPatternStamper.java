@@ -19,6 +19,8 @@
 
 package tech.flatstone.appliedlogistics.common.blocks.misc;
 
+import com.fireball1725.firelib.guimaker.GuiMaker;
+import com.fireball1725.firelib.guimaker.GuiMakerContainer;
 import com.fireball1725.firelib.guimaker.objects.GuiObject;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
@@ -35,6 +37,7 @@ import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.client.gui.misc.GuiPatternStamper;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
+import tech.flatstone.appliedlogistics.common.container.misc.ContainerPatternStamper;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPatternStamper;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
@@ -44,9 +47,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe {
-    //private List<GuiObject> guiObjects = new ArrayList<>();
     private List<GuiObject> guiMaterialsList = new ArrayList<>();
-    private GuiPatternStamper guiPatternStamper = new GuiPatternStamper();
+    private GuiMaker guiMaker;
 
     public BlockPatternStamper() {
         super(Material.ROCK, "misc/blockPatternStamper");
@@ -54,6 +56,8 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
         this.setTileEntity(TileEntityPatternStamper.class);
         this.setCreativeTab(AppliedLogisticsCreativeTabs.MACHINES);
         this.setInternalName("pattern_stamper");
+
+        this.guiMaker = new GuiMaker(ContainerPatternStamper.class, GuiPatternStamper.class);
     }
 
     @SideOnly(Side.CLIENT)
@@ -64,8 +68,7 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
         if (worldIn.isRemote)
             return true;
 
-        guiPatternStamper.setGuiTitle(tileEntity.hasCustomName() ? tileEntity.getCustomName() : LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName()));
-        guiPatternStamper.show(AppliedLogistics.instance, worldIn, playerIn, pos);
+        guiMaker.show(AppliedLogistics.instance, worldIn, playerIn, pos);
 
         return true;
     }
@@ -108,28 +111,28 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
 
     }
 
-    @SideOnly(Side.CLIENT)
-    public void drawCheckBoxes(List<GuiObject> guiObjects, int maxScrollY) {
-        this.guiPatternStamper.scrollBoxOptions.clearObjects();
-
-        for (GuiObject guiObject : guiObjects) {
-            this.guiPatternStamper.scrollBoxOptions.addGuiObject(guiObject);
-        }
-
-        this.guiPatternStamper.scrollBoxOptions.setMaxScrollY(maxScrollY);
-        this.guiPatternStamper.scrollBoxOptions.initGui();
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void drawMaterialsList(List<GuiObject> guiObjects, int maxScrollY) {
-        this.guiMaterialsList = guiObjects;
-        this.guiPatternStamper.scrollBoxMaterials.clearObjects();
-
-        for (GuiObject guiObject : this.guiMaterialsList) {
-            this.guiPatternStamper.scrollBoxMaterials.addGuiObject(guiObject);
-        }
-
-        this.guiPatternStamper.scrollBoxMaterials.setMaxScrollY(maxScrollY);
-        this.guiPatternStamper.scrollBoxMaterials.initGui();
-    }
+//    @SideOnly(Side.CLIENT)
+//    public void drawCheckBoxes(List<GuiObject> guiObjects, int maxScrollY) {
+//        this.guiPatternStamper.scrollBoxOptions.clearObjects();
+//
+//        for (GuiObject guiObject : guiObjects) {
+//            this.guiPatternStamper.scrollBoxOptions.addGuiObject(guiObject);
+//        }
+//
+//        this.guiPatternStamper.scrollBoxOptions.setMaxScrollY(maxScrollY);
+//        this.guiPatternStamper.scrollBoxOptions.initGui();
+//    }
+//
+//    @SideOnly(Side.CLIENT)
+//    public void drawMaterialsList(List<GuiObject> guiObjects, int maxScrollY) {
+//        this.guiMaterialsList = guiObjects;
+//        this.guiPatternStamper.scrollBoxMaterials.clearObjects();
+//
+//        for (GuiObject guiObject : this.guiMaterialsList) {
+//            this.guiPatternStamper.scrollBoxMaterials.addGuiObject(guiObject);
+//        }
+//
+//        this.guiPatternStamper.scrollBoxMaterials.setMaxScrollY(maxScrollY);
+//        this.guiPatternStamper.scrollBoxMaterials.initGui();
+//    }
 }
