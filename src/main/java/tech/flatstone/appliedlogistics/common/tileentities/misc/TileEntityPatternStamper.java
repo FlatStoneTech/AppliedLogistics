@@ -50,7 +50,6 @@ import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
-import tech.flatstone.appliedlogistics.common.util.Platform;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -66,13 +65,18 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
 
     private List<NonNullList<ItemStack>> materialsList = new ArrayList<>();
 
-    private List<GuiObject> guiObjects = new ArrayList<>();
+    private List<GuiObject> planGuiObjectsList = new ArrayList<>();
+    private int planGuiObjectsScrollYMax = 0;
 
     private int selectedMachine = 0;
 
     private long recipeTimeToBuild = 0;
     private int recipeXPRequired = 0;
     private float recipeWeight = 0;
+
+    public int getPlanGuiObjectsScrollYMax() {
+        return planGuiObjectsScrollYMax;
+    }
 
     public PlanMachine getSelectedPlanMachine() {
         if (planMachines == null)
@@ -81,9 +85,10 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
         return planMachines.get(selectedMachine);
     }
 
-    public void planNext() {
+    @SideOnly(Side.CLIENT)
+    public int planNext() {
         if (this.planMachines == null)
-            return;
+            return selectedMachine;
 
         selectedMachine++;
 
@@ -92,11 +97,15 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
 
         this.markDirty();
         this.markForUpdate();
+        this.updateCheckBoxes();
+
+        return selectedMachine;
     }
 
-    public void planPrev() {
+    @SideOnly(Side.CLIENT)
+    public int planPrev() {
         if (this.planMachines == null)
-            return;
+            return selectedMachine;
 
         selectedMachine--;
 
@@ -105,6 +114,14 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
 
         this.markDirty();
         this.markForUpdate();
+        this.updateCheckBoxes();
+
+        return selectedMachine;
+    }
+
+    public void setSelectedMachine(int selectedMachine) {
+        this.selectedMachine = selectedMachine;
+        LogHelper.info(">>> Selected Machine: " + selectedMachine);
     }
 
     @Override
@@ -165,19 +182,23 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
 
     @Override
     public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
+        // Server Side Inventory Change...
+
         if (slot == 0) {
             creativeMode = false;
             planTechLevel = null;
 
-            this.markDirty();
-            this.markForUpdate();
-            this.updateMachineList(planTechLevel);
-
             ItemStack itemStack = inv.getStackInSlot(0);
 
-            if (itemStack.isEmpty()) return;
+            if (itemStack.isEmpty()) {
+                updateItemPlan();
+                return;
+            }
 
-            if (!isPlanValid()) return;
+            if (!isPlanValid()) {
+                updateItemPlan();
+                return;
+            }
 
             if (itemStack.getItemDamage() == TechLevel.CREATIVE.getMeta()) {
                 creativeMode = true;
@@ -186,10 +207,32 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
                 planTechLevel = TechLevel.byMeta(itemStack.getItemDamage());
             }
 
-            this.markDirty();
-            this.markForUpdate();
-            this.updateMachineList(planTechLevel);
+            updateItemPlan();
         }
+    }
+
+    private void updateItemPlan() {
+        if (this.world == null)
+            return;
+
+        this.markDirty();
+        this.markForUpdate();
+        this.updatePlanData(planTechLevel);
+        PacketHandler.INSTANCE.sendToAllAround(new PacketPatternStamperUpdatePlan(this.getPos(), planTechLevel), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), this.getPos().getX(), this.getPos().getY(), this.getPos().getZ(), 50));
+    }
+
+    public void updatePlanData(TechLevel planTechLevel) {
+        this.planTechLevel = planTechLevel;
+
+        if (this.world == null)
+            return;
+
+        this.selectedMachine = 0;
+        this.planMachines = PlanRegistry.getPlanRegistry(planTechLevel);
+    }
+
+    public void updateMachineDetails() {
+        // Client Side Only?
     }
 
     public boolean isPlanValid() {
@@ -227,28 +270,11 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
         return planTechLevel;
     }
 
-    public void updateMachineList(TechLevel planTechLevel) {
-        //if (this.world == null)
-            return;
-
-        //if (Platform.isServer()) {
-            //PacketHandler.INSTANCE.sendToAllAround(new PacketPatternStamperUpdatePlan(this.getPos(), planTechLevel), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), this.getPos().getX(), this.getPos().getY(), this.getPos().getZ(), 50));
-        //}
-
-
-        //this.selectedMachine = 0;
-        //this.planMachines = PlanRegistry.getPlanRegistry(planTechLevel);
-
-        //updateCheckBoxes();
-    }
-
     @SideOnly(Side.CLIENT)
     public void updateCheckBoxes() {
-        BlockPatternStamper block = (BlockPatternStamper) this.blockType;
-
         if (planMachines == null) {
-            this.guiObjects.clear();
-            //block.drawCheckBoxes(new ArrayList<>(), 0);
+            this.planGuiObjectsList.clear();
+            this.planGuiObjectsScrollYMax = 0;
             return;
         }
 
@@ -303,9 +329,8 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
             }
         }
 
-        //block.drawCheckBoxes(guiObjects, y);
-        updateCheckBoxData();
-        this.guiObjects = guiObjects;
+        this.planGuiObjectsScrollYMax = y;
+        this.planGuiObjectsList = guiObjects;
     }
 
     @SideOnly(Side.CLIENT)
@@ -332,7 +357,7 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
 
         for (PlanComponent planComponent : planMachine.getPlanComponentList()) {
             // todo check button from i
-            GuiCheckBox guiCheckBox = (GuiCheckBox) guiObjects.get(i);
+            GuiCheckBox guiCheckBox = (GuiCheckBox) planGuiObjectsList.get(i);
             if (guiCheckBox.isSelected()) {
                 recipeXPRequired += planComponent.getRecipeXPRequired();
                 recipeWeight += planComponent.getRecipeWeight();
@@ -421,7 +446,7 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
         return (i <= 128 && s1.length() < 256);
     }
 
-    public List<GuiObject> getGuiObjects() {
-        return guiObjects;
+    public List<GuiObject> getPlanGuiObjectsList() {
+        return planGuiObjectsList;
     }
 }

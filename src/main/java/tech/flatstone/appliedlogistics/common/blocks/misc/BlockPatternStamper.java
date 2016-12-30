@@ -60,6 +60,10 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
         this.guiMaker = new GuiMaker(ContainerPatternStamper.class, GuiPatternStamper.class);
     }
 
+    public GuiMaker getGuiMaker() {
+        return guiMaker;
+    }
+
     @SideOnly(Side.CLIENT)
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {

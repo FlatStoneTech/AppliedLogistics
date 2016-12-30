@@ -4,8 +4,12 @@ import com.fireball1725.firelib.guimaker.GuiMaker;
 import com.fireball1725.firelib.guimaker.GuiMakerContainer;
 import com.fireball1725.firelib.network.PacketHandler;
 import com.fireball1725.firelib.network.messages.PacketGuiSlotAdd;
+import com.fireball1725.firelib.network.messages.PacketGuiSlotAddInventory;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
+
+import java.awt.*;
 
 public class GuiSlot extends GuiObject {
     private Class<? extends Slot> slot;
@@ -35,13 +39,19 @@ public class GuiSlot extends GuiObject {
 
     @Override
     public void initGui() {
-        PacketHandler.INSTANCE.sendToServer(new PacketGuiSlotAdd(slot, slotID, this.x, this.y, this.guiMakerGuiContainerObj.getGuiID()));
-        GuiMaker.getGuiMakerInstance(this.guiMakerGuiContainerObj.getGuiID()).getGuiMakerContainer().addSlot(slot, slotID, this.x, this.y);
-        ((GuiMakerContainer)GuiMaker.getGuiMakerInstance(this.guiMakerGuiContainerObj.getGuiID()).getGuiMakerGuiContainer().inventorySlots).addSlot(slot, slotID, this.x, this.y);
+        Point p = this.getWindowXY(false);
+
+        int pX = ((this.w >> 1) - 8) + p.x;
+        int pY = ((this.h >> 1) - 8) + p.y;
+
+        PacketHandler.INSTANCE.sendToServer(new PacketGuiSlotAdd(slot, slotID, pX, pY, this.guiMakerGuiContainerObj.getGuiID()));
+        ((GuiMakerContainer)GuiMaker.getGuiMakerInstance(this.guiMakerGuiContainerObj.getGuiID()).getGuiMakerGuiContainer().inventorySlots).addSlot(slot, slotID, pX, pY);
     }
 
     @Override
     public void drawGuiContainerBackgroundLayer(GuiContainer guiContainer, float partialTicks, int mouseX, int mouseY) {
-        drawSlot(this.x, this.y, this.w, this.h);
+        Point p = this.getWindowXY(false);
+
+        drawSlot(p.x, p.y, this.w, this.h);
     }
 }

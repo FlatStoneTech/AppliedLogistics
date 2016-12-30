@@ -6,6 +6,7 @@ import com.fireball1725.firelib.network.PacketHandler;
 import com.fireball1725.firelib.network.messages.PacketGuiSlotClear;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -19,6 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.awt.*;
 import java.io.IOException;
@@ -61,6 +63,10 @@ public class GuiMakerGuiContainer extends GuiContainer {
             return null;
 
         return guiTabs.get(selectedTab).getGuiObjectList();
+    }
+
+    public void actionPerformed(int buttonID) {
+
     }
 
     @Override

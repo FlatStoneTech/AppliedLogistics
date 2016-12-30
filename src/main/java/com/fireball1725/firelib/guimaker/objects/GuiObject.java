@@ -44,7 +44,7 @@ public abstract class GuiObject extends Gui implements IGuiObject {
     }
 
     public void guiObjectClicked() {
-        //this.guiMakerGuiContainerObj.guiObjectClickedClient(this.controlID, Minecraft.getMinecraft().world, guiMakerGuiContainerObj.getBlockPos());
+        this.guiMakerGuiContainerObj.actionPerformed(this.controlID);
     }
 
     public void guiObjectUpdated() {

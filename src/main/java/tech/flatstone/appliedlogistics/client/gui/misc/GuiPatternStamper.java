@@ -19,15 +19,12 @@
 
 package tech.flatstone.appliedlogistics.client.gui.misc;
 
-import com.fireball1725.firelib.guimaker.GuiMaker;
 import com.fireball1725.firelib.guimaker.GuiMakerGuiContainer;
 import com.fireball1725.firelib.guimaker.objects.*;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
@@ -37,8 +34,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
-import tech.flatstone.appliedlogistics.common.slots.GuiSlotBlankBookInput;
-import tech.flatstone.appliedlogistics.common.slots.GuiSlotBlankPlanInput;
+import tech.flatstone.appliedlogistics.common.network.PacketHandler;
+import tech.flatstone.appliedlogistics.common.network.messages.PacketPatternStamperUpdateSelectedPlan;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPatternStamper;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
@@ -127,6 +124,38 @@ public class GuiPatternStamper extends GuiMakerGuiContainer {
         this.addGuiTab(tabMachine);
         this.addGuiTab(tabExport);
         this.addGuiTab(tabAbout);
+
+        updatePartsList();
+    }
+
+    @Override
+    public void actionPerformed(int buttonID) {
+        super.actionPerformed(buttonID);
+
+        switch (buttonID) {
+            case 1:
+                PacketHandler.INSTANCE.sendToServer(new PacketPatternStamperUpdateSelectedPlan(tileEntity.getPos(), tileEntity.planPrev()));
+                updatePartsList();
+                break;
+            case 2:
+                PacketHandler.INSTANCE.sendToServer(new PacketPatternStamperUpdateSelectedPlan(tileEntity.getPos(), tileEntity.planNext()));
+                updatePartsList();
+                break;
+
+        }
+
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void updatePartsList() {
+        LogHelper.info(">>> " + tileEntity.getPlanGuiObjectsList().size());
+        this.scrollBoxOptions.clearObjects();
+
+        for (GuiObject guiObject : tileEntity.getPlanGuiObjectsList())
+            this.scrollBoxOptions.addGuiObject(guiObject);
+
+        this.scrollBoxOptions.setMaxScrollY(tileEntity.getPlanGuiObjectsScrollYMax());
+        this.scrollBoxOptions.initGui();
     }
 
     @Override
@@ -207,7 +236,7 @@ public class GuiPatternStamper extends GuiMakerGuiContainer {
 //
 //        int buttonID = checkBox - 100;
 //
-//        GuiObject guiObject = tileEntity.getGuiObjects().get(buttonID);
+//        GuiObject guiObject = tileEntity.getPlanGuiObjectsList().get(buttonID);
 //
 //        if (guiObject instanceof GuiCheckBox) {
 //            GuiCheckBox guiCheckBox = (GuiCheckBox) guiObject;

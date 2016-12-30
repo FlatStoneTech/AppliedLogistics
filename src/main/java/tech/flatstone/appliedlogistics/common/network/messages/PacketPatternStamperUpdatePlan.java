@@ -21,13 +21,17 @@ package tech.flatstone.appliedlogistics.common.network.messages;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
+import tech.flatstone.appliedlogistics.client.gui.misc.GuiPatternStamper;
+import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPatternStamper;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPatternStamper;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
@@ -69,18 +73,19 @@ public class PacketPatternStamperUpdatePlan implements IMessage, IMessageHandler
 
     @Override
     public IMessage onMessage(final PacketPatternStamperUpdatePlan message, MessageContext ctx) {
-        Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-            @SideOnly(Side.CLIENT)
+        IThreadListener mainThread = Minecraft.getMinecraft();
+        mainThread.addScheduledTask(new Runnable() {
             @Override
             public void run() {
                 TileEntityPatternStamper tileEntity = TileHelper.getTileEntity(Minecraft.getMinecraft().world, message.blockPos, TileEntityPatternStamper.class);
-                if (tileEntity == null)
-                    return;
-
-                tileEntity.updateMachineList(message.planTechLevel);
+                BlockPatternStamper block = (BlockPatternStamper)tileEntity.getBlockType();
+                if (tileEntity != null) {
+                    tileEntity.updatePlanData(message.planTechLevel);
+                    GuiPatternStamper gui = (GuiPatternStamper)block.getGuiMaker().getGuiMakerGuiContainer();
+                    gui.updatePartsList();
+                }
             }
         });
-
         return null;
     }
 }
