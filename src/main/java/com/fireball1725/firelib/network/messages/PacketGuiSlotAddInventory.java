@@ -17,139 +17,71 @@
  *  Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics;
+package com.fireball1725.firelib.network.messages;
 
-import com.fireball1725.firelib.guimaker.objects.slots.GuiSlotFuelInput;
-import com.google.common.base.Stopwatch;
+import com.fireball1725.firelib.guimaker.GuiMaker;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.inventory.Slot;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import org.apache.commons.lang3.JavaVersion;
-import org.apache.commons.lang3.SystemUtils;
-import tech.flatstone.appliedlogistics.api.exceptions.OutdatedJavaException;
-import tech.flatstone.appliedlogistics.common.config.Config;
-import tech.flatstone.appliedlogistics.common.grid.TransportGrid;
-import tech.flatstone.appliedlogistics.common.integrations.IntegrationsManager;
-import tech.flatstone.appliedlogistics.common.network.PacketHandler;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
-import tech.flatstone.appliedlogistics.common.world.WorldGen;
-import tech.flatstone.appliedlogistics.proxy.IProxy;
+import net.minecraft.util.IThreadListener;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+public class PacketGuiSlotAddInventory implements IMessage, IMessageHandler<PacketGuiSlotAddInventory, IMessage> {
+    private Class<? extends Slot> guiSlot;
+    private int slotID;
+    private int locX;
+    private int locY;
+    private int guiID;
 
-@Mod(modid = ModInfo.MOD_ID, name = ModInfo.MOD_NAME, certificateFingerprint = ModInfo.FINGERPRINT, dependencies = ModInfo.DEPENDENCIES, version = ModInfo.VERSION_BUILD, guiFactory = ModInfo.GUI_FACTORY)
-public class AppliedLogistics {
-    @Mod.Instance(ModInfo.MOD_ID)
-    public static AppliedLogistics instance;
-    public static Configuration configuration;
-    @SidedProxy(clientSide = ModInfo.CLIENT_PROXY_CLASS, serverSide = ModInfo.SERVER_PROXY_CLASS)
-    private static IProxy proxy;
+    public PacketGuiSlotAddInventory() {
 
-    static {
-        FluidRegistry.enableUniversalBucket();
     }
 
-    public TransportGrid transportGrid;
+    public PacketGuiSlotAddInventory(Class<? extends Slot> guiSlot, int slotID, int locX, int locY, int guiID) {
+        this.guiSlot = guiSlot;
+        this.slotID = slotID;
+        this.locX = locX;
+        this.locY = locY;
+        this.guiID = guiID;
+    }
 
-    @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event) {
-        final Stopwatch stopwatch = Stopwatch.createStarted();
-        LogHelper.info("Pre Initialization (Started)");
-
-        //Make sure we are running on java 7 or newer
-        if (!SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_1_8)) {
-            throw new OutdatedJavaException(String.format("%s requires Java 8 or newer, Please update your java", ModInfo.MOD_NAME));
+    @Override
+    public void fromBytes(ByteBuf buf) {
+        try {
+            this.guiSlot = (Class<? extends Slot>)Class.forName(ByteBufUtils.readUTF8String(buf));
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
-
-        proxy.registerConfiguration(event.getSuggestedConfigurationFile());
-
-        PacketHandler.init();
-        com.fireball1725.firelib.network.PacketHandler.init();
-
-        // Register all the things...
-        proxy.registerBlocks();
-
-        proxy.registerItems();
-
-        proxy.registerSounds();
-
-        proxy.registerGUIs();
-
-        proxy.registerPlans();
-
-        proxy.registerFurnaceRecipes();
-
-        proxy.registerOreDict();
-
-        proxy.registerEvents();
-
-        proxy.registerRenderers();
-
-        proxy.registerWorldGen();
-
-        proxy.registerFluids();
-
-        // Setup Integrations Manager
-        IntegrationsManager.instance().index();
-        IntegrationsManager.instance().preInit();
-
-        LogHelper.info("Pre Initialization (Ended after " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + "ms)");
+        this.slotID = buf.readInt();
+        this.locX = buf.readInt();
+        this.locY = buf.readInt();
+        this.guiID = buf.readInt();
     }
 
-    @Mod.EventHandler
-    public void init(FMLInitializationEvent event) {
-        final Stopwatch stopwatch = Stopwatch.createStarted();
-        LogHelper.info("Initialization (Started)");
-        // Handle Recipes
-        proxy.registerRecipes();
-
-        proxy.registerCrusherRecipes();
-
-        WorldGen worldGen = new WorldGen();
-        GameRegistry.registerWorldGenerator(worldGen, 0);
-        MinecraftForge.EVENT_BUS.register(worldGen);
-
-        MinecraftForge.EVENT_BUS.register(this);
-
-        transportGrid = new TransportGrid();
-
-        // Init Integrations
-        IntegrationsManager.instance().init();
-
-        LogHelper.info("Initialization (Ended after " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + "ms)");
+    @Override
+    public void toBytes(ByteBuf buf) {
+        ByteBufUtils.writeUTF8String(buf, this.guiSlot.getName());
+        buf.writeInt(this.slotID);
+        buf.writeInt(this.locX);
+        buf.writeInt(this.locY);
+        buf.writeInt(this.guiID);
     }
 
-    @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-        final Stopwatch stopwatch = Stopwatch.createStarted();
-        LogHelper.info("Post Initialization (Started)");
+    @Override
+    public IMessage onMessage(PacketGuiSlotAddInventory message, MessageContext ctx) {
+        IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world;
+        mainThread.addScheduledTask(new Runnable() {
+            @Override
+            public void run() {
+                GuiMaker guiMaker = GuiMaker.getGuiMakerInstance(message.guiID);
 
-        IntegrationsManager.instance().postInit();
+                guiMaker.getGuiMakerContainer().addInventorySlot(message.guiSlot, message.slotID, message.locX, message.locY);
+            }
+        });
 
-        Map<String, Fluid> fluids = FluidRegistry.getRegisteredFluids();
-        for (Map.Entry<String, Fluid> key : fluids.entrySet()) {
-            Fluid fluid = key.getValue();
-            LogHelper.info(">>> Fluid Name: " + key + " (" + fluid.getUnlocalizedName() + ")");
-        }
-
-        LogHelper.info("Post Initialization (Ended after " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + "ms)");
-    }
-
-    @SubscribeEvent
-    public void onConfigurationChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
-        if (event.getModID().equals(ModInfo.MOD_ID)) {
-            Config.loadConfiguration();
-        }
+        return null;
     }
 }

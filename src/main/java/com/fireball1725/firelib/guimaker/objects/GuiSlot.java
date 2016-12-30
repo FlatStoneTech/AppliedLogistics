@@ -1,24 +1,21 @@
 package com.fireball1725.firelib.guimaker.objects;
 
+import com.fireball1725.firelib.guimaker.GuiMaker;
+import com.fireball1725.firelib.guimaker.GuiMakerContainer;
+import com.fireball1725.firelib.network.PacketHandler;
+import com.fireball1725.firelib.network.messages.PacketGuiSlotAdd;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-
 public class GuiSlot extends GuiObject {
-    public GuiSlot(int x, int y) {
-        super(-999);
-        this.x = x;
-        this.y = y;
-        this.w = 18;
-        this.h = 18;
+    private Class<? extends Slot> slot;
+    private int slotID;
+
+    public GuiSlot(Class<? extends Slot> slot, int slotID, int x, int y) {
+        this(slot, slotID, x, y, 18, 18);
     }
 
-    public GuiSlot(int x, int y, int w, int h) {
+    public GuiSlot(Class<? extends Slot> slot, int slotID, int x, int y, int w, int h) {
         super(-999);
 
         if (w < 18)
@@ -31,6 +28,16 @@ public class GuiSlot extends GuiObject {
         this.y = y;
         this.w = w;
         this.h = h;
+
+        this.slotID = slotID;
+        this.slot = slot;
+    }
+
+    @Override
+    public void initGui() {
+        PacketHandler.INSTANCE.sendToServer(new PacketGuiSlotAdd(slot, slotID, this.x, this.y, this.guiMakerGuiContainerObj.getGuiID()));
+        GuiMaker.getGuiMakerInstance(this.guiMakerGuiContainerObj.getGuiID()).getGuiMakerContainer().addSlot(slot, slotID, this.x, this.y);
+        ((GuiMakerContainer)GuiMaker.getGuiMakerInstance(this.guiMakerGuiContainerObj.getGuiID()).getGuiMakerGuiContainer().inventorySlots).addSlot(slot, slotID, this.x, this.y);
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.fireball1725.firelib.guimaker;
 
 import com.fireball1725.firelib.guimaker.objects.GuiObject;
 import com.fireball1725.firelib.guimaker.objects.GuiTab;
+import com.fireball1725.firelib.network.PacketHandler;
+import com.fireball1725.firelib.network.messages.PacketGuiSlotClear;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -32,15 +34,18 @@ public class GuiMakerGuiContainer extends GuiContainer {
     private int mouseY = 0;
     protected String guiTitle = "";
     protected GuiMakerStatusIcon guiMakerStatusIcon = GuiMakerStatusIcon.EMPTY;
-
+    protected final int guiID;
 
     private int selectedTab = 0;
     private List<GuiTab> guiTabs = new ArrayList<>();
 
+    public int getGuiID() {
+        return guiID;
+    }
 
     public GuiMakerGuiContainer(int id, EntityPlayer player, World world, BlockPos pos) {
         super(new GuiMakerContainer(id, player, world, pos));
-
+        this.guiID = id;
         tileEntity = world.getTileEntity(pos);
         guiTitle = tileEntity.getBlockType().getLocalizedName();
         //guiTitle = tileEntity.hasCustomName() ? tileEntity.getCustomName() : LanguageHelper.NONE.translateMessage(tileEntity.getUnlocalizedName());
@@ -69,6 +74,9 @@ public class GuiMakerGuiContainer extends GuiContainer {
     @Override
     public void initGui() {
         super.initGui();
+
+        PacketHandler.INSTANCE.sendToServer(new PacketGuiSlotClear(this.guiID));
+        ((GuiMakerContainer)this.inventorySlots).clearSlots();
 
         for (GuiObject guiObject : getGuiObjects()) {
             guiObject.updateGuiSize(this.guiLeft, this.guiTop, xSize, ySize);

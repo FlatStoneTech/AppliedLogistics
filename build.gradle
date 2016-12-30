@@ -59,9 +59,9 @@ archivesBaseName = cibasename
 def api_version = 1
 def api_featureset = 1
 
-def githubOwner = ''
-def githubRepo = ''
-def githubToken = ''
+def githubOwner = 'fakeaccount'
+def githubRepo = 'fakerepo'
+def githubToken = 'faketoken'
 def githubTagName = ''
 def githubTargetCommitish = ''
 def githubName = ''

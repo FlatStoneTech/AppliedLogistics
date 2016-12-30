@@ -25,6 +25,7 @@ import com.fireball1725.firelib.guimaker.objects.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -84,7 +85,7 @@ public class GuiPatternStamper extends GuiMakerGuiContainer {
         GuiTab tabExport = new GuiTab(this, "Total Materials", new ItemStack(Items.BOOK));
         GuiTab tabAbout = new GuiTab(this, "About", 1);
 
-        tabMachine.addGuiObject(new GuiSlot(4, 4, 28, 28));
+        tabMachine.addGuiObject(new GuiSlot(Slot.class, 0, 4, 4, 28, 28));
         tabMachine.addGuiObject(labelSlotDetails);
 
         tabMachine.addGuiObject(new GuiWindow(34, 18, 156, 14)); // Progress Bar (for weight)...
@@ -117,7 +118,7 @@ public class GuiPatternStamper extends GuiMakerGuiContainer {
         tabExport.addGuiObject(new GuiInventorySlots(4, 152));
 
         // Book and Quill Slot
-        tabExport.addGuiObject(new GuiSlot(4, 4));
+        tabExport.addGuiObject(new GuiSlot(Slot.class, 1, 4, 4));
 
         tabExport.addGuiObject(new GuiButton(4, 140, 4, 50, 18, "Save"));
 
