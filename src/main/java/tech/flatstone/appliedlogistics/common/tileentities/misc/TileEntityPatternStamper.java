@@ -211,7 +211,7 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
         }
     }
 
-    private void updateItemPlan() {
+    public void updateItemPlan() {
         if (this.world == null)
             return;
 

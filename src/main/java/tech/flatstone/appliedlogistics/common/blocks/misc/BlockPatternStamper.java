@@ -73,6 +73,7 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
             return true;
 
         guiMaker.show(AppliedLogistics.instance, worldIn, playerIn, pos);
+        tileEntity.updateItemPlan();
 
         return true;
     }
