@@ -29,17 +29,23 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.SaveInspectionHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.network.PacketHandler;
+import tech.flatstone.appliedlogistics.common.network.messages.PacketPatternStamperUpdateCheckBox;
 import tech.flatstone.appliedlogistics.common.network.messages.PacketPatternStamperUpdateSelectedPlan;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPatternStamper;
 import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class GuiPatternStamper extends GuiMakerGuiContainer {
@@ -56,6 +62,8 @@ public class GuiPatternStamper extends GuiMakerGuiContainer {
     public GuiDrawSimpleImage imageXPCost;
     public GuiLabel labelCreativeMode;
     private TileEntityPatternStamper tileEntity;
+
+    private List<GuiObject> guiPlanOptions = new ArrayList<>();
 
     public GuiPatternStamper(int id, EntityPlayer player, World world, BlockPos pos) {
         super(id, player, world, pos);
@@ -125,7 +133,7 @@ public class GuiPatternStamper extends GuiMakerGuiContainer {
         this.addGuiTab(tabExport);
         this.addGuiTab(tabAbout);
 
-        updatePartsList();
+        updateOptions();
     }
 
     @Override
@@ -134,45 +142,46 @@ public class GuiPatternStamper extends GuiMakerGuiContainer {
 
         switch (buttonID) {
             case 1:
-                PacketHandler.INSTANCE.sendToServer(new PacketPatternStamperUpdateSelectedPlan(tileEntity.getPos(), tileEntity.planPrev()));
-                updatePartsList();
+                PacketHandler.INSTANCE.sendToServer(new PacketPatternStamperUpdateSelectedPlan(tileEntity.getPos(), tileEntity.selectPrevPlan()));
+                updateOptions();
                 break;
             case 2:
-                PacketHandler.INSTANCE.sendToServer(new PacketPatternStamperUpdateSelectedPlan(tileEntity.getPos(), tileEntity.planNext()));
-                updatePartsList();
+                PacketHandler.INSTANCE.sendToServer(new PacketPatternStamperUpdateSelectedPlan(tileEntity.getPos(), tileEntity.selectNextPlan()));
+                updateOptions();
                 break;
+            default:
+                if (buttonID >= 100)
+                    handleCheckBox(buttonID);
 
+                break;
         }
 
     }
 
-    @SideOnly(Side.CLIENT)
-    public void updatePartsList() {
-        LogHelper.info(">>> " + tileEntity.getPlanGuiObjectsList().size());
-        this.scrollBoxOptions.clearObjects();
-
-        for (GuiObject guiObject : tileEntity.getPlanGuiObjectsList())
-            this.scrollBoxOptions.addGuiObject(guiObject);
-
-        this.scrollBoxOptions.setMaxScrollY(tileEntity.getPlanGuiObjectsScrollYMax());
-        this.scrollBoxOptions.initGui();
-    }
-
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        super.drawScreen(mouseX, mouseY, partialTicks);
-    }
+//    public void updatePartsList() {
+//        LogHelper.info(">>> " + tileEntity.getPlanGuiObjectsList().size());
+//        this.scrollBoxOptions.clearObjects();
+//
+//        for (GuiObject guiObject : tileEntity.getPlanGuiObjectsList())
+//            this.scrollBoxOptions.addGuiObject(guiObject);
+//
+//        this.scrollBoxOptions.setMaxScrollY(tileEntity.getPlanGuiObjectsScrollYMax());
+//        this.scrollBoxOptions.initGui();
+//    }
 
     @Override
     public void updateScreen() {
+        super.updateScreen();
+
         buttonNext.setDisabled(true);
         buttonPrevious.setDisabled(true);
         buttonStamp.setDisabled(true);
 
-        if (tileEntity.getPlanTechLevel() != null)
-            labelSlotDetails.setText(LanguageHelper.ITEM.translateMessage(String.format("plan_blank.%s.name", tileEntity.getPlanTechLevel().getName())));
-        else
-            labelSlotDetails.setText(LanguageHelper.MESSAGE.translateMessage("plan.insert"));
+        // Set TechLevel Label
+        labelSlotDetails.setText(tileEntity.getPlanTechLevel() != null ?
+                LanguageHelper.ITEM.translateMessage(String.format("plan_blank.%s.name", tileEntity.getPlanTechLevel().getName())) :
+                LanguageHelper.MESSAGE.translateMessage("plan.insert")
+        );
 
         if (tileEntity.isPlanValid()) {
             buttonNext.setDisabled(false);
@@ -180,68 +189,77 @@ public class GuiPatternStamper extends GuiMakerGuiContainer {
             buttonStamp.setDisabled(false);
         }
 
-        imageBuildTime.setLabelText(String.format("Total Build Time: %s",
-                DurationFormatUtils.formatDuration(tileEntity.getRecipeTimeToBuild() * 1000, "HH:mm:ss")));
-        imageXPCost.setLabelText(String.format("Total XP Cost: %s%dL%s",
-                TextFormatting.GREEN, tileEntity.getRecipeXPRequired(), TextFormatting.RESET));
 
-        labelCreativeMode.setText("");
-        if (tileEntity.isCreativeMode())
-            labelCreativeMode.setText(String.format("%sCreative Mode%s", TextFormatting.DARK_PURPLE, TextFormatting.RESET));
+//        imageBuildTime.setLabelText(String.format("Total Build Time: %s",
+//                DurationFormatUtils.formatDuration(tileEntity.getRecipeTimeToBuild() * 1000, "HH:mm:ss")));
+//        imageXPCost.setLabelText(String.format("Total XP Cost: %s%dL%s",
+//                TextFormatting.GREEN, tileEntity.getRecipeXPRequired(), TextFormatting.RESET));
+//
+//        labelCreativeMode.setText("");
+//        if (tileEntity.isCreativeMode())
+//            labelCreativeMode.setText(String.format("%sCreative Mode%s", TextFormatting.DARK_PURPLE, TextFormatting.RESET));
 
-        labelMachineName.setText("");
-        if (tileEntity.getSelectedPlanMachine() != null) {
-            labelMachineName.setText(tileEntity.getSelectedPlanMachine().getName());
-        }
+        labelMachineName.setText(tileEntity.getSelectedMachine() != null ? tileEntity.getSelectedMachine().getName() : "");
+
+        //
+//        scrollBoxOptions.clearObjects();
+//        for (GuiObject guiObject : tileEntity.getGuiPlanOptions())
+//            scrollBoxOptions.addGuiObject(guiObject);
+
+//        scrollBoxOptions.setMaxScrollY(tileEntity.getGuiPlanOptionY());
+
+//        if (tileEntity.isPlanValid()) {
+//            if (guiPlanOptions == null) {
+//                this.guiPlanOptions = tileEntity.updateCheckBoxes();
+//
+//                scrollBoxOptions.clearObjects();
+//                for (GuiObject guiObject : this.guiPlanOptions)
+//                    scrollBoxOptions.addGuiObject(guiObject);
+//
+//                scrollBoxOptions.initGui();
+//
+//                if (this.guiPlanOptions.size() == 0)
+//                    this.guiPlanOptions = null;
+//            }
+//        } else {
+//            this.guiPlanOptions = null;
+//            scrollBoxOptions.clearObjects();
+//        }
+
     }
 
-//    @SideOnly(Side.CLIENT)
-//    @Override
-//    public void guiObjectClickedClient(int controlID, World world, BlockPos pos) {
-//        LogHelper.info(">>> Click: " + controlID);
-//
-//        TileEntityPatternStamper tileEntity = TileHelper.getTileEntity(world, pos, TileEntityPatternStamper.class);
-//        if (tileEntity == null)
-//            return;
-//
-//        switch (controlID) {
-//            case 0:
-//            default:
-//                if (controlID >= 100)
-//                    handleCheckBoxClick(controlID, world, pos);
-//                break;
-//            case 1: // Previous
-//                tileEntity.planPrev();
-//                tileEntity.updateCheckBoxes();
-//                break;
-//            case 2: // Next
-//                tileEntity.planNext();
-//                tileEntity.updateCheckBoxes();
-//                break;
-//            case 3: // Stamp
-//
-//                break;
-//            case 4: // Save Book
-//                tileEntity.saveBook();
-//                break;
-//        }
-//    }
-//
-//
-//    @SideOnly(Side.CLIENT)
-//    public void handleCheckBoxClick(int checkBox, World world, BlockPos pos) {
-//        TileEntityPatternStamper tileEntity = TileHelper.getTileEntity(world, pos, TileEntityPatternStamper.class);
-//        if (tileEntity == null)
-//            return;
-//
-//        int buttonID = checkBox - 100;
-//
-//        GuiObject guiObject = tileEntity.getPlanGuiObjectsList().get(buttonID);
-//
-//        if (guiObject instanceof GuiCheckBox) {
-//            GuiCheckBox guiCheckBox = (GuiCheckBox) guiObject;
-//            guiCheckBox.setSelected(!guiCheckBox.isSelected());
-//            tileEntity.updateCheckBoxData();
-//        }
-//    }
+    public void updateOptions() {
+        scrollBoxOptions.clearObjects();
+        for (GuiObject guiObject : tileEntity.getGuiPlanOptions()) {
+            scrollBoxOptions.addGuiObject(guiObject);
+            LogHelper.info(">>> Adding: " + guiObject.toString());
+        }
+        scrollBoxOptions.setMaxScrollY(tileEntity.getGuiPlanOptionY());
+        scrollBoxOptions.initGui();
+
+        this.guiPlanOptions = tileEntity.getGuiPlanOptions();
+    }
+
+    @Override
+    public void initGui() {
+        super.initGui();
+
+        tileEntity.initPlanItem(false);
+        tileEntity.updateCheckBoxes();
+        updateOptions();
+    }
+
+    public void handleCheckBox(int buttonID) {
+        LogHelper.info(">>> Button ID: " + buttonID);
+
+        GuiObject guiObject = guiPlanOptions.get(buttonID - 100);
+        if (!(guiObject instanceof GuiCheckBox))
+            return;
+
+        GuiCheckBox guiCheckBox = (GuiCheckBox)guiObject;
+
+        guiCheckBox.setSelected(!guiCheckBox.isSelected());
+
+        PacketHandler.INSTANCE.sendToServer(new PacketPatternStamperUpdateCheckBox(tileEntity.getPos(), buttonID - 100, guiCheckBox.isSelected()));
+    }
 }

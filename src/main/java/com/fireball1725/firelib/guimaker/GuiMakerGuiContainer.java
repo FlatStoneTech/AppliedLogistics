@@ -242,13 +242,8 @@ public class GuiMakerGuiContainer extends GuiContainer {
 
         for (GuiObject guiObject : this.getGuiObjects()) {
             guiObject.updateGuiSize(this.guiLeft, this.guiTop, xSize, ySize);
-        }
-
-        // todo what is this??
-        //this.guiMaker.getGuiMakerInstance().drawGui(this.tileEntity);
-
-        for (GuiObject guiObject : this.getGuiObjects())
             guiObject.updateScreen();
+        }
     }
 
     @Override

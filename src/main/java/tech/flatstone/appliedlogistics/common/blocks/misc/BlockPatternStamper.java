@@ -26,6 +26,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -48,6 +49,7 @@ import java.util.List;
 
 public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe {
     private List<GuiObject> guiMaterialsList = new ArrayList<>();
+
     private GuiMaker guiMaker;
 
     public BlockPatternStamper() {
@@ -69,11 +71,10 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         TileEntityPatternStamper tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityPatternStamper.class);
 
-        if (worldIn.isRemote)
-            return true;
-
-        guiMaker.show(AppliedLogistics.instance, worldIn, playerIn, pos);
-        tileEntity.updateItemPlan();
+        if (!worldIn.isRemote) {
+            guiMaker.show(AppliedLogistics.instance, worldIn, playerIn, pos);
+            tileEntity.initPlanItem(false);
+        }
 
         return true;
     }
@@ -115,29 +116,4 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
     public void registerBlockItemRenderer() {
 
     }
-
-//    @SideOnly(Side.CLIENT)
-//    public void drawCheckBoxes(List<GuiObject> guiObjects, int maxScrollY) {
-//        this.guiPatternStamper.scrollBoxOptions.clearObjects();
-//
-//        for (GuiObject guiObject : guiObjects) {
-//            this.guiPatternStamper.scrollBoxOptions.addGuiObject(guiObject);
-//        }
-//
-//        this.guiPatternStamper.scrollBoxOptions.setMaxScrollY(maxScrollY);
-//        this.guiPatternStamper.scrollBoxOptions.initGui();
-//    }
-//
-//    @SideOnly(Side.CLIENT)
-//    public void drawMaterialsList(List<GuiObject> guiObjects, int maxScrollY) {
-//        this.guiMaterialsList = guiObjects;
-//        this.guiPatternStamper.scrollBoxMaterials.clearObjects();
-//
-//        for (GuiObject guiObject : this.guiMaterialsList) {
-//            this.guiPatternStamper.scrollBoxMaterials.addGuiObject(guiObject);
-//        }
-//
-//        this.guiPatternStamper.scrollBoxMaterials.setMaxScrollY(maxScrollY);
-//        this.guiPatternStamper.scrollBoxMaterials.initGui();
-//    }
 }

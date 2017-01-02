@@ -17,18 +17,84 @@
  *  Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.container.misc;
+package tech.flatstone.appliedlogistics.common.network.messages;
 
-import com.fireball1725.firelib.guimaker.GuiMakerContainer;
-import net.minecraft.entity.player.EntityPlayer;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import tech.flatstone.appliedlogistics.client.gui.misc.GuiPatternStamper;
+import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPatternStamper;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPatternStamper;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
+import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-public class ContainerPatternStamper extends GuiMakerContainer {
+public class PacketPatternStamperUpdateCheckBox implements IMessage, IMessageHandler<PacketPatternStamperUpdateCheckBox, IMessage> {
+    private BlockPos blockPos;
+    private int buttonID;
+    private boolean buttonState;
 
-    public ContainerPatternStamper(int id, EntityPlayer player, World world, BlockPos pos) {
-        super(id, player, world, pos);
+    public PacketPatternStamperUpdateCheckBox() {
+
     }
 
+    public PacketPatternStamperUpdateCheckBox(BlockPos blockPos, int buttonID, boolean buttonState) {
+        this.blockPos = blockPos;
+        this.buttonID = buttonID;
+        this.buttonState = buttonState;
+    }
 
+    @Override
+    public void fromBytes(ByteBuf buf) {
+        this.blockPos = BlockPos.fromLong(buf.readLong());
+        this.buttonID = buf.readInt();
+        this.buttonState = buf.readBoolean();
+    }
+
+    @Override
+    public void toBytes(ByteBuf buf) {
+        buf.writeLong(this.blockPos.toLong());
+        buf.writeInt(this.buttonID);
+        buf.writeBoolean(this.buttonState);
+    }
+
+    @Override
+    public IMessage onMessage(PacketPatternStamperUpdateCheckBox message, MessageContext ctx) {
+        switch (ctx.side) {
+            case CLIENT:
+                IThreadListener mainClientThread = Minecraft.getMinecraft();
+                mainClientThread.addScheduledTask(new Runnable() {
+                    @Override
+                    public void run() {
+                        TileEntityPatternStamper tileEntity = TileHelper.getTileEntity(Minecraft.getMinecraft().world, message.blockPos, TileEntityPatternStamper.class);
+                        BlockPatternStamper block = (BlockPatternStamper)tileEntity.getBlockType();
+                        if (tileEntity != null) {
+                            tileEntity.setGuiPlanOption(message.buttonID, message.buttonState);
+                        }
+                    }
+                });
+                break;
+            case SERVER:
+                IThreadListener mainServerThread = (WorldServer) ctx.getServerHandler().playerEntity.world;
+                mainServerThread.addScheduledTask(new Runnable() {
+                    @Override
+                    public void run() {
+                        TileEntityPatternStamper tileEntity = TileHelper.getTileEntity(ctx.getServerHandler().playerEntity.world, message.blockPos, TileEntityPatternStamper.class);
+                        if (tileEntity != null) {
+                            tileEntity.setGuiPlanOption(message.buttonID, message.buttonState);
+                        }
+                    }
+                });
+                break;
+
+            default:
+                LogHelper.fatal("Packet is running on an unknown side...");
+        }
+
+        return null;
+    }
 }

@@ -44,7 +44,7 @@ public class PacketPatternStamperUpdateSelectedPlan implements IMessage, IMessag
             public void run() {
                 TileEntityPatternStamper tileEntity = TileHelper.getTileEntity(ctx.getServerHandler().playerEntity.world, message.blockPos, TileEntityPatternStamper.class);
                 if (tileEntity != null) {
-                    tileEntity.setSelectedMachine(message.selectedMachine);
+                    tileEntity.selectPlan(message.selectedMachine);
                 }
             }
         });

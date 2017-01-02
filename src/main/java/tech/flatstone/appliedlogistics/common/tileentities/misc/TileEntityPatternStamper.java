@@ -23,12 +23,11 @@ import com.fireball1725.firelib.guimaker.objects.GuiCheckBox;
 import com.fireball1725.firelib.guimaker.objects.GuiDrawItemStack;
 import com.fireball1725.firelib.guimaker.objects.GuiDrawSimpleImage;
 import com.fireball1725.firelib.guimaker.objects.GuiObject;
-import net.minecraft.client.Minecraft;
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
+import net.minecraft.block.BlockDoublePlant;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
@@ -38,11 +37,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
 import tech.flatstone.appliedlogistics.client.gui.misc.GuiPatternStamper;
-import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPatternStamper;
 import tech.flatstone.appliedlogistics.common.items.Items;
 import tech.flatstone.appliedlogistics.common.network.PacketHandler;
+import tech.flatstone.appliedlogistics.common.network.messages.PacketPatternStamperUpdateCheckBox;
 import tech.flatstone.appliedlogistics.common.network.messages.PacketPatternStamperUpdatePlan;
-import tech.flatstone.appliedlogistics.common.network.messages.PacketPatternStamperWriteBook;
 import tech.flatstone.appliedlogistics.common.plans.PlanComponent;
 import tech.flatstone.appliedlogistics.common.plans.PlanMachine;
 import tech.flatstone.appliedlogistics.common.plans.PlanRegistry;
@@ -58,71 +56,15 @@ import java.util.List;
 public class TileEntityPatternStamper extends TileEntityMachineBase {
     InternalInventory inventory = new InternalInventory(this, 2);
 
-    private boolean creativeMode = false;
+    private List<PlanMachine> planMachines = new ArrayList<>();
+    private boolean planCreative = false;
     private TechLevel planTechLevel = null;
 
-    private List<PlanMachine> planMachines = null;
-
-    private List<NonNullList<ItemStack>> materialsList = new ArrayList<>();
-
-    private List<GuiObject> planGuiObjectsList = new ArrayList<>();
-    private int planGuiObjectsScrollYMax = 0;
-
-    private int selectedMachine = 0;
-
-    private long recipeTimeToBuild = 0;
-    private int recipeXPRequired = 0;
-    private float recipeWeight = 0;
-
-    public int getPlanGuiObjectsScrollYMax() {
-        return planGuiObjectsScrollYMax;
-    }
-
-    public PlanMachine getSelectedPlanMachine() {
-        if (planMachines == null)
-            return null;
-
-        return planMachines.get(selectedMachine);
-    }
+    private int selectedMachine;
 
     @SideOnly(Side.CLIENT)
-    public int planNext() {
-        if (this.planMachines == null)
-            return selectedMachine;
-
-        selectedMachine++;
-
-        if (selectedMachine >= this.planMachines.size())
-            selectedMachine = 0;
-
-        this.markDirty();
-        this.markForUpdate();
-        this.updateCheckBoxes();
-
-        return selectedMachine;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public int planPrev() {
-        if (this.planMachines == null)
-            return selectedMachine;
-
-        selectedMachine--;
-
-        if (selectedMachine == -1)
-            selectedMachine = this.planMachines.size() - 1;
-
-        this.markDirty();
-        this.markForUpdate();
-        this.updateCheckBoxes();
-
-        return selectedMachine;
-    }
-
-    public void setSelectedMachine(int selectedMachine) {
-        this.selectedMachine = selectedMachine;
-        LogHelper.info(">>> Selected Machine: " + selectedMachine);
-    }
+    private List<GuiObject> guiPlanOptions = new ArrayList<>();
+    private int guiPlanOptionY = 0;
 
     @Override
     public boolean canBeRotated() {
@@ -133,46 +75,16 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
     public void readFromNBT(NBTTagCompound nbtTagCompound) {
         super.readFromNBT(nbtTagCompound);
 
-        creativeMode = nbtTagCompound.getBoolean("creativeMode");
-        selectedMachine = nbtTagCompound.getInteger("selectedMachine");
-
-        if (nbtTagCompound.getInteger("techLevel") == -1)
-            planTechLevel = null;
-        else
-            planTechLevel = TechLevel.byMeta(nbtTagCompound.getInteger("techLevel"));
-
-        recipeTimeToBuild = nbtTagCompound.getLong("recipeTimeToBuild");
-        recipeWeight = nbtTagCompound.getFloat("recipeWeight");
-        recipeXPRequired = nbtTagCompound.getInteger("recipeXPRequired");
+        this.selectedMachine = nbtTagCompound.getInteger("selectedMachine");
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
-        super.writeToNBT(nbtTagCompound);
+        nbtTagCompound = super.writeToNBT(nbtTagCompound);
 
-        nbtTagCompound.setBoolean("creativeMode", creativeMode);
         nbtTagCompound.setInteger("selectedMachine", selectedMachine);
 
-        int techLevelMeta = planTechLevel == null ? -1 : planTechLevel.getMeta();
-        nbtTagCompound.setInteger("techLevel", techLevelMeta);
-
-        nbtTagCompound.setLong("recipeTimeToBuild", recipeTimeToBuild);
-        nbtTagCompound.setFloat("recipeWeight", recipeWeight);
-        nbtTagCompound.setInteger("recipeXPRequired", recipeXPRequired);
-
         return nbtTagCompound;
-    }
-
-    public long getRecipeTimeToBuild() {
-        return recipeTimeToBuild;
-    }
-
-    public int getRecipeXPRequired() {
-        return recipeXPRequired;
-    }
-
-    public float getRecipeWeight() {
-        return recipeWeight;
     }
 
     @Override
@@ -185,60 +97,186 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
         // Server Side Inventory Change...
 
         if (slot == 0) {
-            creativeMode = false;
-            planTechLevel = null;
-
-            ItemStack itemStack = inv.getStackInSlot(0);
-
-            if (itemStack.isEmpty()) {
-                updateItemPlan();
-                return;
-            }
-
-            if (!isPlanValid()) {
-                updateItemPlan();
-                return;
-            }
-
-            if (itemStack.getItemDamage() == TechLevel.CREATIVE.getMeta()) {
-                creativeMode = true;
-                planTechLevel = TechLevel.byMeta(itemStack.getTagCompound().getInteger("planBaseMeta"));
-            } else {
-                planTechLevel = TechLevel.byMeta(itemStack.getItemDamage());
-            }
-
-            updateItemPlan();
+            initPlanItem(true);
         }
     }
 
-    public void updateItemPlan() {
-        if (this.world == null)
+    // Server Side
+    public void initPlanItem(boolean clearSelectedPlan) {
+        ItemStack itemStack = getStackInSlot(0);
+
+        if (itemStack.isEmpty()) {
+            updateMachinesList(null, false, true);
             return;
+        }
+
+        if (!isPlanValid()) {
+            updateMachinesList(null, false, true);
+            return;
+        }
+
+        boolean planCreative;
+        TechLevel planTechLevel;
+
+        if (itemStack.getItemDamage() == TechLevel.CREATIVE.getMeta()) {
+            planCreative = true;
+            planTechLevel = TechLevel.byMeta(itemStack.getTagCompound().getInteger("planBaseMeta"));
+        } else {
+            planCreative = false;
+            planTechLevel = TechLevel.byMeta(itemStack.getItemDamage());
+        }
+
+        updateMachinesList(planTechLevel, planCreative, clearSelectedPlan);
+    }
+
+    // Client & Server Side
+    public void updateMachinesList(TechLevel planTechLevel, boolean planCreative, boolean clearSelectedPlan) {
+        this.planTechLevel = planTechLevel;
+        this.planCreative = planCreative;
+
+        if (clearSelectedPlan)
+            this.selectedMachine = 0;
+
+        if (this.world != null && !this.world.isRemote)
+            PacketHandler.INSTANCE.sendToAllAround(
+                    new PacketPatternStamperUpdatePlan(this.pos, planTechLevel, planCreative, clearSelectedPlan),
+                    new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), 50)
+            );
+
+        this.planMachines = PlanRegistry.getPlanRegistry(this.planTechLevel);
+
+        if (this.world != null && this.world.isRemote)
+            this.updateCheckBoxes();
 
         this.markDirty();
         this.markForUpdate();
-        this.updatePlanData(planTechLevel);
-        PacketHandler.INSTANCE.sendToAllAround(new PacketPatternStamperUpdatePlan(this.getPos(), planTechLevel), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), this.getPos().getX(), this.getPos().getY(), this.getPos().getZ(), 50));
     }
 
-    public void updatePlanData(TechLevel planTechLevel) {
-        this.planTechLevel = planTechLevel;
+    @SideOnly(Side.CLIENT)
+    public void updateCheckBoxes() {
+        LogHelper.info(">>> Updating List");
+        this.guiPlanOptions.clear();
+        this.guiPlanOptionY = 0;
 
-        if (this.world == null)
+        if (this.planMachines == null)
             return;
 
-        this.selectedMachine = 0;
-        this.planMachines = PlanRegistry.getPlanRegistry(planTechLevel);
+        int y = 4;
+        int i = 0;
+
+        PlanMachine planMachine = this.planMachines.get(this.selectedMachine);
+
+        for (PlanComponent planComponent : planMachine.getPlanComponentList()) {
+            GuiCheckBox guiCheckBox = new GuiCheckBox(i + 100, 4, y, false);
+            if (planComponent.isRecipeRequired()) {
+                guiCheckBox.setSelected(true);
+                guiCheckBox.setDisabled(true);
+            }
+            guiCheckBox.setLabel(planComponent.getRecipeName());
+            this.guiPlanOptions.add(guiCheckBox);
+
+            y += 18;
+            i++;
+
+            // Add Time Requirement
+            y -= 4;
+            GuiDrawSimpleImage imageTime2 = new GuiDrawSimpleImage(GuiPatternStamper.RESOURCE_BUILD_TIME, 16, y);
+            imageTime2.setScale(0.5f);
+            imageTime2.setLabelText(String.format("Build Time: %s", DurationFormatUtils.formatDuration(planComponent.getRecipeTimeToBuild() * 1000, "HH:mm:ss")));
+            this.guiPlanOptions.add(imageTime2);
+
+            i++;
+
+            // Add XP Requirement
+            GuiDrawSimpleImage imageXP2 = new GuiDrawSimpleImage(GuiPatternStamper.RESOURCE_XP_COST, 16 + 80, y);
+            imageXP2.setScale(0.5f);
+            imageXP2.setLabelText(String.format("XP Cost: %s%dL%s", TextFormatting.GREEN, planComponent.getRecipeXPRequired(), TextFormatting.RESET));
+            this.guiPlanOptions.add(imageXP2);
+            y += 14;
+            i++;
+
+
+            for (NonNullList<ItemStack> itemStacks : planComponent.getRecipeMaterials()) {
+                y -= 4;
+                GuiDrawItemStack drawItemStack = new GuiDrawItemStack(itemStacks, 16, y);
+                drawItemStack.setScale(0.5f);
+                drawItemStack.setRenderDescription(true);
+                this.guiPlanOptions.add(drawItemStack);
+
+                y += 14;
+                i++;
+            }
+        }
+
+        this.guiPlanOptionY = y;
+        LogHelper.info(">>> Finished updating List");
     }
 
-    public void updateMachineDetails() {
-        // Client Side Only?
+    public List<GuiObject> getGuiPlanOptions() {
+        return guiPlanOptions;
+    }
+
+    public int getGuiPlanOptionY() {
+        return guiPlanOptionY;
+    }
+
+    public void setGuiPlanOption(int buttonID, boolean value) {
+        this.guiPlanOptions.get(buttonID).setSelected(value);
+
+        if (!this.world.isRemote) {
+            PacketHandler.INSTANCE.sendToAllAround(
+                    new PacketPatternStamperUpdateCheckBox(this.pos, buttonID, value),
+                    new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 50)
+            );
+        }
+
+        if (this.world.isRemote) {
+            // tell clients to update their screen??
+        }
+    }
+
+    public PlanMachine getSelectedMachine() {
+        if (this.planMachines == null || this.planMachines.size() == 0)
+            return null;
+
+        return this.planMachines.get(this.selectedMachine);
+    }
+
+    public TechLevel getPlanTechLevel() {
+        return this.planTechLevel;
     }
 
     public boolean isPlanValid() {
         ItemStack itemStack = inventory.getStackInSlot(0);
 
         return itemStack != null && (itemStack.getItem() == Items.ITEM_PLAN_BLANK.getItem());
+    }
+
+    public int selectPrevPlan() {
+        if (this.planMachines == null)
+            return 0;
+
+        this.selectedMachine = (--this.selectedMachine + this.planMachines.size()) % this.planMachines.size();
+        this.updateCheckBoxes();
+
+        return this.selectedMachine;
+    }
+
+    public int selectNextPlan() {
+        if (this.planMachines == null)
+            return 0;
+
+        this.selectedMachine = ++this.selectedMachine % this.planMachines.size();
+        this.updateCheckBoxes();
+
+        return this.selectedMachine;
+    }
+
+    public void selectPlan(int selectedMachine) {
+        this.selectedMachine = selectedMachine;
+
+        this.markDirty();
+        this.markForUpdate();
     }
 
     @Override
@@ -262,191 +300,4 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
         return super.getInventoryStackLimit();
     }
 
-    public boolean isCreativeMode() {
-        return creativeMode;
-    }
-
-    public TechLevel getPlanTechLevel() {
-        return planTechLevel;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void updateCheckBoxes() {
-        if (planMachines == null) {
-            this.planGuiObjectsList.clear();
-            this.planGuiObjectsScrollYMax = 0;
-            return;
-        }
-
-        List<GuiObject> guiObjects = new ArrayList<>();
-
-        int y = 4;
-        int i = 0;
-
-        PlanMachine planMachine = getSelectedPlanMachine();
-        if (planMachine == null)
-            return;
-
-        for (PlanComponent planComponent : planMachine.getPlanComponentList()) {
-            GuiCheckBox guiCheckBox = new GuiCheckBox(i + 100, 4, y, false);
-            if (planComponent.isRecipeRequired()) {
-                guiCheckBox.setSelected(true);
-                guiCheckBox.setDisabled(true);
-            }
-            guiCheckBox.setLabel(planComponent.getRecipeName());
-            guiObjects.add(guiCheckBox);
-
-            y += 18;
-            i++;
-
-            // Add Time Requirement
-            y -= 4;
-            GuiDrawSimpleImage imageTime2 = new GuiDrawSimpleImage(GuiPatternStamper.RESOURCE_BUILD_TIME, 16, y);
-            imageTime2.setScale(0.5f);
-            imageTime2.setLabelText(String.format("Build Time: %s", DurationFormatUtils.formatDuration(planComponent.getRecipeTimeToBuild() * 1000, "HH:mm:ss")));
-            guiObjects.add(imageTime2);
-
-            i++;
-
-            // Add XP Requirement
-            GuiDrawSimpleImage imageXP2 = new GuiDrawSimpleImage(GuiPatternStamper.RESOURCE_XP_COST, 16 + 80, y);
-            imageXP2.setScale(0.5f);
-            imageXP2.setLabelText(String.format("XP Cost: %s%dL%s", TextFormatting.GREEN, planComponent.getRecipeXPRequired(), TextFormatting.RESET));
-            guiObjects.add(imageXP2);
-            y += 14;
-            i++;
-
-
-            for (NonNullList<ItemStack> itemStacks : planComponent.getRecipeMaterials()) {
-                y -= 4;
-                GuiDrawItemStack drawItemStack = new GuiDrawItemStack(itemStacks, 16, y);
-                drawItemStack.setScale(0.5f);
-                drawItemStack.setRenderDescription(true);
-                guiObjects.add(drawItemStack);
-
-                y += 14;
-                i++;
-            }
-        }
-
-        this.planGuiObjectsScrollYMax = y;
-        this.planGuiObjectsList = guiObjects;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void updateCheckBoxData() {
-        BlockPatternStamper block = (BlockPatternStamper) this.blockType;
-
-        if (planMachines == null) {
-            //block.drawMaterialsList(new ArrayList<>(), 0);
-            return;
-        }
-
-        int i = 0;
-
-        PlanMachine planMachine = getSelectedPlanMachine();
-
-        if (planMachine == null)
-            return;
-
-        recipeTimeToBuild = 0;
-        recipeWeight = 0;
-        recipeXPRequired = 0;
-
-        this.materialsList.clear();
-
-        for (PlanComponent planComponent : planMachine.getPlanComponentList()) {
-            // todo check button from i
-            GuiCheckBox guiCheckBox = (GuiCheckBox) planGuiObjectsList.get(i);
-            if (guiCheckBox.isSelected()) {
-                recipeXPRequired += planComponent.getRecipeXPRequired();
-                recipeWeight += planComponent.getRecipeWeight();
-                recipeTimeToBuild += planComponent.getRecipeTimeToBuild();
-            }
-
-            i++;
-
-            i += 2;
-
-            for (NonNullList<ItemStack> itemStacks : planComponent.getRecipeMaterials()) {
-                if (guiCheckBox.isSelected()) {
-                    boolean matchFound = false;
-
-                    for (NonNullList<ItemStack> items : this.materialsList) {
-                        if (ItemStack.areItemsEqual(itemStacks.get(0), items.get(0))) {
-                            matchFound = true;
-                            items.get(0).grow(itemStacks.get(0).getCount());
-                        }
-                    }
-
-                    if (!matchFound) {
-                        NonNullList<ItemStack> newList = NonNullList.create();
-                        itemStacks.forEach(e -> newList.add(e.copy()));
-
-                        this.materialsList.add(newList);
-                    }
-                }
-                i++;
-            }
-        }
-
-        int y = 4;
-
-        List<GuiObject> guiMaterialObjects = new ArrayList<>();
-
-        for (NonNullList<ItemStack> itemStacks : this.materialsList) {
-            GuiDrawItemStack drawItemStack = new GuiDrawItemStack(itemStacks, 4, y);
-            drawItemStack.setRenderDescription(true);
-            guiMaterialObjects.add(drawItemStack);
-
-            y += 20;
-        }
-
-        //block.drawMaterialsList(guiMaterialObjects, y - 20);
-
-        this.markDirty();
-        this.markForUpdate();
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void saveBook() {
-        List<String> bookPages = new ArrayList<>();
-        int pageNumber = 0;
-
-        bookPages.add(String.format("-- %s%s Parts List%s --", TextFormatting.LIGHT_PURPLE, this.planMachines.get(this.selectedMachine).getName(), TextFormatting.BLACK));
-
-        for (NonNullList<ItemStack> itemStacks : this.materialsList) {
-            String currentPageText = bookPages.get(pageNumber);
-            String textToAdd = String.format("\n\n* %dx %s", itemStacks.get(0).getCount(), itemStacks.get(0).getDisplayName());
-
-            if (canInsertIntoCurrentPage(currentPageText, textToAdd)) {
-                bookPages.set(pageNumber, currentPageText + textToAdd);
-            } else {
-                pageNumber++;
-                textToAdd = textToAdd.replace("\n\n", "");
-                bookPages.add(textToAdd);
-            }
-        }
-
-        NBTTagCompound nbtBook = new NBTTagCompound();
-        NBTTagList nbtPages = new NBTTagList();
-        for (String page : bookPages)
-            nbtPages.appendTag(new NBTTagString(page));
-
-        nbtBook.setTag("pages", nbtPages);
-
-        PacketHandler.INSTANCE.sendToServer(new PacketPatternStamperWriteBook(nbtBook, this.getPos()));
-    }
-
-    @SideOnly(Side.CLIENT)
-    private boolean canInsertIntoCurrentPage(String currentText, String textToAdd) {
-        String s1 = currentText + textToAdd;
-        int i = Minecraft.getMinecraft().fontRendererObj.getWordWrappedHeight(s1 + "" + TextFormatting.BLACK + "_", 118);
-
-        return (i <= 128 && s1.length() < 256);
-    }
-
-    public List<GuiObject> getPlanGuiObjectsList() {
-        return planGuiObjectsList;
-    }
 }

@@ -19,6 +19,7 @@
 
 package tech.flatstone.appliedlogistics.common.network.messages;
 
+import com.fireball1725.firelib.guimaker.GuiMaker;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.IThreadListener;
@@ -36,39 +37,47 @@ import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPatter
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 public class PacketPatternStamperUpdatePlan implements IMessage, IMessageHandler<PacketPatternStamperUpdatePlan, IMessage> {
-    public BlockPos blockPos;
-    public TechLevel planTechLevel;
+    private BlockPos blockPos;
+    private TechLevel planTechLevel;
+    private boolean clearSelectedMachine;
+    private boolean planCreative;
 
     public PacketPatternStamperUpdatePlan() {
 
     }
 
-    public PacketPatternStamperUpdatePlan(BlockPos blockPos, TechLevel planTechLevel) {
+    public PacketPatternStamperUpdatePlan(BlockPos blockPos, TechLevel planTechLevel, boolean planCreative, boolean clearSelectedMachine) {
         this.blockPos = blockPos;
         this.planTechLevel = planTechLevel;
+        this.clearSelectedMachine = clearSelectedMachine;
+        this.planCreative = planCreative;
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        this.blockPos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
+        this.blockPos = BlockPos.fromLong(buf.readLong());
 
         int techLevel = buf.readInt();
         if (techLevel == -1)
             this.planTechLevel = null;
         else
             this.planTechLevel = TechLevel.byMeta(techLevel);
+
+        this.clearSelectedMachine = buf.readBoolean();
+        this.planCreative = buf.readBoolean();
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeInt(blockPos.getX());
-        buf.writeInt(blockPos.getY());
-        buf.writeInt(blockPos.getZ());
+        buf.writeLong(this.blockPos.toLong());
 
         if (this.planTechLevel == null)
             buf.writeInt(-1);
         else
             buf.writeInt(this.planTechLevel.getMeta());
+
+        buf.writeBoolean(this.clearSelectedMachine);
+        buf.writeBoolean(this.planCreative);
     }
 
     @Override
@@ -80,9 +89,10 @@ public class PacketPatternStamperUpdatePlan implements IMessage, IMessageHandler
                 TileEntityPatternStamper tileEntity = TileHelper.getTileEntity(Minecraft.getMinecraft().world, message.blockPos, TileEntityPatternStamper.class);
                 BlockPatternStamper block = (BlockPatternStamper)tileEntity.getBlockType();
                 if (tileEntity != null) {
-                    tileEntity.updatePlanData(message.planTechLevel);
+                    tileEntity.updateMachinesList(message.planTechLevel, message.planCreative, message.clearSelectedMachine);
+
                     GuiPatternStamper gui = (GuiPatternStamper)block.getGuiMaker().getGuiMakerGuiContainer();
-                    gui.updatePartsList();
+                    gui.updateOptions();
                 }
             }
         });

@@ -28,11 +28,19 @@ import tech.flatstone.appliedlogistics.common.network.messages.*;
 public class PacketHandler {
     public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(ModInfo.MOD_ID.toLowerCase());
 
+    private static int packetId = 0;
+
     public static void init() {
-        INSTANCE.registerMessage(PacketButtonClick.class, PacketButtonClick.class, 0, Side.SERVER);
-        INSTANCE.registerMessage(PacketBlockRotated.class, PacketBlockRotated.class, 1, Side.CLIENT);
-        INSTANCE.registerMessage(PacketPatternStamperUpdatePlan.class, PacketPatternStamperUpdatePlan.class, 2, Side.CLIENT);
-        INSTANCE.registerMessage(PacketPatternStamperWriteBook.class, PacketPatternStamperWriteBook.class, 3, Side.SERVER);
-        INSTANCE.registerMessage(PacketPatternStamperUpdateSelectedPlan.class, PacketPatternStamperUpdateSelectedPlan.class, 4, Side.SERVER);
+        registerMessage(PacketButtonClick.class, PacketButtonClick.class, Side.SERVER);
+        registerMessage(PacketBlockRotated.class, PacketBlockRotated.class, Side.CLIENT);
+        registerMessage(PacketPatternStamperUpdatePlan.class, PacketPatternStamperUpdatePlan.class, Side.CLIENT);
+        registerMessage(PacketPatternStamperWriteBook.class, PacketPatternStamperWriteBook.class, Side.SERVER);
+        registerMessage(PacketPatternStamperUpdateSelectedPlan.class, PacketPatternStamperUpdateSelectedPlan.class, Side.SERVER);
+        registerMessage(PacketPatternStamperUpdateCheckBox.class, PacketPatternStamperUpdateCheckBox.class, Side.CLIENT);
+        registerMessage(PacketPatternStamperUpdateCheckBox.class, PacketPatternStamperUpdateCheckBox.class, Side.SERVER);
+    }
+
+    private static void registerMessage(Class messageHandler, Class requestMessageType, Side side) {
+        INSTANCE.registerMessage(messageHandler, requestMessageType, packetId++, side);
     }
 }
