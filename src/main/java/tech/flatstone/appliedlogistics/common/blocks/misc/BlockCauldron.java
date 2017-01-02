@@ -160,7 +160,7 @@ public class BlockCauldron extends BlockTileBase implements IProvideRecipe, IPro
     }
 
     @Override
-    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn) {
+    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_) {
         for (int i = 0; i < BOXES.length; i++) {
             AxisAlignedBB box = BOXES[i];
             if (box.equals(AABB_WOOD)) {

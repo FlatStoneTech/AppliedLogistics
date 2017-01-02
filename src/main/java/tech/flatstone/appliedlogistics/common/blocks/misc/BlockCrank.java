@@ -57,6 +57,7 @@ import tech.flatstone.appliedlogistics.common.blocks.Blocks;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityCrank;
 import tech.flatstone.appliedlogistics.common.util.*;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvideEvent {
@@ -302,7 +303,7 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
     }
 
     @Override
-    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity entity) {
+    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_) {
         TileEntityCrank tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityCrank.class);
         assert tileEntity != null;
         EnumFacing crankRotation = tileEntity.getCrankRotation();
@@ -312,11 +313,11 @@ public class BlockCrank extends BlockTileBase implements IProvideRecipe, IProvid
 
         crankTop = RotationHelper.rotateBB(crankTop, crankRotation).offset(pos);
 
-        if (crankTop.intersectsWith(mask))
-            list.add(crankTop);
+        if (crankTop.intersectsWith(entityBox))
+            collidingBoxes.add(crankTop);
 
-        if (crankShaft.intersectsWith(mask))
-            list.add(crankShaft);
+        if (crankShaft.intersectsWith(entityBox))
+            collidingBoxes.add(crankShaft);
     }
 
     @Override
