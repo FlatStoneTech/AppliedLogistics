@@ -36,7 +36,8 @@ configurations {
 
 dependencies {
     // installable
-    //mods "net.darkhax.wawla:Wawla:1.10.2-2.3.0.203"
+    deobfCompile "mcp.mobius.waila:Hwyla:1.8.5-B19_1.11"
+    deobfCompile "mcjty.theoneprobe:TheOneProbe:1.11-1.3.4-47"
     mods "com.fireball1725.devworld:devworld:1.11-b15-client"
     //mods "cpw.mods:inventorysorter:1.10-0.10.0+42"
 

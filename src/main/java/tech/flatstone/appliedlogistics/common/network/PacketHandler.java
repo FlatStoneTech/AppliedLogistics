@@ -19,6 +19,7 @@
 
 package tech.flatstone.appliedlogistics.common.network;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -31,16 +32,23 @@ public class PacketHandler {
     private static int packetId = 0;
 
     public static void init() {
-        registerMessage(PacketButtonClick.class, PacketButtonClick.class, Side.SERVER);
-        registerMessage(PacketBlockRotated.class, PacketBlockRotated.class, Side.CLIENT);
-        registerMessage(PacketPatternStamperUpdatePlan.class, PacketPatternStamperUpdatePlan.class, Side.CLIENT);
-        registerMessage(PacketPatternStamperWriteBook.class, PacketPatternStamperWriteBook.class, Side.SERVER);
-        registerMessage(PacketPatternStamperUpdateSelectedPlan.class, PacketPatternStamperUpdateSelectedPlan.class, Side.SERVER);
-        registerMessage(PacketPatternStamperUpdateCheckBox.class, PacketPatternStamperUpdateCheckBox.class, Side.CLIENT);
-        registerMessage(PacketPatternStamperUpdateCheckBox.class, PacketPatternStamperUpdateCheckBox.class, Side.SERVER);
+        registerMessage(PacketButtonClick.class, PacketSide.SERVER);
+        registerMessage(PacketBlockRotated.class, PacketSide.CLIENT);
+        registerMessage(PacketPatternStamperUpdatePlan.class, PacketSide.CLIENT);
+        registerMessage(PacketPatternStamperWriteBook.class, PacketSide.SERVER);
+        registerMessage(PacketPatternStamperUpdateSelectedPlan.class, PacketSide.SERVER);
+        registerMessage(PacketPatternStamperUpdateCheckBox.class, PacketSide.BOTH);
     }
 
-    private static void registerMessage(Class messageHandler, Class requestMessageType, Side side) {
-        INSTANCE.registerMessage(messageHandler, requestMessageType, packetId++, side);
+    private static void registerMessage(Class classPacket, PacketSide side) {
+        if (side != PacketSide.CLIENT)
+            INSTANCE.registerMessage(classPacket, classPacket, packetId++, Side.SERVER);
+
+        if (side != PacketSide.SERVER)
+            INSTANCE.registerMessage(classPacket, classPacket, packetId++, Side.CLIENT);
+    }
+
+    private static enum PacketSide {
+        SERVER, CLIENT, BOTH;
     }
 }

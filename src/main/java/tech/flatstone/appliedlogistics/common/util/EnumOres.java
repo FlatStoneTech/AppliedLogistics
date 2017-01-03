@@ -29,7 +29,7 @@ import java.util.List;
 
 public enum EnumOres implements IStringSerializable {
     // Vanilla Ores
-    IRON("Iron", 0, FluidIron.class, EnumOreType.NUGGET, EnumOreType.DUST, EnumOreType.VANILLA),
+    IRON("Iron", 0, FluidIron.class, EnumOreType.DUST, EnumOreType.VANILLA),
     GOLD("Gold", 1, FluidGold.class, EnumOreType.DUST, EnumOreType.VANILLA),
     DIAMOND("Diamond", 2, EnumOreType.NUGGET, EnumOreType.VANILLA),
 
