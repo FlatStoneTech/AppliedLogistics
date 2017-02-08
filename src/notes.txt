@@ -32,3 +32,13 @@ Register Machine ->
  [ ] 3x Processing Speed
  [ ] 3x Material Gain
  [ ] Comparator Support
+
+
+
+
+------------
+
+When open Plan Stamper
+
+nbt tag -> Plan Options (NBT Tag Compound)
+ -> list of checkboxes and their states

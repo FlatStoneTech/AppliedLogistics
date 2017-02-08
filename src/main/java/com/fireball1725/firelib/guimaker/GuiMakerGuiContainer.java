@@ -60,7 +60,7 @@ public class GuiMakerGuiContainer extends GuiContainer {
 
     public List<GuiObject> getGuiObjects() {
         if (guiTabs.size() == 0)
-            return null;
+            return new ArrayList<>();
 
         return guiTabs.get(selectedTab).getGuiObjectList();
     }

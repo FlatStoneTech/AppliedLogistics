@@ -25,42 +25,48 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagByte;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import tech.flatstone.appliedlogistics.ModInfo;
 import tech.flatstone.appliedlogistics.common.blocks.Blocks;
-import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPatternStamper;
+import tech.flatstone.appliedlogistics.common.network.PacketHandler;
+import tech.flatstone.appliedlogistics.common.network.messages.PacketPatternStamperUpdateCheckBox;
+import tech.flatstone.appliedlogistics.common.network.messages.PacketPatternStamperUpdateSelectedPlan;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPatternStamperOld;
+import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-public class GuiPatternStamper extends GuiMakerGuiContainer {
-    private static final ResourceLocation RESOURCE_BUILD_TIME = new ResourceLocation(ModInfo.MOD_ID, "textures/icons/stopwatch.png");
-    private static final ResourceLocation RESOURCE_XP_COST = new ResourceLocation(ModInfo.MOD_ID, "textures/icons/xp_orb.png");
-    private GuiLabel labelSlotDetails;
-    private GuiButton buttonPrevious;
-    private GuiButton buttonNext;
-    private GuiButton buttonStamp;
-    private GuiScrollBox scrollBoxOptions;
-    private GuiScrollBox scrollBoxMaterials;
-    private GuiCenteredLabel labelMachineName;
-    private GuiDrawSimpleImage imageBuildTime;
-    private GuiDrawSimpleImage imageXPCost;
-    private GuiLabel labelCreativeMode;
-
-    private TileEntityPatternStamper tileEntity;
+public class GuiPatternStamperOld extends GuiMakerGuiContainer {
+    public static final ResourceLocation RESOURCE_BUILD_TIME = new ResourceLocation(ModInfo.MOD_ID, "textures/icons/stopwatch.png");
+    public static final ResourceLocation RESOURCE_XP_COST = new ResourceLocation(ModInfo.MOD_ID, "textures/icons/xp_orb.png");
+    public GuiLabel labelSlotDetails;
+    public GuiButton buttonPrevious;
+    public GuiButton buttonNext;
+    public GuiButton buttonStamp;
+    public GuiScrollBox scrollBoxOptions;
+    public GuiScrollBox scrollBoxMaterials;
+    public GuiCenteredLabel labelMachineName;
+    public GuiDrawSimpleImage imageBuildTime;
+    public GuiDrawSimpleImage imageXPCost;
+    public GuiLabel labelCreativeMode;
+    private TileEntityPatternStamperOld tileEntity;
 
     private List<GuiObject> guiPlanOptions = new ArrayList<>();
+    private NBTTagCompound nbtPlanOptions;
 
-    public GuiPatternStamper(int id, EntityPlayer player, World world, BlockPos pos) {
+    public GuiPatternStamperOld(int id, EntityPlayer player, World world, BlockPos pos) {
         super(id, player, world, pos);
 
         this.xSize = 194;
         this.ySize = 232;
+        
+        tileEntity = TileHelper.getTileEntity(world, pos, TileEntityPatternStamperOld.class);
 
         labelSlotDetails = new GuiLabel(36, 7, 0xd5d5d5, "");
         buttonPrevious = new GuiButton(1, 4, 34, 16, "<");
@@ -74,8 +80,6 @@ public class GuiPatternStamper extends GuiMakerGuiContainer {
         labelCreativeMode = new GuiLabel(150, 132, 0xffffff, 0.5f, "");
         imageXPCost.setScale(0.5f);
         imageBuildTime.setScale(0.5f);
-
-        tileEntity = TileHelper.getTileEntity(world, pos, TileEntityPatternStamper.class);
 
         GuiTab tabMachine = new GuiTab(this, "Pattern Stamper", Blocks.BLOCK_PATTERN_STAMPER.getStack());
         GuiTab tabExport = new GuiTab(this, "Total Materials", new ItemStack(Items.BOOK));
@@ -124,13 +128,7 @@ public class GuiPatternStamper extends GuiMakerGuiContainer {
         this.addGuiTab(tabExport);
         this.addGuiTab(tabAbout);
 
-
-        //todo: erase this
-        // testing
-
-        this.guiPlanOptions.add(new GuiCheckBox(100, 4, 4, false));
-
-
+        updateOptions();
     }
 
     @Override
@@ -139,22 +137,32 @@ public class GuiPatternStamper extends GuiMakerGuiContainer {
 
         switch (buttonID) {
             case 1:
-                // Previous Button
-
+                PacketHandler.INSTANCE.sendToServer(new PacketPatternStamperUpdateSelectedPlan(tileEntity.getPos(), tileEntity.selectPrevPlan()));
+                updateOptions();
                 break;
             case 2:
-                // Next Button
-
+                PacketHandler.INSTANCE.sendToServer(new PacketPatternStamperUpdateSelectedPlan(tileEntity.getPos(), tileEntity.selectNextPlan()));
+                updateOptions();
                 break;
             default:
-                // Checkbox List (id > 100)
-                if (buttonID >= 100) {
-                    // Handle checkbox
-                }
+                if (buttonID >= 100)
+                    handleCheckBox(buttonID);
 
                 break;
         }
+
     }
+
+//    public void updatePartsList() {
+//        LogHelper.info(">>> " + tileEntity.getPlanGuiObjectsList().size());
+//        this.scrollBoxOptions.clearObjects();
+//
+//        for (GuiObject guiObject : tileEntity.getPlanGuiObjectsList())
+//            this.scrollBoxOptions.addGuiObject(guiObject);
+//
+//        this.scrollBoxOptions.setMaxScrollY(tileEntity.getPlanGuiObjectsScrollYMax());
+//        this.scrollBoxOptions.initGui();
+//    }
 
     @Override
     public void updateScreen() {
@@ -164,8 +172,11 @@ public class GuiPatternStamper extends GuiMakerGuiContainer {
         buttonPrevious.setDisabled(true);
         buttonStamp.setDisabled(true);
 
-        // Setup tech level label
-        labelSlotDetails.setText("");
+        // Set TechLevel Label
+        labelSlotDetails.setText(tileEntity.getPlanTechLevel() != null ?
+                LanguageHelper.ITEM.translateMessage(String.format("plan_blank.%s.name", tileEntity.getPlanTechLevel().getName())) :
+                LanguageHelper.MESSAGE.translateMessage("plan.insert")
+        );
 
         if (tileEntity.isPlanValid()) {
             buttonNext.setDisabled(false);
@@ -174,17 +185,84 @@ public class GuiPatternStamper extends GuiMakerGuiContainer {
         }
 
 
-        // Update scroll box
-        scrollBoxOptions.clearObjects();
-        for (GuiObject guiObject : this.guiPlanOptions) {
-            scrollBoxOptions.addGuiObject(guiObject);
-        }
-        //scrollBoxOptions.setMaxScrollY(400);  // only change when the list changes...
-        scrollBoxOptions.initGui();
+//        imageBuildTime.setLabelText(String.format("Total Build Time: %s",
+//                DurationFormatUtils.formatDuration(tileEntity.getRecipeTimeToBuild() * 1000, "HH:mm:ss")));
+//        imageXPCost.setLabelText(String.format("Total XP Cost: %s%dL%s",
+//                TextFormatting.GREEN, tileEntity.getRecipeXPRequired(), TextFormatting.RESET));
+//
+//        labelCreativeMode.setText("");
+//        if (tileEntity.isCreativeMode())
+//            labelCreativeMode.setText(String.format("%sCreative Mode%s", TextFormatting.DARK_PURPLE, TextFormatting.RESET));
 
+        labelMachineName.setText(tileEntity.getSelectedMachine() != null ? tileEntity.getSelectedMachine().getName() : "");
 
+        //
+//        scrollBoxOptions.clearObjects();
+//        for (GuiObject guiObject : tileEntity.getGuiPlanOptions())
+//            scrollBoxOptions.addGuiObject(guiObject);
+
+//        scrollBoxOptions.setMaxScrollY(tileEntity.getGuiPlanOptionY());
+
+//        if (tileEntity.isPlanValid()) {
+//            if (guiPlanOptions == null) {
+//                this.guiPlanOptions = tileEntity.updateCheckBoxes();
+//
+//                scrollBoxOptions.clearObjects();
+//                for (GuiObject guiObject : this.guiPlanOptions)
+//                    scrollBoxOptions.addGuiObject(guiObject);
+//
+//                scrollBoxOptions.initGui();
+//
+//                if (this.guiPlanOptions.size() == 0)
+//                    this.guiPlanOptions = null;
+//            }
+//        } else {
+//            this.guiPlanOptions = null;
+//            scrollBoxOptions.clearObjects();
+//        }
 
     }
 
+    public void updateOptions() {
+        scrollBoxOptions.clearObjects();
+        for (GuiObject guiObject : tileEntity.getGuiPlanOptions()) {
+            scrollBoxOptions.addGuiObject(guiObject);
+            LogHelper.info(">>> Adding: " + guiObject.toString());
+        }
+        scrollBoxOptions.setMaxScrollY(tileEntity.getGuiPlanOptionY());
+        scrollBoxOptions.initGui();
 
+        this.guiPlanOptions = tileEntity.getGuiPlanOptions();
+        this.nbtPlanOptions = tileEntity.getNBTPlanOptions();
+    }
+
+    @Override
+    public void initGui() {
+        super.initGui();
+
+        tileEntity.initPlanItem(false);
+        tileEntity.updateCheckBoxes();
+        updateOptions();
+    }
+
+    public void handleCheckBox(int buttonID) {
+        LogHelper.info(">>> Button ID: " + buttonID);
+
+        GuiObject guiObject = guiPlanOptions.get(buttonID - 100);
+        if (!(guiObject instanceof GuiCheckBox))
+            return;
+
+        GuiCheckBox guiCheckBox = (GuiCheckBox)guiObject;
+        guiCheckBox.setSelected(!guiCheckBox.isSelected());
+
+        this.nbtPlanOptions.setBoolean(String.format("checkBoxSelected-%d", buttonID - 100), guiCheckBox.isSelected());
+
+        PacketHandler.INSTANCE.sendToServer(new PacketPatternStamperUpdateCheckBox(tileEntity.getPos(), this.nbtPlanOptions));
+    }
+
+    public void updateNBTPlanOptions(NBTTagCompound nbtTagCompound) {
+        this.nbtPlanOptions = nbtTagCompound;
+
+        LogHelper.info(">>> Do something with the NBT Data...");
+    }
 }

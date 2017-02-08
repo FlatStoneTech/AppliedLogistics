@@ -1,14 +1,13 @@
 package tech.flatstone.appliedlogistics.common.network.messages;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPatternStamper;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPatternStamperOld;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 public class PacketPatternStamperUpdateSelectedPlan implements IMessage, IMessageHandler<PacketPatternStamperUpdateSelectedPlan, IMessage> {
@@ -42,7 +41,7 @@ public class PacketPatternStamperUpdateSelectedPlan implements IMessage, IMessag
         mainThread.addScheduledTask(new Runnable() {
             @Override
             public void run() {
-                TileEntityPatternStamper tileEntity = TileHelper.getTileEntity(ctx.getServerHandler().playerEntity.world, message.blockPos, TileEntityPatternStamper.class);
+                TileEntityPatternStamperOld tileEntity = TileHelper.getTileEntity(ctx.getServerHandler().playerEntity.world, message.blockPos, TileEntityPatternStamperOld.class);
                 if (tileEntity != null) {
                     tileEntity.selectPlan(message.selectedMachine);
                 }

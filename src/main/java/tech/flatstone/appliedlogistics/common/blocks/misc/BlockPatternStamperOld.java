@@ -17,71 +17,112 @@
  *  Exclusive Remedies. The Software is being offered to you free of any charge. You agree that you have no remedy against FlatstoneTech, its affiliates, contractors, suppliers, and agents for loss or damage caused by any defect or failure in the Software regardless of the form of action, whether in contract, tort, includinegligence, strict liability or otherwise, with regard to the Software. Copyright and other proprietary matters will be governed by United States laws and international treaties. IN ANY CASE, FlatstoneTech SHALL NOT BE LIABLE FOR LOSS OF DATA, LOSS OF PROFITS, LOST SAVINGS, SPECIAL, INCIDENTAL, CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES ARISING FROM BREACH OF WARRANTY, BREACH OF CONTRACT, NEGLIGENCE, OR OTHER LEGAL THEORY EVEN IF FLATSTONETECH OR ITS AGENT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
  */
 
-package tech.flatstone.appliedlogistics.common.network.messages;
+package tech.flatstone.appliedlogistics.common.blocks.misc;
 
-import io.netty.buffer.ByteBuf;
+import com.fireball1725.firelib.guimaker.GuiMaker;
+import com.fireball1725.firelib.guimaker.GuiMakerContainer;
+import com.fireball1725.firelib.guimaker.GuiMakerGuiContainer;
+import com.fireball1725.firelib.guimaker.objects.GuiObject;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import tech.flatstone.appliedlogistics.AppliedLogistics;
+import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
+import tech.flatstone.appliedlogistics.client.gui.misc.GuiPatternStamperOld;
+import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
+import tech.flatstone.appliedlogistics.common.container.misc.ContainerPatternStamper;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPatternStamperOld;
+import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-public class PacketPatternStamperWriteBook implements IMessage, IMessageHandler<PacketPatternStamperWriteBook, IMessage> {
-    private NBTTagCompound nbtBook;
-    private int blockX;
-    private int blockY;
-    private int blockZ;
+import java.util.ArrayList;
+import java.util.List;
 
-    public PacketPatternStamperWriteBook() {
+public class BlockPatternStamperOld extends BlockTileBase implements IProvideRecipe {
+    private List<GuiObject> guiMaterialsList = new ArrayList<>();
 
+    private GuiMaker guiMaker;
+
+    public BlockPatternStamperOld() {
+        super(Material.ROCK, "misc/blockPatternStamper");
+        this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+        this.setTileEntity(TileEntityPatternStamperOld.class);
+        this.setCreativeTab(AppliedLogisticsCreativeTabs.MACHINES);
+        this.setInternalName("pattern_stamper");
+
+        this.guiMaker = new GuiMaker() {
+            @Override
+            public Class<? extends GuiMakerGuiContainer> getGuiContainerClass() {
+                return GuiPatternStamperOld.class;
+            }
+
+            @Override
+            public Class<? extends GuiMakerContainer> getContainerClass() {
+                return ContainerPatternStamper.class;
+            }
+        };
     }
 
-    public PacketPatternStamperWriteBook(NBTTagCompound nbtTagCompound, BlockPos pos) {
-        this.nbtBook = nbtTagCompound;
-        this.blockX = pos.getX();
-        this.blockY = pos.getY();
-        this.blockZ = pos.getZ();
+    public GuiMaker getGuiMaker() {
+        return guiMaker;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        TileEntityPatternStamperOld tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityPatternStamperOld.class);
+
+        if (!worldIn.isRemote) {
+            guiMaker.show(AppliedLogistics.instance, worldIn, playerIn, pos);
+            tileEntity.initPlanItem(false);
+        }
+
+        return true;
     }
 
     @Override
-    public void fromBytes(ByteBuf buf) {
-        this.nbtBook = ByteBufUtils.readTag(buf);
-        this.blockX = buf.readInt();
-        this.blockY = buf.readInt();
-        this.blockZ = buf.readInt();
+    public void RegisterRecipes() {
+
     }
 
     @Override
-    public void toBytes(ByteBuf buf) {
-        ByteBufUtils.writeTag(buf, this.nbtBook);
-        buf.writeInt(blockX);
-        buf.writeInt(blockY);
-        buf.writeInt(blockZ);
+    public IBlockState getStateFromMeta(int meta) {
+        return this.getDefaultState();
     }
 
     @Override
-    public IMessage onMessage(PacketPatternStamperWriteBook message, MessageContext ctx) {
-        BlockPos pos = new BlockPos(message.blockX, message.blockY, message.blockZ);
-        TileEntityPatternStamperOld tileEntity = TileHelper.getTileEntity(ctx.getServerHandler().playerEntity.world, pos, TileEntityPatternStamperOld.class);
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        TileEntityPatternStamperOld tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityPatternStamperOld.class);
+        if (tileEntity != null)
+            return state.withProperty(FACING, tileEntity.getForward());
+        return state.withProperty(FACING, EnumFacing.NORTH);
+    }
 
-        if (tileEntity == null)
-            return null;
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return 0;
+    }
 
-        ItemStack itemBook = tileEntity.getInternalInventory().getStackInSlot(1);
-        if (itemBook.isEmpty())
-            return null;
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, FACING);
+    }
 
-        itemBook.setTagCompound(message.nbtBook);
+    @Override
+    public void registerBlockRenderer() {
 
-        ctx.getServerHandler().playerEntity.world.playSound((EntityPlayer) null, message.blockX, message.blockY, message.blockZ, SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
+    }
 
-        return null;
+    @Override
+    public void registerBlockItemRenderer() {
+
     }
 }

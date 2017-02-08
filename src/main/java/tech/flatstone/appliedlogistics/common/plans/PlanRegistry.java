@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
+import tech.flatstone.appliedlogistics.common.util.LogHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ public class PlanRegistry {
 
     public static void RegisterMachine(PlanMachine planMachine) {
         planRegistry.add(planMachine);
+        LogHelper.info(">>> Registered Machine Plan: " + planMachine.getName());
     }
 
     public static void RegisterMachine(List<PlanMachine> planMachines) {

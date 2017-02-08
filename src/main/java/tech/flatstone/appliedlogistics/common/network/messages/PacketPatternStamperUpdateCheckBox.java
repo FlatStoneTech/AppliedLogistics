@@ -21,45 +21,44 @@ package tech.flatstone.appliedlogistics.common.network.messages;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import tech.flatstone.appliedlogistics.client.gui.misc.GuiPatternStamper;
-import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPatternStamper;
-import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPatternStamper;
+import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPatternStamperOld;
+import tech.flatstone.appliedlogistics.common.network.PacketHandler;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPatternStamperOld;
 import tech.flatstone.appliedlogistics.common.util.LogHelper;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 public class PacketPatternStamperUpdateCheckBox implements IMessage, IMessageHandler<PacketPatternStamperUpdateCheckBox, IMessage> {
     private BlockPos blockPos;
-    private int buttonID;
-    private boolean buttonState;
+    private NBTTagCompound nbtTagCompound;
 
     public PacketPatternStamperUpdateCheckBox() {
 
     }
 
-    public PacketPatternStamperUpdateCheckBox(BlockPos blockPos, int buttonID, boolean buttonState) {
+    public PacketPatternStamperUpdateCheckBox(BlockPos blockPos, NBTTagCompound nbtTagCompound) {
         this.blockPos = blockPos;
-        this.buttonID = buttonID;
-        this.buttonState = buttonState;
+        this.nbtTagCompound = nbtTagCompound;
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
         this.blockPos = BlockPos.fromLong(buf.readLong());
-        this.buttonID = buf.readInt();
-        this.buttonState = buf.readBoolean();
+        this.nbtTagCompound = ByteBufUtils.readTag(buf);
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
         buf.writeLong(this.blockPos.toLong());
-        buf.writeInt(this.buttonID);
-        buf.writeBoolean(this.buttonState);
+        ByteBufUtils.writeTag(buf, this.nbtTagCompound);
     }
 
     @Override
@@ -70,23 +69,25 @@ public class PacketPatternStamperUpdateCheckBox implements IMessage, IMessageHan
                 mainClientThread.addScheduledTask(new Runnable() {
                     @Override
                     public void run() {
-                        TileEntityPatternStamper tileEntity = TileHelper.getTileEntity(Minecraft.getMinecraft().world, message.blockPos, TileEntityPatternStamper.class);
-                        BlockPatternStamper block = (BlockPatternStamper)tileEntity.getBlockType();
+                        TileEntityPatternStamperOld tileEntity = TileHelper.getTileEntity(Minecraft.getMinecraft().world, message.blockPos, TileEntityPatternStamperOld.class);
+                        BlockPatternStamperOld block = (BlockPatternStamperOld)tileEntity.getBlockType();
                         if (tileEntity != null) {
-                            tileEntity.setGuiPlanOption(message.buttonID, message.buttonState);
+                            tileEntity.updateGuiOptions(message.nbtTagCompound);
                         }
                     }
                 });
                 break;
+
             case SERVER:
                 IThreadListener mainServerThread = (WorldServer) ctx.getServerHandler().playerEntity.world;
                 mainServerThread.addScheduledTask(new Runnable() {
                     @Override
                     public void run() {
-                        TileEntityPatternStamper tileEntity = TileHelper.getTileEntity(ctx.getServerHandler().playerEntity.world, message.blockPos, TileEntityPatternStamper.class);
+                        TileEntityPatternStamperOld tileEntity = TileHelper.getTileEntity(ctx.getServerHandler().playerEntity.world, message.blockPos, TileEntityPatternStamperOld.class);
                         if (tileEntity != null) {
-                            tileEntity.setGuiPlanOption(message.buttonID, message.buttonState);
+                            tileEntity.updateNBTPlanDetails(message.nbtTagCompound);
                         }
+                        PacketHandler.INSTANCE.sendToAllAround(new PacketPatternStamperUpdateCheckBox(message.blockPos, message.nbtTagCompound), new NetworkRegistry.TargetPoint(ctx.getServerHandler().playerEntity.world.provider.getDimension(), message.blockPos.getX(), message.blockPos.getY(), message.blockPos.getZ(), 64));
                     }
                 });
                 break;

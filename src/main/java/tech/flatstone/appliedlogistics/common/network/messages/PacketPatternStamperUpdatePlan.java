@@ -19,21 +19,17 @@
 
 package tech.flatstone.appliedlogistics.common.network.messages;
 
-import com.fireball1725.firelib.guimaker.GuiMaker;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
-import tech.flatstone.appliedlogistics.client.gui.misc.GuiPatternStamper;
-import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPatternStamper;
-import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPatternStamper;
+import tech.flatstone.appliedlogistics.client.gui.misc.GuiPatternStamperOld;
+import tech.flatstone.appliedlogistics.common.blocks.misc.BlockPatternStamperOld;
+import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPatternStamperOld;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
 public class PacketPatternStamperUpdatePlan implements IMessage, IMessageHandler<PacketPatternStamperUpdatePlan, IMessage> {
@@ -86,12 +82,12 @@ public class PacketPatternStamperUpdatePlan implements IMessage, IMessageHandler
         mainThread.addScheduledTask(new Runnable() {
             @Override
             public void run() {
-                TileEntityPatternStamper tileEntity = TileHelper.getTileEntity(Minecraft.getMinecraft().world, message.blockPos, TileEntityPatternStamper.class);
-                BlockPatternStamper block = (BlockPatternStamper)tileEntity.getBlockType();
+                TileEntityPatternStamperOld tileEntity = TileHelper.getTileEntity(Minecraft.getMinecraft().world, message.blockPos, TileEntityPatternStamperOld.class);
+                BlockPatternStamperOld block = (BlockPatternStamperOld)tileEntity.getBlockType();
                 if (tileEntity != null) {
                     tileEntity.updateMachinesList(message.planTechLevel, message.planCreative, message.clearSelectedMachine);
 
-                    GuiPatternStamper gui = (GuiPatternStamper)block.getGuiMaker().getGuiMakerGuiContainer();
+                    GuiPatternStamperOld gui = (GuiPatternStamperOld)block.getGuiMaker().getGuiMakerGuiContainer();
                     gui.updateOptions();
                 }
             }

@@ -7,27 +7,33 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import tech.flatstone.appliedlogistics.common.util.Platform;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiMaker {
+public abstract class GuiMaker {
     public static ResourceLocation resourceLocation = new ResourceLocation("firelib", "textures/gui/darkskin.png");
     private static List<GuiMaker> guiInstances = new ArrayList<>();
 
     private final int guiId;
 
-    private final Class<? extends GuiMakerContainer> classContainer;
-    private final Class<? extends GuiMakerGuiContainer> classGuiContainer;
+    private Class<? extends GuiMakerGuiContainer> classGuiContainer = null;
+    private Class<? extends GuiMakerContainer> classContainer = null;
 
-    private GuiMakerContainer guiMakerContainer;
     private GuiMakerGuiContainer guiMakerGuiContainer;
+    private GuiMakerContainer guiMakerContainer;
 
-    public GuiMaker(Class<? extends GuiMakerContainer> classContainer, Class<? extends GuiMakerGuiContainer> classGuiContainer) {
+    public abstract Class<? extends GuiMakerGuiContainer> getGuiContainerClass();
+    public abstract Class<? extends GuiMakerContainer> getContainerClass();
+
+    public GuiMaker() {
         this.guiId = guiInstances.size();
-        this.classContainer = classContainer;
-        this.classGuiContainer = classGuiContainer;
+        this.classContainer = getContainerClass();
+
+        if (Platform.isClient())
+            this.classGuiContainer = getGuiContainerClass();
 
         guiInstances.add(this);
     }

@@ -21,35 +21,25 @@ package tech.flatstone.appliedlogistics.common.blocks.misc;
 
 import com.fireball1725.firelib.guimaker.GuiMaker;
 import com.fireball1725.firelib.guimaker.GuiMakerContainer;
-import com.fireball1725.firelib.guimaker.objects.GuiObject;
+import com.fireball1725.firelib.guimaker.GuiMakerGuiContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import tech.flatstone.appliedlogistics.AppliedLogistics;
 import tech.flatstone.appliedlogistics.AppliedLogisticsCreativeTabs;
 import tech.flatstone.appliedlogistics.client.gui.misc.GuiPatternStamper;
 import tech.flatstone.appliedlogistics.common.blocks.BlockTileBase;
-import tech.flatstone.appliedlogistics.common.container.misc.ContainerPatternStamper;
 import tech.flatstone.appliedlogistics.common.tileentities.misc.TileEntityPatternStamper;
 import tech.flatstone.appliedlogistics.common.util.IProvideRecipe;
-import tech.flatstone.appliedlogistics.common.util.LanguageHelper;
 import tech.flatstone.appliedlogistics.common.util.TileHelper;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe {
-    private List<GuiObject> guiMaterialsList = new ArrayList<>();
-
     private GuiMaker guiMaker;
 
     public BlockPatternStamper() {
@@ -59,29 +49,22 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
         this.setCreativeTab(AppliedLogisticsCreativeTabs.MACHINES);
         this.setInternalName("pattern_stamper");
 
-        this.guiMaker = new GuiMaker(ContainerPatternStamper.class, GuiPatternStamper.class);
-    }
+        this.guiMaker = new GuiMaker() {
+            @Override
+            public Class<? extends GuiMakerGuiContainer> getGuiContainerClass() {
+                return GuiPatternStamper.class;
+            }
 
-    public GuiMaker getGuiMaker() {
-        return guiMaker;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        TileEntityPatternStamper tileEntity = TileHelper.getTileEntity(worldIn, pos, TileEntityPatternStamper.class);
-
-        if (!worldIn.isRemote) {
-            guiMaker.show(AppliedLogistics.instance, worldIn, playerIn, pos);
-            tileEntity.initPlanItem(false);
-        }
-
-        return true;
+            @Override
+            public Class<? extends GuiMakerContainer> getContainerClass() {
+                return GuiMakerContainer.class;
+            }
+        };
     }
 
     @Override
     public void RegisterRecipes() {
-
+        // todo: create a recipe for this item
     }
 
     @Override
@@ -108,12 +91,11 @@ public class BlockPatternStamper extends BlockTileBase implements IProvideRecipe
     }
 
     @Override
-    public void registerBlockRenderer() {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        if (!worldIn.isRemote) {
+            guiMaker.show(AppliedLogistics.instance, worldIn, playerIn, pos);
+        }
 
-    }
-
-    @Override
-    public void registerBlockItemRenderer() {
-
+        return true;
     }
 }

@@ -19,264 +19,34 @@
 
 package tech.flatstone.appliedlogistics.common.tileentities.misc;
 
-import com.fireball1725.firelib.guimaker.objects.GuiCheckBox;
-import com.fireball1725.firelib.guimaker.objects.GuiDrawItemStack;
-import com.fireball1725.firelib.guimaker.objects.GuiDrawSimpleImage;
-import com.fireball1725.firelib.guimaker.objects.GuiObject;
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
-import net.minecraft.block.BlockDoublePlant;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.commons.lang3.time.DurationFormatUtils;
 import tech.flatstone.appliedlogistics.api.features.TechLevel;
-import tech.flatstone.appliedlogistics.client.gui.misc.GuiPatternStamper;
 import tech.flatstone.appliedlogistics.common.items.Items;
-import tech.flatstone.appliedlogistics.common.network.PacketHandler;
-import tech.flatstone.appliedlogistics.common.network.messages.PacketPatternStamperUpdateCheckBox;
-import tech.flatstone.appliedlogistics.common.network.messages.PacketPatternStamperUpdatePlan;
-import tech.flatstone.appliedlogistics.common.plans.PlanComponent;
-import tech.flatstone.appliedlogistics.common.plans.PlanMachine;
-import tech.flatstone.appliedlogistics.common.plans.PlanRegistry;
 import tech.flatstone.appliedlogistics.common.tileentities.TileEntityMachineBase;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InternalInventory;
 import tech.flatstone.appliedlogistics.common.tileentities.inventory.InventoryOperation;
-import tech.flatstone.appliedlogistics.common.util.LogHelper;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TileEntityPatternStamper extends TileEntityMachineBase {
-    InternalInventory inventory = new InternalInventory(this, 2);
-
-    private List<PlanMachine> planMachines = new ArrayList<>();
-    private boolean planCreative = false;
+    private InternalInventory internalInventory = new InternalInventory(this, 2);
     private TechLevel planTechLevel = null;
-
-    private int selectedMachine;
-
-    @SideOnly(Side.CLIENT)
-    private List<GuiObject> guiPlanOptions = new ArrayList<>();
-    private int guiPlanOptionY = 0;
-
-    @Override
-    public boolean canBeRotated() {
-        return true;
-    }
+    private boolean planCreative = false;
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound) {
         super.readFromNBT(nbtTagCompound);
-
-        this.selectedMachine = nbtTagCompound.getInteger("selectedMachine");
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
-        nbtTagCompound = super.writeToNBT(nbtTagCompound);
-
-        nbtTagCompound.setInteger("selectedMachine", selectedMachine);
-
-        return nbtTagCompound;
+        return super.writeToNBT(nbtTagCompound);
     }
 
     @Override
     public IInventory getInternalInventory() {
-        return inventory;
-    }
-
-    @Override
-    public void onChangeInventory(IInventory inv, int slot, InventoryOperation operation, ItemStack removed, ItemStack added) {
-        // Server Side Inventory Change...
-
-        if (slot == 0) {
-            initPlanItem(true);
-        }
-    }
-
-    // Server Side
-    public void initPlanItem(boolean clearSelectedPlan) {
-        ItemStack itemStack = getStackInSlot(0);
-
-        if (itemStack.isEmpty()) {
-            updateMachinesList(null, false, true);
-            return;
-        }
-
-        if (!isPlanValid()) {
-            updateMachinesList(null, false, true);
-            return;
-        }
-
-        boolean planCreative;
-        TechLevel planTechLevel;
-
-        if (itemStack.getItemDamage() == TechLevel.CREATIVE.getMeta()) {
-            planCreative = true;
-            planTechLevel = TechLevel.byMeta(itemStack.getTagCompound().getInteger("planBaseMeta"));
-        } else {
-            planCreative = false;
-            planTechLevel = TechLevel.byMeta(itemStack.getItemDamage());
-        }
-
-        updateMachinesList(planTechLevel, planCreative, clearSelectedPlan);
-    }
-
-    // Client & Server Side
-    public void updateMachinesList(TechLevel planTechLevel, boolean planCreative, boolean clearSelectedPlan) {
-        this.planTechLevel = planTechLevel;
-        this.planCreative = planCreative;
-
-        if (clearSelectedPlan)
-            this.selectedMachine = 0;
-
-        if (this.world != null && !this.world.isRemote)
-            PacketHandler.INSTANCE.sendToAllAround(
-                    new PacketPatternStamperUpdatePlan(this.pos, planTechLevel, planCreative, clearSelectedPlan),
-                    new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), 50)
-            );
-
-        this.planMachines = PlanRegistry.getPlanRegistry(this.planTechLevel);
-
-        if (this.world != null && this.world.isRemote)
-            this.updateCheckBoxes();
-
-        this.markDirty();
-        this.markForUpdate();
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void updateCheckBoxes() {
-        LogHelper.info(">>> Updating List");
-        this.guiPlanOptions.clear();
-        this.guiPlanOptionY = 0;
-
-        if (this.planMachines == null)
-            return;
-
-        int y = 4;
-        int i = 0;
-
-        PlanMachine planMachine = this.planMachines.get(this.selectedMachine);
-
-        for (PlanComponent planComponent : planMachine.getPlanComponentList()) {
-            GuiCheckBox guiCheckBox = new GuiCheckBox(i + 100, 4, y, false);
-            if (planComponent.isRecipeRequired()) {
-                guiCheckBox.setSelected(true);
-                guiCheckBox.setDisabled(true);
-            }
-            guiCheckBox.setLabel(planComponent.getRecipeName());
-            this.guiPlanOptions.add(guiCheckBox);
-
-            y += 18;
-            i++;
-
-            // Add Time Requirement
-            y -= 4;
-            GuiDrawSimpleImage imageTime2 = new GuiDrawSimpleImage(GuiPatternStamper.RESOURCE_BUILD_TIME, 16, y);
-            imageTime2.setScale(0.5f);
-            imageTime2.setLabelText(String.format("Build Time: %s", DurationFormatUtils.formatDuration(planComponent.getRecipeTimeToBuild() * 1000, "HH:mm:ss")));
-            this.guiPlanOptions.add(imageTime2);
-
-            i++;
-
-            // Add XP Requirement
-            GuiDrawSimpleImage imageXP2 = new GuiDrawSimpleImage(GuiPatternStamper.RESOURCE_XP_COST, 16 + 80, y);
-            imageXP2.setScale(0.5f);
-            imageXP2.setLabelText(String.format("XP Cost: %s%dL%s", TextFormatting.GREEN, planComponent.getRecipeXPRequired(), TextFormatting.RESET));
-            this.guiPlanOptions.add(imageXP2);
-            y += 14;
-            i++;
-
-
-            for (NonNullList<ItemStack> itemStacks : planComponent.getRecipeMaterials()) {
-                y -= 4;
-                GuiDrawItemStack drawItemStack = new GuiDrawItemStack(itemStacks, 16, y);
-                drawItemStack.setScale(0.5f);
-                drawItemStack.setRenderDescription(true);
-                this.guiPlanOptions.add(drawItemStack);
-
-                y += 14;
-                i++;
-            }
-        }
-
-        this.guiPlanOptionY = y;
-        LogHelper.info(">>> Finished updating List");
-    }
-
-    public List<GuiObject> getGuiPlanOptions() {
-        return guiPlanOptions;
-    }
-
-    public int getGuiPlanOptionY() {
-        return guiPlanOptionY;
-    }
-
-    public void setGuiPlanOption(int buttonID, boolean value) {
-        this.guiPlanOptions.get(buttonID).setSelected(value);
-
-        if (!this.world.isRemote) {
-            PacketHandler.INSTANCE.sendToAllAround(
-                    new PacketPatternStamperUpdateCheckBox(this.pos, buttonID, value),
-                    new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 50)
-            );
-        }
-
-        if (this.world.isRemote) {
-            // tell clients to update their screen??
-        }
-    }
-
-    public PlanMachine getSelectedMachine() {
-        if (this.planMachines == null || this.planMachines.size() == 0)
-            return null;
-
-        return this.planMachines.get(this.selectedMachine);
-    }
-
-    public TechLevel getPlanTechLevel() {
-        return this.planTechLevel;
-    }
-
-    public boolean isPlanValid() {
-        ItemStack itemStack = inventory.getStackInSlot(0);
-
-        return itemStack != null && (itemStack.getItem() == Items.ITEM_PLAN_BLANK.getItem());
-    }
-
-    public int selectPrevPlan() {
-        if (this.planMachines == null)
-            return 0;
-
-        this.selectedMachine = (--this.selectedMachine + this.planMachines.size()) % this.planMachines.size();
-        this.updateCheckBoxes();
-
-        return this.selectedMachine;
-    }
-
-    public int selectNextPlan() {
-        if (this.planMachines == null)
-            return 0;
-
-        this.selectedMachine = ++this.selectedMachine % this.planMachines.size();
-        this.updateCheckBoxes();
-
-        return this.selectedMachine;
-    }
-
-    public void selectPlan(int selectedMachine) {
-        this.selectedMachine = selectedMachine;
-
-        this.markDirty();
-        this.markForUpdate();
+        return this.internalInventory;
     }
 
     @Override
@@ -284,20 +54,46 @@ public class TileEntityPatternStamper extends TileEntityMachineBase {
         return new int[0];
     }
 
-    @Nullable
     @Override
     public ItemStack removeStackFromSlot(int index) {
         return null;
     }
 
     @Override
-    public void dropItems() {
-        super.dropItems();
+    public void onChangeInventory(IInventory inv, int slot, InventoryOperation inventoryOperation, ItemStack removedStack, ItemStack newStack) {
+        if (slot == 0) {
+            initItemPlan();
+        }
     }
 
-    @Override
-    public int getInventoryStackLimit() {
-        return super.getInventoryStackLimit();
+    // Server Side Only
+    public void initItemPlan() {
+        ItemStack itemStack = getStackInSlot(0);
+
+        if (itemStack.isEmpty() || !isPlanValid()) {
+            // todo: clear stuff here...
+            return;
+        }
+
+        this.planCreative = false;
+        this.planTechLevel = TechLevel.byMeta(itemStack.getItemDamage());
+
+        if (itemStack.getItemDamage() == TechLevel.CREATIVE.getMeta()) {
+            this.planCreative = true;
+            this.planTechLevel = TechLevel.byMeta(itemStack.getTagCompound().getInteger("planBaseMeta"));
+        }
+
+        this.markDirty();
+        this.markForUpdate();
     }
 
+    public boolean isPlanValid() {
+        ItemStack itemStack = internalInventory.getStackInSlot(0);
+
+        return (!itemStack.isEmpty() && (itemStack.getItem() == Items.ITEM_PLAN_BLANK.getItem()));
+    }
+
+    public TechLevel getPlanTechLevel() {
+        return this.planTechLevel;
+    }
 }
